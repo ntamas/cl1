@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+<project name="Cluster ONE" default="usage" basedir=".">
+	<!-- Package name and version number -->
+	<loadproperties>
+		<file file="etc/cl1.properties"/>
+	</loadproperties>
+
+	<!-- Directories -->
+	<property name="build" location="build" />
+	<property name="src" location="src" />
+	<property name="test" location="test" />
+	<property name="dist" location="dist" />
+	<property name="etc" location="etc" />
+	<property name="lib" location="lib" />
+	<property name="reports" location="reports" />
+
+	<!-- Access to environment -->
+	<property environment="os" />
+
+	<!-- DON'T CHANGE ANYTHING BELOW THIS LINE
+	UNLESS YOU KNOW WHAT YOU'RE DOING -->
+	<property name="build.java" location="${build}/java" />
+	<property name="src.java" location="${src}/java" />
+	<property name="build.java.tests" location="${build}/java/tests" />
+	<property name="src.java.tests" location="${test}/java" />
+
+	<tstamp>
+		<format property="TODAY" pattern="MMMM dd, yyyy" locale="en" />
+	</tstamp>
+
+	<!-- Initializes the build tree, creates the necessary directories -->
+	<target name="-init" description="Initializes the build process">
+		<mkdir dir="${build}" />
+		<mkdir dir="${build.java}" />
+		<mkdir dir="${dist}" />
+		<mkdir dir="${reports}" />
+	</target>
+
+	<!-- Deletes the existing build -->
+	<target name="clean" description="Cleans up the build directories">
+		<!-- Delete build directories -->
+		<delete dir="${build.java}" />
+		<delete dir="${reports}" />
+	</target>
+
+	<!-- Compiles the Java source code -->
+	<target name="compile_java" depends="-init"
+		description="--> compile Java code">
+		<javac srcdir="${src.java}" destdir="${build.java}" />
+	</target>
+
+	<!-- Compiles the Java tests -->
+	<target name="compile_tests" depends="-init"
+		description="--> compile Java tests">
+		<javac srcdir="${src.java.tests}" destdir="${build.java.tests}">
+			<classpath>
+				<pathelement location="${build.java}" />
+				<pathelement location="${lib}/junit.jar" />
+			</classpath>
+		</javac>
+	</target>
+
+	<!-- Compiles the whole thing -->
+	<target name="compile" depends="compile_java" description="Compiles all the source files">
+	</target>
+
+	<!-- Actions necessary for the preparation of a Cytoscape plugin -->
+	<target name="-create_cytoscape_plugin" description="Cytoscape plugin preparation">
+		<copy file="${etc}/cytoscape/plugin.props.in"
+            tofile="${build.java}/${package.name.slashed}/plugin.props" />
+        <replace file="${build.java}/${package.name.slashed}/plugin.props">
+			<replacefilter token="@today@" value="${TODAY}" />
+			<replacefilter token="@package.name@" value="${package.name}" />
+			<replacefilter token="@package.version@" value="${package.version}" />
+		</replace>
+	</target>
+
+	<!-- Creates the JAR file -->
+	<target name="jar" depends="compile,-create_cytoscape_plugin" description="Creates the JAR file">
+		<jar destfile="${dist}/cluster_one-${package.version}.jar" basedir="${build.java}">
+			<manifest>
+				<attribute name="Manifest-Version" value="1.0" />
+				<attribute name="Extension-Name" value="${package.name}" />
+				<attribute name="Implementation-Version" value="${package.version}" />
+				<attribute name="Main-Class" value="${package.name}.MainApplication" />
+				<attribute name="Cytoscape-Plugin" value="${package.name}.CytoscapePlugin" />
+			</manifest>
+		</jar>
+	</target>
+
+	<!-- Tests the whole thing -->
+	<target name="test" depends="compile, compile_tests" description="Runs JUnit tests in the distribution">
+		<junit printsummary="yes" fork="yes" haltonfailure="yes">
+			<classpath>
+				<pathelement location="${build.java.tests}" />
+				<pathelement location="${build.java}" />
+				<pathelement location="${lib}/junit.jar" />
+			</classpath>
+
+			<formatter type="plain" />
+
+			<batchtest todir="${reports}">
+				<fileset dir="${build}/tests">
+					<include name="**/*Test*.class" />
+					<exclude name="**/AllTests.class" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<!-- Main targets -->
+	<target name="build" depends="compile, jar" description="Builds the whole project" />
+	<target name="rebuild" depends="clean, build" description="Rebuilds the project from scratch" />
+
+	<!-- Usage information target -->
+	<target name="usage" description="Display usage information">
+		<echo message="  Execute 'ant -projecthelp' for build file help." />
+		<echo message="  Execute 'ant -help' for Ant help." />
+	</target>
+	<target name="help" depends="usage" />
+</project>
