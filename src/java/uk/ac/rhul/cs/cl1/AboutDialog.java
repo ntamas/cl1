@@ -82,7 +82,6 @@ public class AboutDialog extends JDialog implements ActionListener {
 		this(owner, true);
 	}
 
-	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		dispose();
 	}

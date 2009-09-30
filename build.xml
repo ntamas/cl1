@@ -82,8 +82,8 @@
 				<attribute name="Manifest-Version" value="1.0" />
 				<attribute name="Extension-Name" value="${package.name}" />
 				<attribute name="Implementation-Version" value="${package.version}" />
-				<attribute name="Main-Class" value="${package.name}.MainApplication" />
-				<attribute name="Cytoscape-Plugin" value="${package.name}.CytoscapePlugin" />
+				<attribute name="Main-Class" value="${package.name}.ui.CommandLineApplication" />
+				<attribute name="Cytoscape-Plugin" value="${package.name}.ui.CytoscapePlugin" />
 			</manifest>
 		</jar>
 	</target>

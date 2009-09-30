@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
 <clusterers>
-  <clusterer name="Cluster ONE" class="uk.ac.rhul.cs.cl1.ProcopePlugin">
+  <clusterer name="ClusterONE" class="uk.ac.rhul.cs.cl1.ui.ProcopePlugin">
   </clusterer>
 </clusterers>

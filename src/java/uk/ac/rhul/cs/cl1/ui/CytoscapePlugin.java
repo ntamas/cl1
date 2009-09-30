@@ -1,10 +1,12 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.cl1.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+
+import uk.ac.rhul.cs.cl1.AboutDialog;
 
 import cytoscape.Cytoscape;
 
@@ -22,7 +24,6 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 		pluginsMenu.add(menu);
 	}
 
-	@Override
 	public void actionPerformed(ActionEvent event) {
 		if (event.getActionCommand().equals("about")) {
 			AboutDialog dlg = new AboutDialog(Cytoscape.getDesktop());

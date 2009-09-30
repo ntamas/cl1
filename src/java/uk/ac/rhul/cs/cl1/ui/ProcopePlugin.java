@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.cl1.ui;
 
 import procope.data.complexes.ComplexSet;
 import procope.data.networks.ProteinNetwork;
@@ -10,7 +10,6 @@ import procope.methods.clustering.Clusterer;
  * @author tamas
  */
 public class ProcopePlugin implements Clusterer {
-	@Override
 	public ComplexSet cluster(ProteinNetwork net) {
 		ComplexSet result = new ComplexSet();
 		return result;
