@@ -3,10 +3,10 @@ package uk.ac.rhul.cs.cl1.io;
 import java.io.IOException;
 import java.io.InputStream;
 
-import giny.model.RootGraph;
+import uk.ac.rhul.cs.cl1.Graph;
 
 /// Interface specification for all the graph readers
 public interface GraphReader {
 	/// Reads a GINY graph from a stream
-	RootGraph readGraph(InputStream stream) throws IOException;
+	Graph readGraph(InputStream stream) throws IOException;
 }

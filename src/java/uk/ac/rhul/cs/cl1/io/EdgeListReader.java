@@ -1,28 +1,25 @@
 package uk.ac.rhul.cs.cl1.io;
 
-import giny.model.Node;
-import giny.model.RootGraph;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import uk.ac.rhul.cs.cl1.Graph;
-import uk.ac.rhul.cs.cl1.UniqueNodeGenerator;
+import uk.ac.rhul.cs.cl1.UniqueIDGenerator;
 
 /// Reads a graph specified by an edge list representation from an input stream
 public class EdgeListReader implements GraphReader {
 	/// Reads a graph specified by an edge list representation from the given stream
-	public RootGraph readGraph(InputStream stream) throws IOException {
-		RootGraph result = new Graph();
-		UniqueNodeGenerator nodeGen = new UniqueNodeGenerator(result);
+	public Graph readGraph(InputStream stream) throws IOException {
+		Graph result = new Graph();
+		UniqueIDGenerator nodeGen = new UniqueIDGenerator(result);
 		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 		String line;
 		String[] parts;
 		
-		Node node1, node2;
+		int node1, node2;
 		double weight;
 		
 		while ((line = reader.readLine()) != null) {
@@ -44,12 +41,11 @@ public class EdgeListReader implements GraphReader {
 			else
 				weight = 1.0;
 			
-			result.createEdge(node1, node2, false);
+			result.createEdge(node1, node2, weight);
 		}
 		
 		reader.close();
 		
-		return null;
+		return result;
 	}
-
 }

@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import uk.ac.rhul.cs.cl1.AboutDialog;
 
 import cytoscape.Cytoscape;
 

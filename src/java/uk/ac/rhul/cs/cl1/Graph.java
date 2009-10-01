@@ -1,602 +1,223 @@
 package uk.ac.rhul.cs.cl1;
 
-import giny.model.Node;
-import giny.model.Edge;
-import giny.model.GraphPerspective;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
+import com.sosnoski.util.array.DoubleArray;
 import com.sosnoski.util.array.IntArray;
-import com.sosnoski.util.hashmap.StringIntHashMap;
+import com.sosnoski.util.array.StringArray;
 
 /**
  *  Graph class used in Cluster ONE
  *  
  *  This class uses a simple adjacency list representation in the background.
  */
-public class Graph implements giny.model.RootGraph {
+public class Graph implements Iterable<Edge> {
 	/**
-	 * Map from node names to node IDs
+	 * Whether the graph is directed
 	 */
-	StringIntHashMap nodeIndexMap = new StringIntHashMap(1000, 0.8, 0, StringIntHashMap.STANDARD_HASH);
-	/**
-	 * Map from edge names to edge IDs
-	 */
-	StringIntHashMap edgeIndexMap = new StringIntHashMap(2000, 0.8, 0, StringIntHashMap.STANDARD_HASH);
+	protected boolean directed = false;
 	
 	/**
-	 * The list of nodes in this graph
+	 * The number of nodes in this graph
 	 */
-	ArrayList<Node> nodes = new ArrayList<Node>();
-	/**
-	 * The list of edges in this graph
-	 */
-	ArrayList<Edge> edges = new ArrayList<Edge>();
+	protected int numberOfNodes = 0;
 	
 	/**
-	 * The list of out-neighbors for each node
+	 * The list of names for each node in this graph
 	 */
-	ArrayList<IntArray> outAdjacencyLists = new ArrayList<IntArray>();
+	protected StringArray nodeNames = new StringArray();
 	
 	/**
-	 * The list of in-neighbors for each node
+	 * The list of source nodes for each edge in this graph
 	 */
-	ArrayList<IntArray> inAdjacencyLists = new ArrayList<IntArray>();
+	protected IntArray edgesOut = new IntArray();
 	
-	public boolean addEdgeMetaChild(int arg0, int arg1) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	public boolean addMetaChild(Node arg0, Node arg1) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	public boolean addMetaChild(Node arg0, Edge arg1) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	public boolean addNodeMetaChild(int arg0, int arg1) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
 	/**
-	 * Returns true iff the given edge is in this graph
+	 * The list of target nodes for each edge in this graph
 	 */
-	public boolean containsEdge(Edge edge) {
-		return edgeIndexMap.containsKey(edge.getIdentifier());
-	}
-
+	protected IntArray edgesIn = new IntArray();
+	
 	/**
-	 * Returns true iff the given node is in this graph
+	 * The list of weights for each edge in this graph
 	 */
-	public boolean containsNode(Node node) {
-		return nodeIndexMap.containsKey(node.getIdentifier());
-	}
-
+	protected DoubleArray weights = new DoubleArray();
+	
 	/**
-	 * Creates a new edge between the given nodes
-	 * 
-	 * The edge will be directed iff src != dest, undirected otherwise.
-	 * 
-	 * @param  src  the source node
-	 * @param  dest the target node
-	 * 
-	 * @return the index of the new edge or zero if either node is not in this graph.
+	 * The list of outgoing edge IDs for each node
 	 */
-	public int createEdge(Node src, Node dest) {
-		return createEdge(nodeIndexMap.get(src.getIdentifier()), nodeIndexMap.get(dest.getIdentifier()),
-				src != dest);
-	}
-
+	protected ArrayList<IntArray> outEdgeAdjacencyLists = new ArrayList<IntArray>();
+	
 	/**
-	 * Creates a new edge between nodes with the given indices.
-	 * 
-	 * The edge will be directed iff src != dest, undirected otherwise.
-	 * 
-	 * @param  src  the source node
-	 * @param  dest the target node
-	 * 
-	 * @return the index of the new edge or zero if either node is not in this graph.
+	 * The list of incoming edge IDs for each node
 	 */
-	public int createEdge(int src, int dest) {
-		return createEdge(src, dest, src != dest);
-	}
-
+	protected ArrayList<IntArray> inEdgeAdjacencyLists = new ArrayList<IntArray>();
+	
 	/**
-	 * Creates a new edge between the given nodes
-	 * 
-	 * @param  src  the source node
-	 * @param  dest the target node
-	 * @param  directed  whether the edge should be directed
-	 * 
-	 * @return the index of the new edge or zero if either node is not in this graph.
+	 * Constructs an empty undirected graph
 	 */
-	public int createEdge(Node src, Node dest, boolean directed) {
-		return createEdge(nodeIndexMap.get(src.getIdentifier()), nodeIndexMap.get(dest.getIdentifier()),
-				directed);
-	}
-
-	/**
-	 * Creates a new edge between the given nodes
-	 * 
-	 * @param  src  the source node
-	 * @param  dest the target node
-	 * @param  directed  whether the edge should be directed
-	 * 
-	 * @return the index of the new edge or zero if either node is not in this graph.
-	 */
-	public int createEdge(int src, int dest, boolean directed) {
-		if (src == 0 || dest == 0)
-			return 0;
-		
-		edges.add(new EdgeImpl(this, src, dest));
-		int result = edges.size();
-		outAdjacencyLists.get(src).add(result);
-		inAdjacencyLists.get(dest).add(result);
-		return edges.size();
-	}
-
-	/**
-	 * Creates new edges between the given nodes
-	 * 
-	 * @param  srcs  the source nodes
-	 * @param  dests the target nodes
-	 * @param  directed  whether the edges should be directed
-	 * 
-	 * @return the indices of the new edges or zero if either node is not in this graph.
-	 */
-	public int[] createEdges(int[] srcs, int[] dests, boolean directed) {
-		int[] result = new int[srcs.length];
-		
-		for (int i = 0; i < srcs.length; i++)
-			result[i] = createEdge(srcs[i], dests[i], directed);
-		
-		return result;
-	}
-
-	public GraphPerspective createGraphPerspective(Node[] arg0, Edge[] arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public GraphPerspective createGraphPerspective(int[] arg0, int[] arg1) {
-		// TODO Auto-generated method stub
-		return null;
+	public Graph() {
+		this(false);
 	}
 	
 	/**
-	 * Creates a new node and returns its index
+	 * Constructs an empty graph
+	 * 
+	 * @param directed  whether the graph will be directed or not
+	 */
+	public Graph(boolean directed) {
+		this.directed = directed;
+	}
+	
+	/**
+	 * Checks whether the graph is directed
+	 */
+	public boolean isDirected() { return directed; }
+
+	/**
+	 * Creates a new unnamed node and returns its index
 	 */
 	public int createNode() {
-		nodes.add(new NodeImpl(this));
-		outAdjacencyLists.add(new IntArray());
-		inAdjacencyLists.add(new IntArray());
-		return nodes.size();
+		return this.createNode(null);
 	}
-
-	public int createNode(GraphPerspective arg0) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	public int createNode(Node[] nodes, Edge[] edges) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	public int createNode(int[] node_indices, int[] edge_indices) {
-		throw new AssertionError("meta-objects not supported");
+	
+	/**
+	 * Creates a new node with the given name and returns its index
+	 * 
+	 * @param   name   the name of the node
+	 */
+	public int createNode(String name) {
+		numberOfNodes++;
+		outEdgeAdjacencyLists.add(new IntArray());
+		inEdgeAdjacencyLists.add(new IntArray());
+		nodeNames.add(name);
+		return numberOfNodes-1;
 	}
 
 	/**
 	 * Create some new nodes in the graph.
 	 * 
 	 * @return an array of length new_node_count containing the indices of the newly created nodes
-	 * @deprecated Use createNode() instead
 	 */
 	public int[] createNodes(int new_node_count) {
 		int[] result = new int[new_node_count];
-		int n = nodes.size();
-		for (int i = 1; i <= new_node_count; i++) {
-			nodes.add(new NodeImpl(this));
-			result[i] = n + i;
+		int n = numberOfNodes;
+		for (int i = 0; i < new_node_count; i++) {
+			outEdgeAdjacencyLists.add(new IntArray());
+			inEdgeAdjacencyLists.add(new IntArray());
+			result[i] = n+i;
 		}
+		numberOfNodes += new_node_count;
 		return result;
 	}
 	
 	/**
-	 * Returns whether there's an edge from a given node to another.
+	 * Creates a new edge between nodes with the given indices.
 	 * 
-	 * Undirected edges are considered to go in both directions.
+	 * @param  src  the source node
+	 * @param  dest the target node
 	 * 
-	 * @param  from  the source node
-	 * @param  to    the target node
-	 * 
-	 * @return whether there's an edge or not
+	 * @return the index of the new edge
 	 */
-	public boolean edgeExists(Node from, Node to) {
-		return edgeExists(getIndex(from), getIndex(to));
-	}
-
-	public boolean edgeExists(int arg0, int arg1) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@SuppressWarnings("unchecked")
-	public List edgeMetaChildrenList(Node arg0) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	@SuppressWarnings("unchecked")
-	public List edgeMetaChildrenList(int arg0) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	@SuppressWarnings("unchecked")
-	public List edgeMetaParentsList(int arg0) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	@SuppressWarnings("unchecked")
-	/**
-	 * Returns an iterator over all edges in this graph.
-	 */
-	public Iterator edgesIterator() {
-		return edges.iterator();
-	}
-
-	@SuppressWarnings("unchecked")
-	/**
-	 * Returns the list of all edges in this graph.
-	 * 
-	 * The list should not be modified by the caller in any way.
-	 * 
-	 * @deprecated
-	 */
-	public List edgesList() {
-		return edges;
-	}
-
-	@SuppressWarnings("unchecked")
-	public List edgesList(Node arg0, Node arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@SuppressWarnings("unchecked")
-	public List edgesList(int arg0, int arg1, boolean arg2) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void ensureCapacity(int arg0, int arg1) {
-		System.err.println("Nobody expects the Spanish Inquisition!");
-	}
-
-	public int[] getAdjacentEdgeIndicesArray(int arg0, boolean arg1,
-			boolean arg2, boolean arg3) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public int[] getChildlessMetaDescendants(int arg0) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	public int[] getConnectingEdgeIndicesArray(int[] arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public int[] getConnectingNodeIndicesArray(int[] arg0) {
-		// TODO Auto-generated method stub
-		return null;
+	public int createEdge(int src, int dest) {
+		return createEdge(src, dest, 1.0);
 	}
 	
 	/**
-	 * Returns the number of distinct edges incident on the given node
+	 * Creates a new edge between nodes with the given indices and the given weight
 	 * 
-	 * @return  the degree or -1 if the node does not belong to this graph
-	 */
-	public int getDegree(Node arg0) {
-		return this.getDegree(this.getIndex(arg0));
-	}
-
-	/**
-	 * Returns the number of distinct edges incident on the node with the given index
+	 * @param  src     the source node
+	 * @param  dest    the target node
+	 * @param  weight  the weight of the edge
 	 * 
-	 * @return  the degree or -1 if the node does not belong to this graph
+	 * @return the index of the new edge
 	 */
-	public int getDegree(int index) {
-		try {
-			return this.outAdjacencyLists.get(index).size() + this.inAdjacencyLists.get(index).size();
-		} catch (IndexOutOfBoundsException e) {
-			return -1;
+	public int createEdge(int src, int dest, double weight) {
+		if (src >= numberOfNodes)
+			createNodes(src - numberOfNodes + 1);
+		if (dest >= numberOfNodes)
+			createNodes(dest - numberOfNodes + 1);
+		
+		int edgeID = edgesOut.size();
+		edgesOut.add(src);
+		edgesIn.add(dest);
+		weights.add(weight);
+		outEdgeAdjacencyLists.get(src).add(edgeID);
+		inEdgeAdjacencyLists.get(dest).add(edgeID);
+		if (!directed) {
+			outEdgeAdjacencyLists.get(dest).add(edgeID);
+			inEdgeAdjacencyLists.get(src).add(edgeID);
 		}
+		return edgeID;
 	}
 
 	/**
-	 * Returns the edge with the given index
+	 * Returns the number of nodes in the graph
 	 */
-	public Edge getEdge(int index) {
-		return this.edges.get(index);
+	public int getNodeCount() {
+		return numberOfNodes;
 	}
-	
+
 	/**
-	 * Returns the number of edges in this graph
+	 * Returns the number of edges in the graph
 	 */
 	public int getEdgeCount() {
-		return this.edges.size();
+		return edgesOut.size();
 	}
-
-	public int getEdgeCount(Node arg0, Node arg1, boolean arg2) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public int getEdgeCount(int arg0, int arg1, boolean arg2) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public int[] getEdgeIndicesArray() {
-		int n = this.getEdgeCount();
+	
+	/**
+	 * Returns the indices of all edges adjacent to the node at the specified index
+	 * 
+	 * @param   nodeIndex  the index of the node
+	 * @param   mode       directedness mode. Ignored if the graph is undirected.
+	 */
+	public int[] getAdjacentEdgeIndicesArray(int nodeIndex, Directedness mode) {
+		if (!directed || mode == Directedness.OUT) {
+			return outEdgeAdjacencyLists.get(nodeIndex).toArray();
+		}
+		
+		if (mode == Directedness.IN) {
+			return inEdgeAdjacencyLists.get(nodeIndex).toArray();
+		}
+		
+		int[] outEdgesArray = outEdgeAdjacencyLists.get(nodeIndex).toArray();
+		int[] inEdgesArray = inEdgeAdjacencyLists.get(nodeIndex).toArray();
+		int i = outEdgesArray.length, n = i + inEdgesArray.length, j = 0;
 		int[] result = new int[n];
-		for (int i = 0; i < n; i++)
-			result[i] = i+1;
+			
+		result = Arrays.copyOf(outEdgesArray, n);
+		while (i < n) {
+			result[i] = inEdgesArray[j];
+			i++; j++;
+		}
 		return result;
 	}
+	
+	/**
+	 * Returns the weight of a given edge
+	 * 
+	 * @param   edgeIndex   the index of the edge
+	 */
+	public double getEdgeWeight(int edgeIndex) { return this.weights.get(edgeIndex); }
 
-	public int[] getEdgeIndicesArray(int arg0, int arg1, boolean arg2) {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * Returns one endpoint of a given edge
+	 * 
+	 * @param   edgeIndex   the index of the edge
+	 * @param   knownVertex the vertex index of a known endpoint of the edge. The method will
+	 *                      return the vertex index of the other endpoint. The behaviour
+	 *                      is unspecified if knownVertex is not an endpoint index.
+	 */
+	public int getEdgeEndpoint(int edgeIndex, int knownVertex) {
+		int idx = edgesOut.get(edgeIndex);
+		if (idx == knownVertex)
+			return edgesIn.get(edgeIndex);
+		return idx;
 	}
 
-	public int[] getEdgeIndicesArray(int arg0, int arg1, boolean arg2,
-			boolean arg3) {
-		// TODO Auto-generated method stub
-		return null;
+	@Override
+	public Iterator<Edge> iterator() {
+		return new EdgeIterator(this);
 	}
-
-	public int[] getEdgeMetaChildIndicesArray(int arg0) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	public int[] getEdgeMetaParentIndicesArray(int arg0) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	public int getEdgeSourceIndex(int arg0) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public int getEdgeTargetIndex(int arg0) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public int getInDegree(Node arg0) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public int getInDegree(int arg0) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public int getInDegree(Node arg0, boolean arg1) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public int getInDegree(int arg0, boolean arg1) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public int getIndex(Node arg0) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public int getIndex(Edge arg0) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public Node getNode(int arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public int getNodeCount() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public int[] getNodeIndicesArray() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public int[] getNodeMetaChildIndicesArray(int arg0) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	public int[] getNodeMetaChildIndicesArray(int arg0, boolean arg1) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	public int[] getNodeMetaParentIndicesArray(int arg0) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	public int getOutDegree(Node arg0) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public int getOutDegree(int arg0) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public int getOutDegree(Node arg0, boolean arg1) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public int getOutDegree(int arg0, boolean arg1) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public boolean isEdgeDirected(int arg0) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean isEdgeMetaChild(int arg0, int arg1) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	public boolean isEdgeMetaParent(int arg0, int arg1) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	public boolean isMetaChild(Node arg0, Node arg1) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	public boolean isMetaChild(Node arg0, Edge arg1) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	public boolean isMetaParent(Node arg0, Node arg1) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	public boolean isMetaParent(Edge arg0, Node arg1) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	public boolean isNeighbor(Node arg0, Node arg1) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean isNeighbor(int arg0, int arg1) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean isNodeMetaChild(int arg0, int arg1) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	public boolean isNodeMetaChild(int arg0, int arg1, boolean arg2) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	public boolean isNodeMetaParent(int arg0, int arg1) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	@SuppressWarnings("unchecked")
-	public List metaParentsList(Node arg0) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	@SuppressWarnings("unchecked")
-	public List metaParentsList(Edge arg0) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	@SuppressWarnings("unchecked")
-	public List neighborsList(Node arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@SuppressWarnings("unchecked")
-	public List nodeMetaChildrenList(Node arg0) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	@SuppressWarnings("unchecked")
-	public List nodeMetaChildrenList(int arg0) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	@SuppressWarnings("unchecked")
-	public List nodeMetaParentsList(int arg0) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	@SuppressWarnings("unchecked")
-	public Iterator nodesIterator() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@SuppressWarnings("unchecked")
-	public List nodesList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Edge removeEdge(Edge arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public int removeEdge(int arg0) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public boolean removeEdgeMetaChild(int arg0, int arg1) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@SuppressWarnings("unchecked")
-	public List removeEdges(List arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public int[] removeEdges(int[] arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Node removeNode(Node arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public int removeNode(int arg0) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public boolean removeNodeMetaChild(int arg0, int arg1) {
-		throw new AssertionError("meta-objects not supported");
-	}
-
-	@SuppressWarnings("unchecked")
-	public List removeNodes(List arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public int[] removeNodes(int[] arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

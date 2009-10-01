@@ -17,21 +17,21 @@ public class StringUtils {
 	/**
 	 * Checks if the string is empty or null.
 	 */
-	static boolean isEmpty(String str) {
+	public static boolean isEmpty(String str) {
 		return str == null || str.length() == 0;
 	}
 	
 	/**
 	 * Checks if the string is not empty and not null.
 	 */
-	static boolean isNotEmpty(String str) {
+	public static boolean isNotEmpty(String str) {
 		return !isEmpty(str);
 	}
 	
 	/**
 	 * Checks if the string contains only whitespace.
 	 */
-	static boolean isWhitespace(String str) {
+	public static boolean isWhitespace(String str) {
 		return str == null || str.trim().length() == 0;
 	}
 	
@@ -41,7 +41,7 @@ public class StringUtils {
 	 * @param is       the InputStream being read
 	 * @param charset  the encoding of the stream
 	 */
-	static String readInputStream(InputStream is, String charset) throws IOException {
+	public static String readInputStream(InputStream is, String charset) throws IOException {
 		final char[] buffer = new char[0x10000];
 		StringBuilder out = new StringBuilder();
 		Reader in = new InputStreamReader(is, charset);
@@ -59,7 +59,7 @@ public class StringUtils {
 	 * 
 	 * @param is       the InputStream being read
 	 */
-	static String readInputStream(InputStream is) throws IOException {
+	public static String readInputStream(InputStream is) throws IOException {
 		return readInputStream(is, "UTF-8");
 	}
 }

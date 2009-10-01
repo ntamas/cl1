@@ -1,8 +1,7 @@
 package uk.ac.rhul.cs.cl1.ui;
 
+import java.io.FileInputStream;
 import java.io.IOException;
-
-import giny.model.RootGraph;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -12,6 +11,8 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 
 import uk.ac.rhul.cs.cl1.ClusterONE;
+import uk.ac.rhul.cs.cl1.Graph;
+import uk.ac.rhul.cs.cl1.io.EdgeListReader;
 
 /// The command line interface to Cluster ONE
 public class CommandLineApplication {
@@ -48,7 +49,7 @@ public class CommandLineApplication {
 		}
 		
 		// Read the input file
-		RootGraph graph = null;
+		Graph graph = null;
 		try {
 			graph = loadGraph(cmd.getArgs()[0]);
 		} catch (IOException ex) {
@@ -56,6 +57,10 @@ public class CommandLineApplication {
 			return 3;
 		}
 		System.out.println("Loaded graph with "+graph.getNodeCount()+" nodes and "+graph.getEdgeCount()+" edges");
+		
+		// Start the algorithm
+		ClusterONE algorithm = new ClusterONE();
+		algorithm.execute(graph);
 		
 		return 0;
 	}
@@ -81,8 +86,8 @@ public class CommandLineApplication {
 	 * 
 	 * @param filename  name of the file to be loaded
 	 */
-	public RootGraph loadGraph(String filename) throws IOException {
-		return null;
+	public Graph loadGraph(String filename) throws IOException {
+		return new EdgeListReader().readGraph(new FileInputStream(filename));
 	}
 	
 	/**

@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.cl1.ui;
 
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -15,6 +15,9 @@ import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.text.html.HTMLEditorKit;
+
+import uk.ac.rhul.cs.cl1.ClusterONE;
+import uk.ac.rhul.cs.cl1.StringUtils;
 
 /**
  * The about dialog box for Cluster ONE.
