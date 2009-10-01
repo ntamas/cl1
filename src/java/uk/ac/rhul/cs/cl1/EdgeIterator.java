@@ -31,19 +31,16 @@ public class EdgeIterator implements Iterator<Edge> {
 		this.edgeIndex = 0;
 	}
 	
-	@Override
 	public boolean hasNext() {
 		return this.edgeIndex < this.graph.getEdgeCount();
 	}
 
-	@Override
 	public Edge next() {
 		Edge result = new Edge(this.graph, this.edgeIndex);
 		this.edgeIndex++;
 		return result;
 	}
 
-	@Override
 	public void remove() {
 		throw new UnsupportedOperationException();
 	}

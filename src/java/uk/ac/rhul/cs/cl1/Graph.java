@@ -216,7 +216,6 @@ public class Graph implements Iterable<Edge> {
 		return idx;
 	}
 
-	@Override
 	public Iterator<Edge> iterator() {
 		return new EdgeIterator(this);
 	}
