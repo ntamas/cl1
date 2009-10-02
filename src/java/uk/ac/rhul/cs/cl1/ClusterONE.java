@@ -1,5 +1,8 @@
 package uk.ac.rhul.cs.cl1;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Main class for the Cluster ONE algorithm.
  * 
@@ -28,11 +31,29 @@ public class ClusterONE implements Runnable {
 	public Graph graph = null;
 	
 	/**
+	 * The clustering result as a list of NodeSets
+	 */
+	public List<NodeSet> result = null;
+	
+	/**
+	 * Returns the clustering results or null if there was no clustering executed so far
+	 */
+	public List<NodeSet> getResults() {
+		return result;
+	}
+	
+	/**
 	 * Executes the algorithm on the graph set earlier by setGraph()
 	 */
 	public void run() {
 		int n = graph.getNodeCount();
-		// TODO Auto-generated method stub
+		
+		result = new ArrayList<NodeSet>();
+		
+		/* For each node, start growing a cluster */
+		for (int i = 0; i < n; i++) {
+			
+		}
 	}
 	
 	/**
