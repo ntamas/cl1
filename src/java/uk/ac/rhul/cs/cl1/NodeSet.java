@@ -1,5 +1,12 @@
 package uk.ac.rhul.cs.cl1;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import com.sosnoski.util.hashset.IntHashSet;
 
 /**
@@ -26,11 +33,11 @@ public class NodeSet {
 	protected Graph graph = null;
 	
 	/**
-	 * The list of node indices in the set.
+	 * The set of node indices in the set.
 	 * 
 	 * This list is always sorted in ascending order.
 	 */
-	protected int[] nodes = null;
+	protected SortedSet<Integer> members = null;
 	
 	/**
 	 * Total weight of the internal edges
@@ -48,40 +55,119 @@ public class NodeSet {
 	 * @param graph  the graph on which the nodeset is created
 	 */
 	public NodeSet(Graph graph) {
-		this(graph, null);
+		this.graph = graph;
 	}
 	
 	/**
 	 * Constructs a new nodeset on the given graph.
 	 * 
-	 * @param graph  the graph on which the nodeset is created
+	 * @param graph    the graph on which the nodeset is created
+	 * @param members  a collection containing the member IDs
+	 */
+	public NodeSet(Graph graph, Collection<Integer> members) {
+		this(graph);
+		this.setMembers(members);
+	}
+	
+	/**
+	 * Constructs a new nodeset on the given graph.
+	 * 
+	 * @param graph    the graph on which the nodeset is created
+	 * @param members  an array containing the member IDs
 	 */
 	public NodeSet(Graph graph, int[] members) {
-		super();
-		this.graph = graph;
-		if (members != null)
-			this.setMembers(members);
+		this(graph);
+		this.setMembers(members);
+	}
+	
+	/**
+	 * Checks whether two nodesets are equal.
+	 * 
+	 * Two nodesets are equal if they are the same reference or if they
+	 * belong to the same graph and have the same members
+	 */
+	@Override
+	public boolean equals(Object o) {
+		if (o == this)
+			return true;
+		if (!(o instanceof NodeSet))
+			return false;
+
+		NodeSet other = (NodeSet)o;
+		return other.graph == this.graph && other.members == this.members;
+	}
+	
+	/**
+	 * Returns an IntHashSet for efficient repeated membership checks
+	 */
+	protected IntHashSet getMemberHashSet() {
+		// We use an IntHashSet for membership checks, it's more efficient
+		IntHashSet memberSet = new IntHashSet();
+		for (int i: members)
+			memberSet.add(i);
+		return memberSet;
+	}
+	
+	/**
+	 * Returns the hash code of this nodeset
+	 * 
+	 * This class is overridden to ensure that equal nodesets have equal hash codes
+	 */
+	public int hashCode() {
+		return graph.hashCode() + members.hashCode();
+	}
+	
+	/**
+	 * Returns the number of nodes in this nodeset
+	 */
+	public int size() {
+		return this.members.size();
+	}
+	
+	/**
+	 * Sets the members of this nodeset
+	 */
+	protected void setMembers(Collection<Integer> members) {
+		if (members == null) {
+			this.members = new TreeSet<Integer>();
+			return;
+		}
+		this.members = new TreeSet<Integer>(members);
+		recalculate();
 	}
 	
 	/**
 	 * Sets the members of this nodeset
 	 */
 	protected void setMembers(int[] members) {
-		IntHashSet set = new IntHashSet();
-		int i, j;
+		if (members == null) {
+			this.members = new TreeSet<Integer>();
+			return;
+		}
 		
-		for (i = 0; i < members.length; i++)
-			set.add(i);
+		List<Integer> list = new ArrayList<Integer>();
+		for (int member: members)
+			list.add(member);
+		this.setMembers(list);
+		
+		return;
+	}
+	
+	/**
+	 * Recalculate some internal variables when the member set changes
+	 */
+	protected void recalculate() {
+		IntHashSet memberHashSet = this.getMemberHashSet();
 		
 		this.totalBoundaryEdgeWeight = 0.0;
 		this.totalInternalEdgeWeight = 0.0;
 		
-		for (i = 0; i < members.length; i++) {
-			int[] edgeIdxs = this.graph.getAdjacentEdgeIndicesArray(members[i], Directedness.ALL);
-			for (j = 0; j < edgeIdxs.length; j++) {
-				double weight = this.graph.getEdgeWeight(edgeIdxs[j]);
-				int endpoint = this.graph.getEdgeEndpoint(edgeIdxs[j], i);
-				if (set.contains(endpoint)) {
+		for (int i: members) {
+			int[] edgeIdxs = this.graph.getAdjacentEdgeIndicesArray(i, Directedness.ALL);
+			for (int edgeIdx: edgeIdxs) {
+				double weight = this.graph.getEdgeWeight(edgeIdx);
+				int endpoint = this.graph.getEdgeEndpoint(edgeIdx, i);
+				if (memberHashSet.contains(endpoint)) {
 					/* This is an internal edge */
 					this.totalInternalEdgeWeight += weight;
 				} else {
@@ -107,5 +193,26 @@ public class NodeSet {
 	 */
 	public double getTotalBoundaryEdgeWeight() {
 		return this.totalBoundaryEdgeWeight;
+	}
+	
+	/**
+	 * Returns a set of all the external boundary nodes of this set
+	 */
+	public Set<Integer> getExternalBoundaryNodeIterator() {
+		IntHashSet memberSet = this.getMemberHashSet();
+		Set<Integer> result = new TreeSet<Integer>();
+		
+		for (int i: members) {
+			int[] edgeIdxs = this.graph.getAdjacentEdgeIndicesArray(i, Directedness.ALL);
+			for (int edgeIdx: edgeIdxs) {
+				int endpoint = this.graph.getEdgeEndpoint(edgeIdx, i);
+				if (!memberSet.contains(endpoint)) {
+					/* This is an external boundary node */
+					result.add(endpoint);
+				}
+			}
+		}
+		
+		return result;
 	}
 }

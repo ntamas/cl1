@@ -215,7 +215,10 @@ public class Graph implements Iterable<Edge> {
 			return edgesIn.get(edgeIndex);
 		return idx;
 	}
-
+	
+	/**
+	 * Returns an iterator that iterates over all the edges of this graph
+	 */
 	public Iterator<Edge> iterator() {
 		return new EdgeIterator(this);
 	}

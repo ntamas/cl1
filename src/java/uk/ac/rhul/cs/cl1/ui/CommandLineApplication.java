@@ -60,7 +60,7 @@ public class CommandLineApplication {
 		
 		// Start the algorithm
 		ClusterONE algorithm = new ClusterONE();
-		algorithm.execute(graph);
+		algorithm.runOnGraph(graph);
 		
 		return 0;
 	}

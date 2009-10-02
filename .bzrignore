@@ -3,3 +3,4 @@
 ./.settings
 ./build
 ./dist
+lib/junit-4.7.jar
