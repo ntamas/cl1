@@ -9,7 +9,6 @@
 	<property name="build" location="build" />
 	<property name="src" location="src" />
 	<property name="test" location="test" />
-	<property name="dist" location="dist" />
 	<property name="etc" location="etc" />
 	<property name="lib" location="lib" />
 	<property name="reports" location="reports" />
@@ -32,7 +31,6 @@
 	<target name="-init" description="Initializes the build process">
 		<mkdir dir="${build}" />
 		<mkdir dir="${build.java}" />
-		<mkdir dir="${dist}" />
 		<mkdir dir="${reports}" />
 	</target>
 
@@ -77,13 +75,14 @@
 
 	<!-- Creates the JAR file -->
 	<target name="jar" depends="compile,-create_cytoscape_plugin" description="Creates the JAR file">
-		<jar destfile="${dist}/cluster_one-${package.version}.jar" basedir="${build.java}">
+		<jar destfile="cluster_one-${package.version}.jar" basedir="${build.java}">
 			<manifest>
 				<attribute name="Manifest-Version" value="1.0" />
 				<attribute name="Extension-Name" value="${package.name}" />
 				<attribute name="Implementation-Version" value="${package.version}" />
 				<attribute name="Main-Class" value="${package.name}.ui.CommandLineApplication" />
 				<attribute name="Cytoscape-Plugin" value="${package.name}.ui.CytoscapePlugin" />
+				<attribute name="Class-Path" value="lib/commons-cli-1.2.jar lib/tclib.jar" />
 			</manifest>
 		</jar>
 	</target>
