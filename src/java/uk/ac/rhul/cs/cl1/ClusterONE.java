@@ -52,7 +52,11 @@ public class ClusterONE implements Runnable {
 		
 		/* For each node, start growing a cluster */
 		for (int i = 0; i < n; i++) {
-			
+			MutableNodeSet cluster = new MutableNodeSet(graph);
+			ClusterGrowthProcess growthProcess = new GreedyClusterGrowthProcess(cluster);
+			cluster.add(i);
+			while (growthProcess.step());
+			result.add(cluster.freeze());
 		}
 	}
 	
