@@ -100,6 +100,14 @@ public class NodeSet implements Iterable<Integer> {
 	}
 	
 	/**
+	 * Returns the graph this nodeset is associated to
+	 * @return the graph
+	 */
+	public Graph getGraph() {
+		return graph;
+	}
+
+	/**
 	 * Returns an IntHashSet for efficient repeated membership checks
 	 */
 	protected IntHashSet getMemberHashSet() {
@@ -110,6 +118,14 @@ public class NodeSet implements Iterable<Integer> {
 		return memberSet;
 	}
 	
+	/**
+	 * Returns the members of this nodeset
+	 * @return the members
+	 */
+	public SortedSet<Integer> getMembers() {
+		return new TreeSet<Integer>(members);
+	}
+
 	/**
 	 * Returns the hash code of this nodeset
 	 * 
@@ -194,6 +210,57 @@ public class NodeSet implements Iterable<Integer> {
 	}
 	
 	/**
+	 * Returns the size of the intersection between this nodeset and another
+	 */
+	public int getIntersectionSizeWith(NodeSet other) {
+		int isectSize = 0;
+		Set<Integer> smaller = null;
+		IntHashSet larger = null;
+		
+		if (this.size() < other.size()) {
+			smaller = this.members;
+			larger = other.getMemberHashSet();
+		} else {
+			smaller = other.members;
+			larger = this.getMemberHashSet();
+		}
+		
+		for (int member: smaller)
+			if (larger.contains(member))
+				isectSize++;
+		
+		return isectSize;
+	}
+	
+	/**
+	 * Returns the matching ratio of this nodeset and another
+	 * 
+	 * The matching ratio is the size of the intersection of the two nodesets,
+	 * divided by the geometric mean of the sizes of the two nodesets.
+	 * 
+	 * @return   the meet/min coefficient
+	 * @precondition   the two nodesets must belong to the same graph and they
+	 *                 must not be empty
+	 */
+	public double getMatchingRatioWith(NodeSet other) {
+		return (double)(this.getIntersectionSizeWith(other)) / Math.sqrt(this.size() * other.size());
+	}
+	
+	/**
+	 * Returns the meet/min coefficient of this nodeset with another
+	 * 
+	 * The meet/min coefficient is the size of the intersection of the two nodesets,
+	 * divided by the minimum of the sizes of the two nodesets.
+	 * 
+	 * @return   the meet/min coefficient
+	 * @precondition   the two nodesets must belong to the same graph and they
+	 *                 must not be empty
+	 */
+	public double getMeetMinCoefficientWith(NodeSet other) {
+		return (double)(this.getIntersectionSizeWith(other)) / Math.min(this.size(), other.size()); 
+	}
+	
+	/**
 	 * Returns the value of the quality function for this nodeset
 	 */
 	public double getQuality() {
@@ -235,7 +302,6 @@ public class NodeSet implements Iterable<Integer> {
 		return result;
 	}
 
-	@Override
 	/**
 	 * Iterates over the members of this nodeset
 	 */

@@ -167,6 +167,30 @@ public class Graph implements Iterable<Edge> {
 	}
 	
 	/**
+	 * Returns the indices of all nodes adjacent to the node at the specified index
+	 * 
+	 * If a node is connected to the query node by multiple edges, the node will
+	 * be returned multiple times.
+	 * 
+	 * @param   nodeIndex  the index of the query node
+	 * @param   mode       directedness mode. Ignored if the graph is undirected.
+	 */
+	public int[] getAdjacentNodeIndicesArray(int nodeIndex, Directedness mode) {
+		int[] edges = this.getAdjacentEdgeIndicesArray(nodeIndex, mode);
+		int i = 0, n = edges.length;
+		
+		for (i = 0; i < n; i++) {
+			int edge = edges[i];
+			if (this.edgesIn.get(edge) == nodeIndex)
+				edges[i] = this.edgesOut.get(edge);
+			else
+				edges[i] = this.edgesIn.get(edge);
+		}
+		
+		return edges;
+	}
+	
+	/**
 	 * Returns the indices of all edges adjacent to the node at the specified index
 	 * 
 	 * @param   nodeIndex  the index of the node

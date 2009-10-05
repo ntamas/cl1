@@ -1,6 +1,5 @@
 package uk.ac.rhul.cs.cl1;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,27 +13,35 @@ import java.util.List;
  * 
  * @author Tamas Nepusz <tamas@cs.rhul.ac.uk>
  */
-public class ClusterONE implements Runnable {
-	/**
-	 * The name of the application that will appear on the user interface
-	 */
+public class ClusterONE extends GraphAlgorithm implements Runnable {
+	/** The name of the application that will appear on the user interface */
 	public static final String applicationName = "Cluster ONE";
 	
-	/**
-	 * The version number of the application
-	 */
+	/** The version number of the application */
 	public static final String version = "0.1";
 	
-	/**
-	 * The graph that will be clustered by the algorithm
-	 */
-	public Graph graph = null;
-	
-	/**
-	 * The clustering result as a list of NodeSets
-	 */
+	/** The clustering result as a list of NodeSets */
 	public List<NodeSet> result = null;
 	
+	/** Minimum size of the clusters that will be returned */
+	public int minSize = 1;
+	
+	/**
+	 * Returns the minimum size of the clusters that will be returned
+	 * @return the minimum size
+	 */
+	public int getMinSize() {
+		return minSize;
+	}
+
+	/**
+	 * Sets the minimum size of the clusters that will be returned
+	 * @param minSize the minimum size
+	 */
+	public void setMinSize(int minSize) {
+		this.minSize = Math.max(1, minSize);
+	}
+
 	/**
 	 * Returns the clustering results or null if there was no clustering executed so far
 	 */
@@ -47,17 +54,29 @@ public class ClusterONE implements Runnable {
 	 */
 	public void run() {
 		int n = graph.getNodeCount();
-		
-		result = new ArrayList<NodeSet>();
+		NodeSetList result = new NodeSetList();
 		
 		/* For each node, start growing a cluster */
 		for (int i = 0; i < n; i++) {
 			MutableNodeSet cluster = new MutableNodeSet(graph);
+			
 			ClusterGrowthProcess growthProcess = new GreedyClusterGrowthProcess(cluster);
 			cluster.add(i);
 			while (growthProcess.step());
+			
+			/* Check the size of the cluster -- if too small, skip it */
+			if (cluster.size() < minSize)
+				continue;
+			
+			/* TODO: check if the cluster is already there */
 			result.add(cluster.freeze());
 		}
+		
+		/* Merge highly overlapping clusters */
+		result = result.mergeOverlapping(0.9);
+		
+		/* Return the result effectively */
+		this.result = result;
 	}
 	
 	/**
@@ -72,14 +91,5 @@ public class ClusterONE implements Runnable {
 	public void runOnGraph(Graph graph) {
 		setGraph(graph);
 		run();
-	}
-
-	/**
-	 * Set the graph that will be clustered by the algorithm
-	 * 
-	 * @param   graph    the graph being clustered
-	 */
-	public void setGraph(Graph graph) {
-		this.graph = graph;
 	}
 }
