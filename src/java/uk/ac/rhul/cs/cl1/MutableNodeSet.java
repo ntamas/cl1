@@ -29,7 +29,7 @@ public class MutableNodeSet extends NodeSet {
 	 * edges adjacent to the node. For nodes outside the set, this array stores
 	 * the total weight of boundary edges adjacent to the node.
 	 */
-	protected int[] inWeights = null;
+	protected double[] inWeights = null;
 	
 	/**
 	 * Auxiliary array used when adding/removing nodes
@@ -38,7 +38,7 @@ public class MutableNodeSet extends NodeSet {
 	 * edges adjacent to the node. For nodes outside the set, this array stores
 	 * the total weight of external edges adjacent to the node.
 	 */
-	protected int[] outWeights = null;
+	protected double[] outWeights = null;
 	
 	/**
 	 * Constructs a new, empty mutable nodeset on the given graph.
@@ -78,9 +78,9 @@ public class MutableNodeSet extends NodeSet {
 		totalBoundaryEdgeWeight = 0.0;
 		
 		if (inWeights == null)
-			inWeights = new int[graph.getNodeCount()];
+			inWeights = new double[graph.getNodeCount()];
 		if (outWeights == null)
-			outWeights = new int[graph.getNodeCount()];
+			outWeights = new double[graph.getNodeCount()];
 		
 		Arrays.fill(inWeights, 0);
 		Arrays.fill(outWeights, 0);
@@ -142,6 +142,42 @@ public class MutableNodeSet extends NodeSet {
 		result.totalInternalEdgeWeight = this.totalInternalEdgeWeight;
 		result.totalBoundaryEdgeWeight = this.totalBoundaryEdgeWeight;
 		return result;
+	}
+	
+	/**
+	 * Returns the addition affinity of a node to this nodeset
+	 * 
+	 * The addition affinity of a node is defined as the value of the quality function
+	 * when the nodeset is augmented by the given node.
+	 * 
+	 * @param   nodeIndex   the index of the node
+	 * @precondition   the node is not in the set
+	 */
+	public double getAdditionAffinity(int nodeIndex) {
+		double num, den;
+		
+		num = this.totalInternalEdgeWeight + this.inWeights[nodeIndex];
+		den = this.totalInternalEdgeWeight + this.totalBoundaryEdgeWeight + this.outWeights[nodeIndex];
+		
+		return num/den;
+	}
+	
+	/**
+	 * Returns the removal affinity of a node to this nodeset
+	 * 
+	 * The affinity of a node is defined as the value of the quality function when the node is
+	 * removed from the nodeset.
+	 * 
+	 * @param   nodeIndex   the index of the node
+	 * @precondition    the node is already in the set
+	 */
+	public double getRemovalAffinity(int nodeIndex) {
+		double num, den;
+		
+		num = this.totalInternalEdgeWeight - this.inWeights[nodeIndex];
+		den = this.totalInternalEdgeWeight + this.totalBoundaryEdgeWeight - this.outWeights[nodeIndex];
+		
+		return num/den;
 	}
 	
 	/**

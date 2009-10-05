@@ -12,6 +12,7 @@ import org.apache.commons.cli.PosixParser;
 
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.Graph;
+import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.cl1.io.EdgeListReader;
 
 /// The command line interface to Cluster ONE
@@ -56,12 +57,17 @@ public class CommandLineApplication {
 			System.err.println("IO error while reading input file: "+ex.getMessage());
 			return 3;
 		}
-		System.out.println("Loaded graph with "+graph.getNodeCount()+" nodes and "+graph.getEdgeCount()+" edges");
+		System.err.println("Loaded graph with "+graph.getNodeCount()+" nodes and "+graph.getEdgeCount()+" edges");
 		
 		// Start the algorithm
 		ClusterONE algorithm = new ClusterONE();
 		algorithm.runOnGraph(graph);
 		
+		// Show the results
+		for (NodeSet nodeSet: algorithm.getResults()) {
+			System.out.println(nodeSet);
+		}
+
 		return 0;
 	}
 	

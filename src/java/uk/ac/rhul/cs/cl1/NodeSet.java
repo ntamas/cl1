@@ -2,11 +2,13 @@ package uk.ac.rhul.cs.cl1;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import com.sosnoski.util.array.StringArray;
 import com.sosnoski.util.hashset.IntHashSet;
 
 /**
@@ -26,7 +28,7 @@ import com.sosnoski.util.hashset.IntHashSet;
  * 
  * @author Tamas Nepusz <tamas@cs.rhul.ac.uk>
  */
-public class NodeSet {
+public class NodeSet implements Iterable<Integer> {
 	/**
 	 * The graph associated with this node set
 	 */
@@ -182,6 +184,23 @@ public class NodeSet {
 	}
 	
 	/**
+	 * Returns the density of this nodeset
+	 */
+	public double getDensity() {
+		if (this.size() < 2)
+			return 0.0;
+
+		return 2.0 * this.totalInternalEdgeWeight / (this.size() * (this.size() - 1));
+	}
+	
+	/**
+	 * Returns the value of the quality function for this nodeset
+	 */
+	public double getQuality() {
+		return this.totalInternalEdgeWeight  / (this.totalInternalEdgeWeight + this.totalBoundaryEdgeWeight);
+	}
+	
+	/**
 	 * Returns the total internal edge weight in this nodeset
 	 */
 	public double getTotalInternalEdgeWeight() {
@@ -214,5 +233,26 @@ public class NodeSet {
 		}
 		
 		return result;
+	}
+
+	@Override
+	/**
+	 * Iterates over the members of this nodeset
+	 */
+	public Iterator<Integer> iterator() {
+		return this.members.iterator();
+	}
+	
+	/**
+	 * Prints the nodes in this set to a string
+	 */
+	public String toString() {
+		StringArray names = new StringArray();
+		
+		for (Integer member: this.members) {
+			names.add(this.graph.getNodeName(member));
+		}
+		
+		return StringUtils.join(names.iterator(), ' ');
 	}
 }

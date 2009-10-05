@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Iterator;
 
 /**
  * Commonly used operations on strings.
@@ -61,5 +62,48 @@ public class StringUtils {
 	 */
 	public static String readInputStream(InputStream is) throws IOException {
 		return readInputStream(is, "UTF-8");
+	}
+	
+	/**
+	 * Joins the elements of the provided Iterator into a single String containing the provided
+	 * elements
+	 * 
+	 * No delimiter is added before or after the list. A null separator is the same as an empty
+	 * string.
+	 * 
+	 * @param   it         the iterator of values to join together, may be null
+	 * @param   separator  separator between the strings
+	 */
+	public static String join(Iterator<?> it, String separator) {	
+		if (!it.hasNext())
+			return "";
+		
+		StringBuilder sb = new StringBuilder(it.next().toString());
+		
+		if (separator == null || separator.isEmpty()) {
+			while (it.hasNext())
+				sb.append(it.next());
+		} else {
+			while (it.hasNext()) {
+				sb.append(separator);
+				sb.append(it.next());
+			}
+		}
+		
+		return sb.toString();
+	}
+	
+	/**
+	 * Joins the elements of the provided Iterator into a single String containing the provided
+	 * elements
+	 * 
+	 * No delimiter is added before or after the list. A null separator is the same as an empty
+	 * string.
+	 * 
+	 * @param   it         the iterator of values to join together, may be null
+	 * @param   separator  the separator character to use
+	 */
+	public static String join(Iterator<?> it, char separator) {
+		return StringUtils.join(it, separator + "");
 	}
 }

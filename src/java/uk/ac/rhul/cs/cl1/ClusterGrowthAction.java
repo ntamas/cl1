@@ -1,5 +1,7 @@
 package uk.ac.rhul.cs.cl1;
 
+import java.util.Arrays;
+
 /**
  * An action that can be taken while growing a cluster according to some rules.
  * 
@@ -49,6 +51,16 @@ public class ClusterGrowthAction {
 		result.nodes[0] = index;
 		return result;
 	}
+
+	/**
+	 * Creates an instance representing the addition of several nodes
+	 * @param    array    indices of the nodes to be added
+	 */
+	public static ClusterGrowthAction addition(int[] array) {
+		ClusterGrowthAction result = new ClusterGrowthAction(Type.ADD);
+		result.nodes = Arrays.copyOf(array, array.length);
+		return result;
+	}
 	
 	/**
 	 * Creates an instance representing the removal of a single node
@@ -58,6 +70,16 @@ public class ClusterGrowthAction {
 		ClusterGrowthAction result = new ClusterGrowthAction(Type.REMOVE);
 		result.nodes = new int[1];
 		result.nodes[0] = index;
+		return result;
+	}
+	
+	/**
+	 * Creates an instance representing the removal of several nodes
+	 * @param    array    indices of the nodes to be removed
+	 */
+	public static ClusterGrowthAction removal(int[] array) {
+		ClusterGrowthAction result = new ClusterGrowthAction(Type.REMOVE);
+		result.nodes = Arrays.copyOf(array, array.length);
 		return result;
 	}
 	

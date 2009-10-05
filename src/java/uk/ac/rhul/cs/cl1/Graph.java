@@ -195,6 +195,13 @@ public class Graph implements Iterable<Edge> {
 	}
 	
 	/**
+	 * Returns the name of a given node
+	 * 
+	 * @param   nodeIndex   the index of the node
+	 */
+	public String getNodeName(int nodeIndex) { return this.nodeNames.get(nodeIndex); }
+	
+	/**
 	 * Returns the weight of a given edge
 	 * 
 	 * @param   edgeIndex   the index of the edge
