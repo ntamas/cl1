@@ -7,7 +7,12 @@ import procope.data.complexes.ComplexSet;
 import procope.data.networks.ProteinNetwork;
 import procope.methods.clustering.Clusterer;
 import procope.tools.ProCopeException;
+import procope.userinterface.gui.dialogs.DialogSettings;
+import procope.userinterface.gui.dialogs.FloatVerifier;
+import procope.userinterface.gui.dialogs.IntVerifier;
+import procope.userinterface.gui.dialogs.ParameterDialog;
 import uk.ac.rhul.cs.cl1.ClusterONE;
+import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
 import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.cl1.UniqueIDGenerator;
@@ -20,13 +25,36 @@ import uk.ac.rhul.cs.cl1.UniqueIDGenerator;
 public class ProcopePlugin implements Clusterer {
 	public ComplexSet cluster(ProteinNetwork net) {
 		ComplexSet result = new ComplexSet();
-		ClusterONE algorithm = new ClusterONE();
-		
 		Graph graph = this.convertProteinNetworkToGraph(net);
+		
+		ClusterONE algorithm = new ClusterONE(getAlgorithmParameters());
 		algorithm.runOnGraph(graph);
 		for (NodeSet nodeSet: algorithm.getResults()) {
 			result.addComplex(this.convertNodeSetToComplex(nodeSet));
 		}
+		
+		return result;
+	}
+
+	/**
+	 * Obtains the algorithm parameters from the user using a standard ProCope dialog box
+	 * @return  the parameters
+	 */
+	protected ClusterONEAlgorithmParameters getAlgorithmParameters() {
+		DialogSettings settings = new DialogSettings(ClusterONE.applicationName);
+		ClusterONEAlgorithmParameters result = new ClusterONEAlgorithmParameters();
+		
+		settings.addIntegerParameter("Minimum complex size: ", result.getMinSize(),
+				new IntVerifier(1, Integer.MAX_VALUE));
+		settings.addFloatParameter("Minimum complex density: ", (float)result.getMinDensity(),
+				new FloatVerifier(0.0f, 1.0f, 1));
+		settings.addFloatParameter("Maximum allowed overlap:", (float)result.getOverlapThreshold(),
+				new FloatVerifier(0.0f, 1.0f, 1));
+		
+		Object[] params = ParameterDialog.showDialog(null, settings);
+		result.setMinSize((Integer)params[0]);
+		result.setMinDensity((Float)params[1]);
+		result.setOverlapThreshold((Float)params[2]);
 		
 		return result;
 	}
@@ -55,6 +83,9 @@ public class ProcopePlugin implements Clusterer {
 	protected Graph convertProteinNetworkToGraph(ProteinNetwork net) {
 		Graph result = new Graph();
 		UniqueIDGenerator idGen = new UniqueIDGenerator(result);
+		
+		if (net.isDirected()) 
+			throw new ProCopeException("Cluster ONE supports undirected graphs only");
 		
 		int[] edges = net.getEdgesArray();
 		

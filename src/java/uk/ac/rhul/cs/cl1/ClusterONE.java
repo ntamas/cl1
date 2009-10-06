@@ -24,68 +24,28 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 	/** The clustering result as a list of NodeSets */
 	protected List<NodeSet> result = null;
 	
-	/** Minimum size of the clusters that will be returned */
-	protected int minSize = 1;
-	
-	/** Minimum density of the clusters that will be returned */
-	protected double minDensity = 0.2;
-	
-	/** Overlap threshold value: no pair of complexes will have an overlap larger than this in the result */
-	protected double overlapThreshold = 0.8;
+	/** Algorithm settings for this instance */
+	protected ClusterONEAlgorithmParameters params = null;
 	
 	/**
-	 * Returns the minimum density of clusters
-	 * @return the minimum density of clusters
+	 * Constructs an instance of the algorithm using the default algorithm parameters.
 	 */
-	public double getMinDensity() {
-		return minDensity;
+	public ClusterONE() {
+		this(null);
 	}
 
 	/**
-	 * Sets the minimum density of clusters that can be considered acceptable.
-	 * @param minDensity the minDensity to set
-	 */
-	public void setMinDensity(double minDensity) {
-		this.minDensity = Math.max(0, minDensity);
-	}
-
-	/**
-	 * Returns the minimum size of the clusters that will be returned
-	 * @return the minimum size
-	 */
-	public int getMinSize() {
-		return minSize;
-	}
-
-	/**
-	 * Sets the minimum size of the clusters that will be returned
-	 * @param minSize the minimum size
-	 */
-	public void setMinSize(int minSize) {
-		this.minSize = Math.max(1, minSize);
-	}
-
-	/**
-	 * Returns the overlap threshold of the algorithm.
+	 * Constructs an instance of the algorithm using the given algorithm parameters.
 	 * 
-	 * The overlap threshold controls whether two given complexes will be merged in the final
-	 * result set. The complexes will be merged if their meet/min coefficient is larger than
-	 * this ratio.
-	 * 
-	 * @return the overlapThreshold
+	 * @param algorithmParameters   a {@link ClusterONEAlgorithmParameters} instance that
+	 *                              controls the algorithms. If null, the defaults
+	 *                              will be used.
 	 */
-	public double getOverlapThreshold() {
-		return overlapThreshold;
-	}
-
-	/**
-	 * Sets the overlap threshold of the algorithm.
-	 * 
-	 * @param overlapThreshold the new overlap threshold
-	 * @see getOverlapThreshold()
-	 */
-	public void setOverlapThreshold(double overlapThreshold) {
-		this.overlapThreshold = Math.max(0, overlapThreshold);
+	public ClusterONE(ClusterONEAlgorithmParameters algorithmParameters) {
+		if (algorithmParameters == null)
+			this.params = new ClusterONEAlgorithmParameters();
+		else
+			this.params = algorithmParameters;
 	}
 
 	/**
@@ -102,6 +62,8 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 		int n = graph.getNodeCount();
 		NodeSetList result = new NodeSetList();
 		HashSet<NodeSet> addedNodeSets = new HashSet<NodeSet>();
+		double minSize = params.getMinSize();
+		double minDensity = params.getMinDensity();
 		
 		/* For each node, start growing a cluster */
 		for (int i = 0; i < n; i++) {
@@ -137,7 +99,7 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 		addedNodeSets = null;
 		
 		/* Merge highly overlapping clusters */
-		result = result.mergeOverlapping(overlapThreshold);
+		result = result.mergeOverlapping(params.getOverlapThreshold());
 		
 		/* Return the result effectively */
 		this.result = result;
