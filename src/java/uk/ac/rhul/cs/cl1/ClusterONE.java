@@ -22,14 +22,16 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 	public static final String version = "0.1";
 	
 	/** The clustering result as a list of NodeSets */
-	public List<NodeSet> result = null;
+	protected List<NodeSet> result = null;
 	
 	/** Minimum size of the clusters that will be returned */
-	public int minSize = 1;
+	protected int minSize = 1;
 	
 	/** Minimum density of the clusters that will be returned */
-	public double minDensity = 0.2;
+	protected double minDensity = 0.2;
 	
+	/** Overlap threshold value: no pair of complexes will have an overlap larger than this in the result */
+	protected double overlapThreshold = 0.8;
 	
 	/**
 	 * Returns the minimum density of clusters
@@ -64,6 +66,29 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 	}
 
 	/**
+	 * Returns the overlap threshold of the algorithm.
+	 * 
+	 * The overlap threshold controls whether two given complexes will be merged in the final
+	 * result set. The complexes will be merged if their meet/min coefficient is larger than
+	 * this ratio.
+	 * 
+	 * @return the overlapThreshold
+	 */
+	public double getOverlapThreshold() {
+		return overlapThreshold;
+	}
+
+	/**
+	 * Sets the overlap threshold of the algorithm.
+	 * 
+	 * @param overlapThreshold the new overlap threshold
+	 * @see getOverlapThreshold()
+	 */
+	public void setOverlapThreshold(double overlapThreshold) {
+		this.overlapThreshold = Math.max(0, overlapThreshold);
+	}
+
+	/**
 	 * Returns the clustering results or null if there was no clustering executed so far
 	 */
 	public List<NodeSet> getResults() {
@@ -82,7 +107,7 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 		for (int i = 0; i < n; i++) {
 			MutableNodeSet cluster = new MutableNodeSet(graph);
 			
-			ClusterGrowthProcess growthProcess = new GreedyClusterGrowthProcess(cluster);
+			ClusterGrowthProcess growthProcess = new GreedyClusterGrowthProcess(cluster, 0.2);
 			cluster.add(i);
 			while (growthProcess.step());
 			
@@ -112,7 +137,7 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 		addedNodeSets = null;
 		
 		/* Merge highly overlapping clusters */
-		result = result.mergeOverlapping(0.9);
+		result = result.mergeOverlapping(overlapThreshold);
 		
 		/* Return the result effectively */
 		this.result = result;

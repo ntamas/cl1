@@ -7,11 +7,31 @@ import com.sosnoski.util.array.IntArray;
  * @author ntamas
  */
 public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
+	/** Density limit that is enforced while growing the complex */
+	protected double minDensity;
+	
+	/**
+	 * Returns the minimum density that must be maintained while growing the cluster
+	 * @return the minimum density
+	 */
+	public double getMinDensity() {
+		return minDensity;
+	}
+
+	/**
+	 * Sets the minimum density that must be maintained while growing the cluster
+	 * @param minDensity the minimum density
+	 */
+	public void setMinDensity(double minDensity) {
+		this.minDensity = Math.max(0, minDensity);
+	}
+
 	/**
 	 * Creates a new greedy growth process that operates on the given nodeset
 	 */
-	public GreedyClusterGrowthProcess(MutableNodeSet nodeSet) {
+	public GreedyClusterGrowthProcess(MutableNodeSet nodeSet, double minDensity) {
 		super(nodeSet);
+		this.setMinDensity(minDensity);
 	}
 
 	/**
@@ -25,10 +45,24 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 		IntArray bestNodes = new IntArray();
 		double quality = nodeSet.getQuality();
 		double bestAffinity;
+		boolean bestIsAddition = true;
+		
+		int n = nodeSet.size();
+		double den = (n + 1) * n / 2.0;
+		double internalWeightLimit = this.minDensity * den - nodeSet.getTotalInternalEdgeWeight();
+		
+		/* internalWeightLimit is a strict limit: if a node's connections to the current cluster
+		 * are weaker than this weight limit, the node couldn't be added as it would decrease the
+		 * density of the cluster under the prescribed limit
+		 */
 		
 		/* Try the addition of some nodes */
 		bestAffinity = quality;
 		for (Integer node: nodeSet.getExternalBoundaryNodeIterator()) {
+			double internalWeight = nodeSet.getTotalAdjacentInternalWeight(node);
+			if (n >= 4 && internalWeight < internalWeightLimit)
+				continue;
+			
 			double affinity = nodeSet.getAdditionAffinity(node);
 			if (affinity > bestAffinity) {
 				bestAffinity = affinity;
@@ -39,26 +73,30 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 			}
 		}
 		
-		if (bestNodes.size() > 0)
-			return ClusterGrowthAction.addition(bestNodes.toArray());
-		
 		if (this.isContractionAllowed()) {
-			/* No gain can be achieved by adding nodes. Try removing nodes. */
-			bestAffinity = quality;
-			bestNodes.clear();
+			/* Try removing nodes. Can we do better than adding nodes? */
+			// bestAffinity = quality;
+			// bestNodes.clear();
 			for (Integer node: nodeSet) {
 				double affinity = nodeSet.getRemovalAffinity(node);
 				if (affinity > bestAffinity) {
 					bestAffinity = affinity;
 					bestNodes.clear();
 					bestNodes.add(node);
+					bestIsAddition = false;
+				} else if (affinity == bestAffinity) {
+					bestNodes.add(node);
+					bestIsAddition = false;
 				}
 			}
-			
-			if (bestNodes.size() > 0)
-				return ClusterGrowthAction.removal(bestNodes.toArray());
 		}
 		
-		return ClusterGrowthAction.terminate();
+		if (bestNodes.size() == 0)
+			return ClusterGrowthAction.terminate();
+		
+		if (bestIsAddition)
+			return ClusterGrowthAction.addition(bestNodes.toArray());
+		else
+			return ClusterGrowthAction.removal(bestNodes.toArray());
 	}
 }

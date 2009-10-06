@@ -163,6 +163,21 @@ public class MutableNodeSet extends NodeSet {
 	}
 	
 	/**
+	 * Returns the total weight of edges that are adjacent to the given node and another internal node.
+	 * 
+	 * The query node can either be internal or external. For internal nodes, the returned weight is
+	 * equal to the amount with which the total internal edge weight of the node set would decrease
+	 * if the node is removed from the cluster. For external nodes, the returned weight is equal to
+	 * the amount with which the total internal edge weight of the node set would increase if the
+	 * node is added to the cluster.
+	 * 
+	 * @param   nodeIndex   the index of the node
+	 */
+	public double getTotalAdjacentInternalWeight(int nodeIndex) {
+		return this.inWeights[nodeIndex];
+	}
+	
+	/**
 	 * Returns the removal affinity of a node to this nodeset
 	 * 
 	 * The affinity of a node is defined as the value of the quality function when the node is

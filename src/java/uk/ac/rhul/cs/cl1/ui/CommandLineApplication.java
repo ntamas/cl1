@@ -64,6 +64,7 @@ public class CommandLineApplication {
 		algorithm.runOnGraph(graph);
 		
 		// Show the results
+		System.err.println("Detected "+algorithm.getResults().size()+" complexes");
 		for (NodeSet nodeSet: algorithm.getResults()) {
 			System.out.println(nodeSet);
 		}

@@ -235,15 +235,16 @@ public class NodeSet implements Iterable<Integer> {
 	/**
 	 * Returns the matching ratio of this nodeset and another
 	 * 
-	 * The matching ratio is the size of the intersection of the two nodesets,
-	 * divided by the geometric mean of the sizes of the two nodesets.
+	 * The matching ratio is the size of the intersection of the two nodesets
+	 * squared, divided by the product of the sizes of the two nodesets.
 	 * 
 	 * @return   the meet/min coefficient
 	 * @precondition   the two nodesets must belong to the same graph and they
 	 *                 must not be empty
 	 */
 	public double getMatchingRatioWith(NodeSet other) {
-		return (double)(this.getIntersectionSizeWith(other)) / Math.sqrt(this.size() * other.size());
+		double isect = this.getIntersectionSizeWith(other);
+		return isect * isect / (this.size() * other.size());
 	}
 	
 	/**

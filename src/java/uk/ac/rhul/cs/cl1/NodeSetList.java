@@ -51,7 +51,7 @@ public class NodeSetList extends ArrayList<NodeSet> {
 		for (i = 0; i < n; i++) {
 			NodeSet v1 = this.get(i);
 			for (int j = i+1; j < n; j++) {
-				if (v1.getMeetMinCoefficientWith(this.get(j)) >= threshold)
+				if (v1.getMatchingRatioWith(this.get(j)) >= threshold)
 					overlapGraph.createEdge(i, j);
 			}
 		}
