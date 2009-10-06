@@ -1,5 +1,6 @@
 package uk.ac.rhul.cs.cl1;
 
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -26,6 +27,26 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 	/** Minimum size of the clusters that will be returned */
 	public int minSize = 1;
 	
+	/** Minimum density of the clusters that will be returned */
+	public double minDensity = 0.2;
+	
+	
+	/**
+	 * Returns the minimum density of clusters
+	 * @return the minimum density of clusters
+	 */
+	public double getMinDensity() {
+		return minDensity;
+	}
+
+	/**
+	 * Sets the minimum density of clusters that can be considered acceptable.
+	 * @param minDensity the minDensity to set
+	 */
+	public void setMinDensity(double minDensity) {
+		this.minDensity = Math.max(0, minDensity);
+	}
+
 	/**
 	 * Returns the minimum size of the clusters that will be returned
 	 * @return the minimum size
@@ -55,6 +76,7 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 	public void run() {
 		int n = graph.getNodeCount();
 		NodeSetList result = new NodeSetList();
+		HashSet<NodeSet> addedNodeSets = new HashSet<NodeSet>();
 		
 		/* For each node, start growing a cluster */
 		for (int i = 0; i < n; i++) {
@@ -68,9 +90,26 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 			if (cluster.size() < minSize)
 				continue;
 			
-			/* TODO: check if the cluster is already there */
-			result.add(cluster.freeze());
+			/* Check the density of the cluster -- if too sparse, skip it */
+			if (cluster.getDensity() < minDensity)
+				continue;
+			
+			/* Freeze the cluster so it becomes hashable */
+			NodeSet frozenCluster = cluster.freeze();
+			cluster = null;
+			
+			/* If the cluster was already detected from another seed node, continue */
+			if (addedNodeSets.contains(frozenCluster))
+				continue;
+			
+			/* Add the cluster to the result list */
+			result.add(frozenCluster);
+			addedNodeSets.add(frozenCluster);
 		}
+		
+		/* Throw away the addedNodeSets hash, we don't need it anymore */
+		addedNodeSets.clear();
+		addedNodeSets = null;
 		
 		/* Merge highly overlapping clusters */
 		result = result.mergeOverlapping(0.9);
