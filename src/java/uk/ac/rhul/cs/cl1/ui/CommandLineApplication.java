@@ -6,11 +6,14 @@ import java.io.IOException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 
 import uk.ac.rhul.cs.cl1.ClusterONE;
+import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
 import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.cl1.io.EdgeListReader;
@@ -29,9 +32,17 @@ public class CommandLineApplication {
 	public int run(String[] args) {
 		CommandLineParser parser = new PosixParser();
 		CommandLine cmd = null;
+		ClusterONEAlgorithmParameters params = new ClusterONEAlgorithmParameters();
 		
 		try {
 			cmd = parser.parse(this.options, args);
+			
+			if (cmd.hasOption("min-size"))
+				params.setMinSize(Integer.parseInt(cmd.getOptionValue("min-size")));
+			if (cmd.hasOption("min-density"))
+				params.setMinDensity(Float.parseFloat(cmd.getOptionValue("min-density")));
+			if (cmd.hasOption("max-overlap"))
+				params.setOverlapThreshold(Float.parseFloat(cmd.getOptionValue("max-overlap")));
 		} catch (ParseException ex) {
 			System.err.println("Failed to parse command line options. Reason: " + ex.getMessage());
 			return 1;
@@ -49,6 +60,7 @@ public class CommandLineApplication {
 			return 2;
 		}
 		
+		// Process the options
 		// Read the input file
 		Graph graph = null;
 		try {
@@ -60,7 +72,7 @@ public class CommandLineApplication {
 		System.err.println("Loaded graph with "+graph.getNodeCount()+" nodes and "+graph.getEdgeCount()+" edges");
 		
 		// Start the algorithm
-		ClusterONE algorithm = new ClusterONE();
+		ClusterONE algorithm = new ClusterONE(params);
 		algorithm.runOnGraph(graph);
 		
 		// Show the results
@@ -73,11 +85,23 @@ public class CommandLineApplication {
 	}
 	
 	/// Initializes the Options object that describes the command line options accepted by Cluster ONE
+	@SuppressWarnings("static-access")
 	protected void initOptions() {
 		options = new Options();
 		
 		options.addOption("h", "help", false, "shows this help message");
-		options.addOption("p", "param", true, "specifies the value of a named parameter of the algorithm");
+		options.addOption(OptionBuilder.withLongOpt("min-size")
+				 .withDescription("specifies the minimum size of clusters")
+				 .withType(Integer.class).hasArg().create("s"));
+		options.addOption(OptionBuilder.withLongOpt("min-density")
+	             .withDescription("specifies the minimum density of clusters")
+	             .withType(Float.class).hasArg().create("d"));
+		options.addOption(OptionBuilder.withLongOpt("max-overlap")
+		             .withDescription("specifies the maximum allowed overlap between two clusters")
+		             .withType(Float.class).hasArg().create());
+		options.addOption(OptionBuilder.withLongOpt("param")
+				.withDescription("specifies the value of an advanced named parameter of the algorithm")
+				.withArgName("name=value").hasArgs(2).withValueSeparator().create("p"));
 	}
 
 	/// Shows the usage instructions
