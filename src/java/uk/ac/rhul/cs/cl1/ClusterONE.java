@@ -65,7 +65,7 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 		double minSize = params.getMinSize();
 		double minDensity = params.getMinDensity();
 		
-		/* For each node, start growing a cluster */
+		/* For each seed node, start growing a cluster */
 		for (int i = 0; i < n; i++) {
 			MutableNodeSet cluster = new MutableNodeSet(graph);
 			
