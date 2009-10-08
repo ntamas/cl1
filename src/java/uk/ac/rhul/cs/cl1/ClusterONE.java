@@ -26,6 +26,9 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 	
 	/** Algorithm settings for this instance */
 	protected ClusterONEAlgorithmParameters params = null;
+
+	/** A task monitor where the algorithm will report its progress */
+	protected TaskMonitor monitor = null;
 	
 	/**
 	 * Constructs an instance of the algorithm using the default algorithm parameters.
@@ -74,6 +77,10 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 		}
 		
 		/* For each seed, start growing a cluster */
+		int step = 0;
+		int numExpectedSeeds = seedGenerator.size();
+		monitor.setStatus("Growing clusters from seeds...");
+		monitor.setPercentCompleted(0);
 		for (MutableNodeSet cluster: seedGenerator) {
 			ClusterGrowthProcess growthProcess = new GreedyClusterGrowthProcess(cluster, 0.2);
 			while (growthProcess.step());
@@ -97,7 +104,16 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 			/* Add the cluster to the result list */
 			result.add(frozenCluster);
 			addedNodeSets.add(frozenCluster);
+			
+			/* Increase counter, report progress */
+			step++;
+			if (step > numExpectedSeeds) {
+				monitor.setPercentCompleted(-1);
+			} else {
+				monitor.setPercentCompleted(100 * step / numExpectedSeeds);
+			}
 		}
+		monitor.setPercentCompleted(100);
 		
 		/* Throw away the addedNodeSets hash, we don't need it anymore */
 		addedNodeSets.clear();
@@ -122,5 +138,13 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 	public void runOnGraph(Graph graph) {
 		setGraph(graph);
 		run();
+	}
+
+	/**
+	 * Sets the task monitor where the algorithm will report its progress
+	 * @param monitor    the task monitor to use
+	 */
+	public void setTaskMonitor(TaskMonitor monitor) {
+		this.monitor = monitor;
 	}
 }

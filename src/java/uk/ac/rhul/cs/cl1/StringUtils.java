@@ -67,7 +67,7 @@ public class StringUtils {
 	/**
 	 * Joins the elements of the provided Iterator into a single String containing the provided
 	 * elements
-	 * 
+	 * <p>
 	 * No delimiter is added before or after the list. A null separator is the same as an empty
 	 * string.
 	 * 
@@ -96,7 +96,7 @@ public class StringUtils {
 	/**
 	 * Joins the elements of the provided Iterator into a single String containing the provided
 	 * elements
-	 * 
+	 * <p>
 	 * No delimiter is added before or after the list. A null separator is the same as an empty
 	 * string.
 	 * 
@@ -105,5 +105,56 @@ public class StringUtils {
 	 */
 	public static String join(Iterator<?> it, char separator) {
 		return StringUtils.join(it, separator + "");
+	}
+	
+	/**
+	 * Gets a substring from the specified String avoiding exceptions.
+	 * <p>
+	 * A negative start position can be used to start <tt>n</tt> characters from the end of
+	 * the string.
+	 * <p>
+	 * A <tt>null</tt> string will return <tt>null</tt>. An empty string ("") will return "".
+	 */
+	public static String substring(String str, int start) {
+		if (str == null)
+			return null;
+		
+		if (start < 0)
+			start = str.length() + start;
+		
+		if (start >= str.length())
+			return "";
+		
+		return str.substring(start);
+	}
+	
+	/**
+	 * Gets a substring from the specified String avoiding exceptions.
+	 * <p>
+	 * A negative start position can be used to start <tt>n</tt> characters from the end of
+	 * the string.
+	 * <p>
+	 * A <tt>null</tt> string will return <tt>null</tt>. An empty string ("") will return "".
+	 */
+	public static String substring(String str, int start, int end) {
+		if (str == null)
+			return null;
+		
+		if (start < 0)
+			start = str.length() + start;
+		
+		if (start >= str.length())
+			return "";
+		
+		if (end < 0)
+			end = str.length() + end;
+		
+		if (end > str.length())
+			end = str.length();
+		
+		if (end <= start)
+			return "";
+		
+		return str.substring(start, end);
 	}
 }

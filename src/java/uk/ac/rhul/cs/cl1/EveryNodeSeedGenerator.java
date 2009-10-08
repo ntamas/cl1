@@ -55,4 +55,11 @@ public class EveryNodeSeedGenerator extends SeedGenerator {
 	public Iterator<MutableNodeSet> iterator() {
 		return new IteratorImpl();
 	}
+	
+	/**
+	 * Returns the number of nodes in the graph.
+	 */
+	public int size() {
+		return this.graph.getNodeCount();
+	}
 }

@@ -13,6 +13,7 @@ import org.apache.commons.cli.PosixParser;
 
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
+import uk.ac.rhul.cs.cl1.ConsoleTaskMonitor;
 import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.cl1.io.EdgeListReader;
@@ -72,6 +73,7 @@ public class CommandLineApplication {
 		
 		// Start the algorithm
 		ClusterONE algorithm = new ClusterONE(params);
+		algorithm.setTaskMonitor(new ConsoleTaskMonitor());
 		algorithm.runOnGraph(graph);
 		
 		// Show the results

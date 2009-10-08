@@ -44,8 +44,14 @@ public class EveryEdgeSeedGenerator extends SeedGenerator {
 		super(graph);
 	}
 
-	@Override
 	public Iterator<MutableNodeSet> iterator() {
 		return new IteratorImpl();
+	}
+	
+	/**
+	 * Returns the number of edges in the graph.
+	 */
+	public int size() {
+		return this.graph.getEdgeCount();
 	}
 }
