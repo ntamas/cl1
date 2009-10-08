@@ -59,18 +59,23 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 	 * Executes the algorithm on the graph set earlier by setGraph()
 	 */
 	public void run() {
-		int n = graph.getNodeCount();
-		NodeSetList result = new NodeSetList();
-		HashSet<NodeSet> addedNodeSets = new HashSet<NodeSet>();
 		double minSize = params.getMinSize();
 		double minDensity = params.getMinDensity();
 		
-		/* For each seed node, start growing a cluster */
-		for (int i = 0; i < n; i++) {
-			MutableNodeSet cluster = new MutableNodeSet(graph);
-			
+		NodeSetList result = new NodeSetList();
+		HashSet<NodeSet> addedNodeSets = new HashSet<NodeSet>();
+		SeedGenerator seedGenerator = null;
+		
+		try {
+			seedGenerator = SeedGenerator.fromString("nodes", graph);
+		} catch (InstantiationException ex) {
+			ex.printStackTrace();
+			return;
+		}
+		
+		/* For each seed, start growing a cluster */
+		for (MutableNodeSet cluster: seedGenerator) {
 			ClusterGrowthProcess growthProcess = new GreedyClusterGrowthProcess(cluster, 0.2);
-			cluster.add(i);
 			while (growthProcess.step());
 			
 			/* Check the size of the cluster -- if too small, skip it */

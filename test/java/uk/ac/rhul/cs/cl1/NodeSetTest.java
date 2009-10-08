@@ -46,6 +46,11 @@ public class NodeSetTest {
 		NodeSet nodeSet = createNewNodeSet(members);
 		assertNotNull(nodeSet);
 		assertEquals(nodeSet.size(), 4);
+		assert(nodeSet.contains(0));
+		assert(nodeSet.contains(1));
+		assert(nodeSet.contains(2));
+		assert(nodeSet.contains(6));
+		assertEquals(false, nodeSet.contains(3));
 	}
 	
 	@Test

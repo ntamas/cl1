@@ -35,14 +35,19 @@ public abstract class SeedGenerator extends GraphAlgorithm implements Iterable<M
 	 * <ul>
 	 * <li><tt>nodes</tt> - generates a singleton seed for each node of the graph</li>
 	 * <li><tt>edges</tt> - generates a seed containing the two endpoints for each edge of the graph</li>
+	 * </ul>
+	 * 
+	 * @param  specification   the specification string
+	 * @param  graph           the graph used by the constructed seed generator
+	 * @throws InstantiationException if the specification string is invalid
 	 */
-	public static SeedGenerator fromString(String specification) {
+	public static SeedGenerator fromString(String specification, Graph graph) throws InstantiationException {
 		if (specification.equals("nodes"))
-			return null;
+			return new EveryNodeSeedGenerator(graph);
 		
 		if (specification.equals("edges"))
-			return null;
+			return new EveryEdgeSeedGenerator(graph);
 		
-		return null;
+		throw new InstantiationException("unknown seed generator type: "+specification);
 	}
 }

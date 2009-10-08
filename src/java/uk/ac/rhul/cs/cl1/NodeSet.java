@@ -81,6 +81,15 @@ public class NodeSet implements Iterable<Integer> {
 		this(graph);
 		this.setMembers(members);
 	}
+
+	/**
+	 * Checks whether a node is a member of the nodeset or not
+	 * @param    nodeIndex   index of the node being tested
+	 * @return   true if the node is a member of the set, false otherwise
+	 */
+	public boolean contains(int i) {
+		return members.contains(i);
+	}
 	
 	/**
 	 * Checks whether two nodesets are equal.
