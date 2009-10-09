@@ -33,7 +33,7 @@ public class StringUtils {
 	 * Checks if the string contains only whitespace.
 	 */
 	public static boolean isWhitespace(String str) {
-		return str == null || str.trim().length() == 0;
+		return str != null && str.trim().length() == 0;
 	}
 	
 	/**
@@ -119,8 +119,11 @@ public class StringUtils {
 		if (str == null)
 			return null;
 		
-		if (start < 0)
+		if (start < 0) {
 			start = str.length() + start;
+			if (start < 0)
+				return str;
+		}
 		
 		if (start >= str.length())
 			return "";
@@ -141,8 +144,8 @@ public class StringUtils {
 			return null;
 		
 		if (start < 0)
-			start = str.length() + start;
-		
+			start = Math.max(str.length() + start, 0);
+			
 		if (start >= str.length())
 			return "";
 		

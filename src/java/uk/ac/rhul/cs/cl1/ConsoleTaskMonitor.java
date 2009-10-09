@@ -107,10 +107,10 @@ public class ConsoleTaskMonitor implements TaskMonitor {
 		writer.append('[');
 		if (percent >= 0) {
 			int numChars = (int)Math.round(progressBarWidth * percent / 100.0);
-			for (int i = 0; i < numChars-1; i++)
+			for (int i = 0; i < numChars; i++)
 				progress[i] = '=';
-			if (numChars > 0)
-				progress[numChars-1] = '>';
+			if (numChars > 0 && percent < 100)
+					progress[numChars-1] = '>';
 		} else {
 			spinnerState = spinnerState % progressBarWidth;
 			progress[spinnerState] = '|';
@@ -118,8 +118,8 @@ public class ConsoleTaskMonitor implements TaskMonitor {
 		writer.write(progress);
 		writer.append(']');
 		
-		writer.format("%3d%% ", percent);
-		writer.append(StringUtils.substring(message, 0, getConsoleWidth() - progressBarWidth - 7));
+		writer.format("%4d%% ", percent);
+		writer.append(StringUtils.substring(message, 0, getConsoleWidth() - progressBarWidth - 8));
 		
 		if (percent == 100)
 			writer.write("\r\n");
