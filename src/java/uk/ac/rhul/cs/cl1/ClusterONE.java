@@ -70,10 +70,9 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 		SeedGenerator seedGenerator = null;
 		
 		try {
-			seedGenerator = SeedGenerator.fromString("nodes", graph);
+			seedGenerator = SeedGenerator.fromString(params.getSeedGenerator(), graph);
 		} catch (InstantiationException ex) {
-			ex.printStackTrace();
-			return;
+			monitor.setException(ex, "Invalid seed generator method: "+params.getSeedGenerator());
 		}
 		
 		/* For each seed, start growing a cluster */

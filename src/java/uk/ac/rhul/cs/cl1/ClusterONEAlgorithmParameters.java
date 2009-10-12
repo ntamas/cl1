@@ -20,8 +20,17 @@ public class ClusterONEAlgorithmParameters {
 	/** Minimum density of the clusters that will be returned */
 	protected double minDensity = 0.2;
 	
-	/** Overlap threshold value: no pair of complexes will have an overlap larger than this in the result */
+	/**
+	 * Overlap threshold value.
+	 * No pair of complexes will have an overlap larger than this
+	 * in the result */
 	protected double overlapThreshold = 0.8;
+	
+	/**
+	 * Seed generation method specification string.
+	 * This must be something understood by {@link SeedGenerator.fromString}
+	 */
+	protected String seedGenerator = "nodes";
 	
 	/**
 	 * Returns the minimum density of clusters
@@ -62,7 +71,7 @@ public class ClusterONEAlgorithmParameters {
 	 * result set. The complexes will be merged if their matching ratio is larger than
 	 * this ratio.
 	 * 
-	 * @return the overlapThreshold
+	 * @return the overlap threshold
 	 */
 	public double getOverlapThreshold() {
 		return overlapThreshold;
@@ -76,5 +85,23 @@ public class ClusterONEAlgorithmParameters {
 	 */
 	public void setOverlapThreshold(double overlapThreshold) {
 		this.overlapThreshold = Math.max(0, overlapThreshold);
+	}
+
+	/**
+	 * Returns the seed generation method of the algorithm.
+	 * @return the seed generation method as a string
+	 */
+	public String getSeedGenerator() {
+		return seedGenerator;
+	}
+
+	/**
+	 * Sets the seed generation method of the algorithm
+	 * 
+	 * @param seedMethod the new seed generation method. Must be a specification
+	 *                   that is understood by {@link SeedGenerator.fromString}
+	 */
+	public void setSeedGenerator(String seedMethod) {
+		this.seedGenerator = seedMethod; 
 	}
 }

@@ -43,6 +43,8 @@ public class CommandLineApplication {
 				params.setMinDensity(Float.parseFloat(cmd.getOptionValue("min-density")));
 			if (cmd.hasOption("max-overlap"))
 				params.setOverlapThreshold(Float.parseFloat(cmd.getOptionValue("max-overlap")));
+			if (cmd.hasOption("seed-method"))
+				params.setSeedGenerator(cmd.getOptionValue("seed-method").toString());
 		} catch (ParseException ex) {
 			System.err.println("Failed to parse command line options. Reason: " + ex.getMessage());
 			return 1;
@@ -100,6 +102,9 @@ public class CommandLineApplication {
 		options.addOption(OptionBuilder.withLongOpt("max-overlap")
 		             .withDescription("specifies the maximum allowed overlap between two clusters")
 		             .withType(Float.class).hasArg().create());
+		options.addOption(OptionBuilder.withLongOpt("seed-method")
+				 .withDescription("specifies the seed generation method to use")
+				 .withType(String.class).hasArg().create("S"));
 		options.addOption(OptionBuilder.withLongOpt("param")
 				.withDescription("specifies the value of an advanced named parameter of the algorithm")
 				.withArgName("name=value").hasArgs(2).withValueSeparator().create("p"));
