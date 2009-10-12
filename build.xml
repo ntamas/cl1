@@ -13,6 +13,10 @@
 	<property name="lib" location="lib" />
 	<property name="reports" location="reports" />
 
+	<!-- External dependencies -->
+	<property name="lib.cytoscape.path" location="/home/local/tamas/opt/cytoscape/cytoscape.jar" />
+	<property name="lib.procope.path" location="/home/local/tamas/opt/procope/lib/procope_core-1.2.jar" />
+
 	<!-- Access to environment -->
 	<property environment="os" />
 
@@ -22,6 +26,11 @@
 	<property name="src.java" location="${src}/java" />
 	<property name="build.java.tests" location="${build}/java/tests" />
 	<property name="src.java.tests" location="${test}/java" />
+
+	<path id="classpath.base">
+		<pathelement location="${lib.cytoscape.path}" />
+		<pathelement location="${lib.procope.path}" />
+	</path>
 
 	<tstamp>
 		<format property="TODAY" pattern="MMMM dd, yyyy" locale="en" />
@@ -44,7 +53,11 @@
 	<!-- Compiles the Java source code -->
 	<target name="compile_java" depends="-init"
 		description="--> compile Java code">
-		<javac srcdir="${src.java}" destdir="${build.java}" />
+		<javac srcdir="${src.java}" destdir="${build.java}">
+			<classpath>
+				<path refid="classpath.base" />
+			</classpath>
+		</javac>
 	</target>
 
 	<!-- Compiles the Java tests -->
@@ -52,6 +65,7 @@
 		description="--> compile Java tests">
 		<javac srcdir="${src.java.tests}" destdir="${build.java.tests}">
 			<classpath>
+				<path refid="classpath.base" />
 				<pathelement location="${build.java}" />
 				<pathelement location="${lib}/junit.jar" />
 			</classpath>
