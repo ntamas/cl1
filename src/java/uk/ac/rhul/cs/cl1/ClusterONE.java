@@ -96,13 +96,11 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 			NodeSet frozenCluster = cluster.freeze();
 			cluster = null;
 			
-			/* If the cluster was already detected from another seed node, continue */
-			if (addedNodeSets.contains(frozenCluster))
-				continue;
-			
-			/* Add the cluster to the result list */
-			result.add(frozenCluster);
-			addedNodeSets.add(frozenCluster);
+			/* Add the cluster if we haven't found it before */
+			if (!addedNodeSets.contains(frozenCluster)) {
+				result.add(frozenCluster);
+				addedNodeSets.add(frozenCluster);
+			}
 			
 			/* Increase counter, report progress */
 			step++;
@@ -121,7 +119,7 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 		/* Merge highly overlapping clusters */
 		monitor.setPercentCompleted(0);
 		monitor.setStatus("Merging highly overlapping clusters...");
-		result = result.mergeOverlapping(params.getOverlapThreshold());
+		result = result.mergeOverlapping(params.getOverlapThreshold(), monitor);
 		monitor.setPercentCompleted(100);
 		
 		/* Return the result effectively */

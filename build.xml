@@ -13,10 +13,6 @@
 	<property name="lib" location="lib" />
 	<property name="reports" location="reports" />
 
-	<!-- External dependencies -->
-	<property name="lib.cytoscape.path" location="/home/local/tamas/opt/cytoscape/cytoscape.jar" />
-	<property name="lib.procope.path" location="/home/local/tamas/opt/procope/lib/procope_core-1.2.jar" />
-
 	<!-- Access to environment -->
 	<property environment="os" />
 
@@ -27,6 +23,11 @@
 	<property name="build.java.tests" location="${build}/java/tests" />
 	<property name="src.java.tests" location="${test}/java" />
 
+	<!-- External dependencies -->
+	<property name="lib.cytoscape.path" location="${cytoscape.path}/cytoscape.jar" />
+	<property name="lib.procope.path" location="${procope.path}/lib/procope_core-${procope.version}.jar" />
+
+	<!-- Set up the default classpath -->
 	<path id="classpath.base">
 		<pathelement location="${lib.cytoscape.path}" />
 		<pathelement location="${lib.procope.path}" />

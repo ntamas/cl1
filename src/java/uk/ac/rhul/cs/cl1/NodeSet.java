@@ -105,7 +105,7 @@ public class NodeSet implements Iterable<Integer> {
 			return false;
 
 		NodeSet other = (NodeSet)o;
-		return other.graph == this.graph && other.members == this.members;
+		return other.graph.equals(this.graph) && other.members.equals(this.members);
 	}
 	
 	/**
