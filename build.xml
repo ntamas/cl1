@@ -29,6 +29,9 @@
 
 	<!-- Set up the default classpath -->
 	<path id="classpath.base">
+		<pathelement location="lib/tclib.jar" />
+		<pathelement location="lib/commons-cli-1.2.jar" />
+		<pathelement location="lib/tablelayout.jar" />
 		<pathelement location="${lib.cytoscape.path}" />
 		<pathelement location="${lib.procope.path}" />
 	</path>
@@ -91,13 +94,15 @@
 	<!-- Creates the JAR file -->
 	<target name="jar" depends="compile,-create_cytoscape_plugin" description="Creates the JAR file">
 		<jar destfile="cluster_one-${package.version}.jar" basedir="${build.java}">
+			<zipfileset src="lib/tclib.jar" includes="**/*.class" />
+			<zipfileset src="lib/commons-cli-1.2.jar" includes="**/*.class" />
+			<zipfileset src="lib/tablelayout.jar" includes="**/*.class" />
 			<manifest>
 				<attribute name="Manifest-Version" value="1.0" />
 				<attribute name="Extension-Name" value="${package.name}" />
 				<attribute name="Implementation-Version" value="${package.version}" />
 				<attribute name="Main-Class" value="${package.name}.ui.CommandLineApplication" />
 				<attribute name="Cytoscape-Plugin" value="${package.name}.ui.CytoscapePlugin" />
-				<attribute name="Class-Path" value="lib/commons-cli-1.2.jar lib/tclib.jar" />
 			</manifest>
 		</jar>
 	</target>

@@ -42,7 +42,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 		editorPane.setEditorKit(new HTMLEditorKit());
 		editorPane.setBackground(contentPane.getBackground());
         
-		URL logoURL = this.getClass().getResource("resources/cl1_logo.png");
+		URL logoURL = this.getClass().getResource("../resources/cl1_logo.png");
 		String logoCode = "";
 		if (logoURL != null) {
 			logoCode = "<center><img src=\""+logoURL+"\" /></center>";
@@ -51,7 +51,7 @@ public class AboutDialog extends JDialog implements ActionListener {
         String textTemplate = null;
         try {
         	textTemplate = StringUtils.readInputStream(
-        		this.getClass().getResourceAsStream("resources/about_dialog.txt")
+        		this.getClass().getResourceAsStream("../resources/about_dialog.txt")
         	);
         } catch (IOException ex) {
         	textTemplate = "";
