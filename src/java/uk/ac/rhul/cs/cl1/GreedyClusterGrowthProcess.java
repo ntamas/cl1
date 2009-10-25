@@ -79,14 +79,23 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 			// bestNodes.clear();
 			for (Integer node: nodeSet) {
 				double affinity = nodeSet.getRemovalAffinity(node);
+				
+				// The following condition is necessary to avoid cases when a
+				// node is repeatedly added and removed from the same set
+				if (affinity <= quality)
+					continue;
+				
 				if (affinity > bestAffinity) {
 					bestAffinity = affinity;
 					bestNodes.clear();
 					bestNodes.add(node);
 					bestIsAddition = false;
 				} else if (affinity == bestAffinity) {
+					if (bestIsAddition) {
+						bestNodes.clear();
+						bestIsAddition = false;
+					}
 					bestNodes.add(node);
-					bestIsAddition = false;
 				}
 			}
 		}

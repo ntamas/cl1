@@ -114,4 +114,26 @@ public class ClusterGrowthAction {
 			return;
 		}
 	}
+	
+	/**
+	 * Creates a simple human-readable string representation of this action
+	 */
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		Integer[] nodes;
+		
+		if (this.nodes == null) {
+			nodes = new Integer[0];
+		} else {
+			nodes = new Integer[this.nodes.length];
+			for (int i = 0; i < this.nodes.length; i++)
+				nodes[i] = this.nodes[i];
+		}
+		
+		sb.append(this.getType().toString());
+		sb.append(" {");
+		sb.append(StringUtils.join(Arrays.asList(nodes).iterator(), ", "));
+		sb.append("}");
+		return sb.toString();
+	}
 }

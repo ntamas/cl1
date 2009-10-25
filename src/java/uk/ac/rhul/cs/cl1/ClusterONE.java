@@ -81,7 +81,7 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 		monitor.setStatus("Growing clusters from seeds...");
 		monitor.setPercentCompleted(0);
 		for (MutableNodeSet cluster: seedGenerator) {
-			ClusterGrowthProcess growthProcess = new GreedyClusterGrowthProcess(cluster, 0.2);
+			ClusterGrowthProcess growthProcess = new GreedyClusterGrowthProcess(cluster, minDensity);
 			while (growthProcess.step());
 			
 			/* Check the size of the cluster -- if too small, skip it */

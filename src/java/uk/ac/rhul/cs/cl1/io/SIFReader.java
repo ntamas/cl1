@@ -9,12 +9,12 @@ import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.UniqueIDGenerator;
 
 /**
- * Reads a graph specified by an edge list representation from an input stream
+ * Reads a graph specified in SIF format from an input stream
  * @author ntamas
  */
-public class EdgeListReader implements GraphReader {
+public class SIFReader implements GraphReader {
 	/**
-	 * Reads a graph specified by an edge list representation from the given stream
+	 * Reads a graph specified in SIF format from the given stream
 	 * 
 	 * @param  stream  the stream being read
 	 */
@@ -33,20 +33,13 @@ public class EdgeListReader implements GraphReader {
 			if (line.length() == 0)
 				continue;
 			
-			if (line.charAt(0) == '#' || line.charAt(0) == '%')
-				continue;
-			
-			parts = line.split("\\s");
-			if (parts.length == 1)
+			parts = line.split("\\t");
+			if (parts.length < 3)
 				continue;
 			
 			node1 = nodeGen.get(parts[0]);
-			node2 = nodeGen.get(parts[1]);
-
-			if (parts.length >= 3)
-				weight = Double.parseDouble(parts[2]);
-			else
-				weight = 1.0;
+			node2 = nodeGen.get(parts[2]);
+			weight = 1.0;
 			
 			result.createEdge(node1, node2, weight);
 		}
@@ -55,4 +48,5 @@ public class EdgeListReader implements GraphReader {
 		
 		return result;
 	}
+
 }

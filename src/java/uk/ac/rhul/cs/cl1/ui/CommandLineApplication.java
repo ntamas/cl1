@@ -16,7 +16,8 @@ import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
 import uk.ac.rhul.cs.cl1.ConsoleTaskMonitor;
 import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.NodeSet;
-import uk.ac.rhul.cs.cl1.io.EdgeListReader;
+import uk.ac.rhul.cs.cl1.io.GraphReader;
+import uk.ac.rhul.cs.cl1.io.GraphReaderFactory;
 
 /// The command line interface to Cluster ONE
 public class CommandLineApplication {
@@ -124,7 +125,8 @@ public class CommandLineApplication {
 	 * @param filename  name of the file to be loaded
 	 */
 	public Graph loadGraph(String filename) throws IOException {
-		return new EdgeListReader().readGraph(new FileInputStream(filename));
+		GraphReader reader = GraphReaderFactory.fromFilename(filename);
+		return reader.readGraph(new FileInputStream(filename));
 	}
 	
 	/**
