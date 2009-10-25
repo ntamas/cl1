@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.UniqueIDGenerator;
@@ -21,10 +22,11 @@ public class SIFReader implements GraphReader {
 	public Graph readGraph(InputStream stream) throws IOException {
 		Graph result = new Graph();
 		UniqueIDGenerator nodeGen = new UniqueIDGenerator(result);
-		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+		
 		String line;
 		String[] parts;
+		String separator = "\\s";
 		
 		int node1, node2;
 		double weight;
@@ -33,7 +35,14 @@ public class SIFReader implements GraphReader {
 			if (line.length() == 0)
 				continue;
 			
-			parts = line.split("\\t");
+			if (line.contains("\t")) {
+				/* As soon as the first Tab character is seen, the
+				 * parser switches to Tab mode. */
+				separator = "\\t";
+			}
+			
+			parts = line.split(separator);
+			
 			if (parts.length < 3)
 				continue;
 			
