@@ -102,7 +102,7 @@
 				<attribute name="Extension-Name" value="${package.name}" />
 				<attribute name="Implementation-Version" value="${package.version}" />
 				<attribute name="Main-Class" value="${package.name}.ui.CommandLineApplication" />
-				<attribute name="Cytoscape-Plugin" value="${package.name}.ui.CytoscapePlugin" />
+				<attribute name="Cytoscape-Plugin" value="${package.name}.ui.cytoscape.CytoscapePlugin" />
 			</manifest>
 		</jar>
 	</target>

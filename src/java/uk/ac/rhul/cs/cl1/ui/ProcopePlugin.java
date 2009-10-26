@@ -82,7 +82,7 @@ public class ProcopePlugin implements Clusterer {
 	 */
 	protected Graph convertProteinNetworkToGraph(ProteinNetwork net) {
 		Graph result = new Graph();
-		UniqueIDGenerator idGen = new UniqueIDGenerator(result);
+		UniqueIDGenerator<Integer> idGen = new UniqueIDGenerator<Integer>(result);
 		
 		if (net.isDirected()) 
 			throw new ProCopeException("Cluster ONE supports undirected graphs only");
@@ -90,8 +90,8 @@ public class ProcopePlugin implements Clusterer {
 		int[] edges = net.getEdgesArray();
 		
 		for (int i = 0; i < edges.length; i += 2) {
-			int protein1 = idGen.get(Integer.toString(edges[i]));
-			int protein2 = idGen.get(Integer.toString(edges[i+1]));
+			int protein1 = idGen.get(edges[i]);
+			int protein2 = idGen.get(edges[i+1]);
 			float weight = net.getEdge(edges[i], edges[i+1]);
 			
 			if (weight == Float.NaN)

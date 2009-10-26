@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.cl1.ui;
+package uk.ac.rhul.cs.cl1.ui.cytoscape;
 
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;

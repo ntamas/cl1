@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 
 import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.UniqueIDGenerator;
@@ -21,7 +20,7 @@ public class SIFReader implements GraphReader {
 	 */
 	public Graph readGraph(InputStream stream) throws IOException {
 		Graph result = new Graph();
-		UniqueIDGenerator nodeGen = new UniqueIDGenerator(result);
+		UniqueIDGenerator<String> nodeGen = new UniqueIDGenerator<String>(result);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 		
 		String line;

@@ -20,7 +20,7 @@ public class EdgeListReader implements GraphReader {
 	 */
 	public Graph readGraph(InputStream stream) throws IOException {
 		Graph result = new Graph();
-		UniqueIDGenerator nodeGen = new UniqueIDGenerator(result);
+		UniqueIDGenerator<String> nodeGen = new UniqueIDGenerator<String>(result);
 		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 		String line;
