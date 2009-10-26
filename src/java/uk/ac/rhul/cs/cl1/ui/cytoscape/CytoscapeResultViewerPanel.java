@@ -81,7 +81,6 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements Lis
 	 * Method called when the table selection changes
 	 * @param event   event describing how the selection changed
 	 */
-	@Override
 	public void valueChanged(ListSelectionEvent event) {
 		CyNetwork network = this.getNetwork();
 		CyNetworkView networkView = this.getNetworkView();

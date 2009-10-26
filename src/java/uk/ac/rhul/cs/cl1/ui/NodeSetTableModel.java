@@ -50,12 +50,10 @@ public class NodeSetTableModel extends AbstractTableModel {
 		this.setDetailedMode(false);
 	}
 
-	@Override
 	public int getColumnCount() {
 		return currentHeaders.length;
 	}
 
-	@Override
 	public int getRowCount() {
 		return nodeSets.size();
 	}
@@ -78,7 +76,6 @@ public class NodeSetTableModel extends AbstractTableModel {
 		return currentHeaders[col];
 	}
 	
-	@Override
 	public Object getValueAt(int row, int col) {
 		NodeSet nodeSet = this.nodeSets.get(row);
 		if (nodeSet == null)
