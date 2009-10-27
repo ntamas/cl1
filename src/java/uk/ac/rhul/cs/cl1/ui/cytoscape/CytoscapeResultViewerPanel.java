@@ -2,15 +2,25 @@ package uk.ac.rhul.cs.cl1.ui.cytoscape;
 
 import giny.model.Node;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
+import cytoscape.view.cytopanels.CytoPanel;
+import cytoscape.view.cytopanels.CytoPanelState;
 import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.cl1.ui.NodeSetTableModel;
 import uk.ac.rhul.cs.cl1.ui.ResultViewerPanel;
@@ -21,7 +31,7 @@ import uk.ac.rhul.cs.cl1.ui.ResultViewerPanel;
  * 
  * @author tamas
  */
-public class CytoscapeResultViewerPanel extends ResultViewerPanel implements ListSelectionListener {
+public class CytoscapeResultViewerPanel extends ResultViewerPanel implements ListSelectionListener, ActionListener {
 	/**
 	 * Mapping from node IDs to real Cytoscape {@link Node} objects
 	 */
@@ -49,7 +59,17 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements Lis
 		this.networkRef = new WeakReference<CyNetwork>(network);
 		this.networkViewRef = new WeakReference<CyNetworkView>(networkView);
 		
+		/* Listen to table selection changes */
 		this.table.getSelectionModel().addListSelectionListener(this);
+		
+		/* Add the bottom buttons */
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 0));
+		JButton closeButton = new JButton("Close");
+		closeButton.setActionCommand("close");
+		closeButton.addActionListener(this);
+		buttonPanel.add(closeButton);
+		this.add(buttonPanel, BorderLayout.SOUTH);
 	}
 	
 	/**
@@ -107,5 +127,21 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements Lis
 		network.unselectAllEdges();
 		network.setSelectedNodeState(nodes, true);
 		networkView.redrawGraph(false, true);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent event) {
+		String action = event.getActionCommand();
+		
+		if (action == null)
+			return;
+		
+		if (action.equals("close")) {
+			CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST);
+			cytoPanel.remove(this);
+			if (cytoPanel.getCytoPanelComponentCount() == 0) {
+				cytoPanel.setState(CytoPanelState.HIDE);
+			}
+		}
 	}
 }

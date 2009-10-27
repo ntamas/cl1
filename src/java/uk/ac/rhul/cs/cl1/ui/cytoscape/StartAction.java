@@ -43,9 +43,9 @@ public class StartAction extends CytoscapeAction {
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
 		
-		if (network == null) {
+		if (network == null || network.getNodeCount() == 0) {
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-					"You must select a network before starting Cluster ONE",
+					"You must select a non-empty network before starting Cluster ONE",
 					"Error - no network selected",
 					JOptionPane.ERROR_MESSAGE);
 			return;
@@ -57,6 +57,9 @@ public class StartAction extends CytoscapeAction {
 		
 		Pair<List<NodeSet>, List<Node>> results;
 		results = CytoscapePlugin.runAlgorithm(network, dlg.getParameters(), "weight");
+		if (results.getLeft() == null)
+			return;
+
 		CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST);
 		
 		CytoscapeResultViewerPanel resultsPanel = new CytoscapeResultViewerPanel(network, networkView);

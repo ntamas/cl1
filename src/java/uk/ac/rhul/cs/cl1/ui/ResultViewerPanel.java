@@ -34,11 +34,12 @@ public class ResultViewerPanel extends JPanel {
 	public ResultViewerPanel() {
 		this.setLayout(new BorderLayout());
 		
+		/* Add the label showing the number of clusters */
 		countLabel = new JLabel();
 		countLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
-		
 		this.add(countLabel, BorderLayout.NORTH);
 		
+		/* Add the result table */
 		table = new JTable();
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
