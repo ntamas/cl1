@@ -42,9 +42,8 @@ public class ResultViewerPanel extends JPanel {
 		/* Add the result table */
 		table = new JTable();
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		
 		JScrollPane scrollPane = new JScrollPane(table);
-		this.add(scrollPane, BorderLayout.CENTER);
+		this.add(scrollPane, BorderLayout.CENTER);		
 	}
 	
 	/**

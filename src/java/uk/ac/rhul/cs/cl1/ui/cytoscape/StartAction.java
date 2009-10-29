@@ -3,14 +3,15 @@ package uk.ac.rhul.cs.cl1.ui.cytoscape;
 import giny.model.Node;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.List;
 
+import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
 import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.cl1.Pair;
-import uk.ac.rhul.cs.cl1.ui.ClusterONEAlgorithmParametersDialog;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -30,6 +31,7 @@ public class StartAction extends CytoscapeAction {
 	 */
 	public StartAction() {
 		super("Start");
+		this.putValue(AbstractAction.MNEMONIC_KEY, KeyEvent.VK_S);
 		setPreferredMenu("Plugins.Cluster ONE");
 	}
 	
@@ -51,12 +53,12 @@ public class StartAction extends CytoscapeAction {
 			return;
 		}
 		
-		ClusterONEAlgorithmParametersDialog dlg = new ClusterONEAlgorithmParametersDialog(Cytoscape.getDesktop());
-		if (!dlg.execute())
+		ControlPanel panel = ControlPanel.getShownInstance();
+		if (panel == null)
 			return;
 		
 		Pair<List<NodeSet>, List<Node>> results;
-		results = CytoscapePlugin.runAlgorithm(network, dlg.getParameters(), "weight");
+		results = CytoscapePlugin.runAlgorithm(network, panel.getParameters(), panel.getWeightAttributeName());
 		if (results.getLeft() == null)
 			return;
 

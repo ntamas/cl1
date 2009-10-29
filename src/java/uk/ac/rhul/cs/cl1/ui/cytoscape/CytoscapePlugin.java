@@ -24,7 +24,7 @@ import cytoscape.view.CyMenus;
 public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin {
 	public CytoscapePlugin() {
 		CyMenus cyMenus = Cytoscape.getDesktop().getCyMenus();
-		cyMenus.addAction(new StartAction());
+		cyMenus.addAction(new ShowControlPanelAction());
 		cyMenus.addAction(new AboutAction());
 	}
 
@@ -75,14 +75,14 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin {
 				if (src == dest)
 					continue;
 				
-				Double weight = (Double)edgeAttrs.getAttribute(edge.getIdentifier(), weightAttr);
+				Double weight = weightAttr == null ? null :
+					(Double)edgeAttrs.getAttribute(edge.getIdentifier(), weightAttr);
 				if (weight == null)
 					weight = 1.0;
 				
 				graph.createEdge(src, dest, weight);
 			}
 		} catch (ClassCastException ex) {
-			ex.printStackTrace();
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
 					"Weight attribute values must be numeric.",
 					"Error - invalid weight attribute",

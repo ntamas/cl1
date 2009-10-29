@@ -1,6 +1,9 @@
 package uk.ac.rhul.cs.cl1.ui.cytoscape;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+
+import javax.swing.AbstractAction;
 
 import uk.ac.rhul.cs.cl1.ui.AboutDialog;
 
@@ -19,6 +22,7 @@ public class AboutAction extends CytoscapeAction {
 	public AboutAction() {
 		super("About...");
 		setPreferredMenu("Plugins.Cluster ONE");
+		this.putValue(AbstractAction.MNEMONIC_KEY, KeyEvent.VK_A);
 	}
 	
 	@Override

@@ -10,8 +10,11 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -23,6 +26,7 @@ import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
 import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.cl1.ui.NodeSetTableModel;
+import uk.ac.rhul.cs.cl1.ui.PopupMenuTrigger;
 import uk.ac.rhul.cs.cl1.ui.ResultViewerPanel;
 
 /**
@@ -31,7 +35,8 @@ import uk.ac.rhul.cs.cl1.ui.ResultViewerPanel;
  * 
  * @author tamas
  */
-public class CytoscapeResultViewerPanel extends ResultViewerPanel implements ListSelectionListener, ActionListener {
+public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
+	ListSelectionListener, ActionListener {
 	/**
 	 * Mapping from node IDs to real Cytoscape {@link Node} objects
 	 */
@@ -42,6 +47,16 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements Lis
 	
 	/** Reference to a Cytoscape network view that will be used to highlight nodes in the selected nodeset */
 	protected WeakReference<CyNetworkView> networkViewRef;
+	
+	/**
+	 * The popup menu that comes up when right clicking on a cluster
+	 */
+	protected JPopupMenu clusterPopup;
+	
+	/**
+	 * The "Extract cluster" element of the popup menu
+	 */
+	protected AbstractAction extractClusterAction;
 	
 	/**
 	 * Creates a result viewer panel associated to the given {@link CyNetwork}
@@ -56,11 +71,16 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements Lis
 	 */
 	public CytoscapeResultViewerPanel(CyNetwork network, CyNetworkView networkView) {
 		super();
+		initializeClusterPopup();
+		
 		this.networkRef = new WeakReference<CyNetwork>(network);
 		this.networkViewRef = new WeakReference<CyNetworkView>(networkView);
 		
 		/* Listen to table selection changes */
 		this.table.getSelectionModel().addListSelectionListener(this);
+		
+		/* Add popup menu to the cluster selection table */
+		this.table.addMouseListener(new PopupMenuTrigger(clusterPopup));
 		
 		/* Add the bottom buttons */
 		JPanel buttonPanel = new JPanel();
@@ -89,6 +109,52 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements Lis
 			return null;
 		return networkViewRef.get();
 	}
+	
+	/**
+	 * Retrieves the selected {@link NodeSet}
+	 */
+	public NodeSet getSelectedNodeSet() {
+		int selectedRow = this.table.getSelectedRow();
+		if (selectedRow == -1)
+			return null;
+		
+		NodeSetTableModel model = (NodeSetTableModel)this.table.getModel();
+		return model.getNodeSetByIndex(selectedRow);
+	}
+	
+	/**
+	 * Retrieves the set of Cytoscape nodes associated to the selected {@link NodeSet}.
+	 * 
+	 * If nothing is selected in the table, an empty list will be returned.
+	 */
+	public List<Node> getSelectedCytoscapeNodeSet() {
+		ArrayList<Node> result = new ArrayList<Node>();
+		NodeSet selectedNodeSet = this.getSelectedNodeSet();
+		
+		if (selectedNodeSet == null)
+			return result;
+		
+		for (Integer idx: selectedNodeSet) {
+			Node node = nodeMapping.get(idx);
+			if (node == null)
+				continue;         // node deleted in the meanwhile
+			result.add(node);
+		}
+		return result;
+	}
+	
+	/**
+	 * Initializes the cluster popup menu
+	 */
+	private void initializeClusterPopup() {
+		JMenuItem menuItem;
+		
+		clusterPopup = new JPopupMenu();
+		extractClusterAction = new ExtractClusterAction(this);
+		extractClusterAction.setEnabled(false);
+		menuItem = new JMenuItem(extractClusterAction);
+		clusterPopup.add(menuItem);
+	}
 
 	/**
 	 * Sets the mapping from integer node IDs to real Cytoscape {@link Node} objects
@@ -105,28 +171,19 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements Lis
 		CyNetwork network = this.getNetwork();
 		CyNetworkView networkView = this.getNetworkView();
 		
-		if (network == null)
+		if (network == null) {
+			extractClusterAction.setEnabled(false);
 			return;
-		
-		int selectedRow = this.table.getSelectedRow();
-		if (selectedRow == -1)
-			return;
-		
-		NodeSetTableModel model = (NodeSetTableModel)this.table.getModel();
-		NodeSet nodeSet = model.getNodeSetByIndex(selectedRow);
-		ArrayList<Node> nodes = new ArrayList<Node>();
-		
-		for (Integer idx: nodeSet) {
-			Node node = nodeMapping.get(idx);
-			if (node == null)
-				continue;         // node deleted in the meanwhile
-			nodes.add(node);
 		}
+		
+		List<Node> nodes = this.getSelectedCytoscapeNodeSet();
 		
 		network.unselectAllNodes();
 		network.unselectAllEdges();
 		network.setSelectedNodeState(nodes, true);
 		networkView.redrawGraph(false, true);
+		
+		extractClusterAction.setEnabled(nodes.size() > 0);
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package uk.ac.rhul.cs.cl1.ui;
 
+import java.awt.Component;
+
 import info.clearthought.layout.TableLayout;
 
 import javax.swing.JComboBox;
@@ -36,7 +38,8 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 		
 		double sizes[][] = {
 				{TableLayout.FILL, 10, TableLayout.PREFERRED},
-				{TableLayout.FILL, TableLayout.FILL, TableLayout.FILL, TableLayout.FILL}
+				{TableLayout.PREFERRED, TableLayout.PREFERRED,
+				 TableLayout.PREFERRED, TableLayout.PREFERRED}
 		};
 		setLayout(new TableLayout(sizes));
 		
@@ -53,7 +56,7 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 		this.add(minimumClusterSizeSpinner, "2, 0, l, c");
 		
 		/* Minimum cluster density spinner */
-		label = new JLabel("Minimum cluster density:");
+		label = new JLabel("Minimum density:");
 		this.add(label, "0, 1, r, c");
 		minimumClusterDensitySpinner = new JSpinner();
 		minimumClusterDensitySpinner.setModel(
@@ -83,7 +86,7 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	 * Returns a {@link ClusterONEAlgorithmParameters} object from the current state
 	 * of the panel
 	 */
-	ClusterONEAlgorithmParameters getParameters() {
+	public ClusterONEAlgorithmParameters getParameters() {
 		ClusterONEAlgorithmParameters result = new ClusterONEAlgorithmParameters();
 		
 		result.setMinSize((Integer)minimumClusterSizeSpinner.getValue());
@@ -98,5 +101,19 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 			return null;
 		
 		return result;
+	}
+
+	/**
+	 * Adds a new component to the end of the parameters panel
+	 * @param caption    caption of the component in the left column
+	 * @param component  the component itself that should go in the right column
+	 */
+	public void addComponent(String caption, Component component) {
+		JLabel label = new JLabel("Edge weight attribute:");
+		TableLayout layout = (TableLayout)this.getLayout();
+		int numRows = layout.getNumRow();
+		layout.insertRow(numRows, TableLayout.PREFERRED);
+		this.add(label, "0, "+numRows+", r, c");
+		this.add(component, "2, "+numRows+", l, c");
 	}
 }
