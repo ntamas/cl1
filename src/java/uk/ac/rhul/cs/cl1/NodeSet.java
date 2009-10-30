@@ -52,6 +52,11 @@ public class NodeSet implements Iterable<Integer> {
 	protected double totalBoundaryEdgeWeight = 0.0;
 	
 	/**
+	 * Quality of the nodeset according to the standard Cluster ONE quality function
+	 */
+	protected Double quality = null;
+	
+	/**
 	 * Constructs a new, empty nodeset on the given graph.
 	 * 
 	 * @param graph  the graph on which the nodeset is created
@@ -274,7 +279,9 @@ public class NodeSet implements Iterable<Integer> {
 	 * Returns the value of the quality function for this nodeset
 	 */
 	public double getQuality() {
-		return this.totalInternalEdgeWeight  / (this.totalInternalEdgeWeight + this.totalBoundaryEdgeWeight);
+		if (quality == null)
+			quality = this.totalInternalEdgeWeight / (this.totalInternalEdgeWeight + this.totalBoundaryEdgeWeight);
+		return quality;
 	}
 	
 	/**

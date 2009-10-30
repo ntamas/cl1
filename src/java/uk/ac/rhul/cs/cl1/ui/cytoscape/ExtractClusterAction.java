@@ -34,7 +34,6 @@ public class ExtractClusterAction extends AbstractAction {
 		this.putValue(AbstractAction.MNEMONIC_KEY, KeyEvent.VK_E);
 	}
 	
-	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		List<Node> selectedNodes = this.resultViewer.getSelectedCytoscapeNodeSet();
 		CyNetwork network = this.resultViewer.getNetwork();

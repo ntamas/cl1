@@ -12,7 +12,6 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
@@ -25,7 +24,6 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
 import uk.ac.rhul.cs.cl1.NodeSet;
-import uk.ac.rhul.cs.cl1.ui.NodeSetTableModel;
 import uk.ac.rhul.cs.cl1.ui.PopupMenuTrigger;
 import uk.ac.rhul.cs.cl1.ui.ResultViewerPanel;
 
@@ -52,6 +50,11 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 	 * The popup menu that comes up when right clicking on a cluster
 	 */
 	protected JPopupMenu clusterPopup;
+	
+	/**
+	 * The "Copy to clipboard" element of the popup menu
+	 */
+	protected AbstractAction copyToClipboardAction;
 	
 	/**
 	 * The "Extract cluster" element of the popup menu
@@ -111,18 +114,6 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 	}
 	
 	/**
-	 * Retrieves the selected {@link NodeSet}
-	 */
-	public NodeSet getSelectedNodeSet() {
-		int selectedRow = this.table.getSelectedRow();
-		if (selectedRow == -1)
-			return null;
-		
-		NodeSetTableModel model = (NodeSetTableModel)this.table.getModel();
-		return model.getNodeSetByIndex(selectedRow);
-	}
-	
-	/**
 	 * Retrieves the set of Cytoscape nodes associated to the selected {@link NodeSet}.
 	 * 
 	 * If nothing is selected in the table, an empty list will be returned.
@@ -147,13 +138,15 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 	 * Initializes the cluster popup menu
 	 */
 	private void initializeClusterPopup() {
-		JMenuItem menuItem;
-		
 		clusterPopup = new JPopupMenu();
+		
+		copyToClipboardAction = new CopyClusterToClipboardAction(this);
+		copyToClipboardAction.setEnabled(false);
+		clusterPopup.add(copyToClipboardAction);
+		
 		extractClusterAction = new ExtractClusterAction(this);
 		extractClusterAction.setEnabled(false);
-		menuItem = new JMenuItem(extractClusterAction);
-		clusterPopup.add(menuItem);
+		clusterPopup.add(extractClusterAction);
 	}
 
 	/**
@@ -172,6 +165,7 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		CyNetworkView networkView = this.getNetworkView();
 		
 		if (network == null) {
+			copyToClipboardAction.setEnabled(false);
 			extractClusterAction.setEnabled(false);
 			return;
 		}
@@ -184,9 +178,9 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		networkView.redrawGraph(false, true);
 		
 		extractClusterAction.setEnabled(nodes.size() > 0);
+		copyToClipboardAction.setEnabled(nodes.size() > 0);
 	}
 
-	@Override
 	public void actionPerformed(ActionEvent event) {
 		String action = event.getActionCommand();
 		

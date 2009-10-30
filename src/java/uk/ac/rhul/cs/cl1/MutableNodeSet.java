@@ -101,6 +101,9 @@ public class MutableNodeSet extends NodeSet {
 		if (memberHashSet.contains(node))
 			return false;
 		
+		/* Things will change, invalidate the cached values */
+		invalidateCache();
+		
 		/* First, increase the internal and the boundary weights with the
 		 * appropriate amounts */
 		totalInternalEdgeWeight += inWeights[node];
@@ -128,6 +131,9 @@ public class MutableNodeSet extends NodeSet {
 	 * Clears the nodeset
 	 */
 	public void clear() {
+		/* Things will change, invalidate the cached values */
+		invalidateCache();
+		
 		this.members.clear();
 		this.memberHashSet.clear();
 		initializeInOutWeights();
@@ -206,6 +212,13 @@ public class MutableNodeSet extends NodeSet {
 	}
 	
 	/**
+	 * Invalidates the cached quality value when the nodeset changes
+	 */
+	private void invalidateCache() {
+		this.quality = null;
+	}
+
+	/**
 	 * Removes a node from this nodeset
 	 * 
 	 * @param   node   the index of the node being added
@@ -214,6 +227,9 @@ public class MutableNodeSet extends NodeSet {
 	public boolean remove(int node) {
 		if (!memberHashSet.contains(node))
 			return false;
+		
+		/* Things will change, invalidate the cached values */
+		invalidateCache();
 		
 		/* First, decrease the internal and the boundary weights with the
 		 * appropriate amounts */

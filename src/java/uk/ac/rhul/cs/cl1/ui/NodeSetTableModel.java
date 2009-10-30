@@ -1,7 +1,5 @@
 package uk.ac.rhul.cs.cl1.ui;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,19 +17,37 @@ public class NodeSetTableModel extends AbstractTableModel {
 	/** Column headers for the simple mode */
 	String[] simpleHeaders = { "Cluster", "Details" };
 	
+	/** Column classes for the simple mode */
+	@SuppressWarnings("unchecked")
+	Class[] simpleClasses = { String.class, NodeSetDetails.class };
+	
 	/** Column headers for the detailed mode */
-	String[] detailedHeaders = { "Cluster", "Nodes", "Density" };
+	String[] detailedHeaders = { "Cluster", "Nodes", "Density",
+			"In-weight", "Out-weight", "Quality" };
+	
+	/** Column classes for the detailed mode */
+	@SuppressWarnings("unchecked")
+	Class[] detailedClasses = {
+		String.class, Integer.class, Double.class, Double.class, Double.class, Double.class
+	};
 	
 	/** Column headers for the current mode */
 	String[] currentHeaders = null;
 	
-	/** Formatter used to format fractional numbers */
-	NumberFormat fractionalFormat = new DecimalFormat("0.000");
+	/** Column classes for the current mode */
+	@SuppressWarnings("unchecked")
+	Class[] currentClasses = null;
 	
 	/**
 	 * The list of {@link NodeSet} objects shown in this model
 	 */
-	protected List<NodeSet> nodeSets;
+	protected List<NodeSet> nodeSets = null;
+	
+	/**
+	 * The list of {@link NodeSetDetails} objects to avoid having to calculate
+	 * the Details column all the time
+	 */
+	protected List<NodeSetDetails> nodeSetDetails = new ArrayList<NodeSetDetails>();
 	
 	/**
 	 * Whether the model is in detailed mode or simple mode
@@ -47,6 +63,7 @@ public class NodeSetTableModel extends AbstractTableModel {
 	 */
 	public NodeSetTableModel(List<NodeSet> nodeSets) {
 		this.nodeSets = new ArrayList<NodeSet>(nodeSets);
+		updateNodeSetDetails();
 		this.setDetailedMode(false);
 	}
 
@@ -58,17 +75,10 @@ public class NodeSetTableModel extends AbstractTableModel {
 		return nodeSets.size();
 	}
 	
-	/**
-	 * Returns whether the table model is in detailed mode
-	 */
-	public boolean getDetailedMode() {
-		return detailedMode;
-	}
-	
 	@Override
 	@SuppressWarnings("unchecked")
-	public Class getColumnClass(int columnIndex) {
-		return String.class;
+	public Class getColumnClass(int col) {
+		return currentClasses[col];
 	}
 	
 	@Override
@@ -86,10 +96,21 @@ public class NodeSetTableModel extends AbstractTableModel {
 		
 		if (!detailedMode) {
 			/* Simple mode, column 1 */
-			return getClusterDetails(nodeSet);
+			return this.nodeSetDetails.get(row);
 		}
 		
 		/* Detailed mode */
+		if (col == 1)
+			return nodeSet.size();
+		if (col == 2)
+			return nodeSet.getDensity();
+		if (col == 3)
+			return nodeSet.getTotalInternalEdgeWeight();
+		if (col == 4)
+			return nodeSet.getTotalBoundaryEdgeWeight();
+		if (col == 5)
+			return nodeSet.getQuality();
+		
 		return "TODO";
 	}
 	
@@ -104,13 +125,10 @@ public class NodeSetTableModel extends AbstractTableModel {
 	}
 	
 	/**
-	 * Returns a detailed description of a cluster in the Details column
+	 * Returns whether the table model is in detailed mode
 	 */
-	public String getClusterDetails(NodeSet nodeSet) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("Nodes: "); sb.append(nodeSet.size()); sb.append("\n");
-		sb.append("Density: "); sb.append(fractionalFormat.format(nodeSet.getDensity()));
-		return sb.toString();
+	public boolean isInDetailedMode() {
+		return detailedMode;
 	}
 	
 	/**
@@ -118,6 +136,7 @@ public class NodeSetTableModel extends AbstractTableModel {
 	 */
 	public void setDetailedMode(boolean mode) {
 		currentHeaders = detailedMode ? detailedHeaders : simpleHeaders;
+		currentClasses = detailedMode ? detailedClasses : simpleClasses;
 		
 		if (mode == detailedMode)
 			return;
@@ -126,4 +145,10 @@ public class NodeSetTableModel extends AbstractTableModel {
 		this.fireTableStructureChanged();
 	}
 	
+	private void updateNodeSetDetails() {
+		nodeSetDetails.clear();
+		for (NodeSet nodeSet: nodeSets) {
+			nodeSetDetails.add(new NodeSetDetails(nodeSet));
+		}
+	}
 }
