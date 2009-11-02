@@ -3,17 +3,16 @@ package uk.ac.rhul.cs.cl1.ui.cytoscape;
 import giny.model.Node;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.AbstractAction;
-import javax.swing.JButton;
-import javax.swing.JPanel;
+import javax.swing.Box;
+import javax.swing.ImageIcon;
 import javax.swing.JPopupMenu;
+import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -34,7 +33,7 @@ import uk.ac.rhul.cs.cl1.ui.ResultViewerPanel;
  * @author tamas
  */
 public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
-	ListSelectionListener, ActionListener {
+	ListSelectionListener {
 	/**
 	 * Mapping from node IDs to real Cytoscape {@link Node} objects
 	 */
@@ -86,13 +85,19 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		this.table.addMouseListener(new PopupMenuTrigger(clusterPopup));
 		
 		/* Add the bottom buttons */
-		JPanel buttonPanel = new JPanel();
+		/* JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 0));
-		JButton closeButton = new JButton("Close");
-		closeButton.setActionCommand("close");
-		closeButton.addActionListener(this);
+		JButton closeButton = new JButton(new CloseAction(this));
 		buttonPanel.add(closeButton);
-		this.add(buttonPanel, BorderLayout.SOUTH);
+		this.add(buttonPanel, BorderLayout.SOUTH); */
+		
+		/* Add a toolbar to the top */
+		JToolBar topToolBar = new JToolBar();
+		topToolBar.add(countLabel);
+		topToolBar.add(Box.createHorizontalGlue());
+		topToolBar.add(new CloseAction(this));
+		topToolBar.setFloatable(false);
+		this.add(topToolBar, BorderLayout.NORTH);
 	}
 	
 	/**
@@ -175,21 +180,27 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		network.unselectAllNodes();
 		network.unselectAllEdges();
 		network.setSelectedNodeState(nodes, true);
+		network.setSelectedEdgeState(network.getConnectingEdges(nodes), true);
 		networkView.redrawGraph(false, true);
 		
 		extractClusterAction.setEnabled(nodes.size() > 0);
 		copyToClipboardAction.setEnabled(nodes.size() > 0);
 	}
 
-	public void actionPerformed(ActionEvent event) {
-		String action = event.getActionCommand();
+	class CloseAction extends AbstractAction {
+		CytoscapeResultViewerPanel panel;
 		
-		if (action == null)
-			return;
+		public CloseAction(CytoscapeResultViewerPanel panel) {
+			super("Close");
+			this.panel = panel;
+			this.putValue(AbstractAction.SMALL_ICON,
+					new ImageIcon(this.getClass().getResource("../../resources/close.png"))
+			);
+		}
 		
-		if (action.equals("close")) {
+		public void actionPerformed(ActionEvent event) {
 			CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST);
-			cytoPanel.remove(this);
+			cytoPanel.remove(panel);
 			if (cytoPanel.getCytoPanelComponentCount() == 0) {
 				cytoPanel.setState(CytoPanelState.HIDE);
 			}

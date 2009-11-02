@@ -57,13 +57,20 @@ public class ResultViewerPanel extends JPanel {
 	 * Retrieves the selected {@link NodeSet}
 	 */
 	public NodeSet getSelectedNodeSet() {
+		
+		NodeSetTableModel model = (NodeSetTableModel)this.table.getModel();
+		return model.getNodeSetByIndex(this.getSelectedNodeSetIndex());
+	}
+	
+	/**
+	 * Retrieves the index of the selected {@link NodeSet} in the original result set.
+	 * @return
+	 */
+	public Integer getSelectedNodeSetIndex() {
 		int selectedRow = this.table.getSelectedRow();
 		if (selectedRow == -1)
 			return null;
-		selectedRow = this.table.convertRowIndexToModel(selectedRow);
-		
-		NodeSetTableModel model = (NodeSetTableModel)this.table.getModel();
-		return model.getNodeSetByIndex(selectedRow);
+		return this.table.convertRowIndexToModel(selectedRow);
 	}
 	
 	/**

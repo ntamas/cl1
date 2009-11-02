@@ -55,7 +55,7 @@ public class ExtractClusterAction extends AbstractAction {
 		CyNetwork newNetwork = Cytoscape.createNetwork(
 				graphPerspective.getNodeIndicesArray(),
 				graphPerspective.getEdgeIndicesArray(),
-				"Title", network);
+				"Cluster "+(this.resultViewer.getSelectedNodeSetIndex()+1), network);
 		CyNetworkView newNetworkView = Cytoscape.createNetworkView(newNetwork);
 		newNetworkView.fitContent();
 	}

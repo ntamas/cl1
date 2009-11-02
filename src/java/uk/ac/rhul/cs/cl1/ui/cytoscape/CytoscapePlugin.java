@@ -3,6 +3,7 @@ package uk.ac.rhul.cs.cl1.ui.cytoscape;
 import giny.model.Edge;
 import giny.model.Node;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -22,10 +23,47 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.view.CyMenus;
 
 public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin {
+	/**
+	 * Attribute name used by Cluster ONE to store status information for each node.
+	 * 
+	 * A node can have one and only one of the following status values:
+	 * 
+	 * <ul>
+	 * <li>0 = the node is an outlier (it is not included in any cluster)</li>
+	 * <li>1 = the node is included in only a single cluster</li>
+	 * <li>2 = the node is an overlap (it is included in more than one cluster)</li>
+	 * </ul>
+	 */
+	public static final String ATTRIBUTE_STATUS = "cl1.Status";
+	
+	/**
+	 * Attribute name used by Cluster ONE to store affinities of vertices to a
+	 * given cluster.
+	 */
+	public static final String ATTRIBUTE_AFFINITY = "cl1.Affinity";
+	
+	
 	public CytoscapePlugin() {
+		/* Set up menus */
 		CyMenus cyMenus = Cytoscape.getDesktop().getCyMenus();
 		cyMenus.addAction(new ShowControlPanelAction());
 		cyMenus.addAction(new AboutAction());
+		
+		/* Set up the attributes that will be used by Cluster ONE */
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		nodeAttributes.setAttributeDescription(ATTRIBUTE_STATUS,
+				"This attribute is used by the Cluster ONE plugin to indicate the status "+
+				"of a node after a Cluster ONE run. The status codes are as follows:\n\n"+
+				"0 = the node is not part of any cluster (i.e. it is an outlier)\n"+
+				"1 = the node is part of exactly one cluster\n"+
+				"2 = the node is part of multiple clusters (i.e. it is an overlap)"
+		);
+		nodeAttributes.setAttributeDescription(ATTRIBUTE_AFFINITY,
+				"This attribute is used by the Cluster ONE plugin to indicate the "+
+				"affinity of a node to a given cluster. The attribute values can be "+
+				"(re)calculated manually by right-clicking on a cluster in the "+
+				"Cluster ONE result table and selecting the appropriate menu item."
+		);
 	}
 
 	/**
@@ -47,10 +85,42 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin {
 		ClusterONECytoscapeTask task = new ClusterONECytoscapeTask(parameters);
 		task.setGraph(graph);
 		TaskManager.executeTask(task, config);
+		setStatusAttributesOnCyNetwork(network, task.getResults(),
+				graphAndMapping.getRight());
 		
 		return Pair.create(task.getResults(), graphAndMapping.getRight());
 	}
 	
+	/**
+	 * Sets some Cluster ONE specific attributes on a CyNetwork that will be in
+	 * VizMapper later.
+	 * 
+	 * @param network    the analysed network in Cytoscape's representation
+	 * @param results    results of the analysis
+	 * @param mapping    the mapping from node IDs to Cytoscape nodes
+	 */
+	private static void setStatusAttributesOnCyNetwork(CyNetwork network,
+			List<NodeSet> results, List<Node> mapping) {
+		int[] occurrences = new int[network.getNodeCount()];
+		Arrays.fill(occurrences, 0);
+		
+		for (NodeSet nodeSet: results) {
+			for (Integer nodeIdx: nodeSet) {
+				occurrences[nodeIdx]++;
+			}
+		}
+		
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		int i = 0;
+		for (Node node: mapping) {
+			if (occurrences[i] > 2)
+				occurrences[i] = 2;
+			nodeAttributes.setAttribute(node.getIdentifier(), ATTRIBUTE_STATUS,
+					occurrences[i]);
+			i++;
+		}
+	}
+
 	/**
 	 * Converts a Cytoscape {@link CyNetwork} to a Cluster ONE {@link Graph}.
 	 * 
