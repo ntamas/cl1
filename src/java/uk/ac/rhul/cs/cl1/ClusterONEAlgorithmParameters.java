@@ -27,25 +27,35 @@ public class ClusterONEAlgorithmParameters {
 	protected double overlapThreshold = 0.8;
 	
 	/**
+	 * Complex merging method.
+	 * 
+	 * Possible values:
+	 * <ul>
+	 * <li>match: match coefficient</li>
+	 * <li>meet/min: meet/min coefficient</li>
+	 * </ul>
+	 */
+	protected String mergingMethod = "meet/min";
+	
+	/**
 	 * Seed generation method specification string.
 	 * This must be something understood by {@link SeedGenerator.fromString}
 	 */
 	protected String seedGenerator = "nodes";
 	
 	/**
+	 * @return the mergingMethod
+	 */
+	public String getMergingMethod() {
+		return mergingMethod;
+	}
+
+	/**
 	 * Returns the minimum density of clusters
 	 * @return the minimum density of clusters
 	 */
 	public double getMinDensity() {
 		return minDensity;
-	}
-
-	/**
-	 * Sets the minimum density of clusters that can be considered acceptable.
-	 * @param minDensity the minDensity to set
-	 */
-	public void setMinDensity(double minDensity) {
-		this.minDensity = Math.max(0, minDensity);
 	}
 
 	/**
@@ -57,24 +67,42 @@ public class ClusterONEAlgorithmParameters {
 	}
 
 	/**
-	 * Sets the minimum size of the clusters that will be returned
-	 * @param minSize the minimum size
-	 */
-	public void setMinSize(int minSize) {
-		this.minSize = Math.max(1, minSize);
-	}
-
-	/**
 	 * Returns the overlap threshold of the algorithm.
 	 * 
 	 * The overlap threshold controls whether two given clusters will be merged in the final
-	 * result set. The complexes will be merged if their matching ratio is larger than
+	 * result set. The complexes will be merged if their matching ratio or meet/min
+	 * coefficient (depending on the current {@link mergingMethod}) is larger than
 	 * this ratio.
 	 * 
 	 * @return the overlap threshold
 	 */
 	public double getOverlapThreshold() {
 		return overlapThreshold;
+	}
+
+	/**
+	 * Sets the merging method that will be used by the algorithm.
+	 * 
+	 * @param mergingMethod the merging method to use
+	 */
+	public void setMergingMethod(String mergingMethod) {
+		this.mergingMethod = mergingMethod;
+	}
+
+	/**
+	 * Sets the minimum density of clusters that can be considered acceptable.
+	 * @param minDensity the minDensity to set
+	 */
+	public void setMinDensity(double minDensity) {
+		this.minDensity = Math.max(0, minDensity);
+	}
+
+	/**
+	 * Sets the minimum size of the clusters that will be returned
+	 * @param minSize the minimum size
+	 */
+	public void setMinSize(int minSize) {
+		this.minSize = Math.max(1, minSize);
 	}
 
 	/**

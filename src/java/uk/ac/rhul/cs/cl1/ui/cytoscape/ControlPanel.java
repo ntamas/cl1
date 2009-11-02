@@ -42,7 +42,7 @@ public class ControlPanel extends JPanel {
 		/* Weight attribute name method */
 		weightAttributeCombo = new JComboBox();
 		updateWeightAttributeCombo();
-		algorithmParametersPanel.addComponent("Edge weight attribute:", weightAttributeCombo);
+		algorithmParametersPanel.addComponent("Edge weights:", weightAttributeCombo);
 		this.add(algorithmParametersPanel);
 		
 		/* Button panel */

@@ -89,11 +89,32 @@ public class NodeSet implements Iterable<Integer> {
 
 	/**
 	 * Checks whether a node is a member of the nodeset or not
-	 * @param    nodeIndex   index of the node being tested
+	 * @param    idx   index of the node being tested
 	 * @return   true if the node is a member of the set, false otherwise
 	 */
-	public boolean contains(int i) {
-		return members.contains(i);
+	public boolean contains(int idx) {
+		return members.contains(idx);
+	}
+	
+	/**
+	 * Checks whether any of the given nodes is a member of the nodeset or not
+	 * @param    nodeIndex   index of the node being tested
+	 * @return   true if any node is a member of the set, false otherwise
+	 */
+	public boolean containsAny(Collection<Integer> idxs) {
+		for (Integer i: idxs)
+			if (this.members.contains(i))
+				return true;
+		return false;
+	}
+	
+	/**
+	 * Checks whether all of the given nodes are a member of the nodeset or not
+	 * @param    nodeIndex   index of the node being tested
+	 * @return   true if all the nodes are a member of the set, false otherwise
+	 */
+	public boolean containsAll(Collection<Integer> idxs) {
+		return this.members.containsAll(idxs);
 	}
 	
 	/**

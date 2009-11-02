@@ -16,6 +16,7 @@ import javax.swing.SortOrder;
 import javax.swing.table.TableRowSorter;
 
 import uk.ac.rhul.cs.cl1.NodeSet;
+import uk.ac.rhul.cs.cl1.ui.NodeSetTableModel;
 
 /**
  * A Swing panel that shows the results of a Cluster ONE run
@@ -46,7 +47,7 @@ public class ResultViewerPanel extends JPanel {
 		
 		/* Add the result table */
 		table = new JTable();
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		table.setIntercellSpacing(new Dimension(0, 4));
 
 		JScrollPane scrollPane = new JScrollPane(table);
@@ -57,14 +58,27 @@ public class ResultViewerPanel extends JPanel {
 	 * Retrieves the selected {@link NodeSet}
 	 */
 	public NodeSet getSelectedNodeSet() {
+		Integer selectedIndex = this.getSelectedNodeSetIndex();
+		if (selectedIndex == null)
+			return null;
 		
-		NodeSetTableModel model = (NodeSetTableModel)this.table.getModel();
-		return model.getNodeSetByIndex(this.getSelectedNodeSetIndex());
+		return this.getTableModel().getNodeSetByIndex(selectedIndex);
+	}
+	
+	/**
+	 * Retrieves the selected {@link NodeSet}s
+	 */
+	public List<NodeSet> getSelectedNodeSets() {
+		NodeSetTableModel model = this.getTableModel();
+		List<NodeSet> result = new ArrayList<NodeSet>();
+		for (int idx: this.getSelectedNodeSetIndices()) {
+			result.add(model.getNodeSetByIndex(idx));
+		}
+		return result;
 	}
 	
 	/**
 	 * Retrieves the index of the selected {@link NodeSet} in the original result set.
-	 * @return
 	 */
 	public Integer getSelectedNodeSetIndex() {
 		int selectedRow = this.table.getSelectedRow();
@@ -74,10 +88,31 @@ public class ResultViewerPanel extends JPanel {
 	}
 	
 	/**
+	 * Retrieves the indices of the selected {@link NodeSet}s in the original result set.
+	 */
+	public int[] getSelectedNodeSetIndices() {
+		int[] selectedRows = this.table.getSelectedRows();
+		int[] selectedRowsInModel = new int[selectedRows.length];
+		int i = 0;
+		for (int idx: selectedRows) {
+			selectedRowsInModel[i] = this.table.convertRowIndexToModel(idx);
+			i++;
+		}
+		return selectedRowsInModel;
+	}
+	
+	/**
 	 * Gets the table shown within the panel
 	 */
 	public JTable getTable() {
 		return table;
+	}
+	
+	/**
+	 * Gets the table model of the panel
+	 */
+	public NodeSetTableModel getTableModel() {
+		return (NodeSetTableModel)this.table.getModel();
 	}
 	
 	/**
@@ -113,5 +148,33 @@ public class ResultViewerPanel extends JPanel {
 		} catch (Exception ex) {
 			/* well, meh */
 		}
+	}
+	
+	/**
+	 * Adjusts the selection by selecting the given indices and deselecting everything else
+	 */
+	public void setSelectedNodeSetIndices(int[] indices) {
+		ListSelectionModel model = this.table.getSelectionModel();
+		
+		model.setValueIsAdjusting(true);
+		model.clearSelection();
+		for (int i: indices)
+			model.addSelectionInterval(i, i);
+		model.setValueIsAdjusting(false);
+	}
+
+	/**
+	 * Adjusts the selection by selecting the given indices and deselecting everything else
+	 */
+	public void setSelectedNodeSetIndices(List<Integer> indices) {
+		ListSelectionModel model = this.table.getSelectionModel();
+		
+		model.setValueIsAdjusting(true);
+		model.clearSelection();
+		for (int i: indices) {
+			int j = this.table.convertRowIndexToView(i);
+			model.addSelectionInterval(j, j);
+		}
+		model.setValueIsAdjusting(false);
 	}
 }

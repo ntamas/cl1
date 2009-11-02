@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.Box;
@@ -95,9 +97,28 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		JToolBar topToolBar = new JToolBar();
 		topToolBar.add(countLabel);
 		topToolBar.add(Box.createHorizontalGlue());
+		topToolBar.add(new FindAction(this));
 		topToolBar.add(new CloseAction(this));
 		topToolBar.setFloatable(false);
+		topToolBar.setRollover(true);
+		topToolBar.setBorderPainted(false);
 		this.add(topToolBar, BorderLayout.NORTH);
+	}
+	
+	/**
+	 * Converts an integer iterable yielding node IDs to a list of Cytoscape nodes
+	 * 
+	 * As {@link NodeSet}s are iterable, this method works with {@link NodeSet}s directly.
+	 */
+	protected List<Node> convertIterableToCytoscapeNodeList(Iterable<Integer> iterable) {
+		List<Node> result = new ArrayList<Node>();
+		for (int idx: iterable) {
+			Node node = this.nodeMapping.get(idx);
+			if (node == null)
+				continue;
+			result.add(node);
+		}
+		return result;
 	}
 	
 	/**
@@ -119,22 +140,46 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 	}
 	
 	/**
+	 * Retrieves the mapping from integer node IDs to real Cytoscape {@link Node} objects
+	 */
+	public List<Node> getNodeMapping() {
+		return this.nodeMapping;
+	}
+	
+	/**
 	 * Retrieves the set of Cytoscape nodes associated to the selected {@link NodeSet}.
+	 * 
+	 * If multiple {@link NodeSet}s are selected, the corresponding Cytoscape nodes will be
+	 * merged into a single set.
+	 * 
+	 * If nothing is selected in the table, an empty set will be returned.
+	 */
+	public List<Node> getSelectedCytoscapeNodeSet() {
+		Set<Integer> selectedIndices = new TreeSet<Integer>();
+		
+		/* Take the union of all indices. This step is necessary because CyNodes are not hashable */
+		for (NodeSet selectedNodeSet: this.getSelectedNodeSets()) {
+			for (Integer idx: selectedNodeSet) {
+				selectedIndices.add(idx);
+			}
+		}
+		
+		/* Convert indices to CyNodes */
+		return this.convertIterableToCytoscapeNodeList(selectedIndices);
+	}
+	
+	/**
+	 * Retrieves the set of Cytoscape nodes associated to the selected {@link NodeSet}.
+	 * 
+	 * If multiple {@link NodeSet}s are selected, the corresponding Cytoscape nodes will be
+	 * returned as individual lists.
 	 * 
 	 * If nothing is selected in the table, an empty list will be returned.
 	 */
-	public List<Node> getSelectedCytoscapeNodeSet() {
-		ArrayList<Node> result = new ArrayList<Node>();
-		NodeSet selectedNodeSet = this.getSelectedNodeSet();
-		
-		if (selectedNodeSet == null)
-			return result;
-		
-		for (Integer idx: selectedNodeSet) {
-			Node node = nodeMapping.get(idx);
-			if (node == null)
-				continue;         // node deleted in the meanwhile
-			result.add(node);
+	public List<List<Node>> getSelectedCytoscapeNodeSets() {
+		List<List<Node>> result = new ArrayList<List<Node>>();
+		for (NodeSet selectedNodeSet: this.getSelectedNodeSets()) {
+			result.add(this.convertIterableToCytoscapeNodeList(selectedNodeSet));			
 		}
 		return result;
 	}

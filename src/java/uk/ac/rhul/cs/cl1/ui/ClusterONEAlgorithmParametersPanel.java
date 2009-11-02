@@ -24,6 +24,9 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	/** Spinner component for adjusting the minimum cluster density */
 	protected JSpinner minimumClusterDensitySpinner;
 	
+	/** Combobox for selecting the cluster merging method */
+	protected JComboBox mergingMethodCombo;
+	
 	/** Spinner component for adjusting the overlap threshold of the merging step */
 	protected JSpinner overlapThresholdSpinner;
 	
@@ -32,6 +35,9 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	
 	/** Seeding methods */
 	protected String[] seedMethods = {"From every node", "From every edge"};
+	
+	/** Merging methods */
+	protected String[] mergingMethods = {"Match coefficient", "Meet/min coefficient"};
 	
 	public ClusterONEAlgorithmParametersPanel() {
 		super();
@@ -46,7 +52,7 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 		JLabel label;
 		
 		/* Minimum cluster size spinner */
-		label = new JLabel("Minimum cluster size:");
+		label = new JLabel("Minimum size:");
 		this.add(label, "0, 0, r, c");
 		minimumClusterSizeSpinner = new JSpinner();
 		minimumClusterSizeSpinner.setModel(
@@ -65,21 +71,27 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 		((JSpinner.NumberEditor)minimumClusterDensitySpinner.getEditor()).getTextField().setColumns(5);
 		this.add(minimumClusterDensitySpinner, "2, 1, l, c");
 		
+		/* Merging method combobox */
+		label = new JLabel("Merging method:");
+		this.add(label, "0, 2, r, c");
+		mergingMethodCombo = new JComboBox(mergingMethods);
+		this.add(mergingMethodCombo, "2, 2, l, c");
+		
 		/* Overlap threshold spinner */
 		label = new JLabel("Overlap threshold:");
-		this.add(label, "0, 2, r, c");
+		this.add(label, "0, 3, r, c");
 		overlapThresholdSpinner = new JSpinner();
 		overlapThresholdSpinner.setModel(
 				new SpinnerNumberModel(0.8, 0.0, 1.0, 0.05)
 		);
 		((JSpinner.NumberEditor)overlapThresholdSpinner.getEditor()).getTextField().setColumns(5);
-		this.add(overlapThresholdSpinner, "2, 2, l, c");
+		this.add(overlapThresholdSpinner, "2, 3, l, c");
 		
 		/* Seed selection method */
 		label = new JLabel("Seeding method:");
-		this.add(label, "0, 3, r, c");
+		this.add(label, "0, 4, r, c");
 		seedMethodCombo = new JComboBox(seedMethods);
-		this.add(seedMethodCombo, "2, 3, l, c");
+		this.add(seedMethodCombo, "2, 4, l, c");
 	}
 
 	/**
@@ -100,6 +112,13 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 		else
 			return null;
 		
+		if (mergingMethodCombo.getSelectedIndex() == 0)
+			result.setMergingMethod("match");
+		else if (mergingMethodCombo.getSelectedIndex() == 1)
+			result.setMergingMethod("meet/min");
+		else
+			return null;
+
 		return result;
 	}
 
@@ -109,7 +128,7 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	 * @param component  the component itself that should go in the right column
 	 */
 	public void addComponent(String caption, Component component) {
-		JLabel label = new JLabel("Edge weight attribute:");
+		JLabel label = new JLabel(caption);
 		TableLayout layout = (TableLayout)this.getLayout();
 		int numRows = layout.getNumRow();
 		layout.insertRow(numRows, TableLayout.PREFERRED);

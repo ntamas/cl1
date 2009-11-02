@@ -119,7 +119,7 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 		/* Merge highly overlapping clusters */
 		monitor.setPercentCompleted(0);
 		monitor.setStatus("Merging highly overlapping clusters...");
-		result = result.mergeOverlapping(params.getOverlapThreshold(), monitor);
+		result = result.mergeOverlapping(params.getMergingMethod(), params.getOverlapThreshold(), monitor);
 		monitor.setPercentCompleted(100);
 		
 		/* Return the result effectively */

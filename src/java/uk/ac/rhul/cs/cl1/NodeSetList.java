@@ -21,6 +21,11 @@ public class NodeSetList extends ArrayList<NodeSet> {
 	 * details. This version is different only in one respect: it does
 	 * not report its progress to a {@link TaskMonitor}.
 	 * 
+	 * @param mergingMethod  Determines which method to use to calculate the
+	 *                    size of overlap between two nodesets. <tt>match</tt>
+	 *                    means the matching coefficient, <tt>meet/min</tt>
+	 *                    means the meet/min coefficient.
+	 * 
 	 * @param  threshold  the overlap threshold. Nodesets will be merged
 	 *                    if their overlap is at least as large as the
 	 *                    given threshold.
@@ -30,8 +35,8 @@ public class NodeSetList extends ArrayList<NodeSet> {
 	 *
 	 * @see NodeSet.mergeOverlapping(double, TaskMonitor)
 	 */
-	public NodeSetList mergeOverlapping(double threshold) {
-		return mergeOverlapping(threshold, null);
+	public NodeSetList mergeOverlapping(String mergingMethod, double threshold) {
+		return mergeOverlapping(mergingMethod, threshold, null);
 	}
 
 	/**
@@ -43,7 +48,10 @@ public class NodeSetList extends ArrayList<NodeSet> {
 	 * given threshold. The connected components of the graph will be
 	 * used to derive the new nodesets in the result.
 	 * 
-	 * Cluster overlaps are measured by the meet/min coefficient.
+	 * @param mergingMethod  Determines which method to use to calculate the
+	 *                    size of overlap between two nodesets. <tt>match</tt>
+	 *                    means the matching coefficient, <tt>meet/min</tt>
+	 *                    means the meet/min coefficient.
 	 * 
 	 * @param  threshold  the overlap threshold. Nodesets will be merged
 	 *                    if their overlap is at least as large as the
@@ -54,7 +62,7 @@ public class NodeSetList extends ArrayList<NodeSet> {
 	 *
 	 * @see NodeSet.getMeetMinCoefficientWith()
 	 */
-	public NodeSetList mergeOverlapping(double threshold,
+	public NodeSetList mergeOverlapping(String mergingMethod, double threshold,
 			TaskMonitor monitor) {
 		int i, n = this.size();
 		long stepsTotal = n * (n-1) / 2, stepsTaken = 0;
@@ -77,10 +85,19 @@ public class NodeSetList extends ArrayList<NodeSet> {
 		
 		for (i = 0; i < n; i++) {
 			NodeSet v1 = this.get(i);
-			for (int j = i+1; j < n; j++) {
-				if (v1.getMatchingRatioWith(this.get(j)) >= threshold)
-					overlapGraph.createEdge(i, j);
+			
+			if (mergingMethod.equals("match")) {
+				for (int j = i+1; j < n; j++) {
+					if (v1.getMatchingRatioWith(this.get(j)) >= threshold)
+						overlapGraph.createEdge(i, j);
+				}
+			} else if (mergingMethod.equals("meet/min")) {
+				for (int j = i+1; j < n; j++) {
+					if (v1.getMeetMinCoefficientWith(this.get(j)) >= threshold)
+						overlapGraph.createEdge(i, j);
+				}
 			}
+			
 			stepsTaken += (n - i - 1);
 			if (stepsTaken > stepsTotal)
 				stepsTaken = stepsTotal;
