@@ -61,13 +61,19 @@ public class CopyClusterToClipboardAction extends AbstractAction {
 		if (systemClipboard == null)
 			return;
 		
-		List<Node> selectedNodes = this.resultViewer.getSelectedCytoscapeNodeSet();
-		List<String> nodeNames = new ArrayList<String>();
-		for (Node node: selectedNodes) {
-			nodeNames.add(node.getIdentifier());
+		List<List<Node>> selectedNodeLists = this.resultViewer.getSelectedCytoscapeNodeSets();
+		List<String> lines = new ArrayList<String>();
+		
+		for (List<Node> selectedNodes: selectedNodeLists) {
+			List<String> nodeNames = new ArrayList<String>();
+			for (Node node: selectedNodes) {
+				nodeNames.add(node.getIdentifier());
+			}
+			lines.add(StringUtils.join(nodeNames.iterator(), ' '));
 		}
+		
 		systemClipboard.setContents(new StringSelection(
-				StringUtils.join(nodeNames.iterator(), ' ')
+				StringUtils.join(lines.iterator(), '\n')
 		), null);
 	}
 }
