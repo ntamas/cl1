@@ -10,6 +10,9 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 	/** Density limit that is enforced while growing the complex */
 	protected double minDensity;
 	
+	/** Whether to add or remove only a single node in each step if multiple nodes have the same affinity */
+	protected boolean onlySingleNode = true;
+	
 	/**
 	 * Returns the minimum density that must be maintained while growing the cluster
 	 * @return the minimum density
@@ -102,6 +105,9 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 		
 		if (bestNodes.size() == 0)
 			return ClusterGrowthAction.terminate();
+		
+		if (bestNodes.size() > 1 && onlySingleNode)
+			bestNodes.setSize(1);
 		
 		if (bestIsAddition)
 			return ClusterGrowthAction.addition(bestNodes.toArray());
