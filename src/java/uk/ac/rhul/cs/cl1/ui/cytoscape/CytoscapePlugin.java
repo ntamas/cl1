@@ -42,7 +42,6 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin {
 	 */
 	public static final String ATTRIBUTE_AFFINITY = "cl1.Affinity";
 	
-	
 	public CytoscapePlugin() {
 		/* Set up menus */
 		CyMenus cyMenus = Cytoscape.getDesktop().getCyMenus();
@@ -85,8 +84,10 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin {
 		ClusterONECytoscapeTask task = new ClusterONECytoscapeTask(parameters);
 		task.setGraph(graph);
 		TaskManager.executeTask(task, config);
+		
 		setStatusAttributesOnCyNetwork(network, task.getResults(),
 				graphAndMapping.getRight());
+		VisualStyleManager.ensureVizMapperStylesRegistered(false);
 		
 		return Pair.create(task.getResults(), graphAndMapping.getRight());
 	}
