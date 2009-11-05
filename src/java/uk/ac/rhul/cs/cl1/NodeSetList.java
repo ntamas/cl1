@@ -30,13 +30,18 @@ public class NodeSetList extends ArrayList<NodeSet> {
 	 *                    if their overlap is at least as large as the
 	 *                    given threshold.
 	 *
+	 * @param  minDensity minimal density constraint that is enforced after
+	 *                    merging the nodesets. Nodesets having a lower density
+	 *                    than this after merging are discarded.
+	 *
 	 * @return  a new nodeset list where no two nodesets have an overlap
 	 *          larger than or eqal to the given threshold
 	 *
 	 * @see NodeSet.mergeOverlapping(double, TaskMonitor)
 	 */
-	public NodeSetList mergeOverlapping(String mergingMethod, double threshold) {
-		return mergeOverlapping(mergingMethod, threshold, null);
+	public NodeSetList mergeOverlapping(String mergingMethod, double threshold,
+			double minDensity) {
+		return mergeOverlapping(mergingMethod, threshold, minDensity, null);
 	}
 
 	/**
@@ -57,13 +62,18 @@ public class NodeSetList extends ArrayList<NodeSet> {
 	 *                    if their overlap is at least as large as the
 	 *                    given threshold.
 	 *
+	 * @param  minDensity minimal density constraint that is enforced after
+	 *                    merging the nodesets. Nodesets having a lower density
+	 *                    than this after merging are discarded.
+	 *
 	 * @return  a new nodeset list where no two nodesets have an overlap
-	 *          larger than or eqal to the given threshold
+	 *          larger than or equal to the given threshold, and no nodeset
+	 *          has a density smaller than minDensity
 	 *
 	 * @see NodeSet.getMeetMinCoefficientWith()
 	 */
 	public NodeSetList mergeOverlapping(String mergingMethod, double threshold,
-			TaskMonitor monitor) {
+			double minDensity, TaskMonitor monitor) {
 		int i, n = this.size();
 		long stepsTotal = n * (n-1) / 2, stepsTaken = 0;
 		NodeSetList result = new NodeSetList();
@@ -127,8 +137,9 @@ public class NodeSetList extends ArrayList<NodeSet> {
 				this.set(j, null);
 				visited[j] = true;
 			}
-			
-			result.add(new NodeSet(graph, members));
+			nodeSet = new NodeSet(graph, members);
+			if (nodeSet.getDensity() >= minDensity)
+				result.add(nodeSet);
 			i++;
 			
 			if (monitor != null)

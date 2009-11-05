@@ -53,21 +53,30 @@ public class StartAction extends CytoscapeAction {
 			return;
 		}
 		
+		/* Get a handle to the control panel */
 		ControlPanel panel = ControlPanel.getShownInstance();
 		if (panel == null)
 			return;
 		
+		/* Run the algorithm */
 		Pair<List<NodeSet>, List<Node>> results;
 		results = CytoscapePlugin.runAlgorithm(network, panel.getParameters(), panel.getWeightAttributeName());
 		if (results.getLeft() == null)
 			return;
-
-		CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST);
 		
+		/* Ensure that the Cluster ONE visual styles are registered */
+		VisualStyleManager.ensureVizMapperStylesRegistered(false);
+		
+		/* Set one of the Cluster ONE visual styles */
+		Cytoscape.getVisualMappingManager().setVisualStyle(VisualStyleManager.VISUAL_STYLE_BY_STATUS);
+		Cytoscape.getVisualMappingManager().applyAppearances();
+		networkView.redrawGraph(false, true);
+		
+		/* Add the results panel */
+		CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST);
 		CytoscapeResultViewerPanel resultsPanel = new CytoscapeResultViewerPanel(network, networkView);
 		resultsPanel.setNodeSets(results.getLeft());
 		resultsPanel.setNodeMapping(results.getRight());
-		
 		cytoPanel.add("Cluster ONE results", null, resultsPanel, "Cluster ONE results");
 		
 		/* Ensure that the panel is visible */

@@ -87,7 +87,6 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin {
 		
 		setStatusAttributesOnCyNetwork(network, task.getResults(),
 				graphAndMapping.getRight());
-		VisualStyleManager.ensureVizMapperStylesRegistered(false);
 		
 		return Pair.create(task.getResults(), graphAndMapping.getRight());
 	}
@@ -112,12 +111,14 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin {
 		}
 		
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		String[] values = {"Outlier", "Cluster", "Overlap"};
+		
 		int i = 0;
 		for (Node node: mapping) {
 			if (occurrences[i] > 2)
 				occurrences[i] = 2;
 			nodeAttributes.setAttribute(node.getIdentifier(), ATTRIBUTE_STATUS,
-					occurrences[i]);
+					values[occurrences[i]]);
 			i++;
 		}
 	}
