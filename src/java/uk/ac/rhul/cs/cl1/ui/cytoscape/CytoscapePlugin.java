@@ -1,19 +1,15 @@
 package uk.ac.rhul.cs.cl1.ui.cytoscape;
 
-import giny.model.Edge;
 import giny.model.Node;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JOptionPane;
 
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
-import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.cl1.Pair;
-import uk.ac.rhul.cs.cl1.UniqueIDGenerator;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -42,6 +38,11 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin {
 	 */
 	public static final String ATTRIBUTE_AFFINITY = "cl1.Affinity";
 	
+	/**
+	 * Local cache for converter Cluster ONE representations of Cytoscape networks
+	 */
+	private static CyNetworkCache networkCache = new CyNetworkCache();
+	
 	public CytoscapePlugin() {
 		/* Set up menus */
 		CyMenus cyMenus = Cytoscape.getDesktop().getCyMenus();
@@ -64,7 +65,14 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin {
 				"Cluster ONE result table and selecting the appropriate menu item."
 		);
 	}
-
+	
+	/**
+	 * Returns a reference to the network cache held by the plugin
+	 */
+	public static CyNetworkCache getNetworkCache() {
+		return networkCache;
+	}
+	
 	/**
 	 * Runs Cluster ONE with the given parameters on the current Cytoscape network
 	 * @param parameters   the algorithm parameters of Cluster ONE
@@ -72,11 +80,30 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin {
 	 */
 	protected static Pair<List<NodeSet>, List<Node>> runAlgorithm(CyNetwork network,
 			ClusterONEAlgorithmParameters parameters, String weightAttr) {
-		Pair<Graph, List<Node>> graphAndMapping = convertCyNetworkToGraph(network, weightAttr);
-		if (graphAndMapping == null)
+		Graph graph;
+		
+		try {
+			networkCache.invalidate(network);
+			graph = networkCache.convertCyNetworkToGraph(network, weightAttr);
+		} catch (NonNumericAttributeException ex) {
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+					"Weight attribute values must be numeric.",
+					"Error - invalid weight attribute",
+					JOptionPane.ERROR_MESSAGE);
+			return null;
+		}
+		
+		if (graph == null)
 			return null;
 		
-		Graph graph = graphAndMapping.getLeft();
+		if (graph.getEdgeCount() == 0) {
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+					"The selected network contains no edges",
+					"Error - no edges in network",
+					JOptionPane.ERROR_MESSAGE);
+			return null;
+		}
+		
 		JTaskConfig config = new JTaskConfig();
 		config.displayCancelButton(true);
 		config.displayStatus(true);
@@ -85,10 +112,9 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin {
 		task.setGraph(graph);
 		TaskManager.executeTask(task, config);
 		
-		setStatusAttributesOnCyNetwork(network, task.getResults(),
-				graphAndMapping.getRight());
+		setStatusAttributesOnCyNetwork(network, task.getResults(), graph);
 		
-		return Pair.create(task.getResults(), graphAndMapping.getRight());
+		return Pair.create(task.getResults(), graph.getNodeMapping());
 	}
 	
 	/**
@@ -97,10 +123,10 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin {
 	 * 
 	 * @param network    the analysed network in Cytoscape's representation
 	 * @param results    results of the analysis
-	 * @param mapping    the mapping from node IDs to Cytoscape nodes
+	 * @param graph      the Cluster ONE graph representation
 	 */
 	private static void setStatusAttributesOnCyNetwork(CyNetwork network,
-			List<NodeSet> results, List<Node> mapping) {
+			List<NodeSet> results, Graph graph) {
 		int[] occurrences = new int[network.getNodeCount()];
 		Arrays.fill(occurrences, 0);
 		
@@ -114,62 +140,12 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin {
 		String[] values = {"Outlier", "Cluster", "Overlap"};
 		
 		int i = 0;
-		for (Node node: mapping) {
+		for (Node node: graph.getNodeMapping()) {
 			if (occurrences[i] > 2)
 				occurrences[i] = 2;
 			nodeAttributes.setAttribute(node.getIdentifier(), ATTRIBUTE_STATUS,
 					values[occurrences[i]]);
 			i++;
 		}
-	}
-
-	/**
-	 * Converts a Cytoscape {@link CyNetwork} to a Cluster ONE {@link Graph}.
-	 * 
-	 * @param network     the Cytoscape network to be converted
-	 * @param weightAttr  the name of the edge attribute storing the edge weight
-	 * @return    a pair of the converted Cluster ONE graph and a mapping from IDs to Cytoscape nodes
-	 */
-	@SuppressWarnings("unchecked")
-	protected static Pair<Graph, List<Node> >
-		convertCyNetworkToGraph(CyNetwork network, String weightAttr) {
-		Graph graph = new Graph();
-		UniqueIDGenerator<Node> nodeIdGen = new UniqueIDGenerator<Node>(graph);
-		CyAttributes edgeAttrs = Cytoscape.getEdgeAttributes();
-		
-		/* Import all the edges into our graph */
-		try {
-			Iterator it = network.edgesIterator();
-			while (it.hasNext()) {
-				Edge edge = (Edge)it.next();
-				int src = nodeIdGen.get(edge.getSource());
-				int dest = nodeIdGen.get(edge.getTarget());
-				if (src == dest)
-					continue;
-				
-				Double weight = weightAttr == null ? null :
-					(Double)edgeAttrs.getAttribute(edge.getIdentifier(), weightAttr);
-				if (weight == null)
-					weight = 1.0;
-				
-				graph.createEdge(src, dest, weight);
-			}
-		} catch (ClassCastException ex) {
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-					"Weight attribute values must be numeric.",
-					"Error - invalid weight attribute",
-					JOptionPane.ERROR_MESSAGE);
-			return null;
-		}
-		
-		if (graph.getEdgeCount() == 0) {
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-					"The selected network contains no edges",
-					"Error - no edges in network",
-					JOptionPane.ERROR_MESSAGE);
-			return null;
-		}
-		
-		return Pair.create(graph, nodeIdGen.getReversedList());
 	}
 }
