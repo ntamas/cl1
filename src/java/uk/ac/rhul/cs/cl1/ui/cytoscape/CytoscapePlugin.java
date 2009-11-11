@@ -139,6 +139,20 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin {
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		String[] values = {"Outlier", "Cluster", "Overlap"};
 		
+		byte attrType = nodeAttributes.getType(ATTRIBUTE_STATUS);
+		if (attrType != CyAttributes.TYPE_UNDEFINED && attrType != CyAttributes.TYPE_STRING) {
+			int response = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(),
+					"A node attribute named "+ATTRIBUTE_STATUS+" already exists and "+
+					"it is not a string attribute.\nDo you want to remove the existing "+
+					"attribute and re-register it as a string attribute?",
+					"Attribute type mismatch",
+					JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+			if (response == JOptionPane.NO_OPTION)
+				return;
+			
+			nodeAttributes.deleteAttribute(ATTRIBUTE_STATUS);
+		}
+		
 		int i = 0;
 		for (Node node: graph.getNodeMapping()) {
 			if (occurrences[i] > 2)
