@@ -38,10 +38,9 @@ public class ClusterONEAlgorithmParameters {
 	protected String mergingMethod = "meet/min";
 	
 	/**
-	 * Seed generation method specification string.
-	 * This must be something understood by {@link SeedGenerator.fromString}
+	 * The seed generation method.
 	 */
-	protected String seedGenerator = "nodes";
+	protected SeedGenerator seedGenerator = new EveryNodeSeedGenerator();
 	
 	/**
 	 * @return the mergingMethod
@@ -117,19 +116,28 @@ public class ClusterONEAlgorithmParameters {
 
 	/**
 	 * Returns the seed generation method of the algorithm.
-	 * @return the seed generation method as a string
+	 * @return the seed generation method
 	 */
-	public String getSeedGenerator() {
+	public SeedGenerator getSeedGenerator() {
 		return seedGenerator;
+	}
+
+	/**
+	 * Sets the seed generation method of the algorithm from a string specification
+	 * 
+	 * @param seedMethod the new seed generation method. Must be a specification
+	 *                   that is understood by {@link SeedGenerator.fromString}
+	 */
+	public void setSeedGenerator(String seedMethodSpec) throws InstantiationException {
+		this.seedGenerator = SeedGenerator.fromString(seedMethodSpec); 
 	}
 
 	/**
 	 * Sets the seed generation method of the algorithm
 	 * 
-	 * @param seedMethod the new seed generation method. Must be a specification
-	 *                   that is understood by {@link SeedGenerator.fromString}
+	 * @param  seedGenerator  the new seed generation method.
 	 */
-	public void setSeedGenerator(String seedMethod) {
-		this.seedGenerator = seedMethod; 
+	public void setSeedGenerator(SeedGenerator seedGenerator) {
+		this.seedGenerator = seedGenerator; 
 	}
 }

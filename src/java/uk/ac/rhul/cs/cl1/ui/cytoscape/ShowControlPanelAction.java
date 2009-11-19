@@ -54,5 +54,8 @@ public class ShowControlPanelAction extends CytoscapeAction {
 		ControlPanel panel = new ControlPanel();
 		cytoPanel.add(ClusterONE.applicationName, panel);
 		cytoPanel.setSelectedIndex(cytoPanel.indexOfComponent(panel));
+		
+		/* Enable actions depending on the existence of a ControlPanel */
+		GrowClusterAction.getGlobalInstance().setEnabled(true);
 	}
 }

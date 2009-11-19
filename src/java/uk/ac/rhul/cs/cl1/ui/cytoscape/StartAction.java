@@ -60,7 +60,7 @@ public class StartAction extends CytoscapeAction {
 		
 		/* Run the algorithm */
 		Pair<List<NodeSet>, List<Node>> results;
-		results = CytoscapePlugin.runAlgorithm(network, panel.getParameters(), panel.getWeightAttributeName());
+		results = CytoscapePlugin.runAlgorithm(network, panel.getParameters(), panel.getWeightAttributeName(), true);
 		if (results.getLeft() == null)
 			return;
 		

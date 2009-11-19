@@ -105,12 +105,16 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 		result.setMinDensity((Double)minimumClusterDensitySpinner.getValue());
 		result.setOverlapThreshold((Double)overlapThresholdSpinner.getValue());
 		
-		if (seedMethodCombo.getSelectedIndex() == 0)
-			result.setSeedGenerator("nodes");
-		else if (seedMethodCombo.getSelectedIndex() == 1)
-			result.setSeedGenerator("edges");
-		else
+		try {
+			if (seedMethodCombo.getSelectedIndex() == 0)
+				result.setSeedGenerator("nodes");
+			else if (seedMethodCombo.getSelectedIndex() == 1)
+				result.setSeedGenerator("edges");
+			else
+				return null;
+		} catch (InstantiationException ex) {
 			return null;
+		}
 		
 		if (mergingMethodCombo.getSelectedIndex() == 0)
 			result.setMergingMethod("match");

@@ -73,6 +73,15 @@ public class MutableNodeSet extends NodeSet {
 		this.setMembers(members);
 	}
 	
+	/**
+	 * Constructs a new mutable nodeset from the given non-mutable nodeset
+	 * 
+	 * @param nodeSet  the original, non-mutable nodeset
+	 */
+	public MutableNodeSet(NodeSet nodeSet) {
+		this(nodeSet.getGraph(), nodeSet.getMembers());
+	}
+	
 	protected void initializeInOutWeights() {
 		totalInternalEdgeWeight = 0.0;
 		totalBoundaryEdgeWeight = 0.0;

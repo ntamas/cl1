@@ -41,6 +41,11 @@ public class EveryNodeSeedGenerator extends SeedGenerator {
 		
 	}
 	
+	/** Constructs a seed generator that is not associated to any graph yet */
+	public EveryNodeSeedGenerator() {
+		super();
+	}
+	
 	/** Constructs a seed generator for the given graph that considers every node as a seed nodeset. */
 	public EveryNodeSeedGenerator(Graph graph) {
 		super(graph);

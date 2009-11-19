@@ -58,4 +58,16 @@ public abstract class SeedGenerator extends GraphAlgorithm implements Iterable<M
 		
 		throw new InstantiationException("unknown seed generator type: "+specification);
 	}
+	
+	/**
+	 * Factory method that can construct seed generators from a simple string description.
+	 * 
+	 * The constructed seed generator will not be associated to any given graph yet.
+	 * 
+	 * @param  specification   the specification string
+	 * @throws InstantiationException if the specification string is invalid
+	 */
+	public static SeedGenerator fromString(String specification) throws InstantiationException {
+		return fromString(specification, null);
+	}
 }

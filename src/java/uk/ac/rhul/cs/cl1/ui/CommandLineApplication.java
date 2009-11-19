@@ -49,6 +49,8 @@ public class CommandLineApplication {
 		} catch (ParseException ex) {
 			System.err.println("Failed to parse command line options. Reason: " + ex.getMessage());
 			return 1;
+		} catch (InstantiationException ex) {
+			System.err.println("Failed to construct seed method: "+cmd.getOptionValue("seed-method").toString());
 		}
 		
 		// Check if we have an input file name or if we have the -h option

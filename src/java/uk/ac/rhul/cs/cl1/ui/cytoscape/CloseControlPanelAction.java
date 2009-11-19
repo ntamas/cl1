@@ -19,5 +19,8 @@ public class CloseControlPanelAction implements ActionListener {
 			return;
 		
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).remove(panel);
+		
+		/* Disable actions depending on the control panel */
+		GrowClusterAction.getGlobalInstance().setEnabled(false);
 	}
 }
