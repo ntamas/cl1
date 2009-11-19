@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
+import uk.ac.rhul.cs.cl1.MutableNodeSet;
 import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.cl1.Pair;
 
@@ -58,10 +59,12 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 		CyMenus cyMenus = Cytoscape.getDesktop().getCyMenus();
 		cyMenus.addAction(new ShowControlPanelAction());
 		cyMenus.addAction(GrowClusterAction.getGlobalInstance());
+		cyMenus.addAction(AffinityColouringAction.getGlobalInstance());
 		cyMenus.addAction(new AboutAction());
 		
 		/* Disable actions depending on the control panel */
 		GrowClusterAction.getGlobalInstance().setEnabled(false);
+		AffinityColouringAction.getGlobalInstance().setEnabled(false);
 		
 		/* Set up the attributes that will be used by Cluster ONE */
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
@@ -96,7 +99,6 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 		Graph graph = null;
 		
 		try {
-			networkCache.invalidate(network);
 			graph = networkCache.convertCyNetworkToGraph(network, weightAttr);
 		} catch (NonNumericAttributeException ex) {
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
@@ -128,6 +130,7 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 	protected static Pair<List<NodeSet>, List<Node>> runAlgorithm(CyNetwork network,
 			ClusterONEAlgorithmParameters parameters, String weightAttr,
 			boolean setAttributes) {
+		networkCache.invalidate(network);
 		Graph graph = convertCyNetworkToGraph(network, weightAttr);
 		
 		if (graph == null)
@@ -136,7 +139,7 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 		List<NodeSet> clusters = runAlgorithm(graph, parameters, weightAttr);
 		
 		if (setAttributes)
-			setStatusAttributesOnCyNetwork(network, clusters, graph);
+			setStatusAttributesOnGraph(graph, clusters);
 		
 		return Pair.create(clusters, graph.getNodeMapping());
 	}
@@ -170,16 +173,14 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 	}
 	
 	/**
-	 * Sets some Cluster ONE specific attributes on a CyNetwork that will be in
-	 * VizMapper later.
+	 * Sets some Cluster ONE specific node status attributes on a CyNetwork that
+	 * will be used by VizMapper later.
 	 * 
-	 * @param network    the analysed network in Cytoscape's representation
-	 * @param results    results of the analysis
 	 * @param graph      the Cluster ONE graph representation
+	 * @param results    results of the analysis
 	 */
-	private static void setStatusAttributesOnCyNetwork(CyNetwork network,
-			List<NodeSet> results, Graph graph) {
-		int[] occurrences = new int[network.getNodeCount()];
+	private static void setStatusAttributesOnGraph(Graph graph, List<NodeSet> results) {
+		int[] occurrences = new int[graph.getNodeCount()];
 		Arrays.fill(occurrences, 0);
 		
 		for (NodeSet nodeSet: results) {
@@ -213,6 +214,50 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 					values[occurrences[i]]);
 			i++;
 		}
+	}
+	
+	/**
+	 * Sets the Cluster ONE specific node affinity attributes on a CyNetwork that
+	 * will be used by VizMapper later.
+	 * 
+	 * @param graph    the Cluster ONE graph representation
+	 * @param nodes    the list of the selected node indices
+	 */
+	public static void setAffinityAttributesOnGraph(Graph graph, List<Integer> nodes) {
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		
+		byte attrType = nodeAttributes.getType(ATTRIBUTE_AFFINITY);
+		if (attrType != CyAttributes.TYPE_UNDEFINED && attrType != CyAttributes.TYPE_FLOATING) {
+			int response = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(),
+					"A node attribute named "+ATTRIBUTE_AFFINITY+" already exists and "+
+					"it is not a floating point attribute.\nDo you want to remove the existing "+
+					"attribute and re-register it as a floating point attribute?",
+					"Attribute type mismatch",
+					JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+			if (response == JOptionPane.NO_OPTION)
+				return;
+			
+			nodeAttributes.deleteAttribute(ATTRIBUTE_AFFINITY);
+		}
+		
+		int i = 0;
+		MutableNodeSet nodeSet = new MutableNodeSet(graph, nodes);
+		double currentQuality = nodeSet.getQuality(), affinity;
+		for (Node node: graph.getNodeMapping()) {
+			if (nodeSet.contains(i))
+				affinity = nodeSet.getRemovalAffinity(i) - currentQuality;
+			else
+				affinity = nodeSet.getAdditionAffinity(i) - currentQuality;
+			nodeAttributes.setAttribute(node.getIdentifier(), ATTRIBUTE_AFFINITY, affinity);
+			i++;
+		}
+		
+		/* Set the appropriate Cluster ONE visual style */
+		VisualStyleManager.ensureVizMapperStylesRegistered(false);
+		VisualStyleManager.updateAffinityStyleRange();
+		Cytoscape.getVisualMappingManager().setVisualStyle(VisualStyleManager.VISUAL_STYLE_BY_AFFINITY);
+		Cytoscape.getVisualMappingManager().applyAppearances();
+		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 	}
 	
 	/**

@@ -3,6 +3,7 @@ package uk.ac.rhul.cs.cl1.ui.cytoscape;
 import giny.model.Node;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -45,5 +46,22 @@ public class Graph extends uk.ac.rhul.cs.cl1.Graph {
 
 	public List<Node> getNodeMapping() {
 		return nodeMapping;
+	}
+
+	/**
+	 * Returns the corresponding node indices for a collection of Cytoscape nodes.
+	 * 
+	 * @param   nodes   a collection of Cytoscape nodes for which we need the indices
+	 * @return  the corresponding indices in arbitrary order
+	 */
+	public List<Integer> getMappedNodeIndices(Collection<Node> nodes) {
+		List<Integer> result = new ArrayList<Integer>();
+		for (Node node: nodes) {
+			int index = this.nodeMapping.indexOf(node);
+			if (index < 0)
+				continue;
+			result.add(index);
+		}
+		return result;
 	}
 }

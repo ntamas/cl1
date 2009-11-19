@@ -57,5 +57,6 @@ public class ShowControlPanelAction extends CytoscapeAction {
 		
 		/* Enable actions depending on the existence of a ControlPanel */
 		GrowClusterAction.getGlobalInstance().setEnabled(true);
+		AffinityColouringAction.getGlobalInstance().setEnabled(true);
 	}
 }

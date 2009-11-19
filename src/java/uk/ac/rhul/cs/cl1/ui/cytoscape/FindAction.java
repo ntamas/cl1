@@ -31,7 +31,7 @@ public class FindAction extends AbstractAction {
 	 * Constructor
 	 */
 	public FindAction(CytoscapeResultViewerPanel panel) {
-		super("Find clusters of selected node");
+		super("Find clusters of this node");
 		this.resultViewer = panel;
 		this.putValue(AbstractAction.MNEMONIC_KEY, KeyEvent.VK_F);
 		this.putValue(AbstractAction.SMALL_ICON,

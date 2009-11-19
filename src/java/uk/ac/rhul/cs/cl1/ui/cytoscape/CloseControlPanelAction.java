@@ -22,5 +22,6 @@ public class CloseControlPanelAction implements ActionListener {
 		
 		/* Disable actions depending on the control panel */
 		GrowClusterAction.getGlobalInstance().setEnabled(false);
+		AffinityColouringAction.getGlobalInstance().setEnabled(false);
 	}
 }

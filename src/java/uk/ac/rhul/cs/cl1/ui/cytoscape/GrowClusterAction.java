@@ -149,4 +149,9 @@ public class GrowClusterAction extends CytoscapeAction {
 			globalInstance = new GrowClusterAction();
 		return globalInstance;
 	}
+	
+	@Override
+	public boolean isInToolBar() {
+		return false;
+	}
 }

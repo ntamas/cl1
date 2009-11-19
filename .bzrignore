@@ -6,4 +6,4 @@
 ./lib/junit-4.7.jar
 ./cluster_one-0.1.jar
 ./cytotest.sh
-./test.cys
+./*.cys
