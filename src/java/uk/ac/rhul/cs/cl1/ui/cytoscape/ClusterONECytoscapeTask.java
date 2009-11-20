@@ -25,10 +25,6 @@ public class ClusterONECytoscapeTask extends ClusterONE implements Task {
 		return ClusterONE.applicationName;
 	}
 
-	public void halt() {
-		// TODO Auto-generated method stub
-	}
-
 	public void run() {
 		if (cytoscapeTaskMonitor == null)
 			throw new IllegalStateException("Task monitor is not set");

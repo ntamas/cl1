@@ -29,7 +29,7 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 
 	/** A task monitor where the algorithm will report its progress */
 	protected TaskMonitor monitor = null;
-	
+
 	/**
 	 * Constructs an instance of the algorithm using the default algorithm parameters.
 	 */
@@ -77,7 +77,11 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 		monitor.setPercentCompleted(0);
 		for (MutableNodeSet cluster: seedGenerator) {
 			ClusterGrowthProcess growthProcess = new GreedyClusterGrowthProcess(cluster, minDensity);
-			while (growthProcess.step());
+			while (!shouldStop && growthProcess.step());
+			
+			/* Were we stopped? */
+			if (shouldStop)
+				return;
 			
 			/* Check the size of the cluster -- if too small, skip it */
 			if (cluster.size() < minSize)

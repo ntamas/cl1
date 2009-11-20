@@ -150,7 +150,7 @@ public class VisualStyleManager {
 		/* Create the node color calculator */
 		ContinuousMapping colorMapping = new ContinuousMapping(Color.WHITE, ObjectMapping.NODE_MAPPING);
 		Color minColor = Color.blue;
-		Color midColor = Color.black;
+		Color midColor = Color.white;
 		Color maxColor = Color.red;
 		colorMapping.setControllingAttributeName(CytoscapePlugin.ATTRIBUTE_AFFINITY, Cytoscape.getCurrentNetwork(), false);
 		colorMapping.setInterpolator(new LinearNumberToColorInterpolator());

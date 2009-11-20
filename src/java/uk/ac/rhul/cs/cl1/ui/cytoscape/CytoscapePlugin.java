@@ -138,7 +138,7 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 		
 		List<NodeSet> clusters = runAlgorithm(graph, parameters, weightAttr);
 		
-		if (setAttributes)
+		if (clusters != null && setAttributes)
 			setStatusAttributesOnGraph(graph, clusters);
 		
 		return Pair.create(clusters, graph.getNodeMapping());
@@ -245,7 +245,10 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 		double currentQuality = nodeSet.getQuality(), affinity;
 		for (Node node: graph.getNodeMapping()) {
 			if (nodeSet.contains(i))
-				affinity = nodeSet.getRemovalAffinity(i) - currentQuality;
+				/* multiplying by -1 here: we want internal nodes to have a positive
+				 * affinity if they "should" belong to the cluster
+				 */
+				affinity = - (nodeSet.getRemovalAffinity(i) - currentQuality);
 			else
 				affinity = nodeSet.getAdditionAffinity(i) - currentQuality;
 			nodeAttributes.setAttribute(node.getIdentifier(), ATTRIBUTE_AFFINITY, affinity);

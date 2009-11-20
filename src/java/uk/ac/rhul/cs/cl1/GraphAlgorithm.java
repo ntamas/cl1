@@ -9,6 +9,9 @@ public abstract class GraphAlgorithm {
 	/** The graph on which we are running the algorithm */
 	protected Graph graph = null;
 
+	/** Marks whether the algorithm should be stopped at the earliest possible occasion */
+	protected boolean shouldStop = false;
+	
 	/**
 	 * Creates an algorithm with no associated graph
 	 */
@@ -29,6 +32,13 @@ public abstract class GraphAlgorithm {
 		return graph;
 	}
 
+	/**
+	 * Non-blocking request to halt the algorithm when it is safe to do so.
+	 */
+	public void halt() {
+		shouldStop = true;
+	}
+	
 	/**
 	 * Sets the graph on which we are running the algorithm.
 	 * @param graph the graph to set
