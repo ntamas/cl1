@@ -13,4 +13,9 @@ public abstract class GraphLayoutAlgorithm extends GraphAlgorithm {
 	public GraphLayoutAlgorithm(Graph graph) {
 		super(graph);
 	}
+	
+	/**
+	 * Returns the calculated layout
+	 */
+	public abstract Layout getResults();
 }

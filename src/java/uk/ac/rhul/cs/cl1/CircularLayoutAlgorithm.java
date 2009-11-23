@@ -1,16 +1,14 @@
 package uk.ac.rhul.cs.cl1;
 
-import java.awt.geom.Point2D;
-
 /**
  * Calculates a circular layout for a graph
  * 
  * @author ntamas
  */
-public class CircularLayout extends GraphLayoutAlgorithm {
+public class CircularLayoutAlgorithm extends GraphLayoutAlgorithm {
 	public double theta;
 	
-	public CircularLayout() {
+	public CircularLayoutAlgorithm() {
 	}
 	
 	/**
@@ -18,7 +16,7 @@ public class CircularLayout extends GraphLayoutAlgorithm {
 	 * 
 	 * @param graph
 	 */
-	public CircularLayout(Graph graph) {
+	public CircularLayoutAlgorithm(Graph graph) {
 		super(graph);
 	}
 	
@@ -31,10 +29,15 @@ public class CircularLayout extends GraphLayoutAlgorithm {
 	}
 	
 	/**
-	 * Returns the coordinates of the given node
-	 * @param  nodeIndex   the index of the given node
+	 * Returns the calculated layout
 	 */
-	public Point2D.Double getCoordinates(int nodeIndex) {
-		return new Point2D.Double(Math.cos(theta * nodeIndex), Math.sin(theta * nodeIndex));
+	public Layout getResults() {
+		Layout result = new Layout(this.graph);
+		int i, n = this.graph.getNodeCount();
+		
+		for (i = 0; i < n; i++)
+			result.setCoordinates(i, Math.cos(theta * i), Math.sin(theta * i));
+		
+		return result;
 	}
 }

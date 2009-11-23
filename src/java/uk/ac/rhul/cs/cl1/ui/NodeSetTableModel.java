@@ -2,10 +2,19 @@ package uk.ac.rhul.cs.cl1.ui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.table.AbstractTableModel;
 
+import uk.ac.rhul.cs.cl1.CircularLayoutAlgorithm;
+import uk.ac.rhul.cs.cl1.GraphLayoutAlgorithm;
 import uk.ac.rhul.cs.cl1.NodeSet;
+import uk.ac.rhul.cs.cl1.ui.cytoscape.CytoscapePlugin;
 
 /**
  * Table model that can be used to show a list of {@link NodeSet} objects
@@ -19,7 +28,7 @@ public class NodeSetTableModel extends AbstractTableModel {
 	
 	/** Column classes for the simple mode */
 	@SuppressWarnings("unchecked")
-	Class[] simpleClasses = { String.class, NodeSetDetails.class };
+	Class[] simpleClasses = { Icon.class, NodeSetDetails.class };
 	
 	/** Column headers for the detailed mode */
 	String[] detailedHeaders = { "Cluster", "Nodes", "Density",
@@ -28,7 +37,7 @@ public class NodeSetTableModel extends AbstractTableModel {
 	/** Column classes for the detailed mode */
 	@SuppressWarnings("unchecked")
 	Class[] detailedClasses = {
-		String.class, Integer.class, Double.class, Double.class, Double.class, Double.class
+		Icon.class, Integer.class, Double.class, Double.class, Double.class, Double.class
 	};
 	
 	/** Column headers for the current mode */
@@ -44,6 +53,11 @@ public class NodeSetTableModel extends AbstractTableModel {
 	protected List<NodeSet> nodeSets = null;
 	
 	/**
+	 * The list of rendered cluster graphs for all the {@link NodeSet} objects shown in this model
+	 */
+	protected List<Future<Icon>> nodeSetIcons = new ArrayList<Future<Icon>>();
+	
+	/**
 	 * The list of {@link NodeSetDetails} objects to avoid having to calculate
 	 * the Details column all the time
 	 */
@@ -57,6 +71,11 @@ public class NodeSetTableModel extends AbstractTableModel {
 	 * each property has its own column
 	 */
 	boolean detailedMode;
+	
+	/**
+	 * Icon showing a circular progress indicator. Loaded on demand from resources.
+	 */
+	private Icon progressIcon = null;
 	
 	/**
 	 * Constructs a new table model backed by the given list of nodesets
@@ -91,8 +110,19 @@ public class NodeSetTableModel extends AbstractTableModel {
 		if (nodeSet == null)
 			return null;
 		
-		if (col == 0)
-			return nodeSet.toString();
+		if (col == 0) {
+			/* Check whether we have a rendered image or not */
+			try {
+				Future<Icon> icon = nodeSetIcons.get(row);
+				if (icon != null && icon.isDone())
+					return icon.get();
+			} catch (InterruptedException ex) {
+				ex.printStackTrace();
+			} catch (ExecutionException ex) {
+				ex.printStackTrace();
+			}
+			return this.getProgressIcon();
+		}
 		
 		if (!detailedMode) {
 			/* Simple mode, column 1 */
@@ -114,6 +144,16 @@ public class NodeSetTableModel extends AbstractTableModel {
 		return "TODO";
 	}
 	
+	/**
+	 * Returns an icon showing a progress indicator
+	 */
+	private Icon getProgressIcon() {
+		if (this.progressIcon == null) {
+			this.progressIcon = new ImageIcon(this.getClass().getResource("../resources/wait.jpg"));
+		}
+		return this.progressIcon;
+	}
+
 	/**
 	 * Returns the {@link NodeSet} shown in the given row.
 	 * 
@@ -146,8 +186,17 @@ public class NodeSetTableModel extends AbstractTableModel {
 	}
 	
 	private void updateNodeSetDetails() {
+		Executor threadPool = CytoscapePlugin.getThreadPool();
+		GraphLayoutAlgorithm layoutAlgorithm = new CircularLayoutAlgorithm();
+		
 		nodeSetDetails.clear();
+		nodeSetIcons.clear();
 		for (NodeSet nodeSet: nodeSets) {
+			GraphRenderer renderer = new GraphRenderer(nodeSet.getSubgraph(), layoutAlgorithm);
+			FutureTask<Icon> rendererTask = new FutureTask<Icon>(renderer);
+			threadPool.execute(rendererTask);
+			nodeSetIcons.add(rendererTask);
+			
 			nodeSetDetails.add(new NodeSetDetails(nodeSet));
 		}
 	}

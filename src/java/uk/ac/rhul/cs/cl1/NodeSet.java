@@ -306,6 +306,36 @@ public class NodeSet implements Iterable<Integer> {
 	}
 	
 	/**
+	 * Extracts the subgraph spanned by the nodeset and returns it as a new {@link Graph} object
+	 * 
+	 * @return   the subgraph as a new {@link Graph}
+	 */
+	public Graph getSubgraph() {
+		boolean directed = this.getGraph().isDirected();
+		Graph result = new Graph(directed);
+		IntHashSet memberSet = this.getMemberHashSet();
+		UniqueIDGenerator<Integer> idGen = new UniqueIDGenerator<Integer>(result);
+
+		for (int i: members) {
+			int srcId = idGen.get(i);
+			int[] edgeIdxs = this.graph.getAdjacentNodeIndicesArray(i, Directedness.OUT);
+			for (int edgeIdx: edgeIdxs) {
+				int endpoint = this.graph.getEdgeEndpoint(edgeIdx, i);
+				/* If not an internal edge, continue */
+				if (!memberSet.contains(endpoint))
+					continue;
+				/* Avoid creating each edge twice in undirected graphs */
+				if (!directed && i > endpoint)
+					continue;
+				/* Add the edge */
+				result.createEdge(srcId, idGen.get(endpoint), this.graph.getEdgeWeight(edgeIdx));
+			}
+		}
+		
+		return result;
+	}
+	
+	/**
 	 * Returns the total internal edge weight in this nodeset
 	 */
 	public double getTotalInternalEdgeWeight() {

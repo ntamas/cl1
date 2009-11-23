@@ -6,6 +6,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import javax.swing.JOptionPane;
 
@@ -48,6 +50,11 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 	 * Local cache for converted Cluster ONE representations of Cytoscape networks
 	 */
 	private static CyNetworkCache networkCache = new CyNetworkCache();
+	
+	/**
+	 * A common thread pool used by all asynchronous operations within the plugin
+	 */
+	private static Executor threadPool = Executors.newSingleThreadExecutor();
 	
 	/**
 	 * Action class responding for popup menu invocations in network views
@@ -116,6 +123,13 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 	 */
 	public static CyNetworkCache getNetworkCache() {
 		return networkCache;
+	}
+	
+	/**
+	 * Returns the thread pool used by the plugin
+	 */
+	public static Executor getThreadPool() {
+		return threadPool;
 	}
 	
 	/**
