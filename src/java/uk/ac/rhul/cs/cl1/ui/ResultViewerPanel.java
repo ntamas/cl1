@@ -35,9 +35,21 @@ public class ResultViewerPanel extends JPanel {
 	protected JTable table;
 	
 	/**
+	 * The scroll pane encapsulating the table
+	 */
+	protected JScrollPane scrollPane;
+	
+	/**
 	 * Constructor
 	 */
 	public ResultViewerPanel() {
+		this(null);
+	}
+	
+	/**
+	 * Constructor
+	 */
+	public ResultViewerPanel(List<NodeSet> nodeSets) {
 		this.setLayout(new BorderLayout());
 		
 		/* Add the label showing the number of clusters */
@@ -49,9 +61,14 @@ public class ResultViewerPanel extends JPanel {
 		table = new JTable();
 		table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		table.setIntercellSpacing(new Dimension(0, 4));
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 
-		JScrollPane scrollPane = new JScrollPane(table);
-		this.add(scrollPane, BorderLayout.CENTER);	
+		scrollPane = new JScrollPane(table);
+		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		this.add(scrollPane, BorderLayout.CENTER);
+		
+		if (nodeSets != null)
+			this.setNodeSets(nodeSets);
 	}
 	
 	/**
@@ -102,6 +119,13 @@ public class ResultViewerPanel extends JPanel {
 	}
 	
 	/**
+	 * Gets the scroll pane shown within the panel
+	 */
+	public JScrollPane getScrollPane() {
+		return scrollPane;
+	}
+	
+	/**
 	 * Gets the table shown within the panel
 	 */
 	public JTable getTable() {
@@ -123,7 +147,11 @@ public class ResultViewerPanel extends JPanel {
 		NodeSetTableModel model = new NodeSetTableModel(set);
 		
 		table.setModel(model);
-		table.getColumnModel().getColumn(1).setCellRenderer(new JTextAreaRenderer(10));
+		table.getColumnModel().getColumn(0).setPreferredWidth(60);
+		table.getColumnModel().getColumn(0).setMaxWidth(60);
+		table.getColumnModel().getColumn(1).setPreferredWidth(120);
+		table.getColumnModel().getColumn(1).setCellRenderer(new JTextAreaRenderer(50));
+		scrollPane.setPreferredSize(table.getPreferredSize());
 		
 		if (n == 0)
 			countLabel.setText("No clusters detected");

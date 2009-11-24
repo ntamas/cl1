@@ -6,8 +6,6 @@ package uk.ac.rhul.cs.cl1;
  * @author ntamas
  */
 public class CircularLayoutAlgorithm extends GraphLayoutAlgorithm {
-	public double theta;
-	
 	public CircularLayoutAlgorithm() {
 	}
 	
@@ -21,19 +19,12 @@ public class CircularLayoutAlgorithm extends GraphLayoutAlgorithm {
 	}
 	
 	/**
-	 * Sets the graph associated to the layout algorithm instance
-	 */
-	public void setGraph(Graph graph) {
-		super.setGraph(graph);
-		theta = Math.PI * 2 / graph.getNodeCount();
-	}
-	
-	/**
 	 * Returns the calculated layout
 	 */
 	public Layout getResults() {
 		Layout result = new Layout(this.graph);
 		int i, n = this.graph.getNodeCount();
+		double theta = Math.PI * 2 / n;
 		
 		for (i = 0; i < n; i++)
 			result.setCoordinates(i, Math.cos(theta * i), Math.sin(theta * i));

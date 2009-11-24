@@ -41,4 +41,11 @@ public class Edge {
 		this.source = graph.edgesOut.get(edgeIndex);
 		this.weight = graph.weights.get(edgeIndex);
 	}
+	
+	/**
+	 * Converts the edge to a string
+	 */
+	public String toString() {
+		return this.source+" --> "+this.target+": "+this.weight;
+	}
 }

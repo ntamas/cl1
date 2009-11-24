@@ -318,7 +318,7 @@ public class NodeSet implements Iterable<Integer> {
 
 		for (int i: members) {
 			int srcId = idGen.get(i);
-			int[] edgeIdxs = this.graph.getAdjacentNodeIndicesArray(i, Directedness.OUT);
+			int[] edgeIdxs = this.graph.getAdjacentEdgeIndicesArray(i, Directedness.OUT);
 			for (int edgeIdx: edgeIdxs) {
 				int endpoint = this.graph.getEdgeEndpoint(edgeIdx, i);
 				/* If not an internal edge, continue */

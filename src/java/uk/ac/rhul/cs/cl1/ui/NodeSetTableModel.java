@@ -12,13 +12,14 @@ import javax.swing.ImageIcon;
 import javax.swing.table.AbstractTableModel;
 
 import uk.ac.rhul.cs.cl1.CircularLayoutAlgorithm;
+import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.GraphLayoutAlgorithm;
 import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.cl1.ui.cytoscape.CytoscapePlugin;
 
 /**
  * Table model that can be used to show a list of {@link NodeSet} objects
- * in a JTable
+ * in a JTable.
  * 
  * @author tamas
  */
@@ -76,6 +77,22 @@ public class NodeSetTableModel extends AbstractTableModel {
 	 * Icon showing a circular progress indicator. Loaded on demand from resources.
 	 */
 	private Icon progressIcon = null;
+	
+	/**
+	 * Internal class that represents the task that renders the cluster in the result table
+	 */
+	private class RendererTask extends FutureTask<Icon> {
+		int rowIndex;
+		
+		public RendererTask(int rowIndex, Graph subgraph, GraphLayoutAlgorithm algorithm) {
+			super(new GraphRenderer(subgraph, algorithm));
+			this.rowIndex = rowIndex;
+		}
+		
+		protected void done() {
+			fireTableCellUpdated(rowIndex, 0);
+		}
+	}
 	
 	/**
 	 * Constructs a new table model backed by the given list of nodesets
@@ -187,17 +204,17 @@ public class NodeSetTableModel extends AbstractTableModel {
 	
 	private void updateNodeSetDetails() {
 		Executor threadPool = CytoscapePlugin.getThreadPool();
-		GraphLayoutAlgorithm layoutAlgorithm = new CircularLayoutAlgorithm();
+		int i = 0;
 		
 		nodeSetDetails.clear();
 		nodeSetIcons.clear();
 		for (NodeSet nodeSet: nodeSets) {
-			GraphRenderer renderer = new GraphRenderer(nodeSet.getSubgraph(), layoutAlgorithm);
-			FutureTask<Icon> rendererTask = new FutureTask<Icon>(renderer);
+			Graph subgraph = nodeSet.getSubgraph();
+			RendererTask rendererTask = new RendererTask(i, subgraph, new CircularLayoutAlgorithm());
 			threadPool.execute(rendererTask);
 			nodeSetIcons.add(rendererTask);
-			
 			nodeSetDetails.add(new NodeSetDetails(nodeSet));
+			i++;
 		}
 	}
 }

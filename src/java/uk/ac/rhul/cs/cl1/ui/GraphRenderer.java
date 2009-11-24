@@ -2,7 +2,6 @@ package uk.ac.rhul.cs.cl1.ui;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -12,6 +11,7 @@ import java.util.concurrent.Callable;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
+import uk.ac.rhul.cs.cl1.Edge;
 import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.GraphLayoutAlgorithm;
 import uk.ac.rhul.cs.cl1.Layout;
@@ -49,12 +49,27 @@ public class GraphRenderer implements Callable<Icon> {
 	/**
 	 * Renders the graph to the given graphics context into the given box
 	 */
-	public void render(Graphics g, Rectangle2D rect) {
+	public void render(Graphics2D g, Rectangle2D rect) {
 		calculateLayout();
 		this.layout.fitToRectangle(rect);
 		
+		Graph graph = this.algorithm.getGraph();
 		int n = this.layout.size();
 		
+		if (graph.getNodeCount() != n) {
+			System.out.println("hmmm, wtf?");
+			return;
+		}
+		
+		/* Draw the edges */
+		g.setColor(Color.BLACK);
+		for (Edge edge: graph) {
+			Point2D from = this.layout.getCoordinates(edge.source);
+			Point2D to = this.layout.getCoordinates(edge.target);
+			g.drawLine((int)from.getX(), (int)from.getY(), (int)to.getX(), (int)to.getY());
+		}
+		
+		/* Draw the nodes */
 		g.setColor(Color.RED);
 		for (int i = 0; i < n; i++) {
 			Point2D point = this.layout.getCoordinates(i);
@@ -76,7 +91,7 @@ public class GraphRenderer implements Callable<Icon> {
 	
 	@Override
 	public Icon call() throws Exception {
-		BufferedImage image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
+		BufferedImage image = new BufferedImage(50, 50, BufferedImage.TYPE_INT_ARGB);
 		this.render(image);
 		return new ImageIcon(image);
 	}
