@@ -25,6 +25,7 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
 import uk.ac.rhul.cs.cl1.NodeSet;
+import uk.ac.rhul.cs.cl1.ui.NodeSetTableModel;
 import uk.ac.rhul.cs.cl1.ui.PopupMenuTrigger;
 import uk.ac.rhul.cs.cl1.ui.ResultViewerPanel;
 
@@ -58,9 +59,14 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 	protected AbstractAction copyToClipboardAction;
 	
 	/**
-	 * The "Extract cluster" element of the popup menu
+	 * The "Extract selected cluster" element of the popup menu
 	 */
 	protected AbstractAction extractClusterAction;
+	
+	/**
+	 * The "Save selected cluster..." element of the popup menu
+	 */
+	protected AbstractAction saveClusterAction;
 	
 	/**
 	 * Creates a result viewer panel associated to the given {@link CyNetwork}
@@ -98,6 +104,7 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		topToolBar.add(countLabel);
 		topToolBar.add(Box.createHorizontalGlue());
 		topToolBar.add(new FindAction(this));
+		topToolBar.add(new SaveClusteringAction(this));
 		topToolBar.add(new CloseAction(this));
 		topToolBar.setFloatable(false);
 		topToolBar.setRollover(true);
@@ -185,6 +192,21 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 	}
 	
 	/**
+	 * Retrieves the set of Cytoscape nodes associated to all {@link NodeSet} instances
+	 * in this result viewer.
+	 */
+	public List<List<Node>> getAllCytoscapeNodeSets() {
+		NodeSetTableModel model = this.getTableModel();
+		int numRows = model.getRowCount();
+		
+		List<List<Node>> result = new ArrayList<List<Node>>();
+		for (int i = 0; i < numRows; i++) {
+			result.add(this.convertIterableToCytoscapeNodeList(model.getNodeSetByIndex(i)));			
+		}
+		return result;
+	}
+	
+	/**
 	 * Initializes the cluster popup menu
 	 */
 	private void initializeClusterPopup() {
@@ -197,6 +219,10 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		extractClusterAction = new ExtractClusterAction(this);
 		extractClusterAction.setEnabled(false);
 		clusterPopup.add(extractClusterAction);
+		
+		saveClusterAction = new SaveClusterAction(this);
+		saveClusterAction.setEnabled(false);
+		clusterPopup.add(saveClusterAction);
 	}
 
 	/**
@@ -217,6 +243,7 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		if (network == null) {
 			copyToClipboardAction.setEnabled(false);
 			extractClusterAction.setEnabled(false);
+			saveClusterAction.setEnabled(false);
 			return;
 		}
 		
@@ -230,6 +257,7 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		
 		extractClusterAction.setEnabled(nodes.size() > 0);
 		copyToClipboardAction.setEnabled(nodes.size() > 0);
+		saveClusterAction.setEnabled(nodes.size() > 0);
 	}
 
 	class CloseAction extends AbstractAction {
@@ -241,6 +269,8 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 			this.putValue(AbstractAction.SMALL_ICON,
 					new ImageIcon(this.getClass().getResource("../../resources/close.png"))
 			);
+			this.putValue(AbstractAction.SHORT_DESCRIPTION,
+				"Close this result panel");
 		}
 		
 		public void actionPerformed(ActionEvent event) {

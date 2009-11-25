@@ -29,7 +29,7 @@ public class ExtractClusterAction extends AbstractAction {
 	 * Constructs the action
 	 */
 	public ExtractClusterAction(CytoscapeResultViewerPanel panel) {
-		super("Extract cluster");
+		super("Extract selected cluster(s)");
 		this.resultViewer = panel;
 		this.putValue(AbstractAction.MNEMONIC_KEY, KeyEvent.VK_E);
 	}

@@ -3,6 +3,7 @@ package uk.ac.rhul.cs.cl1.ui;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -85,6 +86,7 @@ public class GraphRenderer implements Callable<Icon> {
 		g2d.setColor(new Color(0, 0, 0, 0));
 		g2d.setComposite(AlphaComposite.Src);
 		g2d.fill(new Rectangle2D.Double(0, 0, image.getWidth(), image.getHeight()));
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		Rectangle2D rect = new Rectangle2D.Double(3, 3, image.getWidth() - 6, image.getHeight() - 6);
 		this.render(g2d, rect);
 	}

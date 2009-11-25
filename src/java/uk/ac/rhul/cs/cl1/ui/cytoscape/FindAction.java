@@ -37,6 +37,8 @@ public class FindAction extends AbstractAction {
 		this.putValue(AbstractAction.SMALL_ICON,
 				new ImageIcon(this.getClass().getResource("../../resources/find.png"))
 		);
+		this.putValue(AbstractAction.SHORT_DESCRIPTION,
+				"Select all the clusters corresponding to the selected nodes in the result panel");
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -154,11 +154,11 @@ public class ResultViewerPanel extends JPanel {
 		scrollPane.setPreferredSize(table.getPreferredSize());
 		
 		if (n == 0)
-			countLabel.setText("No clusters detected");
+			countLabel.setText("No clusters");
 		else if (n == 1)
-			countLabel.setText("1 cluster detected");
+			countLabel.setText("1 cluster");
 		else
-			countLabel.setText(set.size()+" clusters detected");
+			countLabel.setText(set.size()+" clusters");
 		
 		/* Try to make the table sortable. If the JRE is too old, simply leave it as is */
 		try {
