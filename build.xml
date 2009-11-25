@@ -24,8 +24,12 @@
 	<property name="src.java.tests" location="${test}/java" />
 
 	<!-- External dependencies -->
-	<property name="lib.cytoscape.path" location="${cytoscape.path}/cytoscape.jar" />
-	<property name="lib.procope.path" location="${procope.path}/lib/procope_core-${procope.version}.jar" />
+	<condition property="lib.cytoscape.path" value="${cytoscape.path}/cytoscape.jar">
+		<available file="${cytoscape.path}/cytoscape.jar" />
+	</condition>
+	<condition property="lib.procope.path" value="${procope.path}/lib/procope_core-${procope.version}.jar">
+		<available file="${procope.path}/lib/procope_core-${procope.version}.jar" />
+	</condition>
 
 	<!-- Set up the default classpath -->
 	<path id="classpath.base">
@@ -40,31 +44,19 @@
 		<format property="TODAY" pattern="MMMM dd, yyyy" locale="en" />
 	</tstamp>
 
-	<!-- Check whether the Cytoscape and Procope paths are set correctly -->
-	<available file="${lib.cytoscape.path}" property="cytoscape.ok" />
-	<available file="${lib.procope.path}" property="procope.ok" />
-	<if>
-		<equals arg1="${cytoscape.ok}" arg2="true"/>
-		<then></then>
-		<else>
-			<echo message="Cytoscape JAR not found at: ${lib.cytoscape.path}"
-				  level="warning" />
-		</else>
-	</if>
-	<if>
-		<equals arg1="${procope.ok}" arg2="true"/>
-		<then></then>
-		<else>
-			<echo message="Procope JAR not found at: ${lib.procope.path}"
-				  level="warning" />
-		</else>
-	</if>
-
 	<!-- Initializes the build tree, creates the necessary directories -->
-	<target name="-init" description="Initializes the build process">
+	<target name="-init" depends="-cytoscape_warning,-procope_warning"
+		    description="Initializes the build process">
 		<mkdir dir="${build}" />
 		<mkdir dir="${build.java}" />
 		<mkdir dir="${reports}" />
+	</target>
+	<target name="-cytoscape_warning" unless="lib.cytoscape.path">
+		<echo message="Cytoscape plugin will not be built: cytoscape.jar not found."
+			  level="warning" />
+	</target>
+	<target name="-procope_warning" unless="procope.path">
+		<echo message="Procope plugin will not be built: procope_core-${procope.version}.jar not found" level="warning" />
 	</target>
 
 	<!-- Deletes the existing build -->
