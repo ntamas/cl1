@@ -6,13 +6,15 @@ package uk.ac.rhul.cs.cl1;
  * @author ntamas
  */
 public class CircularLayoutAlgorithm extends GraphLayoutAlgorithm {
+	/**
+	 * Constructs a circular layout algorithm not associated to any graph
+	 */
 	public CircularLayoutAlgorithm() {
+		super();
 	}
 	
 	/**
 	 * Constructs a circular layout algorithm instance associated to the given graph
-	 * 
-	 * @param graph
 	 */
 	public CircularLayoutAlgorithm(Graph graph) {
 		super(graph);

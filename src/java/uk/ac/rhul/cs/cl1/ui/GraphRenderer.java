@@ -89,7 +89,6 @@ public class GraphRenderer implements Callable<Icon> {
 		this.render(g2d, rect);
 	}
 	
-	@Override
 	public Icon call() throws Exception {
 		BufferedImage image = new BufferedImage(50, 50, BufferedImage.TYPE_INT_ARGB);
 		this.render(image);

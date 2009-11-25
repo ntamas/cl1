@@ -11,7 +11,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.table.AbstractTableModel;
 
-import uk.ac.rhul.cs.cl1.CircularLayoutAlgorithm;
+import uk.ac.rhul.cs.cl1.FruchtermanReingoldLayoutAlgorithm;
 import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.GraphLayoutAlgorithm;
 import uk.ac.rhul.cs.cl1.NodeSet;
@@ -210,7 +210,7 @@ public class NodeSetTableModel extends AbstractTableModel {
 		nodeSetIcons.clear();
 		for (NodeSet nodeSet: nodeSets) {
 			Graph subgraph = nodeSet.getSubgraph();
-			RendererTask rendererTask = new RendererTask(i, subgraph, new CircularLayoutAlgorithm());
+			RendererTask rendererTask = new RendererTask(i, subgraph, new FruchtermanReingoldLayoutAlgorithm());
 			threadPool.execute(rendererTask);
 			nodeSetIcons.add(rendererTask);
 			nodeSetDetails.add(new NodeSetDetails(nodeSet));
