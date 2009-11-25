@@ -3,6 +3,7 @@ package uk.ac.rhul.cs.cl1;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import com.sosnoski.util.array.DoubleArray;
 import com.sosnoski.util.array.IntArray;
@@ -252,5 +253,15 @@ public class Graph implements Iterable<Edge> {
 	 */
 	public Iterator<Edge> iterator() {
 		return new EdgeIterator(this);
+	}
+	
+	/**
+	 * Returns the edge list of the graph
+	 */
+	public List<Edge> getEdgeList() {
+		List<Edge> result = new ArrayList<Edge>(this.getEdgeCount());
+		for (Edge edge: this)
+			result.add(edge);
+		return result;
 	}
 }
