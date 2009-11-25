@@ -2,6 +2,8 @@ package uk.ac.rhul.cs.cl1;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * Main class for the Cluster ONE algorithm.
@@ -20,6 +22,10 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 	
 	/** The version number of the application */
 	public static final String version = "0.1";
+
+	/** A thread pool used for asynchronous operations within Cluster ONE */
+	private static Executor threadPool = null;
+
 	
 	/** The clustering result as a list of NodeSets */
 	protected List<NodeSet> result = null;
@@ -56,6 +62,15 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 	 */
 	public List<NodeSet> getResults() {
 		return result;
+	}
+	
+	/**
+	 * Returns a thread pool used by Cluster ONE for asynchronous operations
+	 */
+	public static Executor getThreadPool() {
+		if (threadPool == null)
+			threadPool = Executors.newSingleThreadExecutor();
+		return threadPool;
 	}
 	
 	/**

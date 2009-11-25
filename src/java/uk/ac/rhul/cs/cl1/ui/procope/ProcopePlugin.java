@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.cl1.ui;
+package uk.ac.rhul.cs.cl1.ui.procope;
 
 import java.util.ArrayList;
 

@@ -11,11 +11,11 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.table.AbstractTableModel;
 
+import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.FruchtermanReingoldLayoutAlgorithm;
 import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.GraphLayoutAlgorithm;
 import uk.ac.rhul.cs.cl1.NodeSet;
-import uk.ac.rhul.cs.cl1.ui.cytoscape.CytoscapePlugin;
 
 /**
  * Table model that can be used to show a list of {@link NodeSet} objects
@@ -203,7 +203,7 @@ public class NodeSetTableModel extends AbstractTableModel {
 	}
 	
 	private void updateNodeSetDetails() {
-		Executor threadPool = CytoscapePlugin.getThreadPool();
+		Executor threadPool = ClusterONE.getThreadPool();
 		int i = 0;
 		
 		nodeSetDetails.clear();

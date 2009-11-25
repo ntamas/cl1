@@ -40,6 +40,26 @@
 		<format property="TODAY" pattern="MMMM dd, yyyy" locale="en" />
 	</tstamp>
 
+	<!-- Check whether the Cytoscape and Procope paths are set correctly -->
+	<available file="${lib.cytoscape.path}" property="cytoscape.ok" />
+	<available file="${lib.procope.path}" property="procope.ok" />
+	<if>
+		<equals arg1="${cytoscape.ok}" arg2="true"/>
+		<then></then>
+		<else>
+			<echo message="Cytoscape JAR not found at: ${lib.cytoscape.path}"
+				  level="warning" />
+		</else>
+	</if>
+	<if>
+		<equals arg1="${procope.ok}" arg2="true"/>
+		<then></then>
+		<else>
+			<echo message="Procope JAR not found at: ${lib.procope.path}"
+				  level="warning" />
+		</else>
+	</if>
+
 	<!-- Initializes the build tree, creates the necessary directories -->
 	<target name="-init" description="Initializes the build process">
 		<mkdir dir="${build}" />
@@ -55,9 +75,45 @@
 	</target>
 
 	<!-- Compiles the Java source code -->
-	<target name="compile_java" depends="-init"
+	<target name="compile_java"
+		depends="-init,compile_java_base,compile_java_cytoscape_plugin,compile_java_procope_plugin"
 		description="--> compile Java code">
-		<javac srcdir="${src.java}" destdir="${build.java}">
+	</target>
+
+	<!-- Compiles the base classes -->
+	<target name="compile_java_base">
+		<javac srcdir="${src.java}" destdir="${build.java}" target="1.5">
+			<exclude name="**/cytoscape/*" />
+			<exclude name="**/procope/*" />
+			<classpath>
+				<path refid="classpath.base" />
+			</classpath>
+		</javac>
+	</target>
+
+	<!-- Compiles the Cytoscape plugin -->
+	<target name="compile_java_cytoscape_plugin" if="cytoscape.path"
+		    depends="compile_java_base">
+		<javac srcdir="${src.java}" destdir="${build.java}" target="1.5">
+			<include name="${package.name.slashed}/ui/cytoscape/*.java" />
+			<classpath>
+				<path refid="classpath.base" />
+			</classpath>
+		</javac>
+		<copy file="${etc}/cytoscape/plugin.props.in"
+            tofile="${build.java}/${package.name.slashed}/plugin.props" />
+        <replace file="${build.java}/${package.name.slashed}/plugin.props">
+			<replacefilter token="@today@" value="${TODAY}" />
+			<replacefilter token="@package.name@" value="${package.name}" />
+			<replacefilter token="@package.version@" value="${package.version}" />
+		</replace>
+	</target>
+
+	<!-- Compiles the Procope plugin -->
+	<target name="compile_java_procope_plugin" if="procope.path"
+		    depends="compile_java_base">
+		<javac srcdir="${src.java}" destdir="${build.java}" target="1.5">
+			<include name="${package.name.slashed}/ui/procope/*.java" />
 			<classpath>
 				<path refid="classpath.base" />
 			</classpath>
@@ -80,19 +136,15 @@
 	<target name="compile" depends="compile_java" description="Compiles all the source files">
 	</target>
 
-	<!-- Actions necessary for the preparation of a Cytoscape plugin -->
-	<target name="-create_cytoscape_plugin" description="Cytoscape plugin preparation">
-		<copy file="${etc}/cytoscape/plugin.props.in"
-            tofile="${build.java}/${package.name.slashed}/plugin.props" />
-        <replace file="${build.java}/${package.name.slashed}/plugin.props">
-			<replacefilter token="@today@" value="${TODAY}" />
-			<replacefilter token="@package.name@" value="${package.name}" />
-			<replacefilter token="@package.version@" value="${package.version}" />
-		</replace>
+	<!-- Copies resource files to the build tree -->
+	<target name="-copy_resources" depends="compile_java" description="Copies resource files to the build tree">
+		<copy todir="${build.java}/${package.name.slashed}/resources">
+			<fileset dir="${src.java}/${package.name.slashed}/resources" />
+		</copy>
 	</target>
 
 	<!-- Creates the JAR file -->
-	<target name="jar" depends="compile,-create_cytoscape_plugin" description="Creates the JAR file">
+	<target name="jar" depends="compile,-copy_resources" description="Creates the JAR file">
 		<jar destfile="cluster_one-${package.version}.jar" basedir="${build.java}">
 			<zipfileset src="lib/tclib.jar" includes="**/*.class" />
 			<zipfileset src="lib/commons-cli-1.2.jar" includes="**/*.class" />
