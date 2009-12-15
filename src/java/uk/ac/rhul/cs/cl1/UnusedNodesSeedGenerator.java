@@ -1,6 +1,8 @@
 package uk.ac.rhul.cs.cl1;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.ListIterator;
 
 import com.sosnoski.util.hashset.IntHashSet;
@@ -33,7 +35,15 @@ public class UnusedNodesSeedGenerator extends EveryNodeSeedGenerator {
 			nodes = new ArrayList<Integer>();
 			for (int i = 0; i < n; i++)
 				nodes.add(i);
-
+			
+			Collections.sort(nodes, new Comparator<Integer>() {
+				public int compare(Integer foo, Integer bar) {
+					int comp = graph.getDegree(bar) - graph.getDegree(foo);
+					if (comp != 0)
+						return comp;
+					return foo - bar;
+				}
+			});
 			it = nodes.listIterator();
 			usedNodes = new IntHashSet();
 		}

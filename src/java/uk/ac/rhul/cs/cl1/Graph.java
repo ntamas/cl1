@@ -264,4 +264,22 @@ public class Graph implements Iterable<Edge> {
 			result.add(edge);
 		return result;
 	}
+	
+	/**
+	 * Returns the number of distinct edges incident on the node with the given index
+	 */
+	public int getDegree(int nodeIndex) {
+		return getDegree(nodeIndex, Directedness.ALL);
+	}
+	
+	/**
+	 * Returns the number of distinct in/outedges incident on the node with the given index
+	 */
+	public int getDegree(int nodeIndex, Directedness mode) {
+		if (!directed || mode == Directedness.OUT)
+			return outEdgeAdjacencyLists.get(nodeIndex).size();
+		if (mode == Directedness.IN)
+			return inEdgeAdjacencyLists.get(nodeIndex).size();
+		return outEdgeAdjacencyLists.get(nodeIndex).size() + inEdgeAdjacencyLists.get(nodeIndex).size();
+	}
 }
