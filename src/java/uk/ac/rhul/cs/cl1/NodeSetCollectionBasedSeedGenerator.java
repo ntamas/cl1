@@ -20,7 +20,7 @@ public class NodeSetCollectionBasedSeedGenerator extends SeedGenerator {
 	/**
 	 * Internal iterator class that will be used when calling iterator()
 	 */
-	protected class IteratorImpl implements Iterator<MutableNodeSet> {
+	protected class IteratorImpl extends SeedIterator {
 		public boolean hasNext() {
 			return nodeSetIterator.hasNext();
 		}
@@ -73,7 +73,7 @@ public class NodeSetCollectionBasedSeedGenerator extends SeedGenerator {
 	/**
 	 * Returns an iterator that iterates over the nodesets given at construction time
 	 */
-	public Iterator<MutableNodeSet> iterator() {
+	public SeedIterator iterator() {
 		return new IteratorImpl();
 	}
 }

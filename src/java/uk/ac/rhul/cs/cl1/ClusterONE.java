@@ -82,6 +82,7 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 		
 		NodeSetList result = new NodeSetList();
 		HashSet<NodeSet> addedNodeSets = new HashSet<NodeSet>();
+		
 		SeedGenerator seedGenerator = params.getSeedGenerator();	
 		seedGenerator.setGraph(graph);
 		
@@ -90,7 +91,10 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 		int numExpectedSeeds = seedGenerator.size();
 		monitor.setStatus("Growing clusters from seeds...");
 		monitor.setPercentCompleted(0);
-		for (MutableNodeSet cluster: seedGenerator) {
+		
+		SeedIterator it = seedGenerator.iterator();
+		while (it.hasNext()) {
+			MutableNodeSet cluster = it.next();
 			ClusterGrowthProcess growthProcess = new GreedyClusterGrowthProcess(cluster, minDensity);
 			while (!shouldStop && growthProcess.step());
 			
@@ -114,6 +118,7 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 			if (!addedNodeSets.contains(frozenCluster)) {
 				result.add(frozenCluster);
 				addedNodeSets.add(frozenCluster);
+				it.processFoundCluster(frozenCluster);
 			}
 			
 			/* Increase counter, report progress */

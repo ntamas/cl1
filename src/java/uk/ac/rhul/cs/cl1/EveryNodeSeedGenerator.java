@@ -1,7 +1,5 @@
 package uk.ac.rhul.cs.cl1;
 
-import java.util.Iterator;
-
 /**
  * Seed generator class where every single node of a graph will be generated as
  * a seed nodeset.
@@ -12,7 +10,7 @@ public class EveryNodeSeedGenerator extends SeedGenerator {
 	/**
 	 * Internal iterator class that will be used when calling iterator()
 	 */
-	protected class IteratorImpl implements Iterator<MutableNodeSet> {
+	private class IteratorImpl extends SeedIterator {
 		/** Node counter */
 		private int i;
 		/** Maximum node count */
@@ -38,7 +36,6 @@ public class EveryNodeSeedGenerator extends SeedGenerator {
 		public void remove() {
 			throw new UnsupportedOperationException();
 		}
-		
 	}
 	
 	/** Constructs a seed generator that is not associated to any graph yet */
@@ -57,7 +54,7 @@ public class EveryNodeSeedGenerator extends SeedGenerator {
 	 * The node count of the graph must stay the same while generating
 	 * seed nodesets.
 	 */
-	public Iterator<MutableNodeSet> iterator() {
+	public SeedIterator iterator() {
 		return new IteratorImpl();
 	}
 	

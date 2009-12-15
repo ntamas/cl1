@@ -12,7 +12,7 @@ public class EveryEdgeSeedGenerator extends SeedGenerator {
 	/**
 	 * Internal iterator class that will be used when calling iterator()
 	 */
-	protected class IteratorImpl implements Iterator<MutableNodeSet> {
+	protected class IteratorImpl extends SeedIterator {
 		/** Iterator over the edges of the graph */
 		Iterator<Edge> edgeIt;
 		
@@ -49,7 +49,7 @@ public class EveryEdgeSeedGenerator extends SeedGenerator {
 		super(graph);
 	}
 
-	public Iterator<MutableNodeSet> iterator() {
+	public SeedIterator iterator() {
 		return new IteratorImpl();
 	}
 	

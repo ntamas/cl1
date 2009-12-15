@@ -38,10 +38,17 @@ public abstract class SeedGenerator extends GraphAlgorithm implements Iterable<M
 	public abstract int size();
 	
 	/**
+	 * Returns an iterator that will generate seeds
+	 */
+	public abstract SeedIterator iterator();
+	
+	/**
 	 * Factory method that can construct seed generators from a simple string description.
 	 * The following specifiers are recognised at the moment:
 	 * <ul>
 	 * <li><tt>nodes</tt> - generates a singleton seed for each node of the graph</li>
+	 * <li><tt>unused_nodes</tt> - generates a singleton seed for each node of the graph
+	 *     if it wasn't found so far as part of a cluster</li>
 	 * <li><tt>edges</tt> - generates a seed containing the two endpoints for each edge of the graph</li>
 	 * </ul>
 	 * 
@@ -52,6 +59,9 @@ public abstract class SeedGenerator extends GraphAlgorithm implements Iterable<M
 	public static SeedGenerator fromString(String specification, Graph graph) throws InstantiationException {
 		if (specification.equals("nodes"))
 			return new EveryNodeSeedGenerator(graph);
+		
+		if (specification.equals("unused_nodes"))
+			return new UnusedNodesSeedGenerator(graph);
 		
 		if (specification.equals("edges"))
 			return new EveryEdgeSeedGenerator(graph);
