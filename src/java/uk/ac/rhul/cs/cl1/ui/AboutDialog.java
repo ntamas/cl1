@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.text.html.HTMLEditorKit;
 
 import uk.ac.rhul.cs.cl1.ClusterONE;
-import uk.ac.rhul.cs.cl1.StringUtils;
+import uk.ac.rhul.cs.utils.StringUtils;
 
 /**
  * The about dialog box for Cluster ONE.

@@ -3,6 +3,8 @@ package uk.ac.rhul.cs.cl1;
 import java.io.PrintWriter;
 import java.util.Arrays;
 
+import uk.ac.rhul.cs.utils.StringUtils;
+
 /**
  * A task monitor that shows the progress of a task on the console
  * @author tamas

@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
 import uk.ac.rhul.cs.cl1.NodeSet;
-import uk.ac.rhul.cs.cl1.Pair;
+import uk.ac.rhul.cs.utils.Pair;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;

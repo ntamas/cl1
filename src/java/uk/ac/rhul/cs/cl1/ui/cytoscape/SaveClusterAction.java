@@ -13,7 +13,7 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 
-import uk.ac.rhul.cs.cl1.StringUtils;
+import uk.ac.rhul.cs.utils.StringUtils;
 
 import cytoscape.util.FileUtil;
 

@@ -13,7 +13,7 @@ import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
 import uk.ac.rhul.cs.cl1.MutableNodeSet;
 import uk.ac.rhul.cs.cl1.NodeSet;
-import uk.ac.rhul.cs.cl1.Pair;
+import uk.ac.rhul.cs.utils.Pair;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;

@@ -8,6 +8,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import uk.ac.rhul.cs.utils.StringUtils;
+
 import com.sosnoski.util.array.StringArray;
 import com.sosnoski.util.hashset.IntHashSet;
 

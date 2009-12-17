@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.utils;
 
 import java.io.IOException;
 import java.io.InputStream;

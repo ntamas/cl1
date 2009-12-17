@@ -1,8 +1,10 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.utils;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+
+import uk.ac.rhul.cs.utils.StringUtils;
 
 public class StringUtilsTest {
 

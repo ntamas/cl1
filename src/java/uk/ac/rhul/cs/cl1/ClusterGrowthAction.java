@@ -2,6 +2,8 @@ package uk.ac.rhul.cs.cl1;
 
 import java.util.Arrays;
 
+import uk.ac.rhul.cs.utils.StringUtils;
+
 /**
  * An action that can be taken while growing a cluster according to some rules.
  * 

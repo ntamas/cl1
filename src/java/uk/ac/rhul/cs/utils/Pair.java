@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.utils;
 
 /**
  * Simple class template storing an immutable pair of objects.
