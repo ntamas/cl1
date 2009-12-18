@@ -36,14 +36,14 @@ package uk.ac.rhul.cs.cl1.ui;
 
 import java.awt.Component;
 
+import javax.swing.JLabel;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.table.TableCellRenderer;
 
 /**
  * A text area renderer that creates a line wrapped, non-editable text area.
  */
-public class JTextAreaRenderer extends JTextArea implements
+public class HeightLimitedJLabelRenderer extends JLabel implements
 		TableCellRenderer {
 	/**
 	 * Minimum height of the text area renderer
@@ -57,11 +57,9 @@ public class JTextAreaRenderer extends JTextArea implements
 	 *            The minimum height of the row, either the size of the
 	 *            graph picture or zero
 	 */
-	public JTextAreaRenderer(int minHeight) {
-		this.setLineWrap(true);
-		this.setWrapStyleWord(true);
-		this.setEditable(false);
+	public HeightLimitedJLabelRenderer(int minHeight) {
 		this.setFont(this.getFont().deriveFont(11.0f));
+		this.setOpaque(true);
 		this.minHeight = minHeight;
 	}
 
@@ -103,10 +101,9 @@ public class JTextAreaRenderer extends JTextArea implements
 		int rowMargin = table.getRowMargin();
 		this.setSize(table.getColumnModel().getColumn(column).getWidth(),
 				currentRowHeight - (2 * rowMargin));
-		int textAreaPreferredHeight = (int) this.getPreferredSize()
-				.getHeight();
+		int textAreaPreferredHeight = (int) this.getPreferredSize().getHeight();
 		
-		// JTextArea can grow and shrink here
+		// JLabel can grow and shrink here
 		if (currentRowHeight != Math.max(textAreaPreferredHeight
 				+ (2 * rowMargin), minHeight + (2 * rowMargin))) {
 			table.setRowHeight(row, Math.max(textAreaPreferredHeight

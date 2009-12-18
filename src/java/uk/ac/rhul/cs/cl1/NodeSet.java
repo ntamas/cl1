@@ -1,6 +1,7 @@
 package uk.ac.rhul.cs.cl1;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -8,6 +9,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import uk.ac.rhul.cs.stats.H1;
+import uk.ac.rhul.cs.stats.MannWhitneyTest;
 import uk.ac.rhul.cs.utils.StringUtils;
 
 import com.sosnoski.util.array.StringArray;
@@ -57,6 +60,11 @@ public class NodeSet implements Iterable<Integer> {
 	 * Quality of the nodeset according to the standard Cluster ONE quality function
 	 */
 	protected Double quality = null;
+	
+	/**
+	 * Significance of the nodeset
+	 */
+	protected Double significance = null;
 	
 	/**
 	 * Constructs a new, empty nodeset on the given graph.
@@ -305,6 +313,53 @@ public class NodeSet implements Iterable<Integer> {
 		if (quality == null)
 			quality = this.totalInternalEdgeWeight / (this.totalInternalEdgeWeight + this.totalBoundaryEdgeWeight);
 		return quality;
+	}
+	
+	/**
+	 * Returns the statistical significance of the nodeset
+	 * 
+	 * The statistical significance of the nodeset is the p-value of a one-sided
+	 * Mann-Whitney U test on the in-weights and the out-weights. It tells us
+	 * whether the mean in-weight is significantly larger than the mean
+	 * out-weight; in other words, it roughly tells us what is the probability of
+	 * the community satisfying the weak criterion of Radicchi et al purely
+	 * by chance.
+	 */
+	public double getSignificance() {
+		if (significance == null)
+			significance = this.getSignificanceReal();
+		return significance;
+	}
+	
+	protected double getSignificanceReal() {
+		double[] inWeights = new double[this.size()];
+		double[] outWeights = new double[this.size()];
+		IntHashSet memberHashSet = this.getMemberHashSet();
+		int j = 0;
+		
+		Arrays.fill(inWeights, 0.0);
+		Arrays.fill(outWeights, 0.0);
+		
+		j = 0;
+		for (int i: members) {
+			int[] edgeIdxs = this.graph.getAdjacentEdgeIndicesArray(i, Directedness.ALL);
+			for (int edgeIdx: edgeIdxs) {
+				double weight = this.graph.getEdgeWeight(edgeIdx);
+				int endpoint = this.graph.getEdgeEndpoint(edgeIdx, i);
+				if (memberHashSet.contains(endpoint)) {
+					/* This is an internal edge */
+					inWeights[j] += weight;
+				} else {
+					/* This is a boundary edge */
+					outWeights[j] += weight;
+				}
+			}
+			j++;
+		}
+		
+		/* Internal edges were found twice, divide the result by two */
+		MannWhitneyTest test = new MannWhitneyTest(inWeights, outWeights, H1.GREATER_THAN);
+		return test.getSP();
 	}
 	
 	/**

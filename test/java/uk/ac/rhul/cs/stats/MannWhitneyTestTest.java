@@ -9,6 +9,8 @@ public class MannWhitneyTestTest {
 	static double[] xB = { 3, 5, 6, 4, 6, 5, 7, 5 };
 	static double[] xC = { 19, 22, 16, 29, 24 };
 	static double[] xD = { 20, 11, 17, 12 };
+	static double[] xE = { 1, 1, 1 };
+	static double[] xF = { 0, 0, 0 };
 	
 	@Test
 	public void testGetTestStatistic() {
@@ -17,6 +19,8 @@ public class MannWhitneyTestTest {
 		assertEquals(23, test.getTestStatistic(), 0.00000001);
 		test = new MannWhitneyTest(xC, xD);
 		assertEquals(3, test.getTestStatistic(), 0.00000001);
+		test = new MannWhitneyTest(xE, xF);
+		assertEquals(0, test.getTestStatistic(), 0.00000001);
 	}
 	
 	@Test
@@ -30,6 +34,12 @@ public class MannWhitneyTestTest {
 		assertEquals(0.166, test.getSP(), 0.01);
 		test = new MannWhitneyTest(xA, xB, H1.GREATER_THAN);
 		assertEquals(0.833, test.getSP(), 0.01);
+		test = new MannWhitneyTest(xE, xE);
+		assertEquals(Double.NaN, test.getSP(), 0.01);
+		test = new MannWhitneyTest(xE, xE, H1.GREATER_THAN);
+		assertEquals(Double.NaN, test.getSP(), 0.01);
+		test = new MannWhitneyTest(xE, xE, H1.LESS_THAN);
+		assertEquals(Double.NaN, test.getSP(), 0.01);
 	}
 	
 	@Test

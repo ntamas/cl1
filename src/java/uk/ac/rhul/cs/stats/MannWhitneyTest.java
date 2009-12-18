@@ -103,8 +103,12 @@ public class MannWhitneyTest implements SignificanceTest {
 			uA -= ranks[i];
 		}
 		uA += (nA * (nA+1)) / 2;
-		uB = uB - uA;
-		U = Math.min(uA, uB);
+		
+		if (alternative == H1.NOT_EQUAL) {
+			uB = uB - uA;
+			U = Math.min(uA, uB);
+		} else
+			U = uA;
 		
 		/* Calculate tie correction value */
 		Arrays.sort(ranks);
@@ -132,9 +136,9 @@ public class MannWhitneyTest implements SignificanceTest {
 			z = Math.abs(z);
 			return 2 * StatsUtils.getZProbability(-z);
 		} else if (alternative == H1.LESS_THAN) {
-			return StatsUtils.getZProbability(z);
-		} else {
 			return 1.0 - StatsUtils.getZProbability(z);
+		} else {
+			return StatsUtils.getZProbability(z);
 		}
 	}
 

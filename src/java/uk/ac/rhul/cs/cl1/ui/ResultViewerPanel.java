@@ -6,13 +6,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
 
 import uk.ac.rhul.cs.cl1.NodeSet;
@@ -28,6 +34,11 @@ public class ResultViewerPanel extends JPanel {
 	 * Information label showing the number of elements in the resulting nodeset
 	 */
 	protected JLabel countLabel;
+	
+	/**
+	 * The top toolbar
+	 */
+	protected JToolBar topToolBar;
 	
 	/**
 	 * The table shown within the panel
@@ -52,10 +63,9 @@ public class ResultViewerPanel extends JPanel {
 	public ResultViewerPanel(List<NodeSet> nodeSets) {
 		this.setLayout(new BorderLayout());
 		
-		/* Add the label showing the number of clusters */
+		/* Create the label showing the number of clusters */
 		countLabel = new JLabel();
 		countLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
-		this.add(countLabel, BorderLayout.NORTH);
 		
 		/* Add the result table */
 		table = new JTable();
@@ -69,6 +79,16 @@ public class ResultViewerPanel extends JPanel {
 		
 		if (nodeSets != null)
 			this.setNodeSets(nodeSets);
+		
+		/* Add a toolbar to the top */
+		topToolBar = new JToolBar();
+		topToolBar.add(countLabel);
+		topToolBar.add(Box.createHorizontalGlue());
+		topToolBar.add(new JToggleButton(new ShowDetailedResultsAction(this)));
+		topToolBar.setFloatable(false);
+		topToolBar.setRollover(true);
+		topToolBar.setBorderPainted(false);
+		this.add(topToolBar, BorderLayout.NORTH);
 	}
 	
 	/**
@@ -144,13 +164,20 @@ public class ResultViewerPanel extends JPanel {
 	 */
 	public void setNodeSets(List<NodeSet> set) {
 		int n = set.size();
-		NodeSetTableModel model = new NodeSetTableModel(set);
 		
+		/* Set up the table model, ensure that the table's columns are reformatted when
+		 * the model is updated (i.e. when switching detailed mode on/off)
+		 */
+		NodeSetTableModel model = new NodeSetTableModel(set);
+		model.addTableModelListener(new TableModelListener() {
+			public void tableChanged(TableModelEvent arg0) {
+				setupTableColumnModel();
+			}
+		});
 		table.setModel(model);
-		table.getColumnModel().getColumn(0).setPreferredWidth(60);
-		table.getColumnModel().getColumn(0).setMaxWidth(60);
-		table.getColumnModel().getColumn(1).setPreferredWidth(120);
-		table.getColumnModel().getColumn(1).setCellRenderer(new JTextAreaRenderer(50));
+		
+		setupTableColumnModel();
+		
 		scrollPane.setPreferredSize(table.getPreferredSize());
 		
 		if (n == 0)
@@ -178,6 +205,29 @@ public class ResultViewerPanel extends JPanel {
 		}
 	}
 	
+	/**
+	 * Makes some necessary adjustments to a freshy created column model of the table
+	 */
+	private void setupTableColumnModel() {
+		NodeSetTableModel model = (NodeSetTableModel)table.getModel();
+		TableColumnModel colModel = table.getColumnModel();
+		
+		/* First column: preferred width and height is 60 pixels */
+		colModel.getColumn(0).setPreferredWidth(60);
+		colModel.getColumn(0).setMaxWidth(60);
+		
+		if (!model.isInDetailedMode()) {
+			/* Don't set row heights, let the cell renderer for the details column do it */
+			colModel.getColumn(1).setPreferredWidth(120);
+			colModel.getColumn(1).setCellRenderer(new HeightLimitedJLabelRenderer(50));
+		} else {
+			/* Set a unique row height */
+			table.setRowHeight(60);
+			/* Set a special renderer for P-values */
+			colModel.getColumn(6).setCellRenderer(new PValueRenderer());
+		}
+	}
+
 	/**
 	 * Adjusts the selection by selecting the given indices and deselecting everything else
 	 */

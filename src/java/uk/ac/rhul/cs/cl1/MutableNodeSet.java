@@ -4,6 +4,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.TreeSet;
 
+import uk.ac.rhul.cs.stats.H1;
+import uk.ac.rhul.cs.stats.MannWhitneyTest;
+
 import com.sosnoski.util.hashset.IntHashSet;
 
 /**
@@ -218,6 +221,11 @@ public class MutableNodeSet extends NodeSet {
 	 */
 	protected IntHashSet getMemberHashSet() {
 		return memberHashSet;
+	}
+	
+	protected double getSignificanceReal() {
+		MannWhitneyTest test = new MannWhitneyTest(this.inWeights, this.outWeights, H1.GREATER_THAN);
+		return test.getSP();
 	}
 	
 	/**

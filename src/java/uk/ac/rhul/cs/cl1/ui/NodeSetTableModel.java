@@ -33,12 +33,13 @@ public class NodeSetTableModel extends AbstractTableModel {
 	
 	/** Column headers for the detailed mode */
 	String[] detailedHeaders = { "Cluster", "Nodes", "Density",
-			"In-weight", "Out-weight", "Quality" };
+			"In-weight", "Out-weight", "Quality", "P-value" };
 	
 	/** Column classes for the detailed mode */
 	@SuppressWarnings("unchecked")
 	Class[] detailedClasses = {
-		Icon.class, Integer.class, Double.class, Double.class, Double.class, Double.class
+		Icon.class, Integer.class, Double.class, Double.class, Double.class, Double.class,
+		Double.class
 	};
 	
 	/** Column headers for the current mode */
@@ -71,7 +72,7 @@ public class NodeSetTableModel extends AbstractTableModel {
 	 * and some basic properties (in a single column). In the detailed mode,
 	 * each property has its own column
 	 */
-	boolean detailedMode;
+	boolean detailedMode = true;
 	
 	/**
 	 * Icon showing a circular progress indicator. Loaded on demand from resources.
@@ -157,6 +158,8 @@ public class NodeSetTableModel extends AbstractTableModel {
 			return nodeSet.getTotalBoundaryEdgeWeight();
 		if (col == 5)
 			return nodeSet.getQuality();
+		if (col == 6)
+			return nodeSet.getSignificance();
 		
 		return "TODO";
 	}
@@ -192,13 +195,12 @@ public class NodeSetTableModel extends AbstractTableModel {
 	 * Returns whether the table model is in detailed mode
 	 */
 	public void setDetailedMode(boolean mode) {
-		currentHeaders = detailedMode ? detailedHeaders : simpleHeaders;
-		currentClasses = detailedMode ? detailedClasses : simpleClasses;
-		
 		if (mode == detailedMode)
 			return;
 		
 		detailedMode = mode;
+		currentHeaders = detailedMode ? detailedHeaders : simpleHeaders;
+		currentClasses = detailedMode ? detailedClasses : simpleClasses;
 		this.fireTableStructureChanged();
 	}
 	

@@ -41,17 +41,27 @@ public class NodeSetDetails implements Comparable<NodeSetDetails> {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append("Nodes: ");
+		sb.append("<html>Nodes: ");
 		sb.append(nodeSet.size());
-		sb.append("\n");
+		sb.append("<br>");
 		
 		sb.append("Density: ");
 		sb.append(fractionalFormat.format(nodeSet.getDensity()));
-		sb.append("\n");
+		sb.append("<br>");
 		
 		sb.append("Quality: ");
 		sb.append(fractionalFormat.format(nodeSet.getQuality()));
+		sb.append("<br>");
 		
+		double significance = nodeSet.getSignificance();
+		sb.append("P-value: <font color=\"");
+		sb.append(PValueRenderer.getColorCodeForValue(significance));
+		sb.append("\">");
+		sb.append(PValueRenderer.formatValue(significance, false));
+		sb.append("</font>");
+		
+		sb.append("</html>");
+
 		return sb.toString();
 	}
 	
@@ -69,8 +79,16 @@ public class NodeSetDetails implements Comparable<NodeSetDetails> {
 		if (this == other)
 			return EQUAL;
 		
-		if (this.nodeSet == other.nodeSet)
+		if (this.nodeSet.equals(other.nodeSet))
 			return EQUAL;
+		
+		double sigThis = this.nodeSet.getSignificance();
+		double sigThat = other.nodeSet.getSignificance();
+		
+		if (sigThis < sigThat)
+			return AFTER;
+		if (sigThis > sigThat)
+			return BEFORE;
 		
 		double qThis = this.nodeSet.getQuality();
 		double qThat = other.nodeSet.getQuality();

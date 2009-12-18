@@ -2,7 +2,6 @@ package uk.ac.rhul.cs.cl1.ui.cytoscape;
 
 import giny.model.Node;
 
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -11,10 +10,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.swing.AbstractAction;
-import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JPopupMenu;
-import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -99,17 +96,9 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		buttonPanel.add(closeButton);
 		this.add(buttonPanel, BorderLayout.SOUTH); */
 		
-		/* Add a toolbar to the top */
-		JToolBar topToolBar = new JToolBar();
-		topToolBar.add(countLabel);
-		topToolBar.add(Box.createHorizontalGlue());
 		topToolBar.add(new FindAction(this));
 		topToolBar.add(new SaveClusteringAction(this));
 		topToolBar.add(new CloseAction(this));
-		topToolBar.setFloatable(false);
-		topToolBar.setRollover(true);
-		topToolBar.setBorderPainted(false);
-		this.add(topToolBar, BorderLayout.NORTH);
 	}
 	
 	/**
