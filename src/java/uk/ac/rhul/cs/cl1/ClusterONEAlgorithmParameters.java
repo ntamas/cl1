@@ -15,7 +15,7 @@ package uk.ac.rhul.cs.cl1;
  */
 public class ClusterONEAlgorithmParameters {
 	/** Minimum size of the clusters that will be returned */
-	protected int minSize = 2;
+	protected int minSize = 3;
 	
 	/** Minimum density of the clusters that will be returned */
 	protected double minDensity = 0.2;

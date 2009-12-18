@@ -5,8 +5,10 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -86,9 +88,21 @@ public class ResultViewerPanel extends JPanel {
 		topToolBar.add(Box.createHorizontalGlue());
 		topToolBar.add(new JToggleButton(new ShowDetailedResultsAction(this)));
 		topToolBar.setFloatable(false);
-		topToolBar.setRollover(true);
+		topToolBar.setRollover(false);
 		topToolBar.setBorderPainted(false);
+		topToolBar.setOpaque(false);
 		this.add(topToolBar, BorderLayout.NORTH);
+	}
+	
+	/**
+	 * Adds a new action to the toolbar
+	 */
+	public JButton addAction(Action action) {
+		JButton button = topToolBar.add(action);
+		button.setContentAreaFilled(false);
+		button.setBorderPainted(false);
+		button.setRolloverEnabled(true);
+		return button;
 	}
 	
 	/**

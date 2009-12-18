@@ -96,9 +96,9 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		buttonPanel.add(closeButton);
 		this.add(buttonPanel, BorderLayout.SOUTH); */
 		
-		topToolBar.add(new FindAction(this));
-		topToolBar.add(new SaveClusteringAction(this));
-		topToolBar.add(new CloseAction(this));
+		this.addAction(new FindAction(this));
+		this.addAction(new SaveClusteringAction(this));
+		this.addAction(new CloseAction(this));
 	}
 	
 	/**

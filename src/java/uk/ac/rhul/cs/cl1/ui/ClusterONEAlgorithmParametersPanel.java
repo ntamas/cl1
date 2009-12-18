@@ -55,7 +55,7 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 		this.add(label, "0, 0, r, c");
 		minimumClusterSizeSpinner = new JSpinner();
 		minimumClusterSizeSpinner.setModel(
-				new SpinnerNumberModel(2, 1, Integer.MAX_VALUE, 1)
+				new SpinnerNumberModel(3, 1, Integer.MAX_VALUE, 1)
 		);
 		((JSpinner.NumberEditor)minimumClusterSizeSpinner.getEditor()).getTextField().setColumns(5);
 		this.add(minimumClusterSizeSpinner, "2, 0, l, c");
