@@ -93,8 +93,8 @@
 			</classpath>
 		</javac>
 		<copy file="${etc}/cytoscape/plugin.props.in"
-            tofile="${build.java}/${package.name.slashed}/plugin.props" />
-        <replace file="${build.java}/${package.name.slashed}/plugin.props">
+			tofile="${build.java}/${package.name.slashed}/ui/cytoscape/plugin.props" />
+		<replace file="${build.java}/${package.name.slashed}/ui/cytoscape/plugin.props">
 			<replacefilter token="@today@" value="${TODAY}" />
 			<replacefilter token="@package.name@" value="${package.name}" />
 			<replacefilter token="@package.version@" value="${package.version}" />
