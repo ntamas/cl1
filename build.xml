@@ -9,9 +9,11 @@
 	<property name="build" location="build" />
 	<property name="src" location="src" />
 	<property name="test" location="test" />
+	<property name="doc" location="doc" />
 	<property name="etc" location="etc" />
 	<property name="lib" location="lib" />
 	<property name="reports" location="reports" />
+	<property name="tools" location="tools" />
 
 	<!-- Access to environment -->
 	<property environment="os" />
@@ -22,6 +24,9 @@
 	<property name="src.java" location="${src}/java" />
 	<property name="build.java.tests" location="${build}/java/tests" />
 	<property name="src.java.tests" location="${test}/java" />
+
+	<property name="build.doc" location="${build}/doc" />
+	<property name="build.doc.cytoscape" location="${build}/doc/cytoscape" />
 
 	<!-- External dependencies -->
 	<condition property="lib.cytoscape.path" value="${cytoscape.path}/cytoscape.jar">
@@ -49,6 +54,7 @@
 		    description="Initializes the build process">
 		<mkdir dir="${build}" />
 		<mkdir dir="${build.java}" />
+		<mkdir dir="${build.doc}" />
 		<mkdir dir="${reports}" />
 	</target>
 	<target name="-cytoscape_warning" unless="lib.cytoscape.path">
@@ -170,6 +176,23 @@
 			</batchtest>
 		</junit>
 	</target>
+
+	<!-- Cytoscape documentation -->
+	<target name="doc_cytoscape" description="Builds the Cytoscape plugin documentation" if="cytoscape.path">
+		<mkdir dir="${build.doc.cytoscape}" />
+		<exec executable="rst2html.py">
+			<arg value="${doc}/cytoscape/index.rst" />
+			<arg value="${build.doc.cytoscape}/index.html" />
+		</exec>
+		<exec executable="python">
+			<arg value="${tools}/generate_javahelp.py" />
+			<arg value="${build.doc.cytoscape}/index.html" />
+		</exec>
+		<copy file="${doc}/cytoscape/cl1.hs"
+			tofile="${build.doc.cytoscape}/cl1.hs" />
+	</target>
+
+	<target name="doc" depends="doc_cytoscape" description="Builds the documentation" />
 
 	<!-- Main targets -->
 	<target name="build" depends="compile, jar" description="Builds the whole project" />

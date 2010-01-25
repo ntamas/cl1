@@ -1,8 +1,11 @@
 # Splits the rst .html output in various .html files
 # Copyright (C) 2009 David Capello
+# Modifications by Tamas Nepusz
 
 from xml.dom import Node
 from xml.dom.minidom import parse, parseString
+
+import os
 import sys
 
 def getElementById(node, id):
@@ -58,7 +61,11 @@ def splitSection(doc, sectionId, removePrevs, outputFileName, idsToRemap):
         div.parentNode.removeChild(div.nextSibling)
 
     file = open(outputFileName, "w")
-    file.write(doc2.toxml(encoding="utf-8"))
+    # Remove <?xml...?> because the JavaHelp viewer doesn't really like it
+    contents = doc2.toxml(encoding="utf-8")
+    if contents[0:5] == "<?xml":
+        contents = contents[contents.index("\n")+1:]
+    file.write(contents)
     file.close()
 
 ###################################################################### 
@@ -123,7 +130,9 @@ def createTOC_aux(node, f, indent):
 
 ###################################################################### 
 
-manualDoc = parse(sys.argv[1])
+infile = sys.argv[1]
+manualDoc = parse(infile)
+indir = os.path.dirname(os.path.abspath(infile))
 
 # get IDs from any tag with a id="..." attribute
 idsToRemap = []
@@ -144,15 +153,15 @@ for id in idsToRemap:
     remapAHref(manualDoc.documentElement, "#" + id[1], id[0] + ".html#" + id[1])
 
 # create a file for the content table
-splitSection(manualDoc, "contents", False, "index.html", idsToRemap)
+# splitSection(manualDoc, "contents", False, "index.html", idsToRemap)
 
 # create a file for each section
 for sectionId in sectionsIds:
-    splitSection(manualDoc, sectionId, True, sectionId + ".html", idsToRemap)
+    splitSection(manualDoc, sectionId, True, os.path.join(indir, sectionId + ".html"), idsToRemap)
 
 # create a JHM file
-createJHM(sectionsIds, open("cl1_map.jhm", "w"))
+createJHM(sectionsIds, open(os.path.join(indir, "cl1_map.jhm"), "w"))
 
 # create a TOC file
-createTOC(manualDoc, open("cl1_toc.xml", "w"))
+createTOC(manualDoc, open(os.path.join(indir, "cl1_toc.xml"), "w"))
 
