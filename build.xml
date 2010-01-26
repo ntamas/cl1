@@ -25,8 +25,7 @@
 	<property name="build.java.tests" location="${build}/java/tests" />
 	<property name="src.java.tests" location="${test}/java" />
 
-	<property name="build.doc" location="${build}/doc" />
-	<property name="build.doc.cytoscape" location="${build}/doc/cytoscape" />
+	<property name="build.doc.cytoscape" location="${build}/java/${package.name.slashed}/ui/cytoscape/help" />
 
 	<!-- External dependencies -->
 	<condition property="lib.cytoscape.path" value="${cytoscape.path}/cytoscape.jar">
@@ -54,7 +53,6 @@
 		    description="Initializes the build process">
 		<mkdir dir="${build}" />
 		<mkdir dir="${build.java}" />
-		<mkdir dir="${build.doc}" />
 		<mkdir dir="${reports}" />
 	</target>
 	<target name="-cytoscape_warning" unless="lib.cytoscape.path">
@@ -195,7 +193,7 @@
 	<target name="doc" depends="doc_cytoscape" description="Builds the documentation" />
 
 	<!-- Main targets -->
-	<target name="build" depends="compile, jar" description="Builds the whole project" />
+	<target name="build" depends="compile, doc, jar" description="Builds the whole project" />
 	<target name="rebuild" depends="clean, build" description="Rebuilds the project from scratch" />
 
 	<!-- Usage information target -->

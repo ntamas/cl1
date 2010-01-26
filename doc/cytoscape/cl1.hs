@@ -32,34 +32,4 @@
     </data>
   </view>
   -->
-
-  <view>
-    <name>Favorites</name>
-    <label>Favorites</label>
-    <type>javax.help.FavoritesView</type>
-  </view>
-
-  <presentation default="true" displayviewimages="false">
-     <name>main window</name>
-     <size width="700" height="400" />
-     <location x="200" y="200" />
-     <title>Cluster ONE Cytoscape plugin - Online Help</title>
-     <image>toplevelfolder</image>
-     <toolbar>
-       <helpaction>javax.help.BackAction</helpaction>
-       <helpaction>javax.help.ForwardAction</helpaction>
-       <helpaction>javax.help.SeparatorAction</helpaction>
-       <helpaction>javax.help.HomeAction</helpaction>
-       <helpaction>javax.help.ReloadAction</helpaction>
-       <helpaction>javax.help.SeparatorAction</helpaction>
-       <helpaction>javax.help.PrintAction</helpaction>
-       <helpaction>javax.help.PrintSetupAction</helpaction>
-     </toolbar>
-  </presentation>
-  <presentation>
-     <name>main</name>
-     <size width="400" height="400" />
-     <location x="200" y="200" />
-     <title>Cluster ONE Cytoscape plugin - Online Help</title>
-  </presentation>
 </helpset>
