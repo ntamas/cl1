@@ -140,7 +140,7 @@
 	</target>
 
 	<!-- Creates the JAR file -->
-	<target name="jar" depends="compile,-copy_resources" description="Creates the JAR file">
+	<target name="jar" depends="compile,doc,-copy_resources" description="Creates the JAR file">
 		<jar destfile="cluster_one-${package.version}.jar" basedir="${build.java}">
 			<zipfileset src="lib/tclib.jar" includes="**/*.class" />
 			<zipfileset src="lib/commons-cli-1.2.jar" includes="**/*.class" />

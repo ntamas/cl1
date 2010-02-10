@@ -19,8 +19,11 @@ def getElementById(node, id):
     return None
 
 def remapAHref(node, old, new):
-    if node.tagName == "a" and node.hasAttribute("href") and node.getAttribute("href") == old:
-        node.setAttribute("href", new)
+    if node.tagName == "a":
+        if node.hasAttribute("href") and node.getAttribute("href") == old:
+            node.setAttribute("href", new)
+        if node.hasAttribute("class"):
+            node.removeAttribute("class")
     for child in node.childNodes:
         if child.nodeType == Node.ELEMENT_NODE:
             remapAHref(child, old, new)
