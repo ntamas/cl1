@@ -3,6 +3,8 @@ package uk.ac.rhul.cs.cl1.ui.cytoscape;
 import giny.model.Edge;
 import giny.model.Node;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Iterator;
 import java.util.WeakHashMap;
 
@@ -32,9 +34,20 @@ import cytoscape.data.CyAttributes;
  * on a network, but not when the local cluster of a given node is explored in
  * the interactive mode.
  */
-public class CyNetworkCache {
+public class CyNetworkCache implements PropertyChangeListener {
 	/** Internal weak hash map used as a storage area */
 	WeakHashMap<CyNetwork, Graph> storage = new WeakHashMap<CyNetwork, Graph>();
+	
+	/**
+	 * Constructor
+	 */
+	public CyNetworkCache() {
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+				.addPropertyChangeListener(Cytoscape.NETWORK_MODIFIED, this);
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+				.addPropertyChangeListener(Cytoscape.NETWORK_DESTROYED, this);
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+	}
 	
 	/**
 	 * Returns the Cluster ONE representation of the given {@link CyNetwork}.
@@ -43,8 +56,11 @@ public class CyNetworkCache {
 	 * listener will be registered on the {@link CyNetwork} to ensure that the
 	 * cache entry is invalidated when the {@link CyNetwork} changes.
 	 * 
+	 * @param  network     the network being converted
+	 * @param  weightAttr  name of the attribute that will be used for edge
+	 *                     weights. null means that the network is unweighted.
 	 * @throws NonNumericAttributeException  when a non-numeric weight attribute 
-	 *         was found in the network
+	 *         was used
 	 */
 	@SuppressWarnings("unchecked")
 	public Graph convertCyNetworkToGraph(CyNetwork network, String weightAttr)
@@ -90,9 +106,44 @@ public class CyNetworkCache {
 	}
 	
 	/**
+	 * Returns the Cluster ONE representation of the given {@link CyNetwork}.
+	 * 
+	 * If the {@link CyNetwork} was not seen before by this instance, a network
+	 * listener will be registered on the {@link CyNetwork} to ensure that the
+	 * cache entry is invalidated when the {@link CyNetwork} changes.
+	 * 
+	 * The network will be created using the currently selected edge weight
+	 * attribute from the control panel. If the control panel is hidden,
+	 * the result is null.
+	 * 
+	 * @param  network     the network being converted
+	 * @throws NonNumericAttributeException  when a non-numeric weight attribute 
+	 *         was used
+	 */
+	public Graph convertCyNetworkToGraph(CyNetwork network)
+			throws NonNumericAttributeException {
+		ControlPanel panel = ControlPanel.getShownInstance();
+		
+		if (panel == null)
+			return null;
+		
+		return convertCyNetworkToGraph(network, panel.getWeightAttributeName());
+	}
+	
+	/**
 	 * Invalidates the cached representation of the given {@link CyNetwork}
 	 */
 	public void invalidate(CyNetwork network) {
 		this.storage.remove(network);
+	}
+	
+	/**
+	 * Called when a network is changed or destroyed. Invalidates the network
+	 * from the cache.
+	 */
+	public void propertyChange(PropertyChangeEvent e) {
+		if (e.getPropertyName().equals(Cytoscape.NETWORK_MODIFIED) ||
+			e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED))
+			this.invalidate((CyNetwork)e.getNewValue());
 	}
 }

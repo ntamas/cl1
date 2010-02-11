@@ -27,15 +27,15 @@ public class PopupMenuTrigger extends MouseAdapter {
 	}
 	
 	@Override
-	public void mouseClicked(MouseEvent event) {
-		maybePopup(event);
-	}
-
-	@Override
 	public void mousePressed(MouseEvent event) {
 		maybePopup(event);
 	}
 	
+	@Override
+	public void mouseReleased(MouseEvent event) {
+		maybePopup(event);
+	}
+
 	protected boolean maybePopup(MouseEvent event) {
 		if (!event.isPopupTrigger())
 			return false;

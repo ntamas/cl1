@@ -83,7 +83,8 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 				"Cluster ONE result table and selecting the appropriate menu item."
 		);
 		
-		/* Register ourselves as a listener for newly created networks */
+		/* Register ourselves as a listener for newly created networks and network view
+		 * focus events */
 		Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(
 				CytoscapeDesktop.NETWORK_VIEW_CREATED, this
 		);

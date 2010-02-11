@@ -178,6 +178,7 @@
 	<!-- Cytoscape documentation -->
 	<target name="doc_cytoscape" description="Builds the Cytoscape plugin documentation" if="cytoscape.path">
 		<mkdir dir="${build.doc.cytoscape}" />
+		<mkdir dir="${build.doc.cytoscape}/images" />
 		<exec executable="rst2html.py">
 			<arg value="${doc}/cytoscape/index.rst" />
 			<arg value="${build.doc.cytoscape}/index.html" />
@@ -186,6 +187,11 @@
 			<arg value="${tools}/generate_javahelp.py" />
 			<arg value="${build.doc.cytoscape}/index.html" />
 		</exec>
+		<copy todir="${build.doc.cytoscape}/images">
+			<fileset dir="${doc}/cytoscape/images">
+				<include name="*.*" />
+			</fileset>
+		</copy>
 		<copy file="${doc}/cytoscape/cl1.hs"
 			tofile="${build.doc.cytoscape}/cl1.hs" />
 	</target>

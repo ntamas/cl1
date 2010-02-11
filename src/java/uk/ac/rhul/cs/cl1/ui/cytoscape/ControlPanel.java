@@ -2,11 +2,15 @@ package uk.ac.rhul.cs.cl1.ui.cytoscape;
 
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
@@ -30,23 +34,65 @@ public class ControlPanel extends JPanel {
 	
 	/** Combobox for selecting the appropriate weight attribute */
 	protected JComboBox weightAttributeCombo;
-
+	
+	/** Button for refreshing the list of weight attributes */
+	protected JButton weightAttributeRefreshButton;
+	
 	public ControlPanel() {
 		super();
 		
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		
+		JPanel algorithmParametersPanel = constructAlgorithmParametersPanel();
+		algorithmParametersPanel.setMaximumSize(algorithmParametersPanel.getPreferredSize());
+		
+		this.add(algorithmParametersPanel);
+		this.add(constructSelectionInfoPanel());
+		this.add(constructButtonPanel());
+		
+		this.add(Box.createVerticalGlue());
+		
+	}
+	
+	protected JPanel constructAlgorithmParametersPanel() {
 		/* Algorithm parameters panel */
 		algorithmParametersPanel = new ClusterONEAlgorithmParametersPanel();
 		
 		/* Weight attribute name method */
+		JPanel weightPanel = new JPanel();
+		weightPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		weightAttributeCombo = new JComboBox();
 		updateWeightAttributeCombo();
-		algorithmParametersPanel.addComponent("Edge weights:", weightAttributeCombo);
-		this.add(algorithmParametersPanel);
+		weightAttributeRefreshButton = new JButton(
+				new ImageIcon(this.getClass().getResource("../../resources/refresh.png"))
+		);
+		weightAttributeRefreshButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				updateWeightAttributeCombo();
+			}
+		});
+		weightPanel.add(weightAttributeCombo);
+		weightPanel.add(Box.createHorizontalStrut(3));
+		weightPanel.add(weightAttributeRefreshButton);
+		algorithmParametersPanel.addComponent("Edge weights:", weightPanel);
 		
+		algorithmParametersPanel.setBorder(BorderFactory.createTitledBorder("Parameters"));
+		
+		return algorithmParametersPanel;
+	}
+	
+	protected JPanel constructSelectionInfoPanel() {
+		JPanel selectionInfoPanel = new SelectionPropertiesPanel();
+		
+		selectionInfoPanel.setBorder(BorderFactory.createTitledBorder("Selection info"));
+		
+		return selectionInfoPanel;
+	}
+	
+	protected JPanel constructButtonPanel() {
 		/* Button panel */
 		JPanel buttonPanel = new JPanel();
+		
 		buttonPanel.setLayout(new FlowLayout());
 		JButton startButton = new JButton("Generate clusters");
 		startButton.addActionListener(new StartAction());
@@ -54,10 +100,8 @@ public class ControlPanel extends JPanel {
 		JButton closeButton = new JButton("Close panel");
 		closeButton.addActionListener(new CloseControlPanelAction());
 		buttonPanel.add(closeButton);
-		this.add(buttonPanel);
-
-		/* Filler component */
-		this.add(Box.createVerticalGlue());
+		
+		return buttonPanel;
 	}
 	
 	/**
@@ -110,6 +154,11 @@ public class ControlPanel extends JPanel {
 		for (String attributeName: attributes.getAttributeNames()) {
 			if (!attributes.getUserVisible(attributeName))
 				continue;
+			
+			byte type = attributes.getType(attributeName);
+			if (type != CyAttributes.TYPE_FLOATING && type != CyAttributes.TYPE_INTEGER)
+				continue;
+			
 			names.add(attributeName);
 		}
 		Collections.sort(names);

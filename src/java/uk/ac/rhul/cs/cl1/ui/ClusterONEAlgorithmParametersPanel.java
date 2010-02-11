@@ -18,6 +18,9 @@ import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
  * @author ntamas
  */
 public class ClusterONEAlgorithmParametersPanel extends JPanel {
+	/** Layout used in this panel */
+	protected TableLayout layout;
+	
 	/** Spinner component for adjusting the minimum cluster size */
 	protected JSpinner minimumClusterSizeSpinner;
 	
@@ -46,7 +49,8 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 				{TableLayout.FILL, 10, TableLayout.PREFERRED},
 				{TableLayout.PREFERRED}
 		};
-		setLayout(new TableLayout(sizes));
+		layout = new TableLayout(sizes);
+		setLayout(layout);
 		
 		JLabel label;
 		
@@ -126,7 +130,6 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	 */
 	public void addComponent(String caption, Component component) {
 		JLabel label = new JLabel(caption);
-		TableLayout layout = (TableLayout)this.getLayout();
 		int numRows = layout.getNumRow();
 		layout.insertRow(numRows, TableLayout.PREFERRED);
 		this.add(label, "0, "+numRows+", r, c");

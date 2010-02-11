@@ -12,7 +12,6 @@ please cite one of the suggested `references`_ (see below).
 
 Introduction
 ============
-
 .. contents:: Table of contents
    :backlinks: none
 
@@ -21,15 +20,63 @@ The one-minute guide to using Cluster ONE
 
 TODO
 
-Getting started
-===============
+Description of the algorithm
+============================
+
+TODO
+
+The Cluster ONE menu
+====================
 
 Cluster ONE installs itself into the Plugins menu of Cytoscape under
-a submenu named Cluster ONE. To show `the control panel`_ of Cluster ONE,
-select Plugins -> Cluster ONE -> Start.
+a submenu named Cluster ONE. This submenu has the following items:
 
-The control panel
-=================
+**Start**
+    Shows the `control panel`_ of Cluster ONE, which is the main entry
+    point to the clustering algorithm implemented in Cluster ONE.
+
+**Grow cluster from selected nodes**
+    Grows a single cluster according to the steps of the Cluster ONE algorithm,
+    starting from the selected nodes which will be treated as a single seed set.
+    For more details about the growth process, please refer to the
+    `description of the algorithm`. The resulting cluster will be selected
+    after the growth process is finished. Since the original selection will
+    be lost, you might consider using the **NamedSelection** Cytoscape
+    plugin (available from Plugins -> Manage plugins) to remember the
+    original selection.
+
+    This menu item remains disabled until you start the Cluster ONE plugin
+    using the corresponding menu item.
+
+**Color nodes by affinity**
+    Colors the nodes of the network according to their affinity to the
+    currently selected set of nodes as a cluster. Nodes with a positive
+    affinity to the cluster will be colored red, negative affinities will
+    be shown using shades of blue. The affinity of a node tells us how much
+    would the addition of that node increase the quality of the cluster.
+    You can use this menu item to drive the cluster growth process manually
+    by starting from a small seed cluster and repeatedly adding nodes to
+    the cluster that increase the quality function the most. Note that
+    you will have to recalculate the affinities every time you modify the
+    cluster, Cluster ONE won't do that automatically.
+
+    Node coloring is implemented using a custom VizMapper style. This style
+    is selected automatically when you click on this menu item, but you can
+    always return to your original style in the VizMapper panel of Cytoscape.
+
+    This menu item remains disabled until you start the Cluster ONE plugin
+    using the corresponding menu item.
+
+**Help**
+    Shows the manual of Cluster ONE (this document) in a separate window.
+
+**About**
+    Shows the authors, the preferred citation for Cluster ONE
+    (see also `References`_) and the URL of its homepage.
+
+
+Control panel
+=============
 
 The control panel of Cluster ONE is to be found on a separate tab
 in the control panel of Cytoscape (see the left hand side of the
@@ -103,30 +150,39 @@ The parameters are as follows:
 **Edge weights**
     A numeric edge attribute to be used for the edge weights. *[unweighted]*
     means that each edge will have a weight equal to 1. If you don't see the
-    name of the attribute in the list, click on the **Refresh** button (showing
-    two green arrows) next to the combo box to re-scan the network for numeric
-    edge attributes. This is necessary when you added the edge attribute you are
+    name of the attribute in the list, click on the **Refresh** button
+    (|refresh|) next to the combo box to re-scan the network for numeric edge
+    attributes. This is necessary when you added the edge attribute you are
     looking for after you opened the Cluster ONE control panel.
 
+.. |refresh| image:: images/refresh.png
 
 Click on the **Generate clusters** button at the bottom of the panel to start
-the clustering process. `The result viewer`_ will open automatically when the
+the clustering process. The `result viewer`_ will open automatically when the
 results are ready. Use the **Close panel** button to hide the Cluster ONE
 control panel.
 
+After a successful clustering process, the nodes of the network will be colored
+according to the number of clusters they participate in. Nodes that correspond
+to a single cluster only will turn red, nodes with multiple clusters will turn
+yellow. Gray nodes denote outliers (nodes that did not end up in any of the
+clusters).  This coloring is implemented using a custom VizMapper style. The
+style is selected automatically when the clustering process finishes, but you
+can always return to your original style in the VizMapper panel of Cytoscape.
 
-The result viewer
-=================
 
-The result viewer appears on the right hand side of the Cytoscape user interface
-after a successful clustering process and it can operate in two modes: the
-simple and the detailed view. When the result viewer is opened for the first
-time, the simple view is used, which shows each cluster in a scrollable list
-box along with some basic properties of the cluster (number of nodes, density,
-quality and p-value). The clusters are ordered according to ascending p-values.
-There is also a small toolbar above the list of clusters, where the number of
-clusters are shown along with small push buttons to access some of the functionality
-provided by the result viewer.
+Result viewer
+=============
+
+The result viewer appears on the right hand side of the Cytoscape user
+interface after a successful clustering process and it can operate in two
+modes: the `simple view`_ and the `detailed view`_. When the result viewer is
+opened for the first time, the `simple view`_ is used, which shows each cluster
+in a scrollable list box along with some basic properties of the cluster
+(number of nodes, density, quality and p-value). The clusters are ordered
+according to ascending p-values.  There is also a small `toolbar`_ above the list
+of clusters, where the number of clusters are shown along with small push
+buttons to access some of the functionality provided by the result viewer.
 
 Simple view
 -----------
@@ -137,14 +193,16 @@ showing some basic properties of the cluster. The clusters are drawn in the
 background, so if there are many large clusters, you may have to wait a little bit
 until you are able to see them all.
 
+Right-clicking on any row of the table will bring up the `cluster context menu`_.
+
 Detailed view
 -------------
 
 The detailed view can be turned on or off by clicking on the first button of
-the toolbar which shows a table. It is advised to turn the detailed view on
-only if the result panel itself is detached from the main Cytoscape window or
-if it is wide enough, as the detailed view contains seven columns, showing the
-following properties of each cluster:
+the toolbar which shows a table (|details|). It is advised to turn the detailed
+view on only if the result panel itself is detached from the main Cytoscape
+window or if it is wide enough, as the detailed view contains seven columns,
+showing the following properties of each cluster:
 
 **Cluster**
     A schematic drawing of the cluster itself.
@@ -170,13 +228,83 @@ following properties of each cluster:
     itself, and it is connected to the rest of the network only by a few lightweight
     edges.
 
+**P-value**
+    The p-value of a one-sided Mann-Whitney U test performed on the in-weights
+    and out-weights of the vertices. A low p-value means that the in-weights
+    are significantly larger than the out-weights, so it is more likely that the
+    cluster is a valid finding and not the result of random fluctuations.
+    Color codes also help distinguishing significant results from insignificant
+    ones: P-values less than 0.05 are denoted by red colors and P-values
+    between 0.05 and 0.1 are shown in yellow.
+
+In the detailed view, you can sort the clusters according to any of the above
+columns by clicking on the column header. Clicking on the header again reverses
+the order.
+
+Right-clicking on any row of the table will bring up the `cluster context menu`_.
+
+
+Toolbar
+-------
+
+|details| **Switch to detailed view**
+    This button toggles between the `simple view`_ and the `detailed view`_.
+
+|find| **Find clusters of selected nodes**
+    By clicking this button, Cluster ONE will evaluate all the nodes that are
+    selected in the current Cytoscape network and select the clusters in which
+    at least one of the selected nodes participate. It can primarily be used
+    to find the cluster(s) of a single node after selecting that node in the
+    main Cytoscape panel.
+
+|save| **Save clustering**
+    Saves the clustering to disk in a file where each row corresponds to a
+    single cluster. The IDs of the nodes in a cluster are separated by
+    space in each line.
+
+|close| **Close result**
+    Closes the result set (i.e. removes its tab from the Results panel of
+    Cytoscape).
+
+.. |details| image:: images/details.png
+.. |find|    image:: images/find.png
+.. |save|    image:: images/save.png
+.. |close|   image:: images/close.png
+
+
+Cluster context menu
+--------------------
+
+This menu pops up whenever you right-click on a row in the results panel.
+If there are multiple rows selected in the result set, the operations will
+apply to all of them, otherwise they will apply to only the one you have
+clicked on.
+
+**Copy to clipboard**
+    This menu item copies the IDs of the nodes in the selected clusters to
+    the clipboard. If there are multiple clusters selected, one line
+    in the copied text will correspond to one cluster. After copying,
+    you can paste the IDs to a text editor or a word processor.
+
+**Extract selected cluster(s)**
+    Creates a new Cytoscape network from the subnetwork spanned by the
+    nodes in the selected clusters. Even when multiple clusters are
+    selected, only a single Cytoscape network will be created that includes
+    all the nodes in all the selected clusters.
+
+**Save selected cluster(s)**
+    Saves the selected clusters into a text file in a similar format
+    as the one generated by the **Copy to clipboard** operation (one
+    cluster per line, node IDs separated by spaces).
+
+
 References
 ==========
 
 If you use results calculated by Cluster ONE in a publication,
 please cite the following reference:
 
-.. [1] Nepusz T, Paccanaro A: Detecting overlapping protein complexes
+.. [1] Nepusz T, Yu H, Paccanaro A: Detecting overlapping protein complexes
        in protein-protein interaction networks. In preparation.
 
 Some other papers that might be of interest (and were referenced earlier

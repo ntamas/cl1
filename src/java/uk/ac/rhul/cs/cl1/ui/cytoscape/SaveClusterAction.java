@@ -78,6 +78,9 @@ public class SaveClusterAction extends AbstractAction {
 		File file = FileUtil.getFile(this.getFileDialogTitle(), FileUtil.SAVE);
 		PrintWriter wr = null;
 		
+		if (file == null)
+			return;
+		
 		try {
 			wr = new PrintWriter(file);
 			writeNodeListsToFile(wr, this.getNodeListsToBeSaved());

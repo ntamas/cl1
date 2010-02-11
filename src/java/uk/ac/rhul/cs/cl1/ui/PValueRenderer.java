@@ -7,6 +7,7 @@ import java.text.NumberFormat;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 
 /**
@@ -19,8 +20,9 @@ public class PValueRenderer extends JLabel implements TableCellRenderer {
 	private static final NumberFormat scientificFormat = new DecimalFormat("0.000E0");
 	
 	public PValueRenderer() {
-		this.setHorizontalTextPosition(JLabel.RIGHT);
+		super("", SwingConstants.RIGHT);
 	}
+	
 	public Component getTableCellRendererComponent(JTable table,
 			Object value0, boolean isSelected, boolean hasFocus, int row,
 			int column) {
