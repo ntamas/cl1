@@ -21,6 +21,7 @@ public class PValueRenderer extends JLabel implements TableCellRenderer {
 	
 	public PValueRenderer() {
 		super("", SwingConstants.RIGHT);
+		this.setOpaque(true);
 	}
 	
 	public Component getTableCellRendererComponent(JTable table,
