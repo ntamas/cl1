@@ -119,7 +119,6 @@ public class SelectionPropertiesPanel extends NodeSetPropertiesPanel
 				e.getType() == GraphViewChangeEvent.NODES_UNSELECTED_TYPE
 		) {
 			/* Selection change happened */
-			System.out.println("Selection change happened");
 			updateNodeSetFromSelection();
 		}
 	}
