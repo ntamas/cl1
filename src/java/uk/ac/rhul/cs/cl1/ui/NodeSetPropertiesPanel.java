@@ -1,12 +1,15 @@
 package uk.ac.rhul.cs.cl1.ui;
 
-import javax.swing.BorderFactory;
+import java.awt.Component;
+import java.awt.Dimension;
+
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import uk.ac.rhul.cs.cl1.NodeSet;
 
@@ -24,8 +27,27 @@ public class NodeSetPropertiesPanel extends JPanel {
 	/** Table containing the details */
 	protected JTable detailsTable = null;
 	
+	/** Table model */
+	protected DefaultTableModel model = null;
+	
 	/** Table column headers */
 	protected static String[] columnNames = {"Property", "Value"};
+	
+	class RightAlignedLabelRenderer extends JLabel implements TableCellRenderer {
+		public RightAlignedLabelRenderer() {
+			super("", SwingConstants.RIGHT);
+		}
+		
+		public Component getTableCellRendererComponent(JTable table,
+				Object value, boolean isSelected, boolean hasFocus, int row,
+				int column) {
+			if (value == null)
+				this.setText("");
+			else
+				this.setText(value.toString());
+			return this;
+		}
+	};
 	
 	/** Constructor */
 	public NodeSetPropertiesPanel() {
@@ -38,20 +60,26 @@ public class NodeSetPropertiesPanel extends JPanel {
 		this.add(label);
 		
 		detailsTable = new JTable(5, 2);
-		detailsTable.setBorder(BorderFactory.createEtchedBorder());
+		// detailsTable.setBorder(BorderFactory.createEtchedBorder());
 		detailsTable.setRowSelectionAllowed(false);
 		detailsTable.setColumnSelectionAllowed(false);
 		detailsTable.setCellSelectionEnabled(false);
+		detailsTable.setFocusable(false);
 		detailsTable.setAutoCreateColumnsFromModel(true);
+		detailsTable.setBackground(this.getBackground());
+		detailsTable.setGridColor(this.getBackground());
+		detailsTable.setFont(this.getFont());
+		detailsTable.setIntercellSpacing(new Dimension(5, 0));
 		this.add(detailsTable);
 		
+		setupTableModel();
 		updatePanel();
 	}
 	
-	/** Updates the components of the panel when the nodeset changed */
-	protected void updatePanel() {
-		DefaultTableModel model = new DefaultTableModel(columnNames, 0);
-		String[] rowNames = {"Number of nodes", "In-weight", "Out-weight", "Density", "Quality", "P-value"};
+	/** Sets up the table model */
+	protected void setupTableModel() {
+		model = new DefaultTableModel(columnNames, 0);
+		String[] rowNames = {"Number of nodes:", "In-weight:", "Out-weight:", "Density:", "Quality:", "P-value:"};
 		Object[] row = new Object[2];
 		
 		for (String rowName: rowNames) {
@@ -59,6 +87,12 @@ public class NodeSetPropertiesPanel extends JPanel {
 			model.addRow(row);
 		}
 		
+		detailsTable.setModel(model);
+		detailsTable.getColumn(detailsTable.getColumnName(0)).setCellRenderer(new RightAlignedLabelRenderer());
+	}
+	
+	/** Updates the components of the panel when the nodeset changed */
+	protected void updatePanel() {
 		if (nodeSet != null) {
 			model.setValueAt(this.nodeSet.size(), 0, 1);
 			model.setValueAt(
@@ -76,9 +110,10 @@ public class NodeSetPropertiesPanel extends JPanel {
 			model.setValueAt(
 					PValueRenderer.formatValue(this.nodeSet.getSignificance(), false),
 					5, 1);
+		} else {
+			for (int i = 0; i < model.getRowCount(); i++)
+				model.setValueAt(null, i, 1);
 		}
-		
-		detailsTable.setModel(model);
 	}
 	
 	/**

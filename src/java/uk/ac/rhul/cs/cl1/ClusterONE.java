@@ -26,7 +26,6 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 	/** A thread pool used for asynchronous operations within Cluster ONE */
 	private static Executor threadPool = null;
 
-	
 	/** The clustering result as a list of NodeSets */
 	protected List<NodeSet> result = null;
 	
@@ -35,7 +34,14 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 
 	/** A task monitor where the algorithm will report its progress */
 	protected TaskMonitor monitor = null;
-
+	
+	/** Whether we are running on a Mac or not */
+	protected static boolean runningOnMac = false;
+	
+	static {
+		runningOnMac = System.getProperty("os.name").toLowerCase().startsWith("mac os x");
+	}
+	
 	/**
 	 * Constructs an instance of the algorithm using the default algorithm parameters.
 	 */
@@ -71,6 +77,13 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 		if (threadPool == null)
 			threadPool = Executors.newSingleThreadExecutor();
 		return threadPool;
+	}
+	
+	/**
+	 * Checks whether we are running on a Mac 
+	 */
+	public static boolean isRunningOnMac() {
+		return runningOnMac;
 	}
 	
 	/**

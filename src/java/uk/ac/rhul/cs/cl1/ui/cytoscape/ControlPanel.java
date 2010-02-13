@@ -20,6 +20,7 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.view.cytopanels.CytoPanel;
 
+import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
 import uk.ac.rhul.cs.cl1.ui.ClusterONEAlgorithmParametersPanel;
 
@@ -71,6 +72,9 @@ public class ControlPanel extends JPanel {
 				updateWeightAttributeCombo();
 			}
 		});
+		if (ClusterONE.isRunningOnMac()) {
+			weightAttributeRefreshButton.putClientProperty("JButton.buttonType", "square");
+		}
 		weightPanel.add(weightAttributeCombo);
 		weightPanel.add(Box.createHorizontalStrut(3));
 		weightPanel.add(weightAttributeRefreshButton);
@@ -100,6 +104,12 @@ public class ControlPanel extends JPanel {
 		JButton closeButton = new JButton("Close panel");
 		closeButton.addActionListener(new CloseControlPanelAction());
 		buttonPanel.add(closeButton);
+		JButton helpButton = new JButton(new HelpAction());
+		if (ClusterONE.isRunningOnMac()) {
+			helpButton.putClientProperty("JButton.buttonType", "help");
+			helpButton.setText("");
+		}
+		buttonPanel.add(helpButton);
 		
 		return buttonPanel;
 	}

@@ -88,6 +88,9 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 		Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(
 				CytoscapeDesktop.NETWORK_VIEW_CREATED, this
 		);
+		
+		/* Register ourselves as a listener for network changes */
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
 	}
 	
 	/**
@@ -269,9 +272,21 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 	 * Method triggered when a new network is created
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
-		if (CytoscapeDesktop.NETWORK_VIEW_CREATED.equals(e.getPropertyName())) {
+		String property = e.getPropertyName();
+		
+		if (property == null)
+			return;
+		
+		if (CytoscapeDesktop.NETWORK_VIEW_CREATED.equals(property)) {
+			/* Register the appropriate node context menu for newly created networks */
 			CyNetworkView view = (CyNetworkView)e.getNewValue();
 			view.addNodeContextMenuListener(nodeContextMenuAction);
+		} else if (Cytoscape.NETWORK_MODIFIED.equals(property)) {
+			/* If a network was modified, remove it from the network cache */
+			networkCache.invalidate(Cytoscape.getCurrentNetwork());
+		} else if (Cytoscape.NETWORK_DESTROYED.equals(property)) {
+			/* If a network was destroyed, remove it from the network cache */
+			networkCache.invalidate(Cytoscape.getCurrentNetwork());
 		}
 	}
 
