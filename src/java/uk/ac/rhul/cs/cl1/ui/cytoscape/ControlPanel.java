@@ -1,6 +1,7 @@
 package uk.ac.rhul.cs.cl1.ui.cytoscape;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -45,7 +46,10 @@ public class ControlPanel extends JPanel {
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		
 		JPanel algorithmParametersPanel = constructAlgorithmParametersPanel();
-		algorithmParametersPanel.setMaximumSize(algorithmParametersPanel.getPreferredSize());
+		
+		Dimension d = algorithmParametersPanel.getPreferredSize();
+		d.width = Integer.MAX_VALUE;
+		algorithmParametersPanel.setMaximumSize(d);
 		
 		this.add(algorithmParametersPanel);
 		this.add(constructSelectionInfoPanel());
@@ -80,6 +84,7 @@ public class ControlPanel extends JPanel {
 		weightPanel.add(weightAttributeRefreshButton);
 		algorithmParametersPanel.addComponent("Edge weights:", weightPanel);
 		
+		algorithmParametersPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 		algorithmParametersPanel.setBorder(BorderFactory.createTitledBorder("Parameters"));
 		
 		return algorithmParametersPanel;

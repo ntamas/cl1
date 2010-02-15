@@ -46,7 +46,9 @@ public class SelectionPropertiesPanel extends NodeSetPropertiesPanel
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
 		if (CytoscapeDesktop.NETWORK_VIEW_FOCUSED.equals(e.getPropertyName())) {
-			setWatchedNetworkView((CyNetworkView)e.getNewValue());
+			Object newValue = e.getNewValue();
+			if (newValue instanceof CyNetworkView)
+				setWatchedNetworkView((CyNetworkView)e.getNewValue());
 			updateNodeSetFromSelection();
 		}
 	}

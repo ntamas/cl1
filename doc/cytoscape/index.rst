@@ -78,11 +78,30 @@ a submenu named Cluster ONE. This submenu has the following items:
 Control panel
 =============
 
-The control panel of Cluster ONE is to be found on a separate tab
-in the control panel of Cytoscape (see the left hand side of the
-Cytoscape user interface). This is the place where you can set
-the parameters of the algorithm and start a clustering process.
-The parameters are as follows:
+The control panel of Cluster ONE is to be found on a separate tab in the
+control panel of Cytoscape (see the left hand side of the Cytoscape user
+interface). The panel consists of two large parts: the `Parameters`_ box lets
+you set the parameters of the algorithm, while the `Selection info`_ box lets
+you examine some properties of the currently selected set of nodes (such as the
+total weight of edges within the set and at the boundary of the set, or the
+value of the Cluster ONE quality function).
+
+Click on the **Generate clusters** button at the bottom of the panel to start
+the clustering process. The `result viewer`_ will open automatically when the
+results are ready. Use the **Close panel** button to hide the Cluster ONE
+control panel.
+
+After a successful clustering process, the nodes of the network will be colored
+according to the number of clusters they participate in. Nodes that correspond
+to a single cluster only will turn red, nodes with multiple clusters will turn
+yellow. Gray nodes denote outliers (nodes that did not end up in any of the
+clusters).  This coloring is implemented using a custom VizMapper style. The
+style is selected automatically when the clustering process finishes, but you
+can always return to your original style in the VizMapper panel of Cytoscape.
+
+
+Parameters
+----------
 
 **Minimum size**
     The minimum size of clusters deemed relevant by Cluster ONE.
@@ -157,18 +176,46 @@ The parameters are as follows:
 
 .. |refresh| image:: images/refresh.png
 
-Click on the **Generate clusters** button at the bottom of the panel to start
-the clustering process. The `result viewer`_ will open automatically when the
-results are ready. Use the **Close panel** button to hide the Cluster ONE
-control panel.
 
-After a successful clustering process, the nodes of the network will be colored
-according to the number of clusters they participate in. Nodes that correspond
-to a single cluster only will turn red, nodes with multiple clusters will turn
-yellow. Gray nodes denote outliers (nodes that did not end up in any of the
-clusters).  This coloring is implemented using a custom VizMapper style. The
-style is selected automatically when the clustering process finishes, but you
-can always return to your original style in the VizMapper panel of Cytoscape.
+Selection info
+--------------
+
+The quantities shown in this box always correspond to the currently selected
+set of nodes in the current Cytoscape view.
+
+
+**Number of nodes**
+    The number of nodes in the cluster.
+
+**In-weight**
+    The sum of the weights of the edges that lie completely within the cluster.
+
+**Out-weight**
+    The sum of the weights of the edges where one endpoint lies within the cluster
+    and the other lies outside.
+
+**Density**
+    The density of the cluster; that is, the sum of the edge weights within
+    the cluster divided by the number of theoretically possible edges.
+
+**Quality**
+    The quality of the cluster, as measured by the in-weight divided by the
+    sum of the in-weight and the out-weight. The rationale behind this measure
+    is that a good cluster contains many heavyweight edges within the cluster
+    itself, and it is connected to the rest of the network only by a few lightweight
+    edges.
+
+**P-value**
+    The p-value of a one-sided Mann-Whitney U test performed on the in-weights
+    and out-weights of the vertices. A low p-value means that the in-weights
+    are significantly larger than the out-weights, so it is more likely that the
+    cluster is a valid finding and not the result of random fluctuations.
+    Color codes also help distinguishing significant results from insignificant
+    ones: p-values less than 0.05 are denoted by red colors and p-values
+    between 0.05 and 0.1 are shown in yellow.
+
+Note that the Mann-Whitney U test cannot be performed sensibly when all the
+in-weights and out-weights are equal. In this case, the p-value will show "NA".
 
 
 Result viewer
@@ -194,6 +241,8 @@ background, so if there are many large clusters, you may have to wait a little b
 until you are able to see them all.
 
 Right-clicking on any row of the table will bring up the `cluster context menu`_.
+Double-clicking on any row will extract the cluster into a separate Cytoscape
+network view.
 
 Detailed view
 -------------
@@ -202,46 +251,18 @@ The detailed view can be turned on or off by clicking on the first button of
 the toolbar which shows a table (|details|). It is advised to turn the detailed
 view on only if the result panel itself is detached from the main Cytoscape
 window or if it is wide enough, as the detailed view contains seven columns,
-showing the following properties of each cluster:
-
-**Cluster**
-    A schematic drawing of the cluster itself.
-
-**Nodes**
-    The number of nodes in the cluster.
-
-**Density**
-    The density of the cluster; that is, the sum of the edge weights within
-    the cluster divided by the number of theoretically possible edges.
-
-**In-weight**
-    The sum of the weights of the edges that lie completely within the cluster.
-
-**Out-weight**
-    The sum of the weights of the edges where one endpoint lies within the cluster
-    and the other lies outside.
-
-**Quality**
-    The quality of the cluster, as measured by the in-weight divided by the
-    sum of the in-weight and the out-weight. The rationale behind this measure
-    is that a good cluster contains many heavyweight edges within the cluster
-    itself, and it is connected to the rest of the network only by a few lightweight
-    edges.
-
-**P-value**
-    The p-value of a one-sided Mann-Whitney U test performed on the in-weights
-    and out-weights of the vertices. A low p-value means that the in-weights
-    are significantly larger than the out-weights, so it is more likely that the
-    cluster is a valid finding and not the result of random fluctuations.
-    Color codes also help distinguishing significant results from insignificant
-    ones: P-values less than 0.05 are denoted by red colors and P-values
-    between 0.05 and 0.1 are shown in yellow.
+the first showing a schematic drawing of the cluster itself, while the remaining
+six correspond to the properties seen earlier in the `selection info`_ box
+on the `control panel`_ (number of nodes, density, in-weight, out-weight,
+quality and p-value).
 
 In the detailed view, you can sort the clusters according to any of the above
 columns by clicking on the column header. Clicking on the header again reverses
 the order.
 
 Right-clicking on any row of the table will bring up the `cluster context menu`_.
+Double-clicking on any row will extract the cluster into a separate Cytoscape
+network view.
 
 
 Toolbar

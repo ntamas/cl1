@@ -3,6 +3,8 @@ package uk.ac.rhul.cs.cl1.ui.cytoscape;
 import giny.model.Node;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,6 +87,15 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		
 		/* Listen to table selection changes */
 		this.table.getSelectionModel().addListSelectionListener(this);
+		
+		/* Listen to double click events on the table */
+		this.table.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					extractClusterAction.actionPerformed(null);
+				}
+			}
+		});
 		
 		/* Add popup menu to the cluster selection table */
 		this.table.addMouseListener(new PopupMenuTrigger(clusterPopup));

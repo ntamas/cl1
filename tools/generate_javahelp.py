@@ -28,6 +28,21 @@ def remapAHref(node, old, new):
         if child.nodeType == Node.ELEMENT_NODE:
             remapAHref(child, old, new)
 
+def addAnchors(doc, node):
+    if node.tagName == "div":
+        if node.hasAttribute("id") and node.hasAttribute("class") and \
+                u"section" in node.getAttribute("class"):
+            anchor = doc.createElement("a")
+            anchor.setAttribute("name", node.getAttribute("id"))
+            node.parentNode.insertBefore(anchor, node)
+
+    # Need to take a copy of the list of child nodes here as we might
+    # be modifying the very same list in the recursion
+    childNodes = list(node.childNodes)
+    for child in childNodes:
+        if child.nodeType == Node.ELEMENT_NODE:
+            addAnchors(doc, child)
+
 def collectIdsInSection(node, ids, section):
     if section:
         if node.hasAttribute("id"):
@@ -73,14 +88,17 @@ def splitSection(doc, sectionId, removePrevs, outputFileName, idsToRemap):
 
 ###################################################################### 
 
-def createJHM(sectionIds, f):
+def createJHM(idsToRemap, f):
     print >>f, "<!DOCTYPE map"
     print >>f, "  PUBLIC \"-//Sun Microsystems Inc.//DTD JavaHelp Map Version 1.0//EN\""
     print >>f, "  \"http://java.sun.com/products/javahelp/map_1_0.dtd\">"
     print >>f
     print >>f, "<map version=\"1.0\">"
-    for sectionId in sectionIds:
-        print >>f, "  <mapID target=\"%s\" url=\"%s.html\" />" % (sectionId, sectionId)
+    for sectionId, targetId in idsToRemap:
+        if sectionId == targetId:
+            print >>f, "  <mapID target=\"%s\" url=\"%s.html\" />" % (sectionId, sectionId)
+        else:
+            print >>f, "  <mapID target=\"%s\" url=\"%s.html#%s\" />" % (targetId, sectionId, targetId)
     print >>f, "</map>"
 
 ###################################################################### 
@@ -155,6 +173,9 @@ for sectionId in sectionsIds:
 for id in idsToRemap:
     remapAHref(manualDoc.documentElement, "#" + id[1], id[0] + ".html#" + id[1])
 
+# add named anchors before each subsection
+addAnchors(manualDoc, manualDoc.documentElement)
+
 # create a file for the content table
 # splitSection(manualDoc, "contents", False, "index.html", idsToRemap)
 
@@ -163,7 +184,7 @@ for sectionId in sectionsIds:
     splitSection(manualDoc, sectionId, True, os.path.join(indir, sectionId + ".html"), idsToRemap)
 
 # create a JHM file
-createJHM(sectionsIds, open(os.path.join(indir, "cl1_map.jhm"), "w"))
+createJHM(idsToRemap, open(os.path.join(indir, "cl1_map.jhm"), "w"))
 
 # create a TOC file
 createTOC(manualDoc, open(os.path.join(indir, "cl1_toc.xml"), "w"))

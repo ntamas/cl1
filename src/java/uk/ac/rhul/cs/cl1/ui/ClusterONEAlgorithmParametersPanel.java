@@ -37,7 +37,7 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	protected JComboBox seedMethodCombo;
 	
 	/** Seeding methods */
-	protected String[] seedMethods = {"From every node", "From unused nodes", "From every edge"};
+	protected String[] seedMethods = {"From unused nodes", "From every node", "From every edge"};
 	
 	/** Merging methods */
 	protected String[] mergingMethods = {"Match coefficient", "Meet/min coefficient"};
@@ -46,7 +46,7 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 		super();
 		
 		double sizes[][] = {
-				{TableLayout.FILL, 10, TableLayout.PREFERRED},
+				{TableLayout.PREFERRED, 10, TableLayout.PREFERRED},
 				{TableLayout.PREFERRED}
 		};
 		layout = new TableLayout(sizes);
@@ -102,9 +102,9 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 		
 		try {
 			if (seedMethodCombo.getSelectedIndex() == 0)
-				result.setSeedGenerator("nodes");
-			else if (seedMethodCombo.getSelectedIndex() == 1)
 				result.setSeedGenerator("unused_nodes");
+			else if (seedMethodCombo.getSelectedIndex() == 1)
+				result.setSeedGenerator("nodes");
 			else if (seedMethodCombo.getSelectedIndex() == 2)
 				result.setSeedGenerator("edges");
 			else
