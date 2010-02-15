@@ -1,5 +1,10 @@
 package uk.ac.rhul.cs.cl1;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import uk.ac.rhul.cs.utils.StringUtils;
+
 /**
  * Abstract seed nodeset generator class.
  * 
@@ -47,6 +52,9 @@ public abstract class SeedGenerator extends GraphAlgorithm implements Iterable<M
 	 * The following specifiers are recognised at the moment:
 	 * <ul>
 	 * <li><tt>nodes</tt> - generates a singleton seed for each node of the graph</li>
+	 * <li><tt>file(<i>filename.txt</i>)</tt> - opens <tt>filename.txt</tt> and interprets
+	 *     each line as a seed set. Lines in the file must contain node names separated by
+	 *     spaces.</li> 
 	 * <li><tt>unused_nodes</tt> - generates a singleton seed for each node of the graph
 	 *     if it wasn't found so far as part of a cluster</li>
 	 * <li><tt>edges</tt> - generates a seed containing the two endpoints for each edge of the graph</li>
@@ -54,7 +62,9 @@ public abstract class SeedGenerator extends GraphAlgorithm implements Iterable<M
 	 * 
 	 * @param  specification   the specification string
 	 * @param  graph           the graph used by the constructed seed generator
-	 * @throws InstantiationException if the specification string is invalid
+	 * @throws InstantiationException if the specification string is invalid or some error
+	 *                                occurred (e.g., file not found for a file based seed
+	 *                                generator)
 	 */
 	public static SeedGenerator fromString(String specification, Graph graph) throws InstantiationException {
 		if (specification.equals("nodes"))
@@ -66,6 +76,16 @@ public abstract class SeedGenerator extends GraphAlgorithm implements Iterable<M
 		if (specification.equals("edges"))
 			return new EveryEdgeSeedGenerator(graph);
 		
+		if (specification.startsWith("file(") && specification.endsWith(")")) {
+			String filename = StringUtils.substring(specification, 5, -1);
+			try {
+				return new FileBasedSeedGenerator(graph, filename);
+			} catch (FileNotFoundException ex) {
+				throw new InstantiationException("file not found: "+filename);
+			} catch (IOException ex) {
+				throw new InstantiationException("IO error while reading file: "+filename);
+			}
+		}
 		throw new InstantiationException("unknown seed generator type: "+specification);
 	}
 	

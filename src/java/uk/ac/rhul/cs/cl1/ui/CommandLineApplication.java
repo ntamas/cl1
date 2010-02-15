@@ -42,6 +42,8 @@ public class CommandLineApplication {
 				params.setMinSize(Integer.parseInt(cmd.getOptionValue("min-size")));
 			if (cmd.hasOption("min-density"))
 				params.setMinDensity(Float.parseFloat(cmd.getOptionValue("min-density")));
+			if (cmd.hasOption("no-merge"))
+				params.setMergingMethod("none");
 			if (cmd.hasOption("max-overlap"))
 				params.setOverlapThreshold(Float.parseFloat(cmd.getOptionValue("max-overlap")));
 			if (cmd.hasOption("seed-method"))
@@ -51,6 +53,8 @@ public class CommandLineApplication {
 			return 1;
 		} catch (InstantiationException ex) {
 			System.err.println("Failed to construct seed method: "+cmd.getOptionValue("seed-method").toString());
+			ex.printStackTrace();
+			return 2;
 		}
 		
 		// Check if we have an input file name or if we have the -h option
@@ -111,6 +115,9 @@ public class CommandLineApplication {
 		options.addOption(OptionBuilder.withLongOpt("param")
 				.withDescription("specifies the value of an advanced named parameter of the algorithm")
 				.withArgName("name=value").hasArgs(2).withValueSeparator().create("p"));
+		options.addOption(OptionBuilder.withLongOpt("no-merge")
+				.withDescription("don't merge highly overlapping clusters")
+				.create("n"));
 	}
 
 	/// Shows the usage instructions
