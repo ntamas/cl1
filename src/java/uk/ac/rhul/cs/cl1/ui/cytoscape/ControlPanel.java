@@ -104,7 +104,7 @@ public class ControlPanel extends JPanel {
 		JButton closeButton = new JButton("Close panel");
 		closeButton.addActionListener(new CloseControlPanelAction());
 		buttonPanel.add(closeButton);
-		JButton helpButton = new JButton(new HelpAction());
+		JButton helpButton = new JButton(new HelpAction("control-panel"));
 		if (ClusterONE.isRunningOnMac()) {
 			helpButton.putClientProperty("JButton.buttonType", "help");
 			helpButton.setText("");

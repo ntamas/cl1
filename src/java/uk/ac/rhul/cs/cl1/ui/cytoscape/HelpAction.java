@@ -22,13 +22,24 @@ public class HelpAction extends CytoscapeAction {
 	
 	private CSH.DisplayHelpFromSource csh;
 	
+	private String helpID = null;
+	
 	/**
 	 * Constructs the action
 	 */
-	public HelpAction() {
-		super("Help...");
+	public HelpAction(String helpID, String label) {
+		super(label);
 		setPreferredMenu("Plugins.Cluster ONE");
 		this.putValue(AbstractAction.MNEMONIC_KEY, KeyEvent.VK_H);
+		this.helpID = helpID;
+	}
+	
+	public HelpAction(String helpID) {
+		this(helpID, "Help...");
+	}
+	
+	public HelpAction() {
+		this("introduction");
 	}
 	
 	protected void init() {
@@ -42,6 +53,7 @@ public class HelpAction extends CytoscapeAction {
 				helpSet = new HelpSet(null, hsURL);
 			if (helpBroker == null)
 				helpBroker = helpSet.createHelpBroker();
+			helpBroker.setCurrentID(helpID);
 			csh = new CSH.DisplayHelpFromSource(helpBroker);
 		} catch (Exception ex) {
 			CytoscapePlugin.showErrorMessage("Cluster ONE Help cannot be started. Please see the Cluster ONE website instead.");
