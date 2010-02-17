@@ -11,7 +11,7 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 	protected double minDensity;
 	
 	/** Whether to add or remove only a single node in each step if multiple nodes have the same affinity */
-	protected boolean onlySingleNode = true;
+	protected boolean onlySingleNode = false;
 	
 	/**
 	 * Returns the minimum density that must be maintained while growing the cluster
@@ -46,7 +46,7 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 	@Override
 	public ClusterGrowthAction getSuggestedAction() {
 		IntArray bestNodes = new IntArray();
-		double quality = nodeSet.getQuality();
+		final double quality = nodeSet.getQuality();
 		double bestAffinity;
 		boolean bestIsAddition = true;
 		
@@ -76,7 +76,7 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 			}
 		}
 		
-		if (this.isContractionAllowed()) {
+		if (this.isContractionAllowed() && this.nodeSet.size() > 1) {
 			/* Try removing nodes. Can we do better than adding nodes? */
 			// bestAffinity = quality;
 			// bestNodes.clear();
@@ -88,12 +88,22 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 				if (affinity <= quality)
 					continue;
 				
+				if (affinity < bestAffinity)
+					continue;
+				
+				// The following condition is necessary to avoid cases when a
+				// tree-like cluster becomes disconnected due to the removal
+				// of a non-leaf node
+				if (nodeSet.isCutVertex(node))
+					continue;
+				
 				if (affinity > bestAffinity) {
 					bestAffinity = affinity;
 					bestNodes.clear();
 					bestNodes.add(node);
 					bestIsAddition = false;
-				} else if (affinity == bestAffinity) {
+				} else  {
+					/* affinity == bestAffinity */
 					if (bestIsAddition) {
 						bestNodes.clear();
 						bestIsAddition = false;
@@ -103,7 +113,7 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 			}
 		}
 		
-		if (bestNodes.size() == 0)
+		if (bestNodes.size() == 0 || bestAffinity == quality)
 			return ClusterGrowthAction.terminate();
 		
 		if (bestNodes.size() > 1 && onlySingleNode)

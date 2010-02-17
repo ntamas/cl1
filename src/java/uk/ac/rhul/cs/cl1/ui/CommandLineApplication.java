@@ -41,11 +41,11 @@ public class CommandLineApplication {
 			if (cmd.hasOption("min-size"))
 				params.setMinSize(Integer.parseInt(cmd.getOptionValue("min-size")));
 			if (cmd.hasOption("min-density"))
-				params.setMinDensity(Float.parseFloat(cmd.getOptionValue("min-density")));
+				params.setMinDensity(Double.parseDouble(cmd.getOptionValue("min-density")));
 			if (cmd.hasOption("no-merge"))
 				params.setMergingMethod("none");
 			if (cmd.hasOption("max-overlap"))
-				params.setOverlapThreshold(Float.parseFloat(cmd.getOptionValue("max-overlap")));
+				params.setOverlapThreshold(Double.parseDouble(cmd.getOptionValue("max-overlap")));
 			if (cmd.hasOption("seed-method"))
 				params.setSeedGenerator(cmd.getOptionValue("seed-method").toString());
 		} catch (ParseException ex) {

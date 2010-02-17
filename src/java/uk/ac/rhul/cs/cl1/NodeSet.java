@@ -13,6 +13,7 @@ import uk.ac.rhul.cs.stats.H1;
 import uk.ac.rhul.cs.stats.MannWhitneyTest;
 import uk.ac.rhul.cs.utils.StringUtils;
 
+import com.sosnoski.util.array.IntArray;
 import com.sosnoski.util.array.StringArray;
 import com.sosnoski.util.hashset.IntHashSet;
 
@@ -178,6 +179,44 @@ public class NodeSet implements Iterable<Integer> {
 	 */
 	public int hashCode() {
 		return graph.hashCode() + members.hashCode();
+	}
+	
+	/**
+	 * Checks whether the nodeset is connected in the graph
+	 */
+	public boolean isConnected() {
+		if (this.members.isEmpty())
+			return true;
+		
+		BreadthFirstSearch bfs = new BreadthFirstSearch(this.graph, this.members.first());
+		Integer[] dummy = {};
+		bfs.restrictToSubgraph(this.members.toArray(dummy));
+		
+		return bfs.toArray().length == this.members.size();
+	}
+	
+	/**
+	 * Checks whether the given node is a cut vertex of the nodeset.
+	 * 
+	 * A vertex is a cut vertex of the nodeset if its removal would make the
+	 * nodeset disconnected. 
+	 */
+	public boolean isCutVertex(int index) {
+		if (this.members.isEmpty())
+			return false;
+		
+		IntArray newMembers = new IntArray();
+		for (int member: this.members)
+			if (member != index)
+				newMembers.add(member);
+		
+		if (newMembers.size() == 0)
+			return false;
+		
+		BreadthFirstSearch bfs = new BreadthFirstSearch(this.graph, newMembers.get(0));
+		bfs.restrictToSubgraph(newMembers.toArray());
+		
+		return bfs.toArray().length != newMembers.size();
 	}
 	
 	/**

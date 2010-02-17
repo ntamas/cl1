@@ -43,5 +43,24 @@ public class BreadthFirstSearchTest {
 		assertEquals(new Integer(0), list.get(0));
 		assertEquals(new Integer(6), list.get(6));
 	}
-
+	
+	@Test
+	public void testRestrictedIterator() {
+		BreadthFirstSearch bfs = new BreadthFirstSearch(graph, 0);
+		int[][] subsets = {
+				{ 0, 1, 3, 4, 5, 6 },
+				{ 0, 2, 4 },
+				{ 0, 4, 6 }
+		};
+		int[][] results = {
+				{ 0, 1, 3, 4, 5, 6 },
+				{ 0, 2 },
+				{ 0 }
+		};
+		
+		for (int i = 0; i < subsets.length; i++) {
+			bfs.restrictToSubgraph(subsets[i]);
+			assertArrayEquals(bfs.toArray(), results[i]);
+		}
+	}
 }

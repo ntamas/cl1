@@ -72,4 +72,26 @@ public class NodeSetTest {
 		nodeSet = createNewNodeSet(members);
 		assertEquals(9.0, nodeSet.getTotalInternalEdgeWeight());
 	}
+	
+	@Test
+	public void testIsConnected() {
+		int[][] members = { { 0, 1, 2, 6, 6 }, { 0, 1, 2} };
+		boolean[] results = { false, true };
+		
+		for (int i = 0; i < members.length; i++) {
+			NodeSet nodeSet = createNewNodeSet(members[i]);
+			assertEquals(results[i], nodeSet.isConnected());
+		}
+	}
+	
+	@Test
+	public void testIsCutVertex() {
+		int[] members = {0, 1, 2, 3, 4 };
+		NodeSet nodeSet = createNewNodeSet(members);
+		assertEquals(false, nodeSet.isCutVertex(0));
+		assertEquals(false, nodeSet.isCutVertex(1));
+		assertEquals(false, nodeSet.isCutVertex(2));
+		assertEquals(true, nodeSet.isCutVertex(3));
+		assertEquals(false, nodeSet.isCutVertex(4));
+	}
 }

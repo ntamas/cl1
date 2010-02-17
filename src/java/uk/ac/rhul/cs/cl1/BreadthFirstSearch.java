@@ -2,6 +2,7 @@ package uk.ac.rhul.cs.cl1;
 
 import java.util.Iterator;
 
+import com.sosnoski.util.array.IntArray;
 import com.sosnoski.util.hashset.IntHashSet;
 import com.sosnoski.util.queue.IntQueue;
 
@@ -13,9 +14,12 @@ import com.sosnoski.util.queue.IntQueue;
 public class BreadthFirstSearch extends GraphAlgorithm implements Iterable<Integer> {
 	/** Seed node from where the traversal will start */
 	protected int seedNode;
-
+	
+	/** Subgraph on which we run the BFS algorithm or null if we run it on the whole graph */
+	protected int[] subgraph = null;
+	
 	/**
-	 * Returns the current seed node of the algoritm
+	 * Returns the current seed node of the algorithm
 	 * @return the seed node
 	 */
 	public int getSeedNode() {
@@ -48,6 +52,32 @@ public class BreadthFirstSearch extends GraphAlgorithm implements Iterable<Integ
 	}
 	
 	/**
+	 * Returns the BFS-order traversal in an array
+	 */
+	public int[] toArray() {
+		IntArray result = new IntArray();
+		for (int i: this)
+			result.add(i);
+		return result.toArray();
+	}
+	
+	/**
+	 * Restricts the BFS iterator the given subgraph
+	 */
+	public void restrictToSubgraph(int[] subgraph) {
+		this.subgraph = subgraph;
+	}
+	
+	/**
+	 * Restricts the BFS iterator the given subgraph
+	 */
+	public void restrictToSubgraph(Integer[] subgraph) {
+		this.subgraph = new int[subgraph.length];
+		for (int i = 0; i < this.subgraph.length; i++)
+			this.subgraph[i] = subgraph[i];
+	}
+	
+	/**
 	 * Internal iterator class
 	 */
 	class BFSIterator implements Iterator<Integer> {
@@ -59,6 +89,18 @@ public class BreadthFirstSearch extends GraphAlgorithm implements Iterable<Integ
 		/** Constructs a BFS iterator with the current seed node */
 		public BFSIterator() {
 			q.add(seedNode);
+			
+			if (subgraph != null) {
+				IntHashSet s = new IntHashSet();
+				int i, n = graph.getNodeCount();
+				
+				for (i = 0; i < subgraph.length; i++)
+					s.add(subgraph[i]);
+				
+				for (i = 0; i < n; i++)
+					if (!s.contains(i))
+						visited.add(i);
+			}
 		}
 		
 		public boolean hasNext() {
@@ -88,5 +130,16 @@ public class BreadthFirstSearch extends GraphAlgorithm implements Iterable<Integ
 			throw new UnsupportedOperationException();
 		}
 		
+		/**
+		 * Restricts the iterator by assuming that some of the nodes were visited already.
+		 * 
+		 * This is useful when you want to check that a subgraph of a given graph is connected
+		 * by itself or not -- you just have to restrict the iterator by assuming that all
+		 * vertices not in the subgraph were visited already.
+		 */
+		public void assumeVisited(int[] vertices) {
+			for (int i: vertices)
+				visited.add(i);
+		}
 	}
 }
