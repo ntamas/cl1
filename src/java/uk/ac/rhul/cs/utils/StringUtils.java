@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Arrays;
 import java.util.Iterator;
 
 /**
@@ -71,8 +72,8 @@ public class StringUtils {
 	 * No delimiter is added before or after the list. A null separator is the same as an empty
 	 * string.
 	 * 
-	 * @param   it         the iterator of values to join together, may be null
-	 * @param   separator  separator between the strings
+	 * @param   it         the iterator of values to join together
+	 * @param   separator  separator between the strings, may be null
 	 */
 	public static String join(Iterator<?> it, String separator) {	
 		if (!it.hasNext())
@@ -97,14 +98,40 @@ public class StringUtils {
 	 * Joins the elements of the provided Iterator into a single String containing the provided
 	 * elements
 	 * <p>
-	 * No delimiter is added before or after the list. A null separator is the same as an empty
-	 * string.
+	 * No delimiter is added before or after the list.
 	 * 
-	 * @param   it         the iterator of values to join together, may be null
+	 * @param   it         the iterator of values to join together
 	 * @param   separator  the separator character to use
 	 */
 	public static String join(Iterator<?> it, char separator) {
 		return StringUtils.join(it, separator + "");
+	}
+	
+	/**
+	 * Joins the elements of the provided array into a single String containing the
+	 * elements of the array
+	 * <p>
+	 * No delimiter is added before or after the list. A null separator is the same as an
+	 * empty string.
+	 * 
+	 * @param  array       the array of values to join together
+	 * @param  separator   separator between the strings, may be null
+	 */
+	public static String join(Object[] array, String separator) {
+		return StringUtils.join(Arrays.asList(array).iterator(), separator);
+	}
+	
+	/**
+	 * Joins the elements of the provided array into a single String containing the
+	 * elements of the array
+	 * <p>
+	 * No delimiter is added before or after the list.
+	 * 
+	 * @param  array       the array of values to join together
+	 * @param  separator   the separator character to use
+	 */
+	public static String join(Object[] array, char separator) {
+		return StringUtils.join(Arrays.asList(array).iterator(), separator);
 	}
 	
 	/**

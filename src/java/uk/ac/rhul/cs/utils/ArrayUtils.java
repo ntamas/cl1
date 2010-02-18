@@ -58,4 +58,38 @@ public class ArrayUtils {
 		
 		return ranks;
 	}
+	
+	/**
+	 * Returns the minimum element of an array
+	 */
+	public static double min(double[] array) {
+		if (array.length == 0)
+			throw new IllegalArgumentException("array must not be empty");
+		
+		double result = array[0];
+		int i, n = array.length;
+		
+		for (i = 0; i < n; i++)
+			if (array[i] < result)
+				result = array[i];
+		
+		return result;
+	}
+	
+	/**
+	 * Returns the maximum element of an array
+	 */
+	public static double max(double[] array) {
+		if (array.length == 0)
+			throw new IllegalArgumentException("array must not be empty");
+		
+		double result = array[0];
+		int i, n = array.length;
+		
+		for (i = 0; i < n; i++)
+			if (array[i] > result)
+				result = array[i];
+		
+		return result;
+	}
 }

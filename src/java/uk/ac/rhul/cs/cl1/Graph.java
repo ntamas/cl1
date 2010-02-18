@@ -107,6 +107,7 @@ public class Graph implements Iterable<Edge> {
 		for (int i = 0; i < new_node_count; i++) {
 			outEdgeAdjacencyLists.add(new IntArray());
 			inEdgeAdjacencyLists.add(new IntArray());
+			nodeNames.add(null);
 			result[i] = n+i;
 		}
 		numberOfNodes += new_node_count;
@@ -227,12 +228,24 @@ public class Graph implements Iterable<Edge> {
 	public String getNodeName(int nodeIndex) { return this.nodeNames.get(nodeIndex); }
 	
 	/**
+	 * Returns the name of all nodes
+	 */
+	public String[] getNodeNames() { return this.nodeNames.toArray(); }
+	
+	/**
 	 * Returns the weight of a given edge
 	 * 
 	 * @param   edgeIndex   the index of the edge
 	 */
 	public double getEdgeWeight(int edgeIndex) { return this.weights.get(edgeIndex); }
 
+	/**
+	 * Returns the weight of all edges
+	 */
+	public double[] getEdgeWeights() {
+		return this.weights.toArray();
+	}
+	
 	/**
 	 * Returns one endpoint of a given edge
 	 * 

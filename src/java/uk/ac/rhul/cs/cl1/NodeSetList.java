@@ -1,8 +1,12 @@
 package uk.ac.rhul.cs.cl1;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.SortedSet;
+import java.util.TreeSet;
+
+import uk.ac.rhul.cs.cl1.io.EdgeListWriter;
 
 /**
  * A list of nodesets that is typically used as a result object in Cluster ONE.
@@ -30,18 +34,13 @@ public class NodeSetList extends ArrayList<NodeSet> {
 	 *                    if their overlap is at least as large as the
 	 *                    given threshold.
 	 *
-	 * @param  minDensity minimal density constraint that is enforced after
-	 *                    merging the nodesets. Nodesets having a lower density
-	 *                    than this after merging are discarded.
-	 *
 	 * @return  a new nodeset list where no two nodesets have an overlap
 	 *          larger than or eqal to the given threshold
 	 *
 	 * @see NodeSet.mergeOverlapping(double, TaskMonitor)
 	 */
-	public NodeSetList mergeOverlapping(String mergingMethod, double threshold,
-			double minDensity) {
-		return mergeOverlapping(mergingMethod, threshold, minDensity, null);
+	public NodeSetList mergeOverlapping(String mergingMethod, double threshold) {
+		return mergeOverlapping(mergingMethod, threshold, null);
 	}
 
 	/**
@@ -62,10 +61,8 @@ public class NodeSetList extends ArrayList<NodeSet> {
 	 *                    if their overlap is at least as large as the
 	 *                    given threshold.
 	 *
-	 * @param  minDensity minimal density constraint that is enforced after
-	 *                    merging the nodesets. Nodesets having a lower density
-	 *                    than this after merging are discarded.
-	 *
+	 * @param  monitor    a {@link TaskMonitor} to report our progress to
+	 * 
 	 * @return  a new nodeset list where no two nodesets have an overlap
 	 *          larger than or equal to the given threshold, and no nodeset
 	 *          has a density smaller than minDensity
@@ -73,7 +70,7 @@ public class NodeSetList extends ArrayList<NodeSet> {
 	 * @see NodeSet.getMeetMinCoefficientWith()
 	 */
 	public NodeSetList mergeOverlapping(String mergingMethod, double threshold,
-			double minDensity, TaskMonitor monitor) {
+			TaskMonitor monitor) {
 		int i, n = this.size();
 		long stepsTotal = n * (n-1) / 2, stepsTaken = 0;
 		NodeSetList result = new NodeSetList();
@@ -81,11 +78,9 @@ public class NodeSetList extends ArrayList<NodeSet> {
 		if (n == 0)
 			return result;
 		
-		boolean[] visited = new boolean[n];
 		Graph graph = this.get(0).getGraph();
 		Graph overlapGraph = new Graph();
 		
-		Arrays.fill(visited, false);		
 		overlapGraph.createNodes(n);
 		
 		if (monitor != null) {
@@ -116,10 +111,20 @@ public class NodeSetList extends ArrayList<NodeSet> {
 			}
 		}
 		
+		EdgeListWriter ewr = new EdgeListWriter();
+		try {
+			ewr.writeGraph(overlapGraph, "overlap_graph.txt");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		if (monitor != null) {
 			monitor.setPercentCompleted(0);
 			monitor.setStatus("Merging highly overlapping clusters...");
 		}
+		
+		boolean[] visited = new boolean[n];
+		Arrays.fill(visited, false);
 		
 		i = 0;
 		while (i < n) {
@@ -129,17 +134,21 @@ public class NodeSetList extends ArrayList<NodeSet> {
 			if (i == n)
 				break;
 			
-			BreadthFirstSearch bfs = new BreadthFirstSearch(overlapGraph, i);
-			NodeSet nodeSet = this.get(i);
-			SortedSet<Integer> members = nodeSet.getMembers();
-			for (int j: bfs) {
-				members.addAll(this.get(j).getMembers());
-				this.set(j, null);
-				visited[j] = true;
+			if (overlapGraph.getDegree(i) == 0) {
+				result.add(this.get(i));
+				visited[i] = true;
+			} else {
+				BreadthFirstSearch bfs = new BreadthFirstSearch(overlapGraph, i);
+				SortedSet<Integer> members = new TreeSet<Integer>();
+				for (int j: bfs) {
+					SortedSet<Integer> newMembers = this.get(j).getMembers();
+					members.addAll(newMembers);
+					this.set(j, null);
+					visited[j] = true;
+				}
+				result.add(new NodeSet(graph, members));
 			}
-			nodeSet = new NodeSet(graph, members);
-			if (nodeSet.getDensity() >= minDensity)
-				result.add(nodeSet);
+			
 			i++;
 			
 			if (monitor != null)

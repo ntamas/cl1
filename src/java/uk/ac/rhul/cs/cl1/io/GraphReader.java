@@ -7,6 +7,6 @@ import uk.ac.rhul.cs.cl1.Graph;
 
 /// Interface specification for all the graph readers
 public interface GraphReader {
-	/// Reads a GINY graph from a stream
+	/// Reads a graph from a stream
 	Graph readGraph(InputStream stream) throws IOException;
 }

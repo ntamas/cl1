@@ -35,7 +35,7 @@ public class ClusterONEAlgorithmParameters {
 	 * <li>meet/min: meet/min coefficient</li>
 	 * </ul>
 	 */
-	protected String mergingMethod = "meet/min";
+	protected String mergingMethod = "match";
 	
 	/**
 	 * The seed generation method.

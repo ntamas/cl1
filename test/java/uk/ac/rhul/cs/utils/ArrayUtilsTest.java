@@ -21,4 +21,23 @@ public class ArrayUtilsTest {
 			assertArrayEquals(expectedResults[i], ArrayUtils.getRanks(arrays[i], eps), eps);
 		}
 	}
+	
+	@Test
+	public void testMinMax() {
+		double[] array = {2, 1, 4, 10, 6};
+		assertEquals(1, ArrayUtils.min(array), Double.MIN_VALUE);
+		assertEquals(10, ArrayUtils.max(array), Double.MIN_VALUE);
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testMinForEmptyArray() {
+		double[] array = {};
+		ArrayUtils.min(array);
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testMaxForEmptyArray() {
+		double[] array = {};
+		ArrayUtils.max(array);
+	}
 }
