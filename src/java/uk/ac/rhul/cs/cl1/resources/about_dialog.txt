@@ -1,10 +1,9 @@
 <html>
 <body>
 %logo%
-<p align="center"><b>%appname% v%version%<b><br/>
-Clustering by Overlapping Neighbourhood Expansion<br/><br/>
-(C) 2009 Tamás Nepusz, Alberto Paccanaro<br/>
-<a href="http://www.paccanarolab.cs.rhul.ac.uk">Paccanaro Lab</a>
+<p align="center"><b>Version %version%</b><br/><br/>
+(C) 2009 Tamás Nepusz, Haiyuan Yu, Alberto Paccanaro<br/>
+<a href="http://www.paccanarolab.org">Paccanaro Lab</a>
 <br/><br/>
 <i>Citation details come here</i>
 </p>

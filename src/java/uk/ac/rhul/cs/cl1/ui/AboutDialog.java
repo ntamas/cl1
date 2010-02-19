@@ -1,5 +1,6 @@
 package uk.ac.rhul.cs.cl1.ui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -42,7 +43,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 		editorPane.setEditorKit(new HTMLEditorKit());
 		editorPane.setBackground(contentPane.getBackground());
         
-		URL logoURL = this.getClass().getResource("../resources/cl1_logo.png");
+		URL logoURL = this.getClass().getResource("../resources/logo.png");
 		String logoCode = "";
 		if (logoURL != null) {
 			logoCode = "<center><img src=\""+logoURL+"\" /></center>";
@@ -61,13 +62,18 @@ public class AboutDialog extends JDialog implements ActionListener {
                                   .replaceAll("%appname%", ClusterONE.applicationName)
                                   .replaceAll("%version%", ClusterONE.version);
         editorPane.setText(text);
+        editorPane.setBackground(Color.white);
+        editorPane.setAlignmentX(0.5f);
         
         JButton closeButton = new JButton("Close");
         closeButton.setActionCommand("close");
         closeButton.addActionListener(this);
+        closeButton.setAlignmentX(0.5f);
         
         contentPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
+        contentPane.setBackground(Color.white);
+        contentPane.setOpaque(true);
         contentPane.add(editorPane);
         contentPane.add(Box.createRigidArea(new Dimension(0, 10)));
         contentPane.add(closeButton);

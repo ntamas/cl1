@@ -4,14 +4,25 @@
 Cluster ONE Cytoscape plugin
 ============================
 
-:Author: Tamás Nepusz, Alberto Paccanaro
+:Author: Tamás Nepusz, Haiyuan Yu, Alberto Paccanaro
 :Contact: tamas@cs.rhul.ac.uk
-
-If you use results calculated by Cluster ONE in a publication,
-please cite one of the suggested `references`_ (see below).
 
 Introduction
 ============
+
+.. image:: images/logo.png
+   :width: 270
+   :height: 84
+   :alt: Cluster ONE logo
+   :align: center
+
+This is the documentation of the Cluster ONE Cytoscape plugin,
+created by Tamás Nepusz, Haiyuan Yu and Alberto Paccanaro.
+
+If you use results calculated by Cluster ONE in a publication,
+please cite one of the suggested `references`_.
+
+
 .. contents:: Table of contents
    :backlinks: none
 

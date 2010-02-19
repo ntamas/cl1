@@ -1,0 +1,133 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" 
+"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+
+<svg width="867" height="270" version="1.1"
+xmlns="http://www.w3.org/2000/svg"
+xmlns:xlink="http://www.w3.org/1999/xlink">
+
+<defs>
+<linearGradient id="bottom-face-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+<stop offset="0%" style="stop-color:rgb(111,0,222);stop-opacity:1"/>
+<stop offset="100%" style="stop-color:rgb(120,32,240);stop-opacity:1"/>
+</linearGradient>
+
+<linearGradient id="top-face-highlight" x1="0%" y1="0%" x2="0%" y2="100%">
+<stop offset="0%" style="stop-color:rgb(255,255,255);stop-opacity:0.8"/>
+<stop offset="100%" style="stop-color:rgb(255,255,255);stop-opacity:0"/>
+</linearGradient>
+
+<linearGradient id="reflection-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+<stop offset="0%" style="stop-color:white;stop-opacity:0.4"/>
+<stop offset="20%" style="stop-color:white;stop-opacity:1.0"/>
+</linearGradient>
+
+<linearGradient id="top-face-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" style="stop-color:rgb(127,64,255);stop-opacity:1"/>
+<stop offset="100%" style="stop-color:rgb(120,0,240);stop-opacity:1"/>
+</linearGradient>
+
+<linearGradient id="background" x1="0%" y1="0%" x2="0%" y2="100%">
+<stop offset="0%" style="stop-color:rgb(64,64,64);stop-opacity:1"/>
+<stop offset="50%" style="stop-color:rgb(0,0,0);stop-opacity:1"/>
+</linearGradient>
+
+<g id="text-on-box">
+      <svg
+         version="1.0"
+         width="117.95601"
+         height="108.82551"
+         id="svg2">
+        <g
+           transform="translate(-132.27634,-847.95165)"
+           id="layer1">
+          <g
+             transform="matrix(0.876227,0.4818987,-0.4818987,0.876227,139.25039,275.15286)"
+             id="g3237">
+            <g
+               transform="matrix(-8.7938618e-4,0.9999996,-0.9999996,-8.7938618e-4,872.6866,177.12379)"
+               id="g3584">
+              <g
+                 id="g9860">
+                <g
+                   transform="translate(98.571429,-224.28571)"
+                   id="g3230">
+                  <g
+                     id="g9857">
+                    <path
+                       d="M 234.40019,724.05131 C 240.48769,721.43881 246.70019,718.91381 253.16269,717.36381 C 256.85019,716.60131 259.97519,719.98881 260.37519,723.40131 C 259.92519,727.00131 257.73769,730.07631 255.43769,732.75131 C 251.71269,730.18881 250.82519,724.77631 246.31269,723.20131 C 240.17519,722.02631 235.00019,726.66381 230.96269,730.65131 C 223.37519,738.98881 218.05019,749.21381 214.26269,759.77631 C 212.36269,765.48881 210.57519,772.46381 214.22519,777.85131 C 217.92519,781.68881 224.06269,780.66381 228.61269,779.13881 C 239.48769,775.22631 248.72519,767.98881 257.96269,761.25131 C 261.02519,759.27631 263.21269,755.68881 266.98769,755.03881 C 265.65019,757.16381 263.96269,759.03881 262.00019,760.57631 C 252.48769,768.37631 242.36269,775.52631 231.33769,781.00131 C 224.75019,784.42631 216.95019,785.42631 209.71269,783.95131 C 201.48769,780.90131 200.25019,770.55131 202.71269,763.21381 C 208.03769,747.00131 218.46269,731.36381 234.40019,724.05131 z"
+                       id="path3220"
+                       style="fill:white;fill-opacity:1" />
+                  </g>
+                </g>
+                <use
+                   transform="matrix(-0.5,-0.8660254,0.8660254,-0.5,88.909548,1089.6632)"
+                   id="use3233"
+                   x="0"
+                   y="0"
+                   width="744.09448"
+                   height="1052.3622"
+                   xlink:href="#g3230" />
+                <use
+                   transform="matrix(-0.5,0.8660254,-0.8660254,-0.5,988.07076,469.54773)"
+                   id="use3235"
+                   x="0"
+                   y="0"
+                   width="744.09448"
+                   height="1052.3622"
+                   xlink:href="#g3230" />
+              </g>
+            </g>
+          </g>
+        </g>
+      </svg>
+</g>
+
+</defs>
+
+<g transform="scale(2)">
+
+<rect x="0" y="0" width="100%" height="100%" fill="white" stroke="white" stroke-width="1"/>
+
+<g transform="translate(4 4) scale(1.2)">
+  <g id="box">
+    <!-- Upper face and highlight -->
+    <path d="M 2.5 63.5 L 12.5 12.5 Q 15 0 20 0 L 80 0 Q 85 0 87.5 12.5 L 97.5 63.5 Q 100 75 97.5 75 L 2.5 75 Q 0 75 2.5 63.5 z" style="fill: url(#top-face-gradient)"/>
+    <path d="M 7.5 37.5 Q 30 25 50 37.5 T 92.5 37.5 L 87.5 12.5 Q 85 0 80 0 L 20 0 Q 15 0 12.5 12.5 z" style="fill: url(#top-face-highlight)"/>
+    <g style="stroke-linejoin:round; stroke-width: 1; stroke: #6e00dd">
+      <!-- Bottom face gradient -->
+      <polygon points="2.5,75 97.5,75 80,96 20,96" style="fill: url(#bottom-face-gradient)"/>
+      <!-- Upper face outline -->
+      <path d="M 2.5 75 Q 0 75 2.5 63.5 L 12.5 12.5 Q 15 0 20 0 L 80 0 Q 85 0 87.5 12.5 L 97.5 63.5 Q 100 75 97.5 75" fill="none" stroke="#8844ff"/>
+<!--
+      <path d="M 15 0 L 85 0" fill="none" stroke="#ff4444"/>
+-->
+      <path d="M 97.5 75 L 80 96" fill="none" stroke="#6620cc"/>
+    </g>
+
+    <!-- Text on box -->
+	<g style="fill: white" filter="url(#drop-shadow)" transform="matrix(0.5526135,0,0,0.5526135,16.542951,6.1526616)">
+	  <g style="opacity: 0.3">
+        <use xlink:href="#text-on-box" x="1" y="1" fill="white" stroke="white" />
+		<use xlink:href="#text-on-box" x="-1" y="-1" fill="black" stroke="black" />
+	  </g>
+	  <use xlink:href="#text-on-box" x="0" y="0" stroke="white" />
+    </g>
+
+	<!-- Caption -->
+	<g style="font-family: DistrictThin; fill: #888888">
+		<text x="110" y="19" font-size="24"><tspan style="fill: #000">c l u s t e r</tspan> i n g&#160; w i t h</text>
+		<text x="110" y="44" font-size="24"><tspan style="fill: #000">o</tspan> v e r l a p p i n g</text>
+		<text x="110" y="69" font-size="24"><tspan style="fill: #000">n</tspan> e i g h b o u r h o o d</text>
+		<text x="110" y="94" font-size="24"><tspan style="fill: #000">e</tspan> x p a n s i o n</text>
+	</g>
+  </g>
+
+  <!-- Reflection -->
+  <use x="0" y="0" xlink:href="#box" transform="rotate(180) translate(-100 -192)"/>
+  <rect x="-10" y="96" width="120" height="60" style="fill: url(#reflection-gradient)"/>
+</g>
+
+</g>
+
+</svg>
