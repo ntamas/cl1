@@ -1,12 +1,9 @@
 package uk.ac.rhul.cs.cl1;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import uk.ac.rhul.cs.cl1.io.EdgeListWriter;
 
 /**
  * A list of nodesets that is typically used as a result object in Cluster ONE.
