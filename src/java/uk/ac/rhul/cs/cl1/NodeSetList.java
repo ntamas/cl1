@@ -111,13 +111,6 @@ public class NodeSetList extends ArrayList<NodeSet> {
 			}
 		}
 		
-		EdgeListWriter ewr = new EdgeListWriter();
-		try {
-			ewr.writeGraph(overlapGraph, "overlap_graph.txt");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
 		if (monitor != null) {
 			monitor.setPercentCompleted(0);
 			monitor.setStatus("Merging highly overlapping clusters...");
