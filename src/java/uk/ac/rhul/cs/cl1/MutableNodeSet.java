@@ -163,6 +163,36 @@ public class MutableNodeSet extends NodeSet {
 	}
 	
 	/**
+	 * Performs a haircut operation on the nodeset
+	 * 
+	 * The haircut operation tries to eliminate vertices that connect only loosely
+	 * to the rest of the nodeset. This is achieved by removing vertices whose
+	 * internal weight is less than some percentage (e.g., 20%) of the average
+	 * internal weight of the cluster.
+	 */
+	public void haircut(double threshold) {
+		if (this.size() == 0)
+			return;
+		
+		do {
+			int minIdx = this.members.first();
+			double minInWeight = this.inWeights[minIdx];
+			double limit = 2 * this.totalInternalEdgeWeight / this.size() * threshold;
+			
+			for (int i: this.members) {
+				if (this.inWeights[i] < minInWeight) {
+					minInWeight = this.inWeights[i];
+					minIdx = i;
+				}
+			}
+			if (minInWeight < limit)
+				this.remove(minIdx);
+			else
+				break;
+		} while (true);
+	}
+	
+	/**
 	 * Returns the addition affinity of a node to this nodeset
 	 * 
 	 * The addition affinity of a node is defined as the value of the quality function
@@ -238,7 +268,7 @@ public class MutableNodeSet extends NodeSet {
 	/**
 	 * Removes a node from this nodeset
 	 * 
-	 * @param   node   the index of the node being added
+	 * @param   node   the index of the node being removed
 	 * @return  true if the node was removed, false if the node was not a member
 	 */
 	public boolean remove(int node) {
@@ -272,9 +302,19 @@ public class MutableNodeSet extends NodeSet {
 	}
 	
 	/**
+	 * Removes more nodes from this nodeset
+	 * 
+	 * @param   nodes    a collection of the nodes being removed
+	 */
+	public void remove(int[] nodes) {
+		for (int i: nodes)
+			this.remove(i);
+	}
+	
+	/**
 	 * Sets the members of this nodeset
 	 */
-	public void setMembers(Collection<Integer> members) {
+	public void setMembers(Iterable<Integer> members) {
 		this.clear();
 		for (int member: members)
 			this.add(member);

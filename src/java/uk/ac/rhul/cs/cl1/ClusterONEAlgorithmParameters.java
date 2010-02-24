@@ -23,8 +23,18 @@ public class ClusterONEAlgorithmParameters {
 	/**
 	 * Overlap threshold value.
 	 * No pair of complexes will have an overlap larger than this
-	 * in the result */
+	 * in the result
+	 */
 	protected double overlapThreshold = 0.8;
+	
+	/**
+	 * Haircut threshold value.
+	 * After generating cohesive subgroups, vertices having an internal weight
+	 * less than the average internal weight times this threshold will be
+	 * removed from the subgroups. If negative or larger than 1, no haircut
+	 * will be performed.
+	 */
+	protected double haircutThreshold = 0.2;
 	
 	/**
 	 * Complex merging method.
@@ -41,9 +51,20 @@ public class ClusterONEAlgorithmParameters {
 	 * The seed generation method.
 	 */
 	protected SeedGenerator seedGenerator = new EveryNodeSeedGenerator();
+
+	/**
+	 * Returns the haircut threshold used by the algorithm
+	 * 
+	 * @return the haircut threshold
+	 */
+	public double getHaircutThreshold() {
+		return haircutThreshold;
+	}
 	
 	/**
-	 * @return the mergingMethod
+	 * Returns the merging method used by the algorithm
+	 * 
+	 * @return the merging method
 	 */
 	public String getMergingMethod() {
 		return mergingMethod;
@@ -77,6 +98,14 @@ public class ClusterONEAlgorithmParameters {
 	 */
 	public double getOverlapThreshold() {
 		return overlapThreshold;
+	}
+
+	/**
+	 * Returns the seed generation method of the algorithm.
+	 * @return the seed generation method
+	 */
+	public SeedGenerator getSeedGenerator() {
+		return seedGenerator;
 	}
 
 	/**
@@ -115,14 +144,6 @@ public class ClusterONEAlgorithmParameters {
 	}
 
 	/**
-	 * Returns the seed generation method of the algorithm.
-	 * @return the seed generation method
-	 */
-	public SeedGenerator getSeedGenerator() {
-		return seedGenerator;
-	}
-
-	/**
 	 * Sets the seed generation method of the algorithm from a string specification
 	 * 
 	 * @param seedMethod the new seed generation method. Must be a specification
@@ -139,5 +160,21 @@ public class ClusterONEAlgorithmParameters {
 	 */
 	public void setSeedGenerator(SeedGenerator seedGenerator) {
 		this.seedGenerator = seedGenerator; 
+	}
+
+	/**
+	 * Sets the haircut threshold of the algorithm.
+	 * 
+	 * @param haircutThreshold  the new haircut threshold
+	 */
+	public void setHaircutThreshold(double haircutThreshold) {
+		this.haircutThreshold = haircutThreshold;
+	}
+
+	/**
+	 * Returns whether a haircut operation will be needed.
+	 */
+	public boolean isHaircutNeeded() {
+		return (haircutThreshold > 0.0 && haircutThreshold <= 1.0);
 	}
 }

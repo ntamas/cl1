@@ -90,8 +90,10 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 	 * Executes the algorithm on the graph set earlier by setGraph()
 	 */
 	public void run() {
+		boolean needHaircut = params.isHaircutNeeded();
 		double minSize = params.getMinSize();
 		double minDensity = params.getMinDensity();
+		double haircutThreshold = params.getHaircutThreshold();
 		
 		NodeSetList result = new NodeSetList();
 		HashSet<NodeSet> addedNodeSets = new HashSet<NodeSet>();
@@ -122,6 +124,10 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 			/* Check the density of the cluster -- if too sparse, skip it */
 			if (cluster.getDensity() < minDensity)
 				continue;
+			
+			/* Do a haircut operation on the cluster if necessary */
+			if (needHaircut)
+				cluster.haircut(haircutThreshold);
 			
 			/* Freeze the cluster so it becomes hashable */
 			NodeSet frozenCluster = cluster.freeze();

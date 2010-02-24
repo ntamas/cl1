@@ -27,6 +27,9 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	/** Spinner component for adjusting the minimum cluster density */
 	protected JSpinner minimumClusterDensitySpinner;
 	
+	/** Spinner component for selecting the haircut threshold */
+	protected JSpinner haircutThresholdSpinner;
+	
 	/** Combobox for selecting the cluster merging method */
 	protected JComboBox mergingMethodCombo;
 	
@@ -41,7 +44,7 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	
 	/** Merging methods */
 	protected String[] mergingMethods = {"Match coefficient", "Meet/min coefficient"};
-	
+
 	public ClusterONEAlgorithmParametersPanel() {
 		super();
 		
@@ -72,6 +75,14 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 		((JSpinner.NumberEditor)minimumClusterDensitySpinner.getEditor()).getTextField().setColumns(5);
 		this.addComponent("Minimum density:", minimumClusterDensitySpinner);
 		
+		/* Haircut threshold spinner */
+		haircutThresholdSpinner = new JSpinner();
+		haircutThresholdSpinner.setModel(
+				new SpinnerNumberModel(0.2, 0.0, 1.0, 0.05)
+		);
+		((JSpinner.NumberEditor)haircutThresholdSpinner.getEditor()).getTextField().setColumns(5);
+		this.addComponent("Haircut threshold:", haircutThresholdSpinner);
+		
 		/* Merging method combobox */
 		mergingMethodCombo = new JComboBox(mergingMethods);
 		this.addComponent("Merging method:", mergingMethodCombo);
@@ -98,6 +109,7 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 		
 		result.setMinSize((Integer)minimumClusterSizeSpinner.getValue());
 		result.setMinDensity((Double)minimumClusterDensitySpinner.getValue());
+		result.setHaircutThreshold((Double)haircutThresholdSpinner.getValue());
 		result.setOverlapThreshold((Double)overlapThresholdSpinner.getValue());
 		
 		try {
