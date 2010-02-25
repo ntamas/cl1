@@ -14,7 +14,6 @@ import uk.ac.rhul.cs.stats.MannWhitneyTest;
 import uk.ac.rhul.cs.utils.StringUtils;
 
 import com.sosnoski.util.array.IntArray;
-import com.sosnoski.util.array.StringArray;
 import com.sosnoski.util.hashset.IntHashSet;
 
 /**
@@ -170,6 +169,22 @@ public class NodeSet implements Iterable<Integer> {
 	 */
 	public SortedSet<Integer> getMembers() {
 		return new TreeSet<Integer>(members);
+	}
+	
+	/**
+	 * Returns the names of the members of this nodeset
+	 * @return the names of the members
+	 */
+	public String[] getMemberNames() {
+		String[] result = new String[this.members.size()];
+		int i = 0;
+		
+		for (Integer member: this.members) {
+			result[i] = this.graph.getNodeName(member);
+			i++;
+		}
+		
+		return result;
 	}
 
 	/**
@@ -477,12 +492,6 @@ public class NodeSet implements Iterable<Integer> {
 	 * Prints the nodes in this set to a string
 	 */
 	public String toString() {
-		StringArray names = new StringArray();
-		
-		for (Integer member: this.members) {
-			names.add(this.graph.getNodeName(member));
-		}
-		
-		return StringUtils.join(names.iterator(), ' ');
+		return StringUtils.join(getMemberNames(), ' ');
 	}
 }

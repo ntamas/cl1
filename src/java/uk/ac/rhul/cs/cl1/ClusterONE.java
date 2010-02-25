@@ -117,6 +117,10 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 			if (shouldStop)
 				return;
 			
+			/* Do a haircut operation on the cluster if necessary */
+			if (needHaircut)
+				cluster.haircut(haircutThreshold);
+			
 			/* Check the size of the cluster -- if too small, skip it */
 			if (cluster.size() < minSize)
 				continue;
@@ -124,10 +128,6 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 			/* Check the density of the cluster -- if too sparse, skip it */
 			if (cluster.getDensity() < minDensity)
 				continue;
-			
-			/* Do a haircut operation on the cluster if necessary */
-			if (needHaircut)
-				cluster.haircut(haircutThreshold);
 			
 			/* Freeze the cluster so it becomes hashable */
 			NodeSet frozenCluster = cluster.freeze();

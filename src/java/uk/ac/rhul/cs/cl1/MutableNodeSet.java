@@ -171,10 +171,7 @@ public class MutableNodeSet extends NodeSet {
 	 * internal weight of the cluster.
 	 */
 	public void haircut(double threshold) {
-		if (this.size() == 0)
-			return;
-		
-		do {
+		while (!this.members.isEmpty()) {
 			int minIdx = this.members.first();
 			double minInWeight = this.inWeights[minIdx];
 			double limit = 2 * this.totalInternalEdgeWeight / this.size() * threshold;
@@ -189,7 +186,7 @@ public class MutableNodeSet extends NodeSet {
 				this.remove(minIdx);
 			else
 				break;
-		} while (true);
+		}
 	}
 	
 	/**

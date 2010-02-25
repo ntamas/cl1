@@ -44,8 +44,8 @@ public class CommandLineApplication {
 				params.setMinDensity(Double.parseDouble(cmd.getOptionValue("min-density")));
 			if (cmd.hasOption("no-merge"))
 				params.setMergingMethod("none");
-			if (cmd.hasOption("haircut-threshold"))
-				params.setOverlapThreshold(Double.parseDouble(cmd.getOptionValue("haircut-threshold")));
+			if (cmd.hasOption("haircut"))
+				params.setHaircutThreshold(Double.parseDouble(cmd.getOptionValue("haircut")));
 			if (cmd.hasOption("max-overlap"))
 				params.setOverlapThreshold(Double.parseDouble(cmd.getOptionValue("max-overlap")));
 			if (cmd.hasOption("seed-method"))
