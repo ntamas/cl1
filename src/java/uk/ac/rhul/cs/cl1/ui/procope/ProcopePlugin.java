@@ -7,15 +7,13 @@ import procope.data.complexes.ComplexSet;
 import procope.data.networks.ProteinNetwork;
 import procope.methods.clustering.Clusterer;
 import procope.tools.ProCopeException;
-import procope.userinterface.gui.dialogs.DialogSettings;
-import procope.userinterface.gui.dialogs.FloatVerifier;
-import procope.userinterface.gui.dialogs.IntVerifier;
-import procope.userinterface.gui.dialogs.ParameterDialog;
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
+import uk.ac.rhul.cs.cl1.ConsoleTaskMonitor;
 import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.cl1.UniqueIDGenerator;
+import uk.ac.rhul.cs.cl1.ui.ClusterONEAlgorithmParametersDialog;
 
 /**
  * ProCope plugin version of Cluster ONE.
@@ -27,7 +25,12 @@ public class ProcopePlugin implements Clusterer {
 		ComplexSet result = new ComplexSet();
 		Graph graph = this.convertProteinNetworkToGraph(net);
 		
-		ClusterONE algorithm = new ClusterONE(getAlgorithmParameters());
+		ClusterONEAlgorithmParameters parameters = getAlgorithmParameters();
+		if (parameters == null)
+			return result;
+		
+		ClusterONE algorithm = new ClusterONE(parameters);
+		algorithm.setTaskMonitor(new ConsoleTaskMonitor());
 		algorithm.runOnGraph(graph);
 		for (NodeSet nodeSet: algorithm.getResults()) {
 			result.addComplex(this.convertNodeSetToComplex(nodeSet));
@@ -41,22 +44,13 @@ public class ProcopePlugin implements Clusterer {
 	 * @return  the parameters
 	 */
 	protected ClusterONEAlgorithmParameters getAlgorithmParameters() {
-		DialogSettings settings = new DialogSettings(ClusterONE.applicationName);
-		ClusterONEAlgorithmParameters result = new ClusterONEAlgorithmParameters();
+		ClusterONEAlgorithmParametersDialog dialog = new ClusterONEAlgorithmParametersDialog();
+		dialog.setLocationRelativeTo(null);
 		
-		settings.addIntegerParameter("Minimum complex size: ", result.getMinSize(),
-				new IntVerifier(1, Integer.MAX_VALUE));
-		settings.addFloatParameter("Minimum complex density: ", (float)result.getMinDensity(),
-				new FloatVerifier(0.0f, 1.0f, 1));
-		settings.addFloatParameter("Maximum allowed overlap:", (float)result.getOverlapThreshold(),
-				new FloatVerifier(0.0f, 1.0f, 1));
+		if (!dialog.execute())
+			return null;
 		
-		Object[] params = ParameterDialog.showDialog(null, settings);
-		result.setMinSize((Integer)params[0]);
-		result.setMinDensity((Float)params[1]);
-		result.setOverlapThreshold((Float)params[2]);
-		
-		return result;
+		return dialog.getParameters();
 	}
 
 	/**
