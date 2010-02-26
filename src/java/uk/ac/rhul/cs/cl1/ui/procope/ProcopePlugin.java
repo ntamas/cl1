@@ -9,11 +9,11 @@ import procope.methods.clustering.Clusterer;
 import procope.tools.ProCopeException;
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
-import uk.ac.rhul.cs.cl1.ConsoleTaskMonitor;
 import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.cl1.UniqueIDGenerator;
 import uk.ac.rhul.cs.cl1.ui.ClusterONEAlgorithmParametersDialog;
+import uk.ac.rhul.cs.cl1.ui.SwingTaskMonitor;
 
 /**
  * ProCope plugin version of Cluster ONE.
@@ -30,7 +30,7 @@ public class ProcopePlugin implements Clusterer {
 			return result;
 		
 		ClusterONE algorithm = new ClusterONE(parameters);
-		algorithm.setTaskMonitor(new ConsoleTaskMonitor());
+		algorithm.setTaskMonitor(new SwingTaskMonitor());
 		algorithm.runOnGraph(graph);
 		for (NodeSet nodeSet: algorithm.getResults()) {
 			result.addComplex(this.convertNodeSetToComplex(nodeSet));
