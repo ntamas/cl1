@@ -34,6 +34,9 @@ public class FileBasedSeedGenerator extends SeedGenerator {
 	/** Whether to generate unused nodes as seeds after we finished processing the file */
 	private boolean generateUnusedNodesAsSeeds = false;
 	
+	/** Whether to ignore disconnected seeds */
+	private boolean disconnectedSeedsIgnored = true;
+	
 	/**
 	 * Constructs a seed generator backed by the given file
 	 */
@@ -69,6 +72,9 @@ public class FileBasedSeedGenerator extends SeedGenerator {
 		/** Line that was read the last time */
 		String line = null;
 		
+		/** The current nodeset that will be returned with the next call to next() */
+		MutableNodeSet currentNodeSet = null;
+		
 		/** A map mapping node names to indices */
 		StringIntHashMap namesToIndices = new StringIntHashMap();
 		
@@ -90,75 +96,113 @@ public class FileBasedSeedGenerator extends SeedGenerator {
 			
 			try {
 				reader = new BufferedReader(new FileReader(f));
-				line = reader.readLine();
 			} catch (FileNotFoundException ex) {
 				ex.printStackTrace();
-			} catch (IOException ex) {
-				ex.printStackTrace();
+				return;
 			}
-		}
-
-		public boolean hasNext() {
-			if (line != null)
-				return true;
 			
-			if (generateUnusedNodesAsSeeds && unusedNodes.size() > 0)
-				return true;
-			
-			return false;
+			readNextLine();
+			processLine();
 		}
 		
-		public MutableNodeSet next() {
-			MutableNodeSet result = new MutableNodeSet(graph);
-			
-			if (line == null && generateUnusedNodesAsSeeds) {
-				/* No more lines in file, return the unused nodes */
-				Integer id = unusedNodes.pollFirst();
-				result.add(id);
-				return result;
-			}
-			
-			StringTokenizer st = new StringTokenizer(line);
-			
-			/* Process current line */
-			while (st.hasMoreTokens()) {
-				String name = st.nextToken();
-				int idx = namesToIndices.get(name);
-				if (idx >= 0) {
-					result.add(idx);
-					unusedNodes.remove(idx);
-				}
-				// TODO: error reporting here
-			}
-			
-			/* Read next line */
+		private void readNextLine() {
 			try {
 				line = reader.readLine();
 			} catch (IOException ex) {
 				ex.printStackTrace();
 				line = null;
 			}
+		}
+		
+		private void processLine() {
+			currentNodeSet = new MutableNodeSet(graph);
 			
+			if (line == null && generateUnusedNodesAsSeeds) {
+				/* No more lines in file, return the unused nodes */
+				Integer id = unusedNodes.pollFirst();
+				if (id == null)
+					currentNodeSet = null;
+				else
+					currentNodeSet.add(id);
+				return;
+			}
+			
+			boolean isConnected = false;
+			while (!isConnected) {
+				StringTokenizer st = new StringTokenizer(line);
+				
+				/* Process current line */
+				while (st.hasMoreTokens()) {
+					String name = st.nextToken();
+					int idx = namesToIndices.get(name);
+					if (idx >= 0) {
+						currentNodeSet.add(idx);
+						unusedNodes.remove(idx);
+					}
+					// TODO: error reporting here
+				}
+				
+				/* Read next line */
+				readNextLine();
+				
+				/* Check whether the nodeset is non-empty and connected */
+				isConnected = currentNodeSet.size() > 0 && currentNodeSet.isConnected();
+				
+				if (!isConnected) {
+					currentNodeSet.clear();
+					if (line == null) {
+						if (generateUnusedNodesAsSeeds) {
+							Integer id = unusedNodes.pollFirst();
+							currentNodeSet.add(id);
+						} else
+							currentNodeSet = null;
+						return;
+					}
+				}
+			}
+			
+			if (isConnected)
+				return;
+			
+			currentNodeSet = null;
+		}
+		
+		public boolean hasNext() {
+			return (currentNodeSet != null);
+		}
+		
+		public MutableNodeSet next() {
+			MutableNodeSet result = currentNodeSet;
+			processLine();
 			return result;
 		}
 		
 		public void remove() {
 			throw new UnsupportedOperationException();
 		}
-		
-		public void processFoundCluster(NodeSet cluster) {}
 	}
 	
-	@Override
+	/**
+	 * Returns whether disconnected seeds will be ignored or not
+	 */
+	public boolean areDisconnectedSeedsIgnored() {
+		return disconnectedSeedsIgnored;
+	}
+	
 	public SeedIterator iterator() {
 		return new IteratorImpl(filename);
 	}
 
-	@Override
+	/**
+	 * Sets whether disconnected seeds should be ignored or not
+	 */
+	public void setDisconnectedSeedsIgnored(boolean disconnectedSeedsIgnored) {
+		this.disconnectedSeedsIgnored = disconnectedSeedsIgnored;
+	}
+
 	public int size() {
 		if (generateUnusedNodesAsSeeds)
 			return this.graph.getNodeCount();
 		return size;
 	}
-
 }

@@ -200,7 +200,7 @@ public class NodeSet implements Iterable<Integer> {
 	 * Checks whether the nodeset is connected in the graph
 	 */
 	public boolean isConnected() {
-		if (this.members.isEmpty())
+		if (this.members.size() < 2)
 			return true;
 		
 		BreadthFirstSearch bfs = new BreadthFirstSearch(this.graph, this.members.first());
