@@ -29,7 +29,7 @@ public class NodeSetTableModel extends AbstractTableModel {
 	
 	/** Column classes for the simple mode */
 	@SuppressWarnings("unchecked")
-	Class[] simpleClasses = { Icon.class, NodeSetDetails.class };
+	Class[] simpleClasses = { ImageIcon.class, NodeSetDetails.class };
 	
 	/** Column headers for the detailed mode */
 	String[] detailedHeaders = { "Cluster", "Nodes", "Density",
@@ -38,7 +38,7 @@ public class NodeSetTableModel extends AbstractTableModel {
 	/** Column classes for the detailed mode */
 	@SuppressWarnings("unchecked")
 	Class[] detailedClasses = {
-		Icon.class, Integer.class, Double.class, Double.class, Double.class, Double.class,
+		ImageIcon.class, Integer.class, Double.class, Double.class, Double.class, Double.class,
 		Double.class
 	};
 	
