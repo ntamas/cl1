@@ -41,6 +41,18 @@ public class NodeSetTest {
 	}
 	
 	@Test
+	public void testGetMembers() {
+		int[] members = { 0, 1, 2, 6, 6 };
+		NodeSet nodeSet = createNewNodeSet(members);
+		Object[] members2 = nodeSet.getMembers().toArray();
+		Object[] members3 = { 0, 1, 2, 6 };
+		
+		assertEquals(members2.length, members3.length);
+		for (int i = 0; i < members2.length; i++)
+			assertEquals(members3[i], members2[i]);
+	}
+	
+	@Test
 	public void testSetMembers() {
 		int[] members = { 0, 1, 2, 6, 6 };
 		NodeSet nodeSet = createNewNodeSet(members);
@@ -75,7 +87,7 @@ public class NodeSetTest {
 	
 	@Test
 	public void testIsConnected() {
-		int[][] members = { { 0, 1, 2, 6, 6 }, { 0, 1, 2} };
+		int[][] members = { { 0, 1, 2, 6, 6 }, { 0, 1, 2 } };
 		boolean[] results = { false, true };
 		
 		for (int i = 0; i < members.length; i++) {

@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.cl1.ui;
+package uk.ac.rhul.cs.cl1.ui.cmdline;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,6 +17,7 @@ import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.cl1.io.GraphReader;
 import uk.ac.rhul.cs.cl1.io.GraphReaderFactory;
+import uk.ac.rhul.cs.cl1.ui.ConsoleTaskMonitor;
 
 /// The command line interface to Cluster ONE
 public class CommandLineApplication {
@@ -87,6 +88,17 @@ public class CommandLineApplication {
 		algorithm.runOnGraph(graph);
 		
 		// Show the results
+		/* if (cmd.hasOption("commitment-stats")) {
+			CommitmentStatisticsCalculator calc = new CommitmentStatisticsCalculator();
+			try {
+				System.out.println(calc.run(algorithm.getResults()));
+			} catch (IOException ex) {
+				ex.printStackTrace();
+				return 4;
+			}
+			return 0;
+		} */
+		
 		System.err.println("Detected "+algorithm.getResults().size()+" complexes");
 		for (NodeSet nodeSet: algorithm.getResults()) {
 			System.out.println(nodeSet);
@@ -122,6 +134,9 @@ public class CommandLineApplication {
 		options.addOption(OptionBuilder.withLongOpt("no-merge")
 				.withDescription("don't merge highly overlapping clusters")
 				.create("n"));
+		/* options.addOption(OptionBuilder.withLongOpt("commitment-stats")
+				.withDescription("suppress regular output and calculate commitment statistics instead")
+				.create()); */
 	}
 
 	/// Shows the usage instructions

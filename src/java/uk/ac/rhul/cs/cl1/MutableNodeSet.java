@@ -208,6 +208,24 @@ public class MutableNodeSet extends NodeSet {
 	}
 	
 	/**
+	 * Returns the commitment of a node to this nodeset
+	 * 
+	 * The commitment of a node is defined as the total weight of edges leading from
+	 * this node to other members of this nodeset, divided by the total weight of edges
+	 * adjacent to the node.
+	 * 
+	 * @param  nodeIndex    the index of the node
+	 * @return the commitment of the node
+	 */
+	@Override
+	public double getCommitment(int nodeIndex) {
+		double den = this.inWeights[nodeIndex] + this.outWeights[nodeIndex];
+		if (den == 0)
+			return 0;
+		return this.inWeights[nodeIndex] / den;
+	}
+	
+	/**
 	 * Returns the total weight of edges that are adjacent to the given node and another internal node.
 	 * 
 	 * The query node can either be internal or external. For internal nodes, the returned weight is
@@ -306,6 +324,16 @@ public class MutableNodeSet extends NodeSet {
 	public void remove(int[] nodes) {
 		for (int i: nodes)
 			this.remove(i);
+	}
+	
+	/**
+	 * Sets the members of this nodeset
+	 */
+	@Override
+	protected void setMembers(int[] members) {
+		this.clear();
+		for (int member: members)
+			this.add(member);
 	}
 	
 	/**

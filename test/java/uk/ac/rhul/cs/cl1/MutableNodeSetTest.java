@@ -10,10 +10,12 @@ import org.junit.Test;
  * @author tamas
  */
 public class MutableNodeSetTest extends NodeSetTest {
+	@Override
 	public NodeSet createNewNodeSet() {
 		return new MutableNodeSet(graph);
 	}
 	
+	@Override
 	public NodeSet createNewNodeSet(int[] members) {
 		return new MutableNodeSet(graph, members);
 	}

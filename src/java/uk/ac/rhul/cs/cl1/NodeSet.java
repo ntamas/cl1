@@ -1,10 +1,8 @@
 package uk.ac.rhul.cs.cl1;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -145,6 +143,37 @@ public class NodeSet implements Iterable<Integer> {
 	}
 	
 	/**
+	 * Returns the commitment of a node to this nodeset
+	 * 
+	 * The commitment of a node is defined as the total weight of edges leading from
+	 * this node to other members of this nodeset, divided by the total weight of edges
+	 * adjacent to the node.
+	 * 
+	 * @param  nodeIndex    the index of the node
+	 * @return the commitment of the node
+	 */
+	public double getCommitment(int nodeIndex) {
+		IntHashSet memberHashSet = this.getMemberHashSet();
+		double in = 0.0, out = 0.0;
+		int[] edgeIdxs = this.graph.getAdjacentEdgeIndicesArray(nodeIndex, Directedness.ALL);
+		for (int edgeIdx: edgeIdxs) {
+			double weight = this.graph.getEdgeWeight(edgeIdx);
+			int endpoint = this.graph.getEdgeEndpoint(edgeIdx, nodeIndex);
+			if (memberHashSet.contains(endpoint)) {
+				/* This is an internal edge */
+				in += weight;
+			} else {
+				out += weight;
+			}
+		}
+		
+		if (in + out == 0)
+			return 0.0;
+		
+		return in / (in + out);
+	}
+	
+	/**
 	 * Returns the graph this nodeset is associated to
 	 * @return the graph
 	 */
@@ -244,12 +273,14 @@ public class NodeSet implements Iterable<Integer> {
 	/**
 	 * Sets the members of this nodeset
 	 */
-	protected void setMembers(Collection<Integer> members) {
-		if (members == null) {
-			this.members = new TreeSet<Integer>();
+	protected void setMembers(Iterable<Integer> members) {
+		this.members = new TreeSet<Integer>();
+		if (members == null)
 			return;
-		}
-		this.members = new TreeSet<Integer>(members);
+		
+		for (Integer member: members)
+			this.members.add(member);
+		
 		recalculate();
 	}
 	
@@ -257,15 +288,14 @@ public class NodeSet implements Iterable<Integer> {
 	 * Sets the members of this nodeset
 	 */
 	protected void setMembers(int[] members) {
-		if (members == null) {
-			this.members = new TreeSet<Integer>();
+		this.members = new TreeSet<Integer>();
+		if (members == null)
 			return;
-		}
 		
-		List<Integer> list = new ArrayList<Integer>();
 		for (int member: members)
-			list.add(member);
-		this.setMembers(list);
+			this.members.add(member);
+		
+		recalculate();
 		
 		return;
 	}

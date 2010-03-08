@@ -8,3 +8,4 @@
 ./cytotest.sh
 ./*.cys
 etc/logo/png
+./reports/*

@@ -53,6 +53,7 @@
 		    description="Initializes the build process">
 		<mkdir dir="${build}" />
 		<mkdir dir="${build.java}" />
+		<mkdir dir="${build.java.tests}" />
 		<mkdir dir="${reports}" />
 	</target>
 	<target name="-cytoscape_warning" unless="lib.cytoscape.path">
@@ -81,6 +82,7 @@
 		<javac srcdir="${src.java}" destdir="${build.java}" target="1.5">
 			<exclude name="**/cytoscape/*" />
 			<exclude name="**/procope/*" />
+			<exclude name="**/CommitmentStatisticsCalculator.java" />
 			<classpath>
 				<path refid="classpath.base" />
 			</classpath>
@@ -123,7 +125,7 @@
 			<classpath>
 				<path refid="classpath.base" />
 				<pathelement location="${build.java}" />
-				<pathelement location="${lib}/junit.jar" />
+				<pathelement location="${lib}/junit-4.7.jar" />
 			</classpath>
 		</javac>
 	</target>
@@ -150,8 +152,9 @@
 				<attribute name="Manifest-Version" value="1.0" />
 				<attribute name="Extension-Name" value="${package.name}" />
 				<attribute name="Implementation-Version" value="${package.version}" />
-				<attribute name="Main-Class" value="${package.name}.ui.CommandLineApplication" />
+				<attribute name="Main-Class" value="${package.name}.ui.cmdline.CommandLineApplication" />
 				<attribute name="Cytoscape-Plugin" value="${package.name}.ui.cytoscape.CytoscapePlugin" />
+				<attribute name="Class-Path" value="${lib.procope.path}" />
 			</manifest>
 		</jar>
 	</target>
@@ -160,15 +163,16 @@
 	<target name="test" depends="compile, compile_tests" description="Runs JUnit tests in the distribution">
 		<junit printsummary="yes" fork="yes" haltonfailure="yes">
 			<classpath>
+				<path refid="classpath.base" />
 				<pathelement location="${build.java.tests}" />
 				<pathelement location="${build.java}" />
-				<pathelement location="${lib}/junit.jar" />
+				<pathelement location="${lib}/junit-4.7.jar" />
 			</classpath>
 
 			<formatter type="plain" />
 
 			<batchtest todir="${reports}">
-				<fileset dir="${build}/tests">
+				<fileset dir="${build.java.tests}">
 					<include name="**/*Test*.class" />
 					<exclude name="**/AllTests.class" />
 				</fileset>
