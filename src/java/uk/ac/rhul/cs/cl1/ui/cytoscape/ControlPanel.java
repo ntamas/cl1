@@ -85,7 +85,6 @@ public class ControlPanel extends JPanel {
 		algorithmParametersPanel.addComponent("Edge weights:", weightPanel);
 		
 		algorithmParametersPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-		algorithmParametersPanel.setBorder(BorderFactory.createTitledBorder("Parameters"));
 		
 		return algorithmParametersPanel;
 	}

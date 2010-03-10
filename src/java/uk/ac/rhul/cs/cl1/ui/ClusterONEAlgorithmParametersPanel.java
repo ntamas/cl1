@@ -1,9 +1,12 @@
 package uk.ac.rhul.cs.cl1.ui;
 
 import java.awt.Component;
+import java.util.TreeMap;
 
 import info.clearthought.layout.TableLayout;
 
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -18,8 +21,24 @@ import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
  * @author ntamas
  */
 public class ClusterONEAlgorithmParametersPanel extends JPanel {
-	/** Layout used in this panel */
-	protected TableLayout layout;
+	/** Sections used in this panel */
+	public enum Section {
+		BASIC("Basic parameters"),
+		ADVANCED("Advanced parameters");
+		
+		/** Title of the section */
+		protected String title;
+		
+		Section(String title) {
+			this.title = title;
+		}
+		
+		/** Returns the title of the section */
+		public String getTitle() { return this.title; }
+	}
+
+	/** Subpanel components corresponding to each panel */
+	protected TreeMap<Section, JPanel> subpanels = null;
 	
 	/** Spinner component for adjusting the minimum cluster size */
 	protected JSpinner minimumClusterSizeSpinner;
@@ -48,24 +67,16 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	public ClusterONEAlgorithmParametersPanel() {
 		super();
 		
-		double sizes[][] = {
-				{TableLayout.PREFERRED, 10, TableLayout.PREFERRED},
-				{TableLayout.PREFERRED}
-		};
-		layout = new TableLayout(sizes);
-		setLayout(layout);
+		subpanels = new TreeMap<Section, JPanel>();
+		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		
-		JLabel label;
-		
-		/* Minimum cluster size spinner */
-		label = new JLabel("Minimum size:");
-		this.add(label, "0, 0, r, c");
+		/* Minimum cluster size spinner */	
 		minimumClusterSizeSpinner = new JSpinner();
 		minimumClusterSizeSpinner.setModel(
 				new SpinnerNumberModel(3, 1, Integer.MAX_VALUE, 1)
 		);
 		((JSpinner.NumberEditor)minimumClusterSizeSpinner.getEditor()).getTextField().setColumns(5);
-		this.add(minimumClusterSizeSpinner, "2, 0, l, c");
+		this.addComponent(Section.BASIC, "Minimum size:", minimumClusterSizeSpinner);
 		
 		/* Minimum cluster density spinner */
 		minimumClusterDensitySpinner = new JSpinner();
@@ -73,7 +84,7 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 				new SpinnerNumberModel(0.2, 0.0, 1.0, 0.05)
 		);
 		((JSpinner.NumberEditor)minimumClusterDensitySpinner.getEditor()).getTextField().setColumns(5);
-		this.addComponent("Minimum density:", minimumClusterDensitySpinner);
+		this.addComponent(Section.BASIC, "Minimum density:", minimumClusterDensitySpinner);
 		
 		/* Haircut threshold spinner */
 		haircutThresholdSpinner = new JSpinner();
@@ -81,11 +92,11 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 				new SpinnerNumberModel(0.2, 0.0, 1.0, 0.05)
 		);
 		((JSpinner.NumberEditor)haircutThresholdSpinner.getEditor()).getTextField().setColumns(5);
-		this.addComponent("Haircut threshold:", haircutThresholdSpinner);
+		this.addComponent(Section.ADVANCED, "Haircut threshold:", haircutThresholdSpinner);
 		
 		/* Merging method combobox */
 		mergingMethodCombo = new JComboBox(mergingMethods);
-		this.addComponent("Merging method:", mergingMethodCombo);
+		this.addComponent(Section.ADVANCED, "Merging method:", mergingMethodCombo);
 		
 		/* Overlap threshold spinner */
 		overlapThresholdSpinner = new JSpinner();
@@ -93,11 +104,11 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 				new SpinnerNumberModel(0.8, 0.0, 1.0, 0.05)
 		);
 		((JSpinner.NumberEditor)overlapThresholdSpinner.getEditor()).getTextField().setColumns(5);
-		this.addComponent("Overlap threshold:", overlapThresholdSpinner);
+		this.addComponent(Section.BASIC, "Overlap threshold:", overlapThresholdSpinner);
 		
 		/* Seed selection method */
 		seedMethodCombo = new JComboBox(seedMethods);
-		this.addComponent("Seeding method:", seedMethodCombo);
+		this.addComponent(Section.ADVANCED, "Seeding method:", seedMethodCombo);
 	}
 
 	/**
@@ -134,17 +145,51 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 
 		return result;
 	}
-
+	
+	/**
+	 * Returns the subpanel corresponding to the given section
+	 */
+	public JPanel getSubpanel(Section section) {
+		if (subpanels.containsKey(section))
+			return subpanels.get(section);
+		
+		JPanel newPanel = new JPanel();
+		newPanel.setBorder(BorderFactory.createTitledBorder(section.getTitle()));
+		
+		double sizes[][] = {
+				{TableLayout.PREFERRED, 10, TableLayout.PREFERRED},
+				{TableLayout.PREFERRED}
+		};
+		newPanel.setLayout(new TableLayout(sizes));
+		this.add(newPanel);
+		subpanels.put(section, newPanel);
+		
+		return newPanel;
+	}
+	
 	/**
 	 * Adds a new component to the end of the parameters panel
+	 * @param section    the section to add the component to
+	 * @param caption    caption of the component in the left column
+	 * @param component  the component itself that should go in the right column
+	 */
+	public void addComponent(Section section, String caption, Component component) {
+		JLabel label = new JLabel(caption);
+		JPanel subpanel = this.getSubpanel(section);
+		TableLayout layout = (TableLayout)subpanel.getLayout();
+		
+		int numRows = layout.getNumRow();
+		layout.insertRow(numRows, TableLayout.PREFERRED);
+		subpanel.add(label, "0, "+numRows+", r, c");
+		subpanel.add(component, "2, "+numRows+", l, c");
+	}
+	
+	/**
+	 * Adds a new component to the Basic parameters section of the panel
 	 * @param caption    caption of the component in the left column
 	 * @param component  the component itself that should go in the right column
 	 */
 	public void addComponent(String caption, Component component) {
-		JLabel label = new JLabel(caption);
-		int numRows = layout.getNumRow();
-		layout.insertRow(numRows, TableLayout.PREFERRED);
-		this.add(label, "0, "+numRows+", r, c");
-		this.add(component, "2, "+numRows+", l, c");
+		addComponent(Section.BASIC, caption, component);
 	}
 }
