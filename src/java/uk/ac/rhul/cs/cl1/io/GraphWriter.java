@@ -6,7 +6,10 @@ import java.io.OutputStream;
 
 import uk.ac.rhul.cs.cl1.Graph;
 
-/// Interface specification for all the graph writers
+/**
+ * Interface specification for all the graph writers
+ * @author tamas
+ */
 public interface GraphWriter {
 	/**
 	 * Writes the graph to the given stream

@@ -3,18 +3,20 @@ package uk.ac.rhul.cs.cl1;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.SortedSet;
-import java.util.TreeSet;
+
+import uk.ac.rhul.cs.utils.Multiset;
+import uk.ac.rhul.cs.utils.TreeMultiset;
 
 /**
- * A list of nodesets that is typically used as a result object in Cluster ONE.
+ * A list of {@link ValuedNodeSet} objects, typically used as a result object in Cluster ONE.
  * 
- * This object is practically an ArrayList of NodeSet objects with some extra
- * methods that allow Cluster ONE to clean up the list by merging highly overlapping
+ * This object is practically an ArrayList of {@link ValuedNodeSet} objects with some
+ * extra methods that allow Cluster ONE to clean up the list by merging highly overlapping
  * nodesets.
  * 
  * @author ntamas
  */
-public class NodeSetList extends ArrayList<NodeSet> {
+public class ValuedNodeSetList extends ArrayList<ValuedNodeSet> {
 	/**
 	 * Merges highly overlapping nodesets and returns a new nodeset list.
 	 * 
@@ -36,7 +38,7 @@ public class NodeSetList extends ArrayList<NodeSet> {
 	 *
 	 * @see NodeSet.mergeOverlapping(double, TaskMonitor)
 	 */
-	public NodeSetList mergeOverlapping(String mergingMethod, double threshold) {
+	public ValuedNodeSetList mergeOverlapping(String mergingMethod, double threshold) {
 		return mergeOverlapping(mergingMethod, threshold, null);
 	}
 
@@ -66,11 +68,11 @@ public class NodeSetList extends ArrayList<NodeSet> {
 	 *
 	 * @see NodeSet.getMeetMinCoefficientWith()
 	 */
-	public NodeSetList mergeOverlapping(String mergingMethod, double threshold,
+	public ValuedNodeSetList mergeOverlapping(String mergingMethod, double threshold,
 			TaskMonitor monitor) {
 		int i, n = this.size();
 		long stepsTotal = n * (n-1) / 2, stepsTaken = 0;
-		NodeSetList result = new NodeSetList();
+		ValuedNodeSetList result = new ValuedNodeSetList();
 		
 		if (n == 0)
 			return result;
@@ -129,14 +131,21 @@ public class NodeSetList extends ArrayList<NodeSet> {
 				visited[i] = true;
 			} else {
 				BreadthFirstSearch bfs = new BreadthFirstSearch(overlapGraph, i);
-				SortedSet<Integer> members = new TreeSet<Integer>();
+				Multiset<Integer> members = new TreeMultiset<Integer>();
+				System.out.println("--- Start merge ---");
 				for (int j: bfs) {
 					SortedSet<Integer> newMembers = this.get(j).getMembers();
 					members.addAll(newMembers);
 					this.set(j, null);
 					visited[j] = true;
+					System.out.println("  >> " + newMembers);
+					System.out.println("     " + members);
 				}
-				result.add(new NodeSet(graph, members));
+				System.out.println("--- End merge ---");
+				ValuedNodeSet newNodeSet = new ValuedNodeSet(graph, members.elementSet());
+				for (Multiset.Entry<Integer> entry: members.entrySet())
+					newNodeSet.setValue(entry.getElement(), entry.getCount());
+				result.add(newNodeSet);
 			}
 			
 			i++;

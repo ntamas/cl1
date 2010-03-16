@@ -8,6 +8,7 @@ import java.util.List;
 import com.sosnoski.util.array.DoubleArray;
 import com.sosnoski.util.array.IntArray;
 import com.sosnoski.util.array.StringArray;
+import com.sosnoski.util.hashmap.ObjectIntHashMap;
 
 /**
  *  Graph class used in Cluster ONE
@@ -231,6 +232,18 @@ public class Graph implements Iterable<Edge> {
 	 * Returns the name of all nodes
 	 */
 	public String[] getNodeNames() { return this.nodeNames.toArray(); }
+	
+	/**
+	 * Returns a hash mapping node names to node indices
+	 */
+	public ObjectIntHashMap getNodeNameHashMap() {
+		ObjectIntHashMap map = new ObjectIntHashMap();
+		String[] nodeNames = this.getNodeNames();
+		for (int i = 0; i < this.numberOfNodes; i++)
+			map.add(nodeNames[i], i);
+		
+		return map;
+	}
 	
 	/**
 	 * Returns the weight of a given edge

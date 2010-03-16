@@ -456,7 +456,7 @@ public class NodeSet implements Iterable<Integer> {
 		Graph result = new Graph(directed);
 		IntHashSet memberSet = this.getMemberHashSet();
 		UniqueIDGenerator<Integer> idGen = new UniqueIDGenerator<Integer>(result);
-
+		
 		for (int i: members) {
 			int srcId = idGen.get(i);
 			int[] edgeIdxs = this.graph.getAdjacentEdgeIndicesArray(i, Directedness.OUT);

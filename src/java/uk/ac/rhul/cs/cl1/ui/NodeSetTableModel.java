@@ -1,6 +1,8 @@
 package uk.ac.rhul.cs.cl1.ui;
 
+import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -11,11 +13,14 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.table.AbstractTableModel;
 
+import com.sosnoski.util.hashmap.ObjectIntHashMap;
+
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.FruchtermanReingoldLayoutAlgorithm;
 import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.GraphLayoutAlgorithm;
 import uk.ac.rhul.cs.cl1.NodeSet;
+import uk.ac.rhul.cs.cl1.ValuedNodeSet;
 
 /**
  * Table model that can be used to show a list of {@link NodeSet} objects
@@ -24,6 +29,8 @@ import uk.ac.rhul.cs.cl1.NodeSet;
  * @author tamas
  */
 public class NodeSetTableModel extends AbstractTableModel {
+	private static final Color DARK_RED = new Color(128, 0, 0);
+	
 	/** Column headers for the simple mode */
 	String[] simpleHeaders = { "Cluster", "Details" };
 	
@@ -52,7 +59,7 @@ public class NodeSetTableModel extends AbstractTableModel {
 	/**
 	 * The list of {@link NodeSet} objects shown in this model
 	 */
-	protected List<NodeSet> nodeSets = null;
+	protected List<ValuedNodeSet> nodeSets = null;
 	
 	/**
 	 * The list of rendered cluster graphs for all the {@link NodeSet} objects shown in this model
@@ -85,8 +92,9 @@ public class NodeSetTableModel extends AbstractTableModel {
 	private class RendererTask extends FutureTask<Icon> {
 		int rowIndex;
 		
-		public RendererTask(int rowIndex, Graph subgraph, GraphLayoutAlgorithm algorithm) {
-			super(new GraphRenderer(subgraph, algorithm));
+		public RendererTask(int rowIndex, Graph subgraph, GraphLayoutAlgorithm algorithm,
+				HashMap<Integer, Color> colorMapping) {
+			super(new GraphRenderer(subgraph, algorithm, colorMapping));
 			this.rowIndex = rowIndex;
 		}
 		
@@ -98,8 +106,8 @@ public class NodeSetTableModel extends AbstractTableModel {
 	/**
 	 * Constructs a new table model backed by the given list of nodesets
 	 */
-	public NodeSetTableModel(List<NodeSet> nodeSets) {
-		this.nodeSets = new ArrayList<NodeSet>(nodeSets);
+	public NodeSetTableModel(List<ValuedNodeSet> nodeSets) {
+		this.nodeSets = new ArrayList<ValuedNodeSet>(nodeSets);
 		updateNodeSetDetails();
 		this.setDetailedMode(false);
 	}
@@ -210,9 +218,30 @@ public class NodeSetTableModel extends AbstractTableModel {
 		
 		nodeSetDetails.clear();
 		nodeSetIcons.clear();
-		for (NodeSet nodeSet: nodeSets) {
+		for (ValuedNodeSet nodeSet: nodeSets) {
+			HashMap<Integer, Color> subgraphColorMap = new HashMap<Integer, Color>();
 			Graph subgraph = nodeSet.getSubgraph();
-			RendererTask rendererTask = new RendererTask(i, subgraph, new FruchtermanReingoldLayoutAlgorithm());
+			ObjectIntHashMap nodeNameIndex = subgraph.getNodeNameHashMap();
+			
+			boolean onlyCores = true;
+			for (int nodeIndex: nodeSet)
+				if (nodeSet.getValue(nodeIndex) > 1) {
+					onlyCores = false;
+					break;
+				}
+			
+			if (!onlyCores) {
+				for (int nodeIndex: nodeSet) {
+					if (nodeSet.getValue(nodeIndex) == 1) {
+						int id = nodeNameIndex.get(Integer.toString(nodeIndex));
+						if (id != ObjectIntHashMap.DEFAULT_NOT_FOUND)
+							subgraphColorMap.put(id, DARK_RED);
+					}
+				}
+			}
+						
+			RendererTask rendererTask = new RendererTask(i, subgraph,
+					new FruchtermanReingoldLayoutAlgorithm(), subgraphColorMap);
 			threadPool.execute(rendererTask);
 			nodeSetIcons.add(rendererTask);
 			nodeSetDetails.add(new NodeSetDetails(nodeSet));

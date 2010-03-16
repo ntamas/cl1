@@ -26,8 +26,8 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 	/** A thread pool used for asynchronous operations within Cluster ONE */
 	private static Executor threadPool = null;
 
-	/** The clustering result as a list of NodeSets */
-	protected List<NodeSet> result = null;
+	/** The clustering result as a list of {@link ValuedNodeSet} objects */
+	protected ValuedNodeSetList result = null;
 	
 	/** Algorithm settings for this instance */
 	protected ClusterONEAlgorithmParameters params = null;
@@ -66,7 +66,7 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 	/**
 	 * Returns the clustering results or null if there was no clustering executed so far
 	 */
-	public List<NodeSet> getResults() {
+	public List<ValuedNodeSet> getResults() {
 		return result;
 	}
 	
@@ -95,7 +95,7 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 		double minDensity = params.getMinDensity();
 		double haircutThreshold = params.getHaircutThreshold();
 		
-		NodeSetList result = new NodeSetList();
+		ValuedNodeSetList result = new ValuedNodeSetList();
 		HashSet<NodeSet> addedNodeSets = new HashSet<NodeSet>();
 		
 		SeedGenerator seedGenerator = params.getSeedGenerator();	
@@ -129,8 +129,8 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 			if (cluster.getDensity() < minDensity)
 				continue;
 			
-			/* Freeze the cluster so it becomes hashable */
-			NodeSet frozenCluster = cluster.freeze();
+			/* Convert the cluster to a valued nodeset */
+			ValuedNodeSet frozenCluster = new ValuedNodeSet(cluster, 1);
 			cluster = null;
 			
 			/* Add the cluster if we haven't found it before */

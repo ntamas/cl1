@@ -18,6 +18,7 @@ import cytoscape.view.CyNetworkView;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
 import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.cl1.NodeSetCollectionBasedSeedGenerator;
+import uk.ac.rhul.cs.cl1.ValuedNodeSet;
 
 /**
  * Action that grows a cluster from a given node and selects the
@@ -103,7 +104,7 @@ public class GrowClusterAction extends CytoscapeAction {
 		parameters.setSeedGenerator(new NodeSetCollectionBasedSeedGenerator(new NodeSet(graph, nodeIndices)));
 		
 		/* Run the algorithm, get the results */
-		List<NodeSet> clusters = CytoscapePlugin.runAlgorithm(graph, parameters, weightAttr);
+		List<ValuedNodeSet> clusters = CytoscapePlugin.runAlgorithm(graph, parameters, weightAttr);
 		if (clusters == null) {
 			CytoscapePlugin.showBugMessage("No results returned from Cluster ONE.");
 			return;

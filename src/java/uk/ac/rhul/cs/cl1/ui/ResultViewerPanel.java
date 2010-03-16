@@ -24,6 +24,7 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
 
 import uk.ac.rhul.cs.cl1.NodeSet;
+import uk.ac.rhul.cs.cl1.ValuedNodeSet;
 import uk.ac.rhul.cs.cl1.ui.NodeSetTableModel;
 
 /**
@@ -62,7 +63,7 @@ public class ResultViewerPanel extends JPanel {
 	/**
 	 * Constructor
 	 */
-	public ResultViewerPanel(List<NodeSet> nodeSets) {
+	public ResultViewerPanel(List<ValuedNodeSet> nodeSets) {
 		this.setLayout(new BorderLayout());
 		
 		/* Create the label showing the number of clusters */
@@ -176,7 +177,7 @@ public class ResultViewerPanel extends JPanel {
 	/**
 	 * Sets the list of nodesets to be shown in this result viewer panel
 	 */
-	public void setNodeSets(List<NodeSet> set) {
+	public void setNodeSets(List<ValuedNodeSet> set) {
 		int n = set.size();
 		
 		/* Set up the table model, ensure that the table's columns are reformatted when

@@ -13,6 +13,7 @@ import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
 import uk.ac.rhul.cs.cl1.MutableNodeSet;
 import uk.ac.rhul.cs.cl1.NodeSet;
+import uk.ac.rhul.cs.cl1.ValuedNodeSet;
 import uk.ac.rhul.cs.utils.Pair;
 
 import cytoscape.CyNetwork;
@@ -132,7 +133,7 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 	 * @param setAttributes  whether to set Cluster ONE related node/edge attributes on the
 	 *                       network in the end
 	 */
-	protected static Pair<List<NodeSet>, List<Node>> runAlgorithm(CyNetwork network,
+	protected static Pair<List<ValuedNodeSet>, List<Node>> runAlgorithm(CyNetwork network,
 			ClusterONEAlgorithmParameters parameters, String weightAttr,
 			boolean setAttributes) {
 		networkCache.invalidate(network);
@@ -141,7 +142,7 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 		if (graph == null)
 			return null;
 		
-		List<NodeSet> clusters = runAlgorithm(graph, parameters, weightAttr);
+		List<ValuedNodeSet> clusters = runAlgorithm(graph, parameters, weightAttr);
 		
 		if (clusters != null && setAttributes)
 			setStatusAttributesOnGraph(graph, clusters);
@@ -156,7 +157,7 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 	 * @param parameters     the algorithm parameters of Cluster ONE
 	 * @param weightAttr     edge attribute holding edge weights
 	 */
-	protected static List<NodeSet> runAlgorithm(Graph graph,
+	protected static List<ValuedNodeSet> runAlgorithm(Graph graph,
 			ClusterONEAlgorithmParameters parameters, String weightAttr) {
 		if (graph.getEdgeCount() == 0) {
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
@@ -184,7 +185,7 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 	 * @param graph      the Cluster ONE graph representation
 	 * @param results    results of the analysis
 	 */
-	private static void setStatusAttributesOnGraph(Graph graph, List<NodeSet> results) {
+	private static void setStatusAttributesOnGraph(Graph graph, List<ValuedNodeSet> results) {
 		int[] occurrences = new int[graph.getNodeCount()];
 		Arrays.fill(occurrences, 0);
 		

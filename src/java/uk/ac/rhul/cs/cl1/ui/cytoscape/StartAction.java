@@ -10,7 +10,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
-import uk.ac.rhul.cs.cl1.NodeSet;
+import uk.ac.rhul.cs.cl1.ValuedNodeSet;
 import uk.ac.rhul.cs.utils.Pair;
 
 import cytoscape.CyNetwork;
@@ -59,7 +59,7 @@ public class StartAction extends CytoscapeAction {
 			return;
 		
 		/* Run the algorithm */
-		Pair<List<NodeSet>, List<Node>> results;
+		Pair<List<ValuedNodeSet>, List<Node>> results;
 		results = CytoscapePlugin.runAlgorithm(network, panel.getParameters(), panel.getWeightAttributeName(), true);
 		if (results.getLeft() == null)
 			return;

@@ -7,6 +7,7 @@ import java.awt.RenderingHints;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 import java.util.concurrent.Callable;
 
 import javax.swing.Icon;
@@ -27,16 +28,28 @@ public class GraphRenderer implements Callable<Icon> {
 	/** Local instance of the graph layout algorithm used in the rendering process */
 	GraphLayoutAlgorithm algorithm = null;
 	
+	/** Node colors for the graph */
+	HashMap<Integer, Color> colors = null;
+	
 	/** Calculated layout of the graph according to the layout algorithm */
 	Layout layout = null;
 	
 	/**
 	 * Constructs a renderer that will render the given graph using the given
-	 * layout algorithm
+	 * layout algorithm and the given color mapping
 	 */
-	public GraphRenderer(Graph graph, GraphLayoutAlgorithm algorithm) {
+	public GraphRenderer(Graph graph, GraphLayoutAlgorithm algorithm, HashMap<Integer, Color> colors) {
 		this.algorithm = algorithm;
 		this.algorithm.setGraph(graph);
+		this.colors = colors;
+	}
+	
+	/**
+	 * Constructs a renderer that will render the given graph using the given
+	 * layout algorithm and the default colors
+	 */
+	public GraphRenderer(Graph graph, GraphLayoutAlgorithm algorithm) {
+		this(graph, algorithm, new HashMap<Integer, Color>());
 	}
 	
 	/**
@@ -71,9 +84,12 @@ public class GraphRenderer implements Callable<Icon> {
 		}
 		
 		/* Draw the nodes */
-		g.setColor(Color.RED);
 		for (int i = 0; i < n; i++) {
 			Point2D point = this.layout.getCoordinates(i);
+			Color color = colors.get(i);
+			if (color == null)
+				color = Color.RED;
+			g.setColor(color);
 			g.fillOval((int)point.getX()-2, (int)point.getY()-2, 5, 5);
 		}
 	}
