@@ -47,7 +47,6 @@ public class TreeMultiset<E> implements Multiset<E> {
 		data = new TreeMap<E, Integer>();
 	}
 	
-	@Override
 	public int add(E element, int occurrences) {
 		if (occurrences < 0)
 			throw new IllegalArgumentException("occurrences must not be negative");
@@ -59,7 +58,6 @@ public class TreeMultiset<E> implements Multiset<E> {
 		return count;
 	}
 
-	@Override
 	public int count(Object element) {
 		Integer count = data.get(element);
 		if (count == null)
@@ -67,12 +65,10 @@ public class TreeMultiset<E> implements Multiset<E> {
 		return count;
 	}
 
-	@Override
 	public Set<E> elementSet() {
 		return data.keySet();
 	}
 
-	@Override
 	public Set<Multiset.Entry<E>> entrySet() {
 		Set<Multiset.Entry<E>> result = new HashSet<Multiset.Entry<E>>();
 		
@@ -82,7 +78,6 @@ public class TreeMultiset<E> implements Multiset<E> {
 		return result;
 	}
 
-	@Override
 	public int remove(E element, int occurrences) {
 		if (occurrences < 0)
 			throw new IllegalArgumentException("occurrences must not be negative");
@@ -98,7 +93,6 @@ public class TreeMultiset<E> implements Multiset<E> {
 		return count;
 	}
 
-	@Override
 	public int setCount(E element, int count) {
 		if (count < 0)
 			throw new IllegalArgumentException("count must not be negative");

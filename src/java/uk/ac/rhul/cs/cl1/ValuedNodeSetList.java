@@ -132,16 +132,12 @@ public class ValuedNodeSetList extends ArrayList<ValuedNodeSet> {
 			} else {
 				BreadthFirstSearch bfs = new BreadthFirstSearch(overlapGraph, i);
 				Multiset<Integer> members = new TreeMultiset<Integer>();
-				System.out.println("--- Start merge ---");
 				for (int j: bfs) {
 					SortedSet<Integer> newMembers = this.get(j).getMembers();
 					members.addAll(newMembers);
 					this.set(j, null);
 					visited[j] = true;
-					System.out.println("  >> " + newMembers);
-					System.out.println("     " + members);
 				}
-				System.out.println("--- End merge ---");
 				ValuedNodeSet newNodeSet = new ValuedNodeSet(graph, members.elementSet());
 				for (Multiset.Entry<Integer> entry: members.entrySet())
 					newNodeSet.setValue(entry.getElement(), entry.getCount());
