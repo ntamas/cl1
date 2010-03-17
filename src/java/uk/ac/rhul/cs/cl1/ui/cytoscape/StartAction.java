@@ -8,7 +8,6 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
 
 import uk.ac.rhul.cs.cl1.ValuedNodeSet;
 import uk.ac.rhul.cs.utils.Pair;
@@ -17,8 +16,6 @@ import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CyNetworkView;
-import cytoscape.view.cytopanels.CytoPanel;
-import cytoscape.view.cytopanels.CytoPanelState;
 
 /**
  * An action that starts Cluster ONE by showing it on the Cytoscape control panel.
@@ -73,14 +70,9 @@ public class StartAction extends CytoscapeAction {
 		networkView.redrawGraph(false, true);
 		
 		/* Add the results panel */
-		CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST);
 		CytoscapeResultViewerPanel resultsPanel = new CytoscapeResultViewerPanel(network, networkView);
 		resultsPanel.setNodeSets(results.getLeft());
 		resultsPanel.setNodeMapping(results.getRight());
-		cytoPanel.add("Cluster ONE results", null, resultsPanel, "Cluster ONE results");
-		
-		/* Ensure that the panel is visible */
-		if (cytoPanel.getState() == CytoPanelState.HIDE)
-			cytoPanel.setState(CytoPanelState.DOCK);
+		resultsPanel.addToCytoscapeResultPanel();
 	}
 }

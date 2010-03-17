@@ -226,6 +226,14 @@ public class MutableNodeSet extends NodeSet {
 	}
 	
 	/**
+	 * Returns the internal weight of a given node
+	 */
+	@Override
+	public double getInternalWeight(int nodeIndex) {
+		return this.inWeights[nodeIndex];
+	}
+	
+	/**
 	 * Returns the total weight of edges that are adjacent to the given node and another internal node.
 	 * 
 	 * The query node can either be internal or external. For internal nodes, the returned weight is

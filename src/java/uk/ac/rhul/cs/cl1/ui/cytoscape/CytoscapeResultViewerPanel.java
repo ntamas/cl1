@@ -37,6 +37,18 @@ import uk.ac.rhul.cs.cl1.ui.ResultViewerPanel;
 public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 	ListSelectionListener {
 	/**
+	 * Serial number of this result viewer panel.
+	 */
+	private Integer serialNumber = null;
+	
+	/**
+	 * Last used serial number of result viewer panels.
+	 * 
+	 * This is used to assign unique numbers to each result panel in Cytoscape
+	 */
+	static private int lastUsedSerialNumber = 1;
+	
+	/**
 	 * Mapping from node IDs to real Cytoscape {@link Node} objects
 	 */
 	protected List<Node> nodeMapping;
@@ -110,6 +122,24 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		this.addAction(new FindAction(this));
 		this.addAction(new SaveClusteringAction(this));
 		this.addAction(new CloseAction(this));
+	}
+
+	/**
+	 * Adds the result panel to Cytoscape's designated result panel area
+	 */
+	public void addToCytoscapeResultPanel() {
+		if (serialNumber == null) {
+			serialNumber = lastUsedSerialNumber;
+			lastUsedSerialNumber++;
+		}
+		CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST);
+		String title = "Cluster ONE result "+serialNumber;
+		cytoPanel.add(title, null, this, title);
+		cytoPanel.setSelectedIndex(cytoPanel.indexOfComponent(this));
+		
+		/* Ensure that the panel is visible */
+		if (cytoPanel.getState() == CytoPanelState.HIDE)
+			cytoPanel.setState(CytoPanelState.DOCK);
 	}
 	
 	/**

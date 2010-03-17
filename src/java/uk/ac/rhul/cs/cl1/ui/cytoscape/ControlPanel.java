@@ -102,7 +102,7 @@ public class ControlPanel extends JPanel {
 		JPanel buttonPanel = new JPanel();
 		
 		buttonPanel.setLayout(new FlowLayout());
-		JButton startButton = new JButton("Generate clusters");
+		JButton startButton = new JButton("Start");
 		startButton.addActionListener(new StartAction());
 		buttonPanel.add(startButton);
 		JButton closeButton = new JButton("Close panel");

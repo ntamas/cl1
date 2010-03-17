@@ -9,17 +9,23 @@ package uk.ac.rhul.cs.stats;
  * 
  * @author tamas
  */
-public class LinearCorrelation {
+public class LinearCorrelation implements SignificanceTest {
 	/**
 	 * The associated data
 	 */
 	protected PairedData data = null;
 	
 	/**
+	 * Cached test statistic
+	 */
+	protected Double cachedR = null;
+	
+	/**
 	 * Constructor to calculate the sample correlation coefficient of the given {@link PairedData}
 	 */
 	public LinearCorrelation(PairedData data) {
 		this.data = data;
+		this.cachedR = null;
 	}
 	
 	/**
@@ -40,6 +46,9 @@ public class LinearCorrelation {
 	 * Returns the correlation coefficient
 	 */
 	public double getR() {
+		if (this.cachedR != null)
+			return this.cachedR;
+		
 		// First get the means and variances
 		double[] x = data.getX(), y = data.getY();
 		MeanVar mvX = new MeanVar(x);
@@ -55,7 +64,34 @@ public class LinearCorrelation {
 		cov /= (n - 1);
 		
 		// Return the correlation coefficient
-		return cov / (mvX.getSd() * mvY.getSd());
+		cachedR = cov / (mvX.getSd() * mvY.getSd());
+		return cachedR;
+	}
+	
+	/**
+	 * Returns the significance level of the test under the assumption of normality
+	 * 
+	 * This is done by using the standard Fisher transformation on the correlation
+	 * coefficient.
+	 */
+	public double getSP() {
+		double r = this.getR();
+		int n = this.getN();
+		
+		if (n <= 1)
+			return Double.NaN;
+		
+		if (r >= 1 || r <= -1)
+			return 2.2e-16;
+		
+		if (n <= 3) {
+			// TODO
+			return 1;
+		}
+		
+		double f = 0.5 * Math.log1p(2 * r / (1 - r));
+		double z = Math.sqrt(this.getN() - 3) * f;
+		return 2 * StatsUtils.getZProbability(z);
 	}
 	
 	/**

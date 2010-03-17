@@ -18,4 +18,15 @@ public class LinearCorrelationTest {
 		data = new PairedData(dataX, dataZ);
 		assertEquals(-0.09150255, LinearCorrelation.correlationCoeff(data), 1e-3);
 	}
+	
+	@Test
+	public void testGetSP() {
+		PairedData data = new PairedData(dataX, dataX);
+		LinearCorrelation corr = new LinearCorrelation(data);
+		assertEquals(0.0, corr.getSP(), 1e-8);
+		
+		data = new PairedData(dataX, dataZ);
+		corr = new LinearCorrelation(data);
+		assertEquals(0.8082, corr.getSP(), 1e-3);
+	}
 }

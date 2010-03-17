@@ -339,6 +339,25 @@ public class NodeSet implements Iterable<Integer> {
 	}
 	
 	/**
+	 * Returns the internal weight of a given node
+	 */
+	public double getInternalWeight(int nodeIndex) {
+		IntHashSet memberHashSet = this.getMemberHashSet();
+		double result = 0.0;
+		int[] edgeIdxs = this.graph.getAdjacentEdgeIndicesArray(nodeIndex, Directedness.ALL);
+		for (int edgeIdx: edgeIdxs) {
+			double weight = this.graph.getEdgeWeight(edgeIdx);
+			int endpoint = this.graph.getEdgeEndpoint(edgeIdx, nodeIndex);
+			if (memberHashSet.contains(endpoint)) {
+				/* This is an internal edge */
+				result += weight;
+			}
+		}
+		
+		return result;
+	}
+	
+	/**
 	 * Returns the size of the intersection between this nodeset and another
 	 */
 	public int getIntersectionSizeWith(NodeSet other) {

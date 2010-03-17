@@ -22,7 +22,7 @@
 	UNLESS YOU KNOW WHAT YOU'RE DOING -->
 	<property name="build.java" location="${build}/java" />
 	<property name="src.java" location="${src}/java" />
-	<property name="build.java.tests" location="${build}/java/tests" />
+	<property name="build.java.tests" location="${build}/tests" />
 	<property name="src.java.tests" location="${test}/java" />
 
     <property name="build.doc" location="${build}/doc" />
