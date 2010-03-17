@@ -97,10 +97,11 @@ public class SaveClusterAction extends AbstractAction {
 		case GENEPRO:
 			int index = 0;
 			
+			wr.println("CID\tORF");
 			for (List<Node> nodes: nodeLists) {
 				String clusterName = "Complex "+index;
 				for (Node node: nodes) {
-					wr.printf("%s\t%s\n", node.getIdentifier(), clusterName);
+					wr.printf("%s\t%s\n", clusterName, node.getIdentifier());
 				}
 				index++;
 			}
