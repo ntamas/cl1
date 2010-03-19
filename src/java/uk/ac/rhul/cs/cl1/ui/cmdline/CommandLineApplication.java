@@ -13,10 +13,12 @@ import org.apache.commons.cli.PosixParser;
 
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
+// import uk.ac.rhul.cs.cl1.CommitmentStatisticsCalculator;
 import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.cl1.io.GraphReader;
 import uk.ac.rhul.cs.cl1.io.GraphReaderFactory;
+import uk.ac.rhul.cs.cl1.io.GraphReaderFactory.Format;
 import uk.ac.rhul.cs.cl1.ui.ConsoleTaskMonitor;
 
 /// The command line interface to Cluster ONE
@@ -34,10 +36,13 @@ public class CommandLineApplication {
 		CommandLineParser parser = new PosixParser();
 		CommandLine cmd = null;
 		ClusterONEAlgorithmParameters params = new ClusterONEAlgorithmParameters();
+		String formatSpec = null;
 		
 		try {
 			cmd = parser.parse(this.options, args);
 			
+			if (cmd.hasOption("input-format"))
+				formatSpec = cmd.getOptionValue("input-format");
 			if (cmd.hasOption("min-size"))
 				params.setMinSize(Integer.parseInt(cmd.getOptionValue("min-size")));
 			if (cmd.hasOption("min-density"))
@@ -74,8 +79,18 @@ public class CommandLineApplication {
 		// Process the options
 		// Read the input file
 		Graph graph = null;
+		GraphReaderFactory.Format format = null;
+		
+		if (formatSpec != null)
+			try {
+				format = GraphReaderFactory.Format.valueOf(formatSpec.toUpperCase());
+			} catch (IllegalArgumentException ex) {
+				System.err.println("Unknown input file format: "+formatSpec);
+				return 4;
+			}
+
 		try {
-			graph = loadGraph(cmd.getArgs()[0]);
+			graph = loadGraph(cmd.getArgs()[0], format);
 		} catch (IOException ex) {
 			System.err.println("IO error while reading input file: "+ex.getMessage());
 			return 3;
@@ -112,28 +127,49 @@ public class CommandLineApplication {
 	protected void initOptions() {
 		options = new Options();
 		
+		/* help option */
 		options.addOption("h", "help", false, "shows this help message");
+		
+		/* input format override option */
+		options.addOption(OptionBuilder.withLongOpt("input-format")
+				.withDescription("specifies the format of the input file (sif or edge_list)")
+				.withType(String.class).hasArg().create("f"));
+		
+		/* minimum size option */
 		options.addOption(OptionBuilder.withLongOpt("min-size")
 				 .withDescription("specifies the minimum size of clusters")
 				 .withType(Integer.class).hasArg().create("s"));
+		
+		/* minimum density option */
 		options.addOption(OptionBuilder.withLongOpt("min-density")
 	             .withDescription("specifies the minimum density of clusters")
 	             .withType(Float.class).hasArg().create("d"));
+		
+		/* maximum overlap option (advanced) */
 		options.addOption(OptionBuilder.withLongOpt("max-overlap")
 		             .withDescription("specifies the maximum allowed overlap between two clusters")
 		             .withType(Float.class).hasArg().create());
+		
+		/* haircut threshold option (advanced) */
 		options.addOption(OptionBuilder.withLongOpt("haircut")
 	             .withDescription("specifies the haircut threshold for clusters")
 	             .withType(Float.class).hasArg().create());
+		
+		/* seeding method option (advanced) */
 		options.addOption(OptionBuilder.withLongOpt("seed-method")
 				 .withDescription("specifies the seed generation method to use")
 				 .withType(String.class).hasArg().create("S"));
+		
+		/* any other parameter (advanced) */
 		options.addOption(OptionBuilder.withLongOpt("param")
 				.withDescription("specifies the value of an advanced named parameter of the algorithm")
 				.withArgName("name=value").hasArgs(2).withValueSeparator().create("p"));
+		
+		/* skip the merging phase (useful for debugging only) */
 		options.addOption(OptionBuilder.withLongOpt("no-merge")
 				.withDescription("don't merge highly overlapping clusters")
 				.create("n"));
+		
 		/* options.addOption(OptionBuilder.withLongOpt("commitment-stats")
 				.withDescription("suppress regular output and calculate commitment statistics instead")
 				.create()); */
@@ -151,9 +187,24 @@ public class CommandLineApplication {
 	 * Loads a graph from an input file
 	 * 
 	 * @param filename  name of the file to be loaded
+	 * @param format    the format of the file, null means autodetection based on extension
 	 */
-	public Graph loadGraph(String filename) throws IOException {
-		GraphReader reader = GraphReaderFactory.fromFilename(filename);
+	public Graph loadGraph(String filename, Format format) throws IOException {
+		GraphReader reader;
+		
+		if (format == null) {
+			if ("-".equals(filename)) {
+				reader = GraphReaderFactory.fromFormat(Format.EDGE_LIST);
+			} else {
+				reader = GraphReaderFactory.fromFilename(filename);
+			}
+		} else {
+			reader = GraphReaderFactory.fromFormat(format);
+		}
+		
+		if ("-".equals(filename))
+			return reader.readGraph(System.in);
+		
 		return reader.readGraph(new FileInputStream(filename));
 	}
 	

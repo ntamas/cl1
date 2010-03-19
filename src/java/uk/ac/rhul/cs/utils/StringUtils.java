@@ -1,5 +1,6 @@
 package uk.ac.rhul.cs.utils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -186,5 +187,30 @@ public class StringUtils {
 			return "";
 		
 		return str.substring(start, end);
+	}
+
+	/**
+	 * Returns the extension of the given file, converted to lowercase
+	 * 
+	 * @param  filename   the name of the file
+	 * @return the extension, converted to lowercase
+	 */
+	public static String getFileExtension(String filename) {
+		String extension = "";
+		int i = filename.lastIndexOf('.');
+		if (i > 0 && i < filename.length() - 1) {
+			extension = filename.substring(i+1).toLowerCase();
+		}
+		return extension;
+	}
+	
+	/**
+	 * Returns the extension of the given file, converted to lowercase
+	 * 
+	 * @param  file          the file itself
+	 * @return the extension, converted to lowercase
+	 */
+	public static String getFileExtension(File file) {
+		return getFileExtension(file.getName());
 	}
 }

@@ -41,12 +41,7 @@ public class SaveClusterAction extends AbstractAction {
 		}
 
 		public static Format forFile(File file) {
-			String extension = "";
-			String s = file.getName();
-			int i = s.lastIndexOf('.');
-			if (i > 0 && i < s.length() - 1) {
-				extension = s.substring(i+1).toLowerCase();
-			}
+			String extension = StringUtils.getFileExtension(file);
 			
 			for (Format format: Format.values()) {
 				if (format.extension.equals(extension))
