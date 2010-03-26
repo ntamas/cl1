@@ -27,7 +27,7 @@ public class SIFReader implements GraphReader {
 		String[] parts;
 		String separator = "\\s";
 		
-		int node1, node2;
+		int node1, node2, n;
 		double weight;
 		
 		while ((line = reader.readLine()) != null) {
@@ -41,15 +41,17 @@ public class SIFReader implements GraphReader {
 			}
 			
 			parts = line.split(separator);
-			
-			if (parts.length < 3)
+			n = parts.length;
+			if (n < 3)
 				continue;
 			
 			node1 = nodeGen.get(parts[0]);
-			node2 = nodeGen.get(parts[2]);
 			weight = 1.0;
 			
-			result.createEdge(node1, node2, weight);
+			for (int i = 2; i < n; i++) {
+				node2 = nodeGen.get(parts[i]);
+				result.createEdge(node1, node2, weight);
+			}
 		}
 		
 		reader.close();

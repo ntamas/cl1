@@ -142,8 +142,14 @@ public class CyNetworkCache implements PropertyChangeListener {
 	 * from the cache.
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
-		if (e.getPropertyName().equals(Cytoscape.NETWORK_MODIFIED) ||
-			e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED))
+		if (e.getPropertyName().equals(Cytoscape.NETWORK_MODIFIED)) {
 			this.invalidate((CyNetwork)e.getNewValue());
+		} else if (e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED)) {
+			String value = (String)e.getNewValue();
+			for (CyNetwork network: storage.keySet()) {
+				if (network.getTitle().equals(value))
+					this.invalidate(network);
+			}
+		}
 	}
 }
