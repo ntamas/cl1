@@ -22,6 +22,14 @@ public class EveryNodeSeedGenerator extends SeedGenerator {
 			i = 0;
 		}
 		
+		/**
+		 * Returns the percentage of nodes processed so far.
+		 */
+		@Override
+		public double getPercentCompleted() {
+			return 100.0 * i / n;
+		}
+		
 		public boolean hasNext() {
 			return i < n;
 		}

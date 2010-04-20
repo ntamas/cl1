@@ -4,6 +4,9 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import uk.ac.rhul.cs.stats.independentsamples.MannWhitneyTest;
+import uk.ac.rhul.cs.stats.tests.H1;
+
 public class MannWhitneyTestTest {
 	static double[] xA = { 7, 3, 6, 2, 4, 3, 5, 5 };
 	static double[] xB = { 3, 5, 6, 4, 6, 5, 7, 5 };

@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.stats;
+package uk.ac.rhul.cs.stats.descriptive;
 
 /**
  * This class calculates and stores the sample mean and variance of an array of

@@ -1,7 +1,10 @@
-package uk.ac.rhul.cs.stats;
+package uk.ac.rhul.cs.stats.independentsamples;
 
 import java.util.Arrays;
 
+import uk.ac.rhul.cs.stats.StatsUtils;
+import uk.ac.rhul.cs.stats.tests.H1;
+import uk.ac.rhul.cs.stats.tests.SignificanceTest;
 import uk.ac.rhul.cs.utils.ArrayUtils;
 
 /**

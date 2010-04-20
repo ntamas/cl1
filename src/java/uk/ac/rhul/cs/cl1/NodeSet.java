@@ -7,8 +7,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import uk.ac.rhul.cs.stats.H1;
-import uk.ac.rhul.cs.stats.MannWhitneyTest;
+import uk.ac.rhul.cs.stats.independentsamples.MannWhitneyTest;
+import uk.ac.rhul.cs.stats.tests.H1;
 import uk.ac.rhul.cs.utils.StringUtils;
 
 import com.sosnoski.util.array.IntArray;

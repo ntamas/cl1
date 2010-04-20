@@ -14,7 +14,19 @@ import java.util.Iterator;
  * 
  * @author tamas
  */
-public abstract class SeedIterator implements Iterator<MutableNodeSet> {
+public abstract class SeedIterator implements Iterator<MutableNodeSet> {	
+	/**
+	 * Returns the percentage of seeds that have already been generated.
+	 * 
+	 * This may also be an estimate. If the number of seeds cannot be known in
+	 * advance and cannot be estimated in any reasonable way, -1 will be returned.
+	 * 
+	 * @return   the percentage of seeds that have already been generated.
+	 */
+	public double getPercentCompleted() {
+		return -1;
+	}
+	
 	/**
 	 * Method that will be called whenever a cluster is found.
 	 * 

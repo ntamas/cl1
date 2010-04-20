@@ -1,4 +1,6 @@
-package uk.ac.rhul.cs.stats;
+package uk.ac.rhul.cs.stats.correlation;
+
+import uk.ac.rhul.cs.stats.datastructures.PairedData;
 
 /**
  * Calculates the Kendall rank correlation coefficient of a sample.

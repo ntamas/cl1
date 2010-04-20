@@ -1,4 +1,9 @@
-package uk.ac.rhul.cs.stats;
+package uk.ac.rhul.cs.stats.correlation;
+
+import uk.ac.rhul.cs.stats.StatsUtils;
+import uk.ac.rhul.cs.stats.datastructures.PairedData;
+import uk.ac.rhul.cs.stats.descriptive.MeanVar;
+import uk.ac.rhul.cs.stats.tests.SignificanceTest;
 
 /**
  * Calculates the sample linear (a.k.a. Pearson product-moment) correlation coefficient.

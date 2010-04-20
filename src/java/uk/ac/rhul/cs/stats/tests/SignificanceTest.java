@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.stats;
+package uk.ac.rhul.cs.stats.tests;
 
 /**
  * Common interface for significance tests

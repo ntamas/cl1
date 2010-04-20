@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.stats;
+package uk.ac.rhul.cs.stats.datastructures;
 
 /**
  * Class representing two samples, X and Y, of paired (related) data.

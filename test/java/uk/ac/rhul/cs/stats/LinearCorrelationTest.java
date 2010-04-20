@@ -4,6 +4,9 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import uk.ac.rhul.cs.stats.correlation.LinearCorrelation;
+import uk.ac.rhul.cs.stats.datastructures.PairedData;
+
 public class LinearCorrelationTest {
 	static double[] dataX = { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 };
 	static double[] dataY = { -2, -3, -5, -7, -11, -13, -17, -19, -23, -29 };

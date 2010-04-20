@@ -102,8 +102,6 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 		seedGenerator.setGraph(graph);
 		
 		/* For each seed, start growing a cluster */
-		int step = 0;
-		int numExpectedSeeds = seedGenerator.size();
 		monitor.setStatus("Growing clusters from seeds...");
 		monitor.setPercentCompleted(0);
 		
@@ -141,12 +139,7 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 			}
 			
 			/* Increase counter, report progress */
-			step++;
-			if (step > numExpectedSeeds) {
-				monitor.setPercentCompleted(-1);
-			} else {
-				monitor.setPercentCompleted(100 * step / numExpectedSeeds);
-			}
+			monitor.setPercentCompleted((int)it.getPercentCompleted());
 		}
 		monitor.setPercentCompleted(100);
 		

@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import uk.ac.rhul.cs.stats.descriptive.MeanVar;
+
 public class MeanVarTest {
 	static double[] data = { 2, 3, 5, 7, 11, 13, 17, 19, 23, 27 };
 	

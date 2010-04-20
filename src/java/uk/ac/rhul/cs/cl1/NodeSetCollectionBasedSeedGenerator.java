@@ -11,8 +11,8 @@ import java.util.Iterator;
  * @author tamas
  */
 public class NodeSetCollectionBasedSeedGenerator extends SeedGenerator {
-	/** Iterator that will be used to iterate over the originally supplied NodeSet instances */
-	private Iterator<NodeSet> nodeSetIterator = null;
+	/** NodeSet backing this generator */
+	private Collection<NodeSet> nodeSets = null;
 	
 	/** Expected number of nodesets that will be returned */
 	private int size = 0;
@@ -21,11 +21,27 @@ public class NodeSetCollectionBasedSeedGenerator extends SeedGenerator {
 	 * Internal iterator class that will be used when calling iterator()
 	 */
 	protected class IteratorImpl extends SeedIterator {
+		/** Iterator that will be used to iterate over the originally supplied NodeSet instances */
+		private Iterator<NodeSet> nodeSetIterator = null;
+		
+		/** Number of seeds generated so far */
+		private int processed = 0;
+		
+		public IteratorImpl() {
+			processed = 0;
+			nodeSetIterator = nodeSets.iterator();
+		}
+		
+		public double getPercentCompleted() {
+			return 100.0 * processed / size;
+		}
+		
 		public boolean hasNext() {
 			return nodeSetIterator.hasNext();
 		}
 
 		public MutableNodeSet next() {
+			processed++;
 			return new MutableNodeSet(nodeSetIterator.next());
 		}
 
@@ -39,7 +55,7 @@ public class NodeSetCollectionBasedSeedGenerator extends SeedGenerator {
 	 */
 	public NodeSetCollectionBasedSeedGenerator(Collection<NodeSet> nodeSets) {
 		super();
-		nodeSetIterator = nodeSets.iterator();
+		this.nodeSets = nodeSets;
 		size = nodeSets.size();
 	}
 	
@@ -47,20 +63,7 @@ public class NodeSetCollectionBasedSeedGenerator extends SeedGenerator {
 	 * Constructs a seed generator backed by a single {@link NodeSet}
 	 */
 	public NodeSetCollectionBasedSeedGenerator(NodeSet nodeSet) {
-		super(nodeSet.getGraph());
-		
-		nodeSetIterator = Arrays.asList(nodeSet).iterator();
-		size = 1;
-	}
-	
-	/**
-	 * Constructs a seed generator backed by a few given nodes of the given graph
-	 */
-	public NodeSetCollectionBasedSeedGenerator(Graph graph, int... members) {
-		super(graph);
-		
-		nodeSetIterator = Arrays.asList(new NodeSet(graph, members)).iterator();
-		size = members.length;
+		this(Arrays.asList(nodeSet));
 	}
 	
 	/**

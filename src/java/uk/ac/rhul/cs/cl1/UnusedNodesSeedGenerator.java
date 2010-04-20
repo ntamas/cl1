@@ -28,9 +28,12 @@ public class UnusedNodesSeedGenerator extends EveryNodeSeedGenerator {
 		/** Iterator for the queue */
 		ListIterator<Integer> it;
 		
+		/** Maximum node count */
+		private int n;
+		
 		/** Constructs the iterator */
 		IteratorImpl() {
-			int n = graph.getNodeCount();
+			n = graph.getNodeCount();
 			
 			nodes = new ArrayList<Integer>();
 			for (int i = 0; i < n; i++)
@@ -48,6 +51,14 @@ public class UnusedNodesSeedGenerator extends EveryNodeSeedGenerator {
 			usedNodes = new IntHashSet();
 		}
 		
+		/**
+		 * Returns the percentage of nodes processed so far.
+		 */
+		@Override
+		public double getPercentCompleted() {
+			return 100.0 * usedNodes.size() / n;
+		}
+		
 		public boolean hasNext() {
 			while (it.hasNext()) {
 				if (!usedNodes.contains(it.next())) {
@@ -60,7 +71,10 @@ public class UnusedNodesSeedGenerator extends EveryNodeSeedGenerator {
 
 		public MutableNodeSet next() {
 			MutableNodeSet result = new MutableNodeSet(graph);
-			result.add(it.next());
+			int seedNode = it.next();
+			result.add(seedNode);
+			// this node is used even if it is not part of the final cluster
+			usedNodes.add(seedNode);
 			return result;
 		}
 
