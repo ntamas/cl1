@@ -9,6 +9,7 @@ import procope.methods.clustering.Clusterer;
 import procope.tools.ProCopeException;
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
+import uk.ac.rhul.cs.cl1.ClusterONEException;
 import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.cl1.UniqueIDGenerator;
@@ -31,7 +32,16 @@ public class ProcopePlugin implements Clusterer {
 		
 		ClusterONE algorithm = new ClusterONE(parameters);
 		algorithm.setTaskMonitor(new SwingTaskMonitor());
-		algorithm.runOnGraph(graph);
+		
+		try {
+			algorithm.runOnGraph(graph);
+		} catch (ClusterONEException ex) {
+			/* Convert the exception to a ProCopeException */
+			ProCopeException newEx = new ProCopeException(ex.getMessage());
+			newEx.initCause(ex);
+			throw newEx;
+		}
+		
 		for (NodeSet nodeSet: algorithm.getResults()) {
 			result.addComplex(this.convertNodeSetToComplex(nodeSet));
 		}

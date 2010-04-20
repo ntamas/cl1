@@ -13,6 +13,7 @@ import org.apache.commons.cli.PosixParser;
 
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
+import uk.ac.rhul.cs.cl1.ClusterONEException;
 // import uk.ac.rhul.cs.cl1.CommitmentStatisticsCalculator;
 import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.NodeSet;
@@ -100,7 +101,13 @@ public class CommandLineApplication {
 		// Start the algorithm
 		ClusterONE algorithm = new ClusterONE(params);
 		algorithm.setTaskMonitor(new ConsoleTaskMonitor());
-		algorithm.runOnGraph(graph);
+		try {
+			algorithm.runOnGraph(graph);
+		} catch (ClusterONEException ex) {
+			System.err.println("Error while executing the clustering algorithm: ");
+			System.err.println(ex.getMessage());
+			return 1;
+		}
 		
 		// Show the results
 		/* if (cmd.hasOption("commitment-stats")) {

@@ -2,6 +2,7 @@ package uk.ac.rhul.cs.cl1.ui.cytoscape;
 
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
+import uk.ac.rhul.cs.cl1.ClusterONEException;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 
@@ -31,8 +32,11 @@ public class ClusterONECytoscapeTask extends ClusterONE implements Task {
 		
 		try {
 			super.run();
+		} catch (ClusterONEException e) {
+			cytoscapeTaskMonitor.setException(e, e.getMessage());
 		} catch (Exception e) {
-			cytoscapeTaskMonitor.setException(e, "Error while running Cluster ONE");
+			cytoscapeTaskMonitor.setException(e, "Unexpected error while running Cluster ONE. "+
+					"Please notify the plugin authors!");
 		}
 	}
 

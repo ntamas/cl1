@@ -2,8 +2,11 @@ package uk.ac.rhul.cs.cl1;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+
+import uk.ac.rhul.cs.utils.ArrayUtils;
 
 /**
  * Main class for the Cluster ONE algorithm.
@@ -12,11 +15,11 @@ import java.util.concurrent.Executors;
  * necessary parameters. The main entry point of the algorithm is the
  * run() method which executes the clustering algorithm on the graph
  * set earlier using the setGraph() method. The algorithm can also be
- * run in a separate thread as it implements the Runnable interface.
+ * run in a separate thread as it implements the Callable interface.
  * 
  * @author Tamas Nepusz <tamas@cs.rhul.ac.uk>
  */
-public class ClusterONE extends GraphAlgorithm implements Runnable {
+public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 	/** The name of the application that will appear on the user interface */
 	public static final String applicationName = "Cluster ONE";
 	
@@ -64,6 +67,14 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 	}
 
 	/**
+	 * Executes the algorithm in a separate thread and returns a future
+	 */
+	public Void call() throws ClusterONEException {
+		run();
+		return null;
+	}
+	
+	/**
 	 * Returns the clustering results or null if there was no clustering executed so far
 	 */
 	public List<ValuedNodeSet> getResults() {
@@ -89,7 +100,7 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 	/**
 	 * Executes the algorithm on the graph set earlier by setGraph()
 	 */
-	public void run() {
+	public void run() throws ClusterONEException {
 		boolean needHaircut = params.isHaircutNeeded();
 		double minSize = params.getMinSize();
 		double minDensity = params.getMinDensity();
@@ -101,6 +112,10 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 		SeedGenerator seedGenerator = params.getSeedGenerator();	
 		seedGenerator.setGraph(graph);
 		
+		/* Simple sanity checks */
+		if (ArrayUtils.min(graph.getEdgeWeights()) < 0.0)
+			throw new ClusterONEException("Edge weights must all be non-negative");
+
 		/* For each seed, start growing a cluster */
 		monitor.setStatus("Growing clusters from seeds...");
 		monitor.setPercentCompleted(0);
@@ -163,13 +178,9 @@ public class ClusterONE extends GraphAlgorithm implements Runnable {
 	/**
 	 * Executes the algorithm on the given graph.
 	 * 
-	 * This is a shortcut method that can be used whenever we don't want to
-	 * spawn a separate thread for the algorithm (e.g., when running from the
-	 * command line)
-	 * 
 	 * @param   graph    the graph being clustered
 	 */
-	public void runOnGraph(Graph graph) {
+	public void runOnGraph(Graph graph) throws ClusterONEException {
 		setGraph(graph);
 		run();
 	}
