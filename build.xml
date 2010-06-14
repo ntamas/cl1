@@ -23,6 +23,7 @@
 	<property name="build.java" location="${build}/java" />
 	<property name="src.java" location="${src}/java" />
 	<property name="build.java.tests" location="${build}/tests" />
+	<property name="build.webinf" location="${build}/WEB-INF" />
 	<property name="src.java.tests" location="${test}/java" />
 
     <property name="build.doc" location="${build}/doc" />
@@ -36,6 +37,9 @@
 	<condition property="lib.procope.path" value="${procope.path}/lib/procope_core-${procope.version}.jar">
 		<available file="${procope.path}/lib/procope_core-${procope.version}.jar" />
 	</condition>
+	<condition property="lib.jsr311.path" value="${jersey.path}/lib/jsr311-api-${jersey.jsr311.version}.jar">
+		<available file="${jersey.path}/lib/jsr311-api-${jersey.jsr311.version}.jar" />
+	</condition>
 
 	<!-- Set up the default classpath -->
 	<path id="classpath.base">
@@ -44,6 +48,7 @@
 		<pathelement location="lib/tablelayout.jar" />
 		<pathelement location="${lib.cytoscape.path}" />
 		<pathelement location="${lib.procope.path}" />
+		<pathelement location="${lib.jsr311.path}" />
 	</path>
 
 	<tstamp>
@@ -56,26 +61,31 @@
 		<mkdir dir="${build}" />
 		<mkdir dir="${build.java}" />
 		<mkdir dir="${build.java.tests}" />
+		<mkdir dir="${build.webinf}" />
 		<mkdir dir="${reports}" />
 	</target>
 	<target name="-cytoscape_warning" unless="lib.cytoscape.path">
 		<echo message="Cytoscape plugin will not be built: cytoscape.jar not found."
 			  level="warning" />
 	</target>
-	<target name="-procope_warning" unless="procope.path">
+	<target name="-procope_warning" unless="lib.procope.path">
 		<echo message="Procope plugin will not be built: procope_core-${procope.version}.jar not found" level="warning" />
+	</target>
+	<target name="-web_warning" unless="lib.jsr311.path">
+		<echo message="Web interface will not be built: jsr311-api-${lib.jsr311.path}.jar not found" level="warning" />
 	</target>
 
 	<!-- Deletes the existing build -->
 	<target name="clean" description="Cleans up the build directories">
 		<!-- Delete build directories -->
 		<delete dir="${build.java}" />
+		<delete dir="${build.webinf}" />
 		<delete dir="${reports}" />
 	</target>
 
 	<!-- Compiles the Java source code -->
 	<target name="compile_java"
-		depends="-init,compile_java_base,compile_java_cytoscape_plugin,compile_java_procope_plugin"
+		depends="-init,compile_java_base,compile_java_cytoscape_plugin,compile_java_procope_plugin,compile_java_rest_api"
 		description="--> compile Java code">
 	</target>
 
@@ -84,6 +94,7 @@
 		<javac srcdir="${src.java}" destdir="${build.java}" target="1.5">
 			<exclude name="**/cytoscape/*" />
 			<exclude name="**/procope/*" />
+			<exclude name="**/api/*" />
 			<exclude name="**/CommitmentStatisticsCalculator.java" />
 			<classpath>
 				<path refid="classpath.base" />
@@ -92,7 +103,7 @@
 	</target>
 
 	<!-- Compiles the Cytoscape plugin -->
-	<target name="compile_java_cytoscape_plugin" if="cytoscape.path"
+	<target name="compile_java_cytoscape_plugin" if="lib.cytoscape.path"
 		    depends="compile_java_base">
 		<javac srcdir="${src.java}" destdir="${build.java}" target="1.5">
 			<include name="${package.name.slashed}/ui/cytoscape/*.java" />
@@ -110,7 +121,7 @@
 	</target>
 
 	<!-- Compiles the Procope plugin -->
-	<target name="compile_java_procope_plugin" if="procope.path"
+	<target name="compile_java_procope_plugin" if="lib.procope.path"
 		    depends="compile_java_base">
 		<javac srcdir="${src.java}" destdir="${build.java}" target="1.5">
 			<include name="${package.name.slashed}/ui/procope/*.java" />
@@ -119,7 +130,23 @@
 			</classpath>
 		</javac>
 	</target>
-
+	
+	<!-- Compiles the web interface -->
+	<target name="compile_java_rest_api" if="lib.jsr311.path"
+		    depends="compile_java_base">
+		<javac srcdir="${src.java}" destdir="${build.java}" target="1.5">
+			<include name="${package.name.slashed}/api/rest/*.java" />
+			<classpath>
+				<path refid="classpath.base" />
+			</classpath>
+		</javac>
+		<copy file="${etc}/web/web.xml.in" tofile="${build.webinf}/web.xml" />
+		<replace file="${build.webinf}/web.xml">
+			<replacefilter token="@package.name@" value="${package.name}" />
+			<replacefilter token="@package.version@" value="${package.version}" />
+		</replace>
+	</target>
+	
 	<!-- Compiles the Java tests -->
 	<target name="compile_tests" depends="-init"
 		description="--> compile Java tests">
@@ -146,7 +173,8 @@
 
 	<!-- Creates the JAR file -->
 	<target name="jar" depends="compile,doc,-copy_resources" description="Creates the JAR file">
-		<jar destfile="cluster_one-${package.version}.jar" basedir="${build.java}">
+		<jar destfile="cluster_one-${package.version}.jar" basedir="${build.java}"
+			 excludes="**/api/**/*.class">
 			<zipfileset src="lib/tclib.jar" includes="**/*.class" />
 			<zipfileset src="lib/commons-cli-1.2.jar" includes="**/*.class" />
 			<zipfileset src="lib/tablelayout.jar" includes="**/*.class" />
@@ -159,6 +187,25 @@
 				<attribute name="Class-Path" value="${lib.procope.path}" />
 			</manifest>
 		</jar>
+	</target>
+	
+	<!-- Creates the WAR file -->
+	<target name="war" depends="compile,doc,-copy_resources" description="Creates the WAR file">
+		<war destfile="cluster_one-${package.version}.war"
+			 webxml="${build.webinf}/web.xml">
+			<!-- <fileset dir="src/html" />
+			<fileset dir="src/jsp" />  -->
+			<lib dir="lib/">
+				<include name="tclib.jar" />
+			</lib>
+			<lib dir=".">
+				<include name="cluster_one-${package.version}.jar" />
+			</lib>
+			<classes dir="${build.java}">
+				<include name="**/api/**/*.class" />
+				<exclude name="web.xml" />
+			</classes>
+		</war>
 	</target>
 
     <!-- Creates a distributable ZIP file -->
