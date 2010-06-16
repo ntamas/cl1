@@ -40,6 +40,9 @@
 	<condition property="lib.jsr311.path" value="${jersey.path}/lib/jsr311-api-${jersey.jsr311.version}.jar">
 		<available file="${jersey.path}/lib/jsr311-api-${jersey.jsr311.version}.jar" />
 	</condition>
+	<condition property="lib.jersey-core.path" value="${jersey.path}/lib/jersey-core-${jersey.version}.jar">
+		<available file="${jersey.path}/lib/jersey-core-${jersey.version}.jar" />
+	</condition>
 
 	<!-- Set up the default classpath -->
 	<path id="classpath.base">

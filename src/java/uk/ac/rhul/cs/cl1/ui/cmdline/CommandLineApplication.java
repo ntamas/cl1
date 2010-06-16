@@ -2,6 +2,8 @@ package uk.ac.rhul.cs.cl1.ui.cmdline;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -198,6 +200,7 @@ public class CommandLineApplication {
 	 */
 	public Graph loadGraph(String filename, Format format) throws IOException {
 		GraphReader reader;
+		InputStream stream;
 		
 		if (format == null) {
 			if ("-".equals(filename)) {
@@ -210,9 +213,11 @@ public class CommandLineApplication {
 		}
 		
 		if ("-".equals(filename))
-			return reader.readGraph(System.in);
+			stream = System.in;
+		else
+			stream = new FileInputStream(filename);
 		
-		return reader.readGraph(new FileInputStream(filename));
+		return reader.readGraph(new InputStreamReader(stream, "utf-8"));
 	}
 	
 	/**

@@ -2,8 +2,7 @@ package uk.ac.rhul.cs.cl1.io;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.Reader;
 
 import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.UniqueIDGenerator;
@@ -14,14 +13,14 @@ import uk.ac.rhul.cs.cl1.UniqueIDGenerator;
  */
 public class SIFReader implements GraphReader {
 	/**
-	 * Reads a graph specified in SIF format from the given stream
+	 * Reads a graph specified in SIF format from the given reader object
 	 * 
-	 * @param  stream  the stream being read
+	 * @param  reader  the reader being used
 	 */
-	public Graph readGraph(InputStream stream) throws IOException {
+	public Graph readGraph(Reader reader) throws IOException {
 		Graph result = new Graph();
 		UniqueIDGenerator<String> nodeGen = new UniqueIDGenerator<String>(result);
-		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+		BufferedReader bufferedReader = new BufferedReader(reader);
 		
 		String line;
 		String[] parts;
@@ -30,7 +29,7 @@ public class SIFReader implements GraphReader {
 		int node1, node2, n;
 		double weight;
 		
-		while ((line = reader.readLine()) != null) {
+		while ((line = bufferedReader.readLine()) != null) {
 			if (line.length() == 0)
 				continue;
 			
@@ -53,8 +52,6 @@ public class SIFReader implements GraphReader {
 				result.createEdge(node1, node2, weight);
 			}
 		}
-		
-		reader.close();
 		
 		return result;
 	}
