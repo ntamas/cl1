@@ -36,7 +36,7 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 	protected ClusterONEAlgorithmParameters params = null;
 
 	/** A task monitor where the algorithm will report its progress */
-	protected TaskMonitor monitor = null;
+	protected TaskMonitor monitor = new NullTaskMonitor();
 	
 	/** Whether we are running on a Mac or not */
 	protected static boolean runningOnMac = false;

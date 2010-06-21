@@ -1,6 +1,8 @@
 package uk.ac.rhul.cs.cl1.api.rest;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 
 import javax.ws.rs.Consumes;
@@ -16,6 +18,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+
+import com.sun.jersey.multipart.BodyPartEntity;
+import com.sun.jersey.multipart.MultiPart;
 
 import uk.ac.rhul.cs.cl1.api.EntityNotFoundException;
 import uk.ac.rhul.cs.cl1.api.EntityStore;
@@ -35,7 +40,8 @@ public class DatasetResource {
 	 * Uploads a new dataset into the web interface.
 	 * 
 	 * @param content the new dataset
-	 * @return an HTTP response
+	 * @return an HTTP response whose body contains the new URI.
+	 * 
 	 * @throws IOException when the dataset cannot be stored
 	 */
 	@POST
@@ -47,9 +53,39 @@ public class DatasetResource {
 		
 		UriBuilder builder = uriInfo.getAbsolutePathBuilder();
 		URI createdURI = builder.path(newId).build();
-		resp = Response.created(createdURI).build();
+		resp = Response.created(createdURI).entity(createdURI.toString()).build();
 		
 		return resp;
+	}
+	
+	/**
+	 * Uploads a new dataset into the web interface.
+	 * 
+	 * @param stream the new dataset in stream format
+	 * @return an HTTP response
+	 * @throws IOException when the dataset cannot be stored
+	 */
+	@POST
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	public Response create(MultiPart parts) throws IOException {
+		BodyPartEntity bpe = (BodyPartEntity)parts.getBodyParts().get(0).getEntity();
+		InputStream stream = bpe.getInputStream();
+		ByteArrayOutputStream os = new ByteArrayOutputStream(); 
+		
+		try {
+			final byte[] buffer = new byte[0x10000];
+			int read;
+		
+			do {
+				read = stream.read(buffer, 0, buffer.length);
+				if (read > 0)
+					os.write(buffer, 0, read);
+			} while (read >= 0);
+		} finally {
+			bpe.cleanup();
+		}
+		
+		return this.create(os.toString());
 	}
 
 	/**

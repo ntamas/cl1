@@ -24,6 +24,7 @@ import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.ValuedNodeSetList;
 import uk.ac.rhul.cs.cl1.api.EntityNotFoundException;
 import uk.ac.rhul.cs.cl1.api.EntityStore;
+import uk.ac.rhul.cs.cl1.io.GraphReader;
 import uk.ac.rhul.cs.cl1.io.GraphReaderFactory;
 
 /**
@@ -66,7 +67,8 @@ public class ResultResource {
 		
 		// Construct a graph from the dataset
 		StringReader reader = new StringReader(dataset);
-		Graph graph = GraphReaderFactory.fromFilename("test.txt").readGraph(reader);
+		GraphReader graphReader = GraphReaderFactory.fromFilename("test.txt");
+		Graph graph = graphReader.readGraph(reader);
 		reader.close();
 		
 		// Run the algorithm and fetch the results

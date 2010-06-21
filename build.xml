@@ -20,11 +20,13 @@
 
 	<!-- DON'T CHANGE ANYTHING BELOW THIS LINE
 	UNLESS YOU KNOW WHAT YOU'RE DOING -->
-	<property name="build.java" location="${build}/java" />
 	<property name="src.java" location="${src}/java" />
+	<property name="src.java.tests" location="${test}/java" />
+	<property name="src.web" location="${src}/web" />
+	
+	<property name="build.java" location="${build}/java" />
 	<property name="build.java.tests" location="${build}/tests" />
 	<property name="build.webinf" location="${build}/WEB-INF" />
-	<property name="src.java.tests" location="${test}/java" />
 
     <property name="build.doc" location="${build}/doc" />
     <property name="build.doc.cmdline" location="${build.doc}/cmdline" />
@@ -42,6 +44,9 @@
 	</condition>
 	<condition property="lib.jersey-core.path" value="${jersey.path}/lib/jersey-core-${jersey.version}.jar">
 		<available file="${jersey.path}/lib/jersey-core-${jersey.version}.jar" />
+	</condition>
+	<condition property="lib.jersey-multipart.path" value="${jersey.path}/contrib/jersey-multipart-${jersey.version}.jar">
+		<available file="${jersey.path}/contrib/jersey-multipart-${jersey.version}.jar" />
 	</condition>
 
 	<!-- Set up the default classpath -->
@@ -193,11 +198,12 @@
 	</target>
 	
 	<!-- Creates the WAR file -->
-	<target name="war" depends="compile,doc,-copy_resources" description="Creates the WAR file">
+	<target name="war" depends="jar" description="Creates the WAR file">
 		<war destfile="cluster_one-${package.version}.war"
 			 webxml="${build.webinf}/web.xml">
 			<!-- <fileset dir="src/html" />
 			<fileset dir="src/jsp" />  -->
+			<fileset dir="${src.web}" />
 			<lib dir="lib/">
 				<include name="tclib.jar" />
 			</lib>

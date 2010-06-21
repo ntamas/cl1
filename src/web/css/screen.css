@@ -1,0 +1,138 @@
+body { 
+  font: 14px/19px "Gill Sans", GillSans, "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif; 
+  background: white;
+  color: black;
+  margin: 0px 20px;
+  font-weight: normal;
+}
+
+img { 
+  border: 0;
+}
+
+h1 {
+  padding: 30px 5px 15px 0px;
+  text-align: left;
+  font-weight: normal;
+  font-style: normal;
+  margin: 0px;
+  color: #06c;
+}
+
+h2 {
+  font-weight: normal;
+  padding: 10px 5px 10px 0px;
+  font-style: italic;
+  margin: 0;
+  color: #06c;
+}
+
+h3 {
+  font-weight: normal;
+  font-size: 1.05em;
+  margin: 0;
+  padding: 5px 5px 0px 0px;
+}
+
+h4 {
+  color: #339;
+  margin: 5px 0px 5px 0px;
+  padding: 2px 0px 2px 0px;
+  font-weight: normal;
+  border-bottom: 1px dotted black;
+}
+
+p {
+  margin: 0em 0 0.5em 0;
+}
+
+a {
+  color: #633;
+  font-style: normal;
+}
+
+a:hover {
+  color: #363;
+}
+
+address {
+  font-style: italic;
+  margin: 30px 20px 0px 0px;
+  border-top: 1px solid black;
+  padding: 5px 10px 5px 20px;
+}
+
+dl.spacious dd {
+  margin: 0 0 1em 2.2em;
+}
+
+.sidebar {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: auto;
+  left: auto;
+  width: 180px;
+  background: #ddd;
+  border-left: 1px solid #666;
+  border-top: 1px solid #666;
+  border-bottom: 1px solid #666;
+  font-size: 0.8em;
+  margin: 10px 0px 0px 0px;
+  padding: 5px 5px 5px 15px;
+}
+
+.sidebar ul {
+  list-style: disc inside;
+  padding: 0px;
+  margin: 0px;
+  color: orange;
+}
+
+.sidebar ul li {
+  color: black;
+}
+
+.warning {
+  color: red;
+}
+
+/* Step display */
+#steps li {
+  background-color: #eee;
+  border: 2px solid white;
+  padding: 5px;
+  margin: 5px 0px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+}
+
+#steps .title {
+  font-weight: bold;
+  padding-bottom: 1em;
+}
+
+#steps li.active {
+  border: 2px solid #ddd;
+}
+
+#steps li.finished {
+  border: 2px solid #0c0;
+  background-color: #dfd;
+}
+
+/* Error messages */
+.message-container {
+  list-style-type: none;
+  margin-left: 0px;
+  padding-left: 0px;
+}
+.message-container li {
+  padding: 2px 5px;
+  margin-left: 0px;
+}
+#errors li {
+  background-color: #fdd;
+  border-left: 3px solid #c00;
+}
