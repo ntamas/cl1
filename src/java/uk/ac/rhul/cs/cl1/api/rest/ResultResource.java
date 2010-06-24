@@ -22,6 +22,7 @@ import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEException;
 import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.ValuedNodeSetList;
+import uk.ac.rhul.cs.cl1.api.ClusterONEResult;
 import uk.ac.rhul.cs.cl1.api.EntityNotFoundException;
 import uk.ac.rhul.cs.cl1.api.EntityStore;
 import uk.ac.rhul.cs.cl1.io.GraphReader;
@@ -36,7 +37,7 @@ import uk.ac.rhul.cs.cl1.io.GraphReaderFactory;
 public class ResultResource {
 	@Context UriInfo uriInfo;
 	
-	EntityStore<ValuedNodeSetList> resultStore = WebApplication.getResultStore();
+	EntityStore<ClusterONEResult> resultStore = WebApplication.getResultStore();
 	
 	/**
 	 * Creates a new result by running Cluster ONE on a dataset.
@@ -74,7 +75,8 @@ public class ResultResource {
 		// Run the algorithm and fetch the results
 		ClusterONE algorithm = WebApplication.getClusterONE();
 		algorithm.runOnGraph(graph);
-		ValuedNodeSetList result = (ValuedNodeSetList)algorithm.getResults();
+		ClusterONEResult result =
+			ClusterONEResult.fromNodeSetList((ValuedNodeSetList)algorithm.getResults());
 		
 		// Store the results
 		String resultId = resultStore.create(result);
@@ -96,8 +98,8 @@ public class ResultResource {
 	@GET
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public ValuedNodeSetList get(@PathParam("id") String id) throws IOException {
-		ValuedNodeSetList result;
+	public ClusterONEResult get(@PathParam("id") String id) throws IOException {
+		ClusterONEResult result;
 		
 		try {
 			result = resultStore.get(id);

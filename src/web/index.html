@@ -17,14 +17,35 @@
 <ol id="steps">
   <li>
     <div class="title">Upload your data file</div>
-    <button id="upload-button">Click here to start uploading</span>
+    <p>Select your data file on your local hard drive by clicking on the button below.</p>
+    <p>The data file must be in a simple symbolic weighted edge list format, which looks
+    like this:</p>
+    <pre>protein1 protein2 weight
+protein1 protein3 weight
+protein1 protein4 weight
+protein2 protein4 weight
+...</pre>
+    <p>Protein IDs must not contain spaces. The columns must be separated by whitespace characters.
+    Weights may be omitted; edges not having an associated weight will be considered as having
+    unit weight.</p>    
+    <div class="buttons">
+      <button id="upload-button">Click here to start uploading</button>
+    </div>
   </li>
   <li>
     <div class="title">Set the algorithm parameters</div>
-    <button id="start-button">Start the analysis</button>
+    <div class="buttons">
+      <button class="positive" id="start-button">Start the analysis</button>
+    </div>
   </li>
   <li>
-    <div class="title">Get the results</div>
+    <div class="title">Examine the results</div>
+    <div id="results">
+    </div>
+    <div class="buttons">
+      <button id="download-button">Download results</button>
+      <button id="print-button">Print results</button>
+    </div>
   </li>
 </ol>
 

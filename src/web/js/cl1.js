@@ -1,19 +1,63 @@
+/***************************************************************************/
+
 function ClusterONEFrontend() {
   this.datasetUrl = null;
   this.resultUrl = null;
   
+  this.currentStep = -1;
+  this.currentResults = null;
+  
   this.debugMode = true;
+  
   this.init();
 }
 
-/** Initializes the Cluster ONE frontend page */
 ClusterONEFrontend.prototype = {
+  /** Adds a progress marker to the current step next to the buttons */
+  addProgressMarker: function(message, step) {
+    if (step == null)
+      step = this.currentStep;
+
+    var $item = $("#steps li").slice(step-1, step);
+    
+    if ($item.length > 0) {
+      var $marker = $(".progress-indicator", $item);
+      if ($marker.length == 0) {
+        $marker = $("<span class=\"progress-indicator\"></span>");
+        $buttons = $(".buttons", $item);
+        if ($buttons.length > 0) {
+          $(".buttons", $item).slice(0, 1).append($marker);
+        } else {
+          $(".title", $item).after($marker);
+        }
+      }
+      
+      $marker.html(message);
+    }
+  },
+  
   debug: function(msg) {
     if (!this.debugMode)
       return;
-    $('#debug').html('<pre>'+msg+'</pre>');
+    
+    var $item = $("<pre></pre>");
+    $item.text(msg);
+    $('#debug').append($item);
   },
   
+  /** Gets a default AJAX options object that can be used for AJAX requests */
+  getDefaultAjaxOptions: function(url, data) {
+    var settings = {
+      context: this,
+      data: data,
+      error: this.onAJAXError,
+      url: url,
+    };
+    settings.type = data ? 'POST' : 'GET';
+    return settings;
+  },
+    
+  /** Initializes the Cluster ONE frontend page */
   init: function() {
     var frontend = this;
     
@@ -23,16 +67,32 @@ ClusterONEFrontend.prototype = {
       name: 'file',
       autoSubmit: true,
       responseType: false,
+      onSubmit: function(file, extension) {
+        frontend.addProgressMarker("Please wait...", 1);
+      },
       onComplete: function(file, response) {
         frontend.onFileUploaded.call(frontend, file, response);
       }
     });
     
-    /* Set up the start button */
-    $('#start-button').click(function() { frontend.startAnalysis.call(frontend); });
+    /* Set up the buttons */
+    var dispatchClick = function() {
+      frontend.onButtonClicked.call(frontend, this.id, this);
+    };
+    $('#start-button').click(dispatchClick);
+    $('#download-button').click(dispatchClick);
+    $('#print-button').click(dispatchClick);
     
     /* Set the active step */
     this.setActiveStep(1);
+  },
+  
+  /** Event handler invoked when an error happened during an AJAX call */
+  onAJAXError: function(req, status, exc) {
+    this.showBug("AJAX call returned with HTTP error code "+req.status+".");
+    if (req)
+      this.debug($.httpData(req));
+    this.removeProgressMarkers();
   },
   
   /** Event handler invoked when the analysis results have arrived */
@@ -48,16 +108,33 @@ ClusterONEFrontend.prototype = {
       return;
     }
     
-    this.setActiveStep(3);
+    this.retrieveResults();
   },
   
-  /** Event handler invoked when the analysis results have arrived */
-  onAnalysisError: function(req, status, exc) {
-    this.showBug("AJAX call returned with HTTP error code "+req.status+".");
-    if (req)
-      this.debug($.httpData(req));
+  /** Event handler invoked when a button was clicked */
+  onButtonClicked: function(buttonId, button) {
+    if (buttonId == "start-button")
+      return this.startAnalysis();
+ 
+    if (buttonId == "print-button") {
+      if (this.currentResults)
+        this.currentResults.print();
+      else
+        alert("There are no results yet!");
+      return;
+    }
+    
+    if (buttonId == "download-button") {
+      if (this.currentResults)
+        return this.currentResults.download();
+      else
+        alert("There are no results yet!");
+      return;
+    }
+    
+    alert("This function is not implemented yet!");
   },
-  
+    
   /** Event handler invoked when the dataset was uploaded */
   onFileUploaded: function(file, response) {
     if (response.substr(0, 7) == "http://" ||
@@ -71,19 +148,70 @@ ClusterONEFrontend.prototype = {
     }
   },
   
+  /** Removes a progress marker from the current or given step */
+  removeProgressMarker: function(step) {
+    if (step == null)
+      step = this.currentStep;
+      
+    var $item = $("#steps li").slice(step-1, step);
+    if ($item.length > 0)
+      $(".progress-indicator", $item).remove();
+  },
+  
+  /** Removes all the progress markers from the page */
+  removeProgressMarkers: function(step) {
+    $("#steps li .progress-indicator").remove();
+  },
+  
+  /** Retrieves the results from the stored result URL */
+  retrieveResults: function() {
+    var settings = this.getDefaultAjaxOptions(this.resultUrl);
+    settings.success = function(data, status, req) {
+      this.removeProgressMarker(2);
+      this.setActiveStep(3);
+      this.currentResults = ClusterONEResult.fromJSON(data);
+      this.currentResults.render("#results");
+    };
+    
+    // settings.success = this.onResultRetrievalCompleted;
+    
+    this.addProgressMarker("Please wait, retrieving results...", 2);
+    $.ajax(settings);
+  },
+    
   /** Sets the active step in the frontend */
   setActiveStep: function(activeStep) {
+    if (this.currentStep == activeStep)
+      return;
+      
+    var fadeEffects = (this.currentStep > 0);
+ 
     $("#steps li").each(function(index) {
       index = index + 1;
-      $(this).toggleClass("finished", (activeStep > index));
-      $(this).toggleClass("active", (activeStep == index));
+      $this = $(this);
+      $this.toggleClass("finished", (activeStep > index));
+      $this.toggleClass("active", (activeStep == index));
       
       if (activeStep < index) {
-        $(this, 'button').attr("disabled", "disabled");
+        $('button', this).attr("disabled", true).css('opacity', 0.5);
+        if (fadeEffects && $this.is(":visible")) {
+          $this.fadeOut();
+        } else {
+          $this.hide();
+        }
       } else {
-        $(this, 'button').removeAttr("disabled");
+        $('button', this).removeAttr("disabled").css('opacity', 1.0);
+        if (fadeEffects && !$this.is(":visible")) {
+          $this.fadeIn();
+        } else {
+          $this.show();
+        }
       }
     });
+    
+    this.removeProgressMarkers();
+    
+    this.currentStep = activeStep;
   },
   
   /** Shows an error message that is likely to correspond to a bug */
@@ -125,14 +253,109 @@ ClusterONEFrontend.prototype = {
     
     var datasetId = this.datasetUrl.substr(slashPos+1);
     var data = { dataset_id: datasetId };
-    var settings = {
-      context: this,
-      data: data,
-      error: this.onAnalysisError,
-      type: 'POST',
-      success: this.onAnalysisCompleted,
-      url: 'api/result'
-    };
+    var settings = this.getDefaultAjaxOptions("api/result", data);
+    settings.success = this.onAnalysisCompleted;
+    
+    this.addProgressMarker("Please wait, running calculations...", 2);
     $.ajax(settings);
+  }  
+};
+
+/***************************************************************************/
+
+/** Class representing the results of a Cluster ONE run */
+function ClusterONEResult() {
+  this.clusters = [];
+}
+
+ClusterONEResult.prototype = {
+  /** Downloads the results by opening a popup window and rendering the
+   * results in there in a simple plain text format
+   */
+  download: function() {
+    var win = this.getPopup("download-window");
+    if (!win)
+      return;
+    
+    doc = win.document;
+    if (doc.open)
+      doc.open("text/plain");
+
+    $.each(this.clusters, function(index) {
+      doc.write(this.members.join(" "));
+      doc.write("\n");
+    });
+    
+    if (doc.close)
+      doc.close();
+  },
+  
+  getPopup: function(popupId) {
+    var win = window.open("", popupId);
+    if (!win) {
+      alert("Could not open popup window. Please disable your popup blocker!");
+    }
+    return win;
+  },
+  
+  /** Prints the results by opening a popup window, rendering the results
+   * in a div in the popup and asking the browser to print the popup.
+   */
+  print: function() {
+    var win = this.getPopup("print-window");
+    if (!win) return;
+
+    win.document.write("<html><head>" +
+                       "  <title>Cluster ONE results</title>" +
+                       "  <link type=\"text/css\" rel=\"stylesheet\" href=\"css/screen.css\" />" +
+                       "</head>" +
+                       "<body><div id=\"results\"></div></body>" +
+                       "</html>");
+    if (win.document.close)
+      win.document.close();
+
+    this.render($("#results", win.document));
+    
+    win.print();
+  },
+  
+  /** Renders the results nicely in the given div */
+  render: function(id) {
+    var $target, $properties, $item;
+    
+    $target = $(id);
+    $target.empty();
+    
+    $properties = $("<dl></dl>").addClass("compact");
+    $item = $("<dt></dt>").text("Number of clusters:");
+    $properties.append($item);
+    $item = $("<dd></dd>").text(this.clusters.length);
+    $properties.append($item);    
+    $target.append($properties);
+    
+    $table = $("<table cellspacing=\"0\" cellpadding=\"0\"></table>");
+    $table.append($("<thead><tr><th class=\"right\">#</th><th>Members</th></tr></thead>"));
+    $tableBody = $("<tbody></tbody>");
+    $.each(this.clusters, function(index) {
+      var $row = $("<tr></tr>");
+      $row.append($("<td>" + (index+1) + ".</td>").addClass("right"));
+      $row.append($("<td></td>").text(this.members.join(", ")));
+      $tableBody.append($row);
+    });
+    $table.append($tableBody);
+    $target.append($table);
+    
+    return $target;
   }
 };
+
+/** Creates a ClusterONEResult object from a JSON representation */
+ClusterONEResult.fromJSON = function(json) {
+  if (typeof(json) != 'object') {
+    throw "TypeError";
+  }
+  
+  var result = new ClusterONEResult();
+  result.clusters = json.clusters;
+  return result;
+}

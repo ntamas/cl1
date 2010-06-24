@@ -1,7 +1,7 @@
 package uk.ac.rhul.cs.cl1.api.rest;
 
 import uk.ac.rhul.cs.cl1.ClusterONE;
-import uk.ac.rhul.cs.cl1.ValuedNodeSetList;
+import uk.ac.rhul.cs.cl1.api.ClusterONEResult;
 import uk.ac.rhul.cs.cl1.api.EntityStore;
 import uk.ac.rhul.cs.cl1.api.InMemoryEntityStore;
 
@@ -14,8 +14,8 @@ import uk.ac.rhul.cs.cl1.api.InMemoryEntityStore;
 public class WebApplication {
 	private static EntityStore<String> datasetStore =
 		new InMemoryEntityStore<String>();
-	private static EntityStore<ValuedNodeSetList> resultStore =
-		new InMemoryEntityStore<ValuedNodeSetList>();
+	private static EntityStore<ClusterONEResult> resultStore =
+		new InMemoryEntityStore<ClusterONEResult>();
 	private static ClusterONE clusterOneImpl =
 		new ClusterONE();
 	
@@ -29,7 +29,7 @@ public class WebApplication {
 	/**
 	 * Returns the encapsulated result store instance.
 	 */
-	public static EntityStore<ValuedNodeSetList> getResultStore() {
+	public static EntityStore<ClusterONEResult> getResultStore() {
 		return resultStore;
 	}
 	

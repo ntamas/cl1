@@ -45,6 +45,9 @@
 	<condition property="lib.jersey-core.path" value="${jersey.path}/lib/jersey-core-${jersey.version}.jar">
 		<available file="${jersey.path}/lib/jersey-core-${jersey.version}.jar" />
 	</condition>
+	<condition property="lib.jersey-json.path" value="${jersey.path}/lib/jersey-json-${jersey.version}.jar">
+		<available file="${jersey.path}/lib/jersey-json-${jersey.version}.jar" />
+	</condition>
 	<condition property="lib.jersey-multipart.path" value="${jersey.path}/contrib/jersey-multipart-${jersey.version}.jar">
 		<available file="${jersey.path}/contrib/jersey-multipart-${jersey.version}.jar" />
 	</condition>
@@ -57,6 +60,9 @@
 		<pathelement location="${lib.cytoscape.path}" />
 		<pathelement location="${lib.procope.path}" />
 		<pathelement location="${lib.jsr311.path}" />
+		<pathelement location="${lib.jersey-core.path}" />
+		<pathelement location="${lib.jersey-json.path}" />
+		<pathelement location="${lib.jersey-multipart.path}" />
 	</path>
 
 	<tstamp>
@@ -144,6 +150,7 @@
 		    depends="compile_java_base">
 		<javac srcdir="${src.java}" destdir="${build.java}" target="1.5">
 			<include name="${package.name.slashed}/api/rest/*.java" />
+			<exclude name="${package.name.slashed}/api/rest/StandaloneWebServer.java" />
 			<classpath>
 				<path refid="classpath.base" />
 			</classpath>

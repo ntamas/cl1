@@ -1,9 +1,22 @@
-body { 
+body, td, th {
   font: 14px/19px "Gill Sans", GillSans, "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif; 
-  background: white;
   color: black;
-  margin: 0px 20px;
   font-weight: normal;
+}
+
+body { 
+  background: white;
+  margin: 0px 20px;
+}
+
+th {
+  font-weight: bold;
+  text-align: left;
+}
+
+td {
+  vertical-align: top;
+  padding: 2px;
 }
 
 img { 
@@ -62,8 +75,20 @@ address {
   padding: 5px 10px 5px 20px;
 }
 
+dt {
+  font-weight: bold;
+}
+
+dl {
+  margin: 1em 0;
+}
+
 dl.spacious dd {
   margin: 0 0 1em 2.2em;
+}
+
+dl.compact dt {
+  width: 200px; float: left;
 }
 
 .sidebar {
@@ -97,27 +122,37 @@ dl.spacious dd {
   color: red;
 }
 
+.right {
+  text-align: right;
+}
+
 /* Step display */
 #steps li {
-  background-color: #eee;
-  border: 2px solid white;
+  padding-bottom: 1em;
+  padding-top: 1em;
+  clear: both;
+}
+
+#steps .title {
+  font-weight: bold;
+  margin-bottom: 1em;
   padding: 5px;
-  margin: 5px 0px;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
   border-radius: 10px;
 }
 
-#steps .title {
-  font-weight: bold;
-  padding-bottom: 1em;
+#steps li .title {
+  background-color: #eee;
+  border: 2px solid white;
 }
 
-#steps li.active {
-  border: 2px solid #ddd;
+#steps li.active .title {
+  border: 2px solid #888;
+  background-color: #ddd;
 }
 
-#steps li.finished {
+#steps li.finished .title {
   border: 2px solid #0c0;
   background-color: #dfd;
 }
@@ -135,4 +170,13 @@ dl.spacious dd {
 #errors li {
   background-color: #fdd;
   border-left: 3px solid #c00;
+}
+
+/* Progress indicators */
+.progress-indicator {
+  display: block;
+  float: left;
+  background: url(../img/ajax-loader.gif) no-repeat 0% 50%;
+  padding: 5px 0px 6px 20px;
+  line-height: 130%;
 }
