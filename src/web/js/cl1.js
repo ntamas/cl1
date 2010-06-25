@@ -26,6 +26,7 @@ function ClusterONEFrontend() {
   
   this.currentStep = -1;
   this.currentResults = null;
+  this.parameterValidator = null;
   
   this.debugMode = true;
   
@@ -112,11 +113,7 @@ ClusterONEFrontend.prototype = {
     $('#print-button').click(dispatchClick);
     
     /* Set up validation rules for the algorithm parameters form */   
-    $("#algorithm_parameters").validate({
-      submitHandler: function(form) {
-        alert("submitted");
-      }
-    });
+    this.parameterValidator = $("#algorithm_parameters").validate();
     
     /* Set the active step */
     this.setActiveStep(1);
@@ -286,7 +283,7 @@ ClusterONEFrontend.prototype = {
     
     var $form = $("#algorithm_parameters");
     if (!$form.valid()) {
-      this.showError("Some algorithm parameters are invalid, please fix them first!");
+      this.parameterValidator.focusInvalid();
       return;
     } else {
       this.clearErrors();
@@ -307,8 +304,6 @@ ClusterONEFrontend.prototype = {
       data[obj.key] = obj.value;
     });
     
-    alert(data);
-     
     this.addProgressMarker("Please wait, running calculations...", 2);
     $.ajax(settings);
   } 
