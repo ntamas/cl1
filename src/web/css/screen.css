@@ -12,6 +12,7 @@ body {
 th {
   font-weight: bold;
   text-align: left;
+  padding: 2px;
 }
 
 td {
@@ -185,9 +186,6 @@ input.number_01, input.positive_integer {
 
 /* Results field */
 #results {
-  height: 20em;
-  max-height: 20em;
-  overflow: scroll;
   margin-bottom: 1em;
 }
 

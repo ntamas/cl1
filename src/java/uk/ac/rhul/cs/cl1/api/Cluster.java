@@ -23,6 +23,18 @@ public class Cluster {
 	/** The list of nodes in this cluster */
 	List<String> nodes = new ArrayList<String>();
 	
+	/** The density of the cluster */
+	@XmlElement Double density = null;
+	
+	/** The internal weight of the cluster */
+	@XmlElement Double inWeight = null;
+	
+	/** The boundary weight of the cluster */
+	@XmlElement Double outWeight = null;
+	
+	/** The value of the goal function for this cluster */
+	@XmlElement Double quality = null;
+	
 	public Cluster() {
 	}
 	
@@ -64,6 +76,11 @@ public class Cluster {
 	 * @return the newly constructed {@link Cluster} object.
 	 */
 	public static Cluster fromNodeSet(NodeSet nodeSet) {
-		return new Cluster(nodeSet.getMemberNames());
+		Cluster cluster = new Cluster(nodeSet.getMemberNames());
+		cluster.density = nodeSet.getDensity();
+		cluster.inWeight = nodeSet.getTotalInternalEdgeWeight();
+		cluster.outWeight = nodeSet.getTotalBoundaryEdgeWeight();
+		cluster.quality = nodeSet.getQuality();
+		return cluster;
 	}
 }

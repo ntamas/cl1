@@ -389,13 +389,12 @@ ClusterONEResult.prototype = {
   /** Renders the results nicely in the given div */
   render: function(id) {
     var $target, $properties, $item;
+    var results = this;
+    var numericFields = ["density", "inWeight", "outWeight", "quality"];
     
     $target = $(id);
     $target.empty();
     
-    if (this.parameters)
-      alert("got parameters, yay");
-
     $properties = $("<dl></dl>").addClass("compact");
     $item = $("<dt></dt>").text("Number of clusters:");
     $properties.append($item);
@@ -403,16 +402,35 @@ ClusterONEResult.prototype = {
     $properties.append($item);    
     $target.append($properties);
     
-    $table = $("<table cellspacing=\"0\" cellpadding=\"0\"></table>");
-    $table.append($("<thead><tr><th class=\"right\">#</th><th>Members</th></tr></thead>"));
+    $table = $("<table cellspacing=\"0\" cellpadding=\"0\"></table>").addClass("tablesorter");
+    $table.append($("<thead><tr><th>Members</th>" +
+        "<th>Size</th><th>Density</th>" +
+        "<th>In-weight</th><th>Out-weight</th>" +
+        "<th>Quality</th></tr></thead>"));
     $tableBody = $("<tbody></tbody>");
     $.each(this.clusters, function(index) {
       var $row = $("<tr></tr>");
-      $row.append($("<td>" + (index+1) + ".</td>").addClass("right"));
-      $row.append($("<td></td>").text(this.members.join(", ")));
+      var cluster = this;
+      $row.append($("<td></td>").text(cluster.members.join(", ")));
+      $row.append($("<td></td>").addClass("right").text(cluster.members.length));      
+      $.each(numericFields, function() {
+        var num = parseFloat(cluster[this]);
+        if (isNaN(num))
+          num = "";
+        else
+          num = num.toFixed(3);
+        $row.append($("<td></td>").addClass("right").text(num));
+      });
+      
       $tableBody.append($row);
     });
     $table.append($tableBody);
+    $table.tablesorter({
+      widgets: ['zebra'],
+      headers: { 0: { sorter: false } },
+      sortList: [[1, 1]]
+    });
+
     $target.append($table);
     
     return $target;
