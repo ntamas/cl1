@@ -91,6 +91,32 @@ dl.compact dt {
   width: 200px; float: left;
 }
 
+fieldset {
+  border: 0px;
+}
+
+legend {
+  font-weight: bold;
+  padding: 0px;
+}
+
+label {
+  display: inline-block;
+  width: 180px;
+}
+
+label.error {
+  display: inline;
+  padding-left: 1em;
+  color: #c00;
+  font-weight: bold;
+}
+
+input.number_01, input.positive_integer {
+  width: 50px;
+  text-align: right;
+}
+
 .sidebar {
   position: absolute;
   top: 0px;
@@ -155,6 +181,14 @@ dl.compact dt {
 #steps li.finished .title {
   border: 2px solid #0c0;
   background-color: #dfd;
+}
+
+/* Results field */
+#results {
+  height: 20em;
+  max-height: 20em;
+  overflow: scroll;
+  margin-bottom: 1em;
 }
 
 /* Error messages */

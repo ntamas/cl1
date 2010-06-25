@@ -3,6 +3,10 @@
  * Copyright (c) Andris Valums
  * Licensed under the MIT license ( http://valums.com/mit-license/ )
  * Thanks to Gary Haran, David Mark, Corey Burns and others for contributions 
+ *
+ * Some modifications by Tamas Nepusz:
+ * - allows a context to be specified in the parameters. This context will
+ *   be bound to "this" in the callbacks.
  */
 (function () {
     /* global window */
@@ -236,6 +240,8 @@
             action: 'upload.php',
             // File upload name
             name: 'userfile',
+            // Context to be used in callbacks
+            context: null,
             // Method used to send the form
             method: 'post',
             // Additional data to send
@@ -349,7 +355,8 @@
          */
         _createInput: function(){ 
             var self = this;
-                        
+            var context = self._settings.context || self;
+ 
             var input = document.createElement("input");
             input.setAttribute('type', 'file');
             input.setAttribute('name', this._settings.name);
@@ -400,7 +407,7 @@
                 // as some browsers have path instead of it          
                 var file = fileFromPath(input.value);
                                 
-                if (false === self._settings.onChange.call(self, file, getExt(file))){
+                if (false === self._settings.onChange.call(context, file, getExt(file))){
                     self._clearInput();                
                     return;
                 }
@@ -552,7 +559,8 @@
         _getResponse : function(iframe, file){            
             // getting response
             var toDeleteFlag = false, self = this, settings = this._settings;   
-               
+            var context = settings.context || self;
+            
             addEvent(iframe, 'load', function(){                
                 
                 if (// For Safari 
@@ -622,7 +630,7 @@
                     response = doc;
                 }
                 
-                settings.onComplete.call(self, file, response);
+                settings.onComplete.call(context, file, response);
                 
                 // Reload blank page, so that reloading main page
                 // does not re-submit the post. Also, remember to
@@ -636,8 +644,9 @@
         /**
          * Upload file contained in this._input
          */
-        submit: function(){                        
+        submit: function(){       
             var self = this, settings = this._settings;
+            var context = settings.context || self;
             
             if ( ! this._input || this._input.value === ''){                
                 return;                
@@ -646,7 +655,7 @@
             var file = fileFromPath(this._input.value);
             
             // user returned false to cancel upload
-            if (false === settings.onSubmit.call(this, file, getExt(file))){
+            if (false === settings.onSubmit.call(context, file, getExt(file))){
                 this._clearInput();                
                 return;
             }

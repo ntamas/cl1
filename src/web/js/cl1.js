@@ -1,5 +1,25 @@
 /***************************************************************************/
 
+/** Form validation routine that accepts positive integers */
+jQuery.validator.addMethod("positive_integer", function(value, element) {
+  if (this.optional(element))
+    return true;
+  if (!/^\d+$/.test(value))
+    return false;
+  return (parseInt(value) >= 1);
+}, "Please enter a positive integer");
+
+/** Form validation routine that accepts numbers between 0 and 1 */
+jQuery.validator.addMethod("number_01", function(value, element) {
+  if (this.optional(element))
+    return true;
+  if (!/^[0-9.]+$/.test(value))
+    return false;
+  return (parseFloat(value) >= 0 && parseFloat(value) <= 1);
+}, "Please enter a value between 0 and 1 (inclusive)");
+
+/***************************************************************************/
+
 function ClusterONEFrontend() {
   this.datasetUrl = null;
   this.resultUrl = null;
@@ -36,6 +56,16 @@ ClusterONEFrontend.prototype = {
     }
   },
   
+  /** Clears all the error messages */
+  clearErrors: function() {
+    return this.clearGenericMessage("errors");
+  },
+  
+  /** Clears a generic message container */
+  clearGenericMessage: function(container_id) {
+    $("#"+container_id).empty();
+  },
+  
   debug: function(msg) {
     if (!this.debugMode)
       return;
@@ -59,29 +89,34 @@ ClusterONEFrontend.prototype = {
     
   /** Initializes the Cluster ONE frontend page */
   init: function() {
-    var frontend = this;
-    
     /* Set up the upload button */
     new AjaxUpload('upload-button', {
       action: 'api/dataset',
       name: 'file',
+      context: this,
       autoSubmit: true,
       responseType: false,
       onSubmit: function(file, extension) {
-        frontend.addProgressMarker("Please wait...", 1);
+        this.addProgressMarker("Please wait...", 1);
       },
-      onComplete: function(file, response) {
-        frontend.onFileUploaded.call(frontend, file, response);
-      }
+      onComplete: this.onFileUploaded
     });
     
     /* Set up the buttons */
+    var frontend = this;
     var dispatchClick = function() {
       frontend.onButtonClicked.call(frontend, this.id, this);
     };
     $('#start-button').click(dispatchClick);
     $('#download-button').click(dispatchClick);
     $('#print-button').click(dispatchClick);
+    
+    /* Set up validation rules for the algorithm parameters form */   
+    $("#algorithm_parameters").validate({
+      submitHandler: function(form) {
+        alert("submitted");
+      }
+    });
     
     /* Set the active step */
     this.setActiveStep(1);
@@ -184,7 +219,7 @@ ClusterONEFrontend.prototype = {
     if (this.currentStep == activeStep)
       return;
       
-    var fadeEffects = (this.currentStep > 0);
+    var effects = (this.currentStep > 0);
  
     $("#steps li").each(function(index) {
       index = index + 1;
@@ -193,20 +228,25 @@ ClusterONEFrontend.prototype = {
       $this.toggleClass("active", (activeStep == index));
       
       if (activeStep < index) {
-        $('button', this).attr("disabled", true).css('opacity', 0.5);
-        if (fadeEffects && $this.is(":visible")) {
+        if (effects && $this.is(":visible")) {
           $this.fadeOut();
         } else {
           $this.hide();
         }
-      } else {
-        $('button', this).removeAttr("disabled").css('opacity', 1.0);
-        if (fadeEffects && !$this.is(":visible")) {
+      } else if (activeStep == index) {
+        if (effects && !$this.is(":visible")) {
           $this.fadeIn();
         } else {
           $this.show();
         }
-      }
+      }/* else {
+        $contents = $(".contents", $this);
+        if (effects && $contents.is(":visible")) {
+          $contents.slideUp();
+        } else {
+          $contents.hide();
+        }
+      }*/
     });
     
     this.removeProgressMarkers();
@@ -231,8 +271,7 @@ ClusterONEFrontend.prototype = {
       msgs = [msgs];
     }
     
-    var container = $("#"+container_id);
-    container.empty();
+    this.clearGenericMessages(container_id);    
     $.each(msgs, function(index, msg) {
       container.append($("<li></li>").html(msg));
     });
@@ -243,6 +282,14 @@ ClusterONEFrontend.prototype = {
     if (!this.datasetUrl) {
       this.showError("Please upload a dataset first!");
       return;
+    }
+    
+    var $form = $("#algorithm_parameters");
+    if (!$form.valid()) {
+      this.showError("Some algorithm parameters are invalid, please fix them first!");
+      return;
+    } else {
+      this.clearErrors();
     }
     
     var slashPos = this.datasetUrl.lastIndexOf("/");
@@ -256,9 +303,15 @@ ClusterONEFrontend.prototype = {
     var settings = this.getDefaultAjaxOptions("api/result", data);
     settings.success = this.onAnalysisCompleted;
     
+    $.each($("#algorithm_parameters").serializeArray(), function(index, obj) {
+      data[obj.key] = obj.value;
+    });
+    
+    alert(data);
+     
     this.addProgressMarker("Please wait, running calculations...", 2);
     $.ajax(settings);
-  }  
+  } 
 };
 
 /***************************************************************************/
