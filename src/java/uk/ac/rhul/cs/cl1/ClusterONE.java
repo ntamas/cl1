@@ -33,7 +33,7 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 	protected ValuedNodeSetList result = null;
 	
 	/** Algorithm settings for this instance */
-	protected ClusterONEAlgorithmParameters params = null;
+	protected ClusterONEAlgorithmParameters parameters = null;
 
 	/** A task monitor where the algorithm will report its progress */
 	protected TaskMonitor monitor = new NullTaskMonitor();
@@ -61,9 +61,9 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 	 */
 	public ClusterONE(ClusterONEAlgorithmParameters algorithmParameters) {
 		if (algorithmParameters == null)
-			this.params = new ClusterONEAlgorithmParameters();
+			this.setParameters(new ClusterONEAlgorithmParameters());
 		else
-			this.params = algorithmParameters;
+			this.setParameters(algorithmParameters);
 	}
 
 	/**
@@ -74,6 +74,15 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 		return null;
 	}
 	
+	/**
+	 * Returns the current parameter setting of the algorithm
+	 * 
+	 * @return the parameters
+	 */
+	public ClusterONEAlgorithmParameters getParameters() {
+		return parameters;
+	}
+
 	/**
 	 * Returns the clustering results or null if there was no clustering executed so far
 	 */
@@ -101,15 +110,15 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 	 * Executes the algorithm on the graph set earlier by setGraph()
 	 */
 	public void run() throws ClusterONEException {
-		boolean needHaircut = params.isHaircutNeeded();
-		double minSize = params.getMinSize();
-		double minDensity = params.getMinDensity();
-		double haircutThreshold = params.getHaircutThreshold();
+		boolean needHaircut = parameters.isHaircutNeeded();
+		double minSize = parameters.getMinSize();
+		double minDensity = parameters.getMinDensity();
+		double haircutThreshold = parameters.getHaircutThreshold();
 		
 		ValuedNodeSetList result = new ValuedNodeSetList();
 		HashSet<NodeSet> addedNodeSets = new HashSet<NodeSet>();
 		
-		SeedGenerator seedGenerator = params.getSeedGenerator();	
+		SeedGenerator seedGenerator = parameters.getSeedGenerator();	
 		seedGenerator.setGraph(graph);
 		
 		/* Simple sanity checks */
@@ -163,11 +172,11 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 		addedNodeSets = null;
 		
 		/* Merge highly overlapping clusters */
-		if (params.getMergingMethod() != null && !params.getMergingMethod().equals("none")) {
+		if (parameters.getMergingMethod() != null && !parameters.getMergingMethod().equals("none")) {
 			monitor.setPercentCompleted(0);
 			monitor.setStatus("Merging highly overlapping clusters...");
-			result = result.mergeOverlapping(params.getMergingMethod(),
-					params.getOverlapThreshold(), monitor);
+			result = result.mergeOverlapping(parameters.getMergingMethod(),
+					parameters.getOverlapThreshold(), monitor);
 			monitor.setPercentCompleted(100);
 		}
 		
@@ -183,6 +192,14 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 	public void runOnGraph(Graph graph) throws ClusterONEException {
 		setGraph(graph);
 		run();
+	}
+
+	/**
+	 * Sets the current parameter settings of the algorithm
+	 * @param parameters the new parameter settings
+	 */
+	public void setParameters(ClusterONEAlgorithmParameters parameters) {
+		this.parameters = parameters;
 	}
 
 	/**

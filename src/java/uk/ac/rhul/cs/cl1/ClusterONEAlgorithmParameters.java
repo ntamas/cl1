@@ -18,7 +18,7 @@ public class ClusterONEAlgorithmParameters {
 	protected int minSize = 3;
 	
 	/** Minimum density of the clusters that will be returned */
-	protected double minDensity = 0.2;
+	protected double minDensity = 0.35;
 	
 	/**
 	 * Overlap threshold value.

@@ -34,17 +34,18 @@ function ClusterONEFrontend() {
 }
 
 ClusterONEFrontend.prototype = {
-  /** Adds a progress marker to the current step next to the buttons */
-  addProgressMarker: function(message, step) {
+  /** Adds a marker of a given class to the current or given step next to the buttons */
+  addMarker: function(message, step, class) {
     if (step == null)
       step = this.currentStep;
 
     var $item = $("#steps li").slice(step-1, step);
     
     if ($item.length > 0) {
-      var $marker = $(".progress-indicator", $item);
+      var $marker = $("."+class, $item);
+      
       if ($marker.length == 0) {
-        $marker = $("<span class=\"progress-indicator\"></span>");
+        $marker = $("<span></span>").addClass(class);
         $buttons = $(".buttons", $item);
         if ($buttons.length > 0) {
           $(".buttons", $item).slice(0, 1).append($marker);
@@ -55,6 +56,16 @@ ClusterONEFrontend.prototype = {
       
       $marker.html(message);
     }
+  },
+  
+  /** Adds a progress marker to the current or given step next to the buttons */
+  addProgressMarker: function(message, step) {
+    return this.addMarker(message, step, "progress-indicator");
+  },
+  
+  /** Adds a success marker to the current or given step next to the buttons */
+  addSuccessMarker: function(message, step) {
+    return this.addMarker(message, step, "success-marker");
   },
   
   /** Clears all the error messages */
@@ -124,7 +135,7 @@ ClusterONEFrontend.prototype = {
     this.showBug("AJAX call returned with HTTP error code "+req.status+".");
     if (req)
       this.debug($.httpData(req));
-    this.removeProgressMarkers();
+    this.removeMarkers();
   },
   
   /** Event handler invoked when the analysis results have arrived */
@@ -173,6 +184,8 @@ ClusterONEFrontend.prototype = {
         response.substr(0, 8) == "https://") {
       /* Successful file upload, response contains the new URL */
       this.datasetUrl = response;
+      this.removeMarkers(1);
+      this.addSuccessMarker("Dataset successfully uploaded.", 1);
       this.setActiveStep(2);
     } else {
       /* Error while uploading file */
@@ -180,26 +193,33 @@ ClusterONEFrontend.prototype = {
     }
   },
   
-  /** Removes a progress marker from the current or given step */
-  removeProgressMarker: function(step) {
+  /** Removes a marker of a given class from the current or given step */
+  removeMarker: function(step, class) {
     if (step == null)
       step = this.currentStep;
       
     var $item = $("#steps li").slice(step-1, step);
     if ($item.length > 0)
-      $(".progress-indicator", $item).remove();
+      $("."+class, $item).remove();
   },
   
-  /** Removes all the progress markers from the page */
-  removeProgressMarkers: function(step) {
-    $("#steps li .progress-indicator").remove();
+  /** Removes all the markers from the page */
+  removeMarkers: function(step) {
+    if (step == null) {
+      $("#steps li .progress-indicator").remove();
+      $("#steps li .success-marker").remove();
+    } else {
+      this.removeMarker(step, "progress-indicator");
+      this.removeMarker(step, "success-marker");
+    }
   },
   
   /** Retrieves the results from the stored result URL */
   retrieveResults: function() {
     var settings = this.getDefaultAjaxOptions(this.resultUrl);
     settings.success = function(data, status, req) {
-      this.removeProgressMarker(2);
+      this.removeMarkers(2);
+      this.addSuccessMarker("Results successfully retrieved.", 2);
       this.setActiveStep(3);
       this.currentResults = ClusterONEResult.fromJSON(data);
       this.currentResults.render("#results");
@@ -245,8 +265,6 @@ ClusterONEFrontend.prototype = {
         }
       }*/
     });
-    
-    this.removeProgressMarkers();
     
     this.currentStep = activeStep;
   },
@@ -300,8 +318,8 @@ ClusterONEFrontend.prototype = {
     var settings = this.getDefaultAjaxOptions("api/result", data);
     settings.success = this.onAnalysisCompleted;
     
-    $.each($("#algorithm_parameters").serializeArray(), function(index, obj) {
-      data[obj.key] = obj.value;
+    $.each($("#algorithm_parameters").serializeArray(), function(index) {
+      data[this.name] = this.value;
     });
     
     this.addProgressMarker("Please wait, running calculations...", 2);
@@ -314,6 +332,7 @@ ClusterONEFrontend.prototype = {
 /** Class representing the results of a Cluster ONE run */
 function ClusterONEResult() {
   this.clusters = [];
+  this.parameters = [];
 }
 
 ClusterONEResult.prototype = {
@@ -374,6 +393,9 @@ ClusterONEResult.prototype = {
     $target = $(id);
     $target.empty();
     
+    if (this.parameters)
+      alert("got parameters, yay");
+
     $properties = $("<dl></dl>").addClass("compact");
     $item = $("<dt></dt>").text("Number of clusters:");
     $properties.append($item);
@@ -405,5 +427,6 @@ ClusterONEResult.fromJSON = function(json) {
   
   var result = new ClusterONEResult();
   result.clusters = json.clusters;
+  result.parameters = json.parameters;
   return result;
 }

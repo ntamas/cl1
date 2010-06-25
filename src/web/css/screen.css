@@ -206,11 +206,20 @@ input.number_01, input.positive_integer {
   border-left: 3px solid #c00;
 }
 
-/* Progress indicators */
-.progress-indicator {
+/* Progress indicators and success markers */
+.progress-indicator, .success-marker {
   display: block;
   float: left;
-  background: url(../img/ajax-loader.gif) no-repeat 0% 50%;
+  background-position: 0% 50%;
+  background-repeat: no-repeat;
   padding: 5px 0px 6px 20px;
   line-height: 130%;
+}
+.progress-indicator {
+  background-image: url(../img/ajax-loader.gif);
+}
+.success-marker {
+  background-image: url(../img/tick.png);
+  color: #080;
+  font-weight: bold;
 }

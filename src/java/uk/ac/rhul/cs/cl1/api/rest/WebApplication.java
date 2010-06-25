@@ -1,6 +1,5 @@
 package uk.ac.rhul.cs.cl1.api.rest;
 
-import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.api.ClusterONEResult;
 import uk.ac.rhul.cs.cl1.api.EntityStore;
 import uk.ac.rhul.cs.cl1.api.InMemoryEntityStore;
@@ -16,8 +15,6 @@ public class WebApplication {
 		new InMemoryEntityStore<String>();
 	private static EntityStore<ClusterONEResult> resultStore =
 		new InMemoryEntityStore<ClusterONEResult>();
-	private static ClusterONE clusterOneImpl =
-		new ClusterONE();
 	
 	/**
 	 * Returns the encapsulated dataset store instance.
@@ -31,12 +28,5 @@ public class WebApplication {
 	 */
 	public static EntityStore<ClusterONEResult> getResultStore() {
 		return resultStore;
-	}
-	
-	/**
-	 * Returns the implementation of the Cluster ONE algorithm
-	 */
-	public static ClusterONE getClusterONE() {
-		return clusterOneImpl;
 	}
 }

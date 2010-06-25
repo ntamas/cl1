@@ -6,6 +6,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
 import uk.ac.rhul.cs.cl1.ValuedNodeSet;
 
 /**
@@ -27,6 +28,7 @@ import uk.ac.rhul.cs.cl1.ValuedNodeSet;
 @XmlRootElement
 public class ClusterONEResult {
 	private List<Cluster> clusters = new ArrayList<Cluster>();
+	private ClusterONEAlgorithmParameters parameters = null;
 	
 	public ClusterONEResult() {}
 	
@@ -68,11 +70,25 @@ public class ClusterONEResult {
 		
 		return result;
 	}
-	
-	public void test() {
-		String[] members = {"ABC", "DEF", "GHI"};
-		clusters.add(new Cluster(members));
-		String[] members2 = {"JK"};
-		clusters.add(new Cluster(members2));
+
+	/**
+	 * Returns the parameter settings of Cluster ONE that were used to
+	 * generate this results.
+	 * 
+	 * @return the parameter settings or null if not specified
+	 */
+	@XmlElement(name="parameters", required=true)
+	public ClusterONEAlgorithmParameters getParameters() {
+		return parameters;
+	}
+
+	/**
+	 * Sets the parameter settings of Cluster ONE that were used to
+	 * generate this result.
+	 *
+	 * @param parameters the parameter settings.
+	 */
+	public void setParameters(ClusterONEAlgorithmParameters parameters) {
+		this.parameters = parameters;
 	}
 }

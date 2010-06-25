@@ -19,6 +19,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import uk.ac.rhul.cs.cl1.ClusterONE;
+import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
 import uk.ac.rhul.cs.cl1.ClusterONEException;
 import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.ValuedNodeSetList;
@@ -51,8 +52,14 @@ public class ResultResource {
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response create(@FormParam("dataset_id") String datasetId)
-	throws IOException, ClusterONEException {
+	public Response create(@FormParam("dataset_id") String datasetId,
+			               @FormParam("min_size") Integer minSize,
+			               @FormParam("min_density") Double minDensity,
+			               @FormParam("overlap_threshold") Double overlapThreshold,
+			               @FormParam("haircut_threshold") Double haircutThreshold,
+			               @FormParam("merging_method") String mergingMethod,
+			               @FormParam("seeding_method") String seedingMethod)
+	throws IOException, ClusterONEException, InstantiationException {
 		EntityStore<String> datasetStore = WebApplication.getDatasetStore();
 		Response resp;
 		String dataset = null;
@@ -72,11 +79,27 @@ public class ResultResource {
 		Graph graph = graphReader.readGraph(reader);
 		reader.close();
 		
+		// Construct the algorithm parameter object
+		ClusterONEAlgorithmParameters params = new ClusterONEAlgorithmParameters();
+		if (minSize != null)
+			params.setMinSize(minSize);
+		if (minDensity != null)
+			params.setMinDensity(minDensity);
+		if (overlapThreshold != null)
+			params.setOverlapThreshold(overlapThreshold);
+		if (haircutThreshold != null)
+			params.setHaircutThreshold(haircutThreshold);
+		if (mergingMethod != null)
+			params.setMergingMethod(mergingMethod);
+		if (seedingMethod != null)
+			params.setSeedGenerator(seedingMethod);
+		
 		// Run the algorithm and fetch the results
-		ClusterONE algorithm = WebApplication.getClusterONE();
+		ClusterONE algorithm = new ClusterONE(params);
 		algorithm.runOnGraph(graph);
 		ClusterONEResult result =
 			ClusterONEResult.fromNodeSetList((ValuedNodeSetList)algorithm.getResults());
+		result.setParameters(params);
 		
 		// Store the results
 		String resultId = resultStore.create(result);

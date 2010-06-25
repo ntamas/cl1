@@ -7,6 +7,9 @@
  * Some modifications by Tamas Nepusz:
  * - allows a context to be specified in the parameters. This context will
  *   be bound to "this" in the callbacks.
+ * - uses old version of getOffset to work around a bug when the whole thing
+ *   is invoked on a <button> element.
+ * - uses a pointer cursor on the input element, blends better with the UI I use.
  */
 (function () {
     /* global window */
@@ -61,53 +64,18 @@
         });
     }    
     
-    // Needs more testing, will be rewriten for next version        
-    // getOffset function copied from jQuery lib (http://jquery.com/)
-    if (document.documentElement.getBoundingClientRect){
-        // Get Offset using getBoundingClientRect
-        // http://ejohn.org/blog/getboundingclientrect-is-awesome/
-        var getOffset = function(el){
-            var box = el.getBoundingClientRect();
-            var doc = el.ownerDocument;
-            var body = doc.body;
-            var docElem = doc.documentElement; // for ie 
-            var clientTop = docElem.clientTop || body.clientTop || 0;
-            var clientLeft = docElem.clientLeft || body.clientLeft || 0;
-             
-            // In Internet Explorer 7 getBoundingClientRect property is treated as physical,
-            // while others are logical. Make all logical, like in IE8.	
-            var zoom = 1;            
-            if (body.getBoundingClientRect) {
-                var bound = body.getBoundingClientRect();
-                zoom = (bound.right - bound.left) / body.clientWidth;
-            }
+    // Get offset adding all offsets 
+    var getOffset = function(el){
+        var top = 0, left = 0;
+        do {
+            top += el.offsetTop || 0;
+            left += el.offsetLeft || 0;
+            el = el.offsetParent;
+        } while (el);
             
-            if (zoom > 1) {
-                clientTop = 0;
-                clientLeft = 0;
-            }
-            
-            var top = box.top / zoom + (window.pageYOffset || docElem && docElem.scrollTop / zoom || body.scrollTop / zoom) - clientTop, left = box.left / zoom + (window.pageXOffset || docElem && docElem.scrollLeft / zoom || body.scrollLeft / zoom) - clientLeft;
-            
-            return {
-                top: top,
-                left: left
-            };
-        };        
-    } else {
-        // Get offset adding all offsets 
-        var getOffset = function(el){
-            var top = 0, left = 0;
-            do {
-                top += el.offsetTop || 0;
-                left += el.offsetLeft || 0;
-                el = el.offsetParent;
-            } while (el);
-            
-            return {
-                left: left,
-                top: top
-            };
+        return {
+            left: left,
+            top: top
         };
     }
     
@@ -369,9 +337,9 @@
                 'right' : 0,
                 'margin' : 0,
                 'padding' : 0,
-                'fontSize' : '480px',                
+                'fontSize' : '480px',
                 'cursor' : 'pointer'
-            });            
+            });     
 
             var div = document.createElement("div");                        
             addStyles(div, {
@@ -385,7 +353,8 @@
                 // in Internet Explorer
                 'direction' : 'ltr',
                 //Max zIndex supported by Opera 9.0-9.2
-                'zIndex': 2147483583
+                'zIndex': 2147483583,
+                'cursor' : 'pointer'
             });
             
             // Make sure that element opacity exists.
