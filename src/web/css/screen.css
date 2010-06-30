@@ -154,6 +154,12 @@ input.number_01, input.positive_integer {
 }
 
 /* Step display */
+#steps {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
 #steps li {
   padding-bottom: 1em;
   padding-top: 1em;
@@ -220,4 +226,22 @@ input.number_01, input.positive_integer {
   background-image: url(../img/tick.png);
   color: #080;
   font-weight: bold;
+}
+
+/* Footer */
+#footer {
+  clear: both;
+  color: #888;
+  font-size: 80%;
+  padding-top: 1em;
+  margin-top: 1em;
+  text-align: center;
+}
+#footer a, #footer a:visited {
+  color: #888 !important;
+  text-decoration: none;
+}
+#footer a:active {
+  color: #888 !important;
+  text-decoration: underline;
 }

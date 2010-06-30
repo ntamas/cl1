@@ -1,4 +1,6 @@
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
   <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
   <title>Cluster ONE</title>
@@ -33,44 +35,44 @@ protein2 protein4 weight
       Weights may be omitted; edges not having an associated weight will be considered as having
       unit weight.</p>   
       <div class="buttons">
-        <button id="upload-button"><img src="img/upload.png" width="16" height="16" />Click here to start uploading</button>
+        <button id="upload-button"><img src="img/upload.png" width="16" height="16" alt="" />Click here to start uploading</button>
       </div>
     </div>
   </li>
   <li>
     <div class="title">Set the algorithm parameters</div>
-    <form id="algorithm_parameters">
+    <form id="algorithm_parameters" action="">
       <fieldset>
         <legend>Basic parameters</legend>
         <div>
           <label for="min_size">Minimum cluster size:</label>
-          <input class="positive_integer required" name="min_size" value="3" />
+          <input class="positive_integer required" id="min_size" name="min_size" value="3" />
         </div>
         <div>
           <label for="min_density">Minimum cluster density:</label>
-          <input class="number_01 required" name="min_density" value="0.35" />
+          <input class="number_01 required" id="min_density" name="min_density" value="0.35" />
         </div>
         <div>
           <label for="overlap_threshold">Overlap threshold:</label>
-          <input class="number_01 required" name="overlap_threshold" value="0.8" />
+          <input class="number_01 required" id="overlap_threshold" name="overlap_threshold" value="0.8" />
         </div>
       </fieldset>
       <fieldset>
         <legend>Advanced parameters</legend>
         <div>
           <label for="haircut_threshold">Haircut threshold:</label>
-          <input class="number_01 required" name="haircut_threshold" value="0.2" />
+          <input class="number_01 required" id="haircut_threshold" name="haircut_threshold" value="0.2" />
         </div>
         <div>
           <label for="merging_method">Merging method:</label>
-          <select name="merging_method">
+          <select name="merging_method" id="merging_method">
             <option value="match">Match coefficient</option>
             <option value="meet/min">Meet/min coefficient</option>
           </select>
         </div>
         <div>
           <label for="seeding_method">Seeding method:</label>
-          <select name="seeding_method">
+          <select name="seeding_method" id="seeding_method">
             <option value="unused_nodes">From unused nodes</option>
             <option value="every_node">From every node</option>
             <option value="every_edge">From every edge</option>
@@ -80,7 +82,7 @@ protein2 protein4 weight
     </form>
     <div class="contents">
       <div class="buttons">
-        <button id="start-button"><img src="img/start.png" width="16" height="16" />Start the analysis</button>
+        <button id="start-button"><img src="img/start.png" width="16" height="16" alt="" />Start the analysis</button>
       </div>
     </div>
   </li>
@@ -91,17 +93,21 @@ protein2 protein4 weight
       <div id="results">
       </div>
       <div class="buttons">
-        <button id="download-button"><img src="img/download.png" width="16" height="16" />Download results</button>
-        <button id="print-button"><img src="img/print.png" width="16" height="16" />Print results</button>
+        <button id="download-button"><img src="img/download.png" width="16" height="16" alt="" />Download results</button>
+        <button id="print-button"><img src="img/print.png" width="16" height="16" alt="" />Print results</button>
       </div>
     </div>
   </li>
 </ol>
 
+<div id="footer">
+<a href="http://www.paccanarolab.org">Paccanaro Lab</a>
+</div>
+
 <div id="debug">
 </div>
 
-<script lang="text/javascript">
+<script type="text/javascript">
 <!--
 var frontend = new ClusterONEFrontend();
 -->

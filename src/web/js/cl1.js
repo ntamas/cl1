@@ -35,17 +35,17 @@ function ClusterONEFrontend() {
 
 ClusterONEFrontend.prototype = {
   /** Adds a marker of a given class to the current or given step next to the buttons */
-  addMarker: function(message, step, class) {
+  addMarker: function(message, step, klass) {
     if (step == null)
       step = this.currentStep;
 
     var $item = $("#steps li").slice(step-1, step);
     
     if ($item.length > 0) {
-      var $marker = $("."+class, $item);
+      var $marker = $("."+klass, $item);
       
       if ($marker.length == 0) {
-        $marker = $("<span></span>").addClass(class);
+        $marker = $("<span></span>").addClass(klass);
         $buttons = $(".buttons", $item);
         if ($buttons.length > 0) {
           $(".buttons", $item).slice(0, 1).append($marker);
@@ -70,11 +70,11 @@ ClusterONEFrontend.prototype = {
   
   /** Clears all the error messages */
   clearErrors: function() {
-    return this.clearGenericMessage("errors");
+    return this.clearGenericMessages("errors");
   },
   
   /** Clears a generic message container */
-  clearGenericMessage: function(container_id) {
+  clearGenericMessages: function(container_id) {
     $("#"+container_id).empty();
   },
   
@@ -93,7 +93,7 @@ ClusterONEFrontend.prototype = {
       context: this,
       data: data,
       error: this.onAJAXError,
-      url: url,
+      url: url
     };
     settings.type = data ? 'POST' : 'GET';
     return settings;
@@ -180,27 +180,28 @@ ClusterONEFrontend.prototype = {
     
   /** Event handler invoked when the dataset was uploaded */
   onFileUploaded: function(file, response) {
+    this.removeMarkers(1);
     if (response.substr(0, 7) == "http://" ||
         response.substr(0, 8) == "https://") {
       /* Successful file upload, response contains the new URL */
       this.datasetUrl = response;
-      this.removeMarkers(1);
       this.addSuccessMarker("Dataset successfully uploaded.", 1);
       this.setActiveStep(2);
     } else {
+      alert(response);
       /* Error while uploading file */
       this.showError("Error while uploading file. Please try again later.");
     }
   },
   
   /** Removes a marker of a given class from the current or given step */
-  removeMarker: function(step, class) {
+  removeMarker: function(step, klass) {
     if (step == null)
       step = this.currentStep;
       
     var $item = $("#steps li").slice(step-1, step);
     if ($item.length > 0)
-      $("."+class, $item).remove();
+      $("."+klass, $item).remove();
   },
   
   /** Removes all the markers from the page */
@@ -286,7 +287,9 @@ ClusterONEFrontend.prototype = {
       msgs = [msgs];
     }
     
-    this.clearGenericMessages(container_id);    
+    this.clearGenericMessages(container_id);
+
+	var container = $("#"+container_id);
     $.each(msgs, function(index, msg) {
       container.append($("<li></li>").html(msg));
     });
@@ -340,13 +343,13 @@ ClusterONEResult.prototype = {
    * results in there in a simple plain text format
    */
   download: function() {
-    var win = this.getPopup("download-window");
+    var win = this.getPopup("download_window");
     if (!win)
       return;
     
     doc = win.document;
     if (doc.open)
-      doc.open("text/plain");
+      doc.open("text/plain", true);
 
     $.each(this.clusters, function(index) {
       doc.write(this.members.join(" "));
@@ -358,7 +361,7 @@ ClusterONEResult.prototype = {
   },
   
   getPopup: function(popupId) {
-    var win = window.open("", popupId);
+    var win = window.open(null, popupId);
     if (!win) {
       alert("Could not open popup window. Please disable your popup blocker!");
     }
@@ -369,7 +372,7 @@ ClusterONEResult.prototype = {
    * in a div in the popup and asking the browser to print the popup.
    */
   print: function() {
-    var win = this.getPopup("print-window");
+    var win = this.getPopup("print_window");
     if (!win) return;
 
     win.document.write("<html><head>" +
@@ -387,51 +390,61 @@ ClusterONEResult.prototype = {
   },
   
   /** Renders the results nicely in the given div */
-  render: function(id) {
+  render: function(id, sorting) {
     var $target, $properties, $item;
     var results = this;
     var numericFields = ["density", "inWeight", "outWeight", "quality"];
     
     $target = $(id);
     $target.empty();
+    ownerDocument = $target.get(0).ownerDocument || null;
     
-    $properties = $("<dl></dl>").addClass("compact");
-    $item = $("<dt></dt>").text("Number of clusters:");
-    $properties.append($item);
-    $item = $("<dd></dd>").text(this.clusters.length);
-    $properties.append($item);    
+    $properties = $("<dl></dl>", ownerDocument).addClass("compact");
+    $properties.append("<dt>Number of clusters:</dt>");
+    $properties.append("<dd>"+this.clusters.length+"</dd>");
     $target.append($properties);
     
-    $table = $("<table cellspacing=\"0\" cellpadding=\"0\"></table>").addClass("tablesorter");
+    var msg = "Please wait, creating table...";
+    if ($.browser.msie) {
+    	msg += "<br/>This takes a <em>looooong</em> time on Internet Explorer.<br/>Consider using a better browser instead.";
+    }
+    $progress = $("<p class=\"progress-indicator\">"+msg+"</p>", ownerDocument)
+    $target.append($progress);
+    
+    $table = $("<table cellspacing=\"0\" cellpadding=\"0\"></table>", ownerDocument).addClass("tablesorter");
     $table.append($("<thead><tr><th>Members</th>" +
         "<th>Size</th><th>Density</th>" +
         "<th>In-weight</th><th>Out-weight</th>" +
-        "<th>Quality</th></tr></thead>"));
-    $tableBody = $("<tbody></tbody>");
+        "<th>Quality</th></tr></thead>", ownerDocument));
+    $tableBody = $("<tbody></tbody>", ownerDocument);
     $.each(this.clusters, function(index) {
-      var $row = $("<tr></tr>");
+      var $row = $("<tr></tr>", ownerDocument);
       var cluster = this;
-      $row.append($("<td></td>").text(cluster.members.join(", ")));
-      $row.append($("<td></td>").addClass("right").text(cluster.members.length));      
+      $row.append($("<td></td>", ownerDocument).text(cluster.members.join(", ")));
+      $row.append($("<td></td>", ownerDocument).addClass("right").text(cluster.members.length));      
       $.each(numericFields, function() {
         var num = parseFloat(cluster[this]);
         if (isNaN(num))
           num = "";
         else
           num = num.toFixed(3);
-        $row.append($("<td></td>").addClass("right").text(num));
+        $row.append($("<td></td>", ownerDocument).addClass("right").text(num));
       });
       
       $tableBody.append($row);
     });
     $table.append($tableBody);
+    
+    sorting = sorting || [1, 1];
+    
     $table.tablesorter({
       widgets: ['zebra'],
       headers: { 0: { sorter: false } },
-      sortList: [[1, 1]]
+      sortList: [sorting]
     });
 
     $target.append($table);
+    $progress.remove();
     
     return $target;
   }
