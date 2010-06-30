@@ -46,6 +46,7 @@ public class DatasetResource {
 	 */
 	@POST
 	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response create(String content) throws IOException {
 		Response resp;
 		
@@ -62,11 +63,14 @@ public class DatasetResource {
 	 * Uploads a new dataset into the web interface.
 	 * 
 	 * @param stream the new dataset in stream format
-	 * @return an HTTP response
+	 * @return an HTTP response where the new URL is in the body instead of a
+	 *         Location header. This is because we cannot get the headers from
+	 *         the browser side.
 	 * @throws IOException when the dataset cannot be stored
 	 */
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response create(MultiPart parts) throws IOException {
 		BodyPartEntity bpe = (BodyPartEntity)parts.getBodyParts().get(0).getEntity();
 		InputStream stream = bpe.getInputStream();

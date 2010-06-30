@@ -51,8 +51,6 @@ public class FileBasedSeedGenerator extends SeedGenerator {
 		String nextLine = null;
 		
 		while ((nextLine = reader.readLine()) != null) {
-			if (nextLine == null)
-				break;
 			if ("*".equals(nextLine))
 				generateUnusedNodesAsSeeds = true;
 		}

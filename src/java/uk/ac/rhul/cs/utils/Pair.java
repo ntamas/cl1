@@ -34,12 +34,11 @@ public class Pair<L, R> {
 	}
 	
 	/** Equality testing for pairs */
-	@SuppressWarnings("unchecked")
 	public final boolean equals(Object o) {
 		if (!(o instanceof Pair))
 			return false;
 		
-		final Pair<?, ?> other = (Pair)o;
+		final Pair<?, ?> other = (Pair<?, ?>)o;
 		return equal(getLeft(), other.getLeft()) && equal(getRight(), other.getRight());
 	}
 	

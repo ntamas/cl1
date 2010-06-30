@@ -62,7 +62,6 @@ public class CyNetworkCache implements PropertyChangeListener {
 	 * @throws NonNumericAttributeException  when a non-numeric weight attribute 
 	 *         was used
 	 */
-	@SuppressWarnings("unchecked")
 	public Graph convertCyNetworkToGraph(CyNetwork network, String weightAttr)
 			throws NonNumericAttributeException {
 		Graph graph = storage.get(network);
@@ -77,7 +76,7 @@ public class CyNetworkCache implements PropertyChangeListener {
 		
 		/* Import all the edges into our graph */
 		try {
-			Iterator it = network.edgesIterator();
+			Iterator<?> it = network.edgesIterator();
 			while (it.hasNext()) {
 				Edge edge = (Edge)it.next();
 				int src = nodeIdGen.get(edge.getSource());

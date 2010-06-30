@@ -72,7 +72,6 @@ public class SelectionPropertiesPanel extends NodeSetPropertiesPanel
 	/**
 	 * Updates the nodeset shown in the panel from the selection
 	 */
-	@SuppressWarnings("unchecked")
 	public void updateNodeSetFromSelection() {
 		CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
 		
@@ -86,7 +85,7 @@ public class SelectionPropertiesPanel extends NodeSetPropertiesPanel
 		if (network == null)
 			return;
 		
-		Set selectedNodes = network.getSelectedNodes();
+		Set<?> selectedNodes = network.getSelectedNodes();
 		
 		Graph graph = null;
 		

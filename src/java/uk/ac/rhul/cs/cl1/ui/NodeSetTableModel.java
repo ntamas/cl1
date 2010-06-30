@@ -35,16 +35,14 @@ public class NodeSetTableModel extends AbstractTableModel {
 	String[] simpleHeaders = { "Cluster", "Details" };
 	
 	/** Column classes for the simple mode */
-	@SuppressWarnings("unchecked")
-	Class[] simpleClasses = { ImageIcon.class, NodeSetDetails.class };
+	Class<?>[] simpleClasses = { ImageIcon.class, NodeSetDetails.class };
 	
 	/** Column headers for the detailed mode */
 	String[] detailedHeaders = { "Cluster", "Nodes", "Density",
 			"In-weight", "Out-weight", "Quality", "P-value" };
 	
 	/** Column classes for the detailed mode */
-	@SuppressWarnings("unchecked")
-	Class[] detailedClasses = {
+	Class<?>[] detailedClasses = {
 		ImageIcon.class, Integer.class, Double.class, Double.class, Double.class, Double.class,
 		Double.class
 	};
@@ -53,8 +51,7 @@ public class NodeSetTableModel extends AbstractTableModel {
 	String[] currentHeaders = null;
 	
 	/** Column classes for the current mode */
-	@SuppressWarnings("unchecked")
-	Class[] currentClasses = null;
+	Class<?>[] currentClasses = null;
 	
 	/**
 	 * The list of {@link NodeSet} objects shown in this model
@@ -121,8 +118,7 @@ public class NodeSetTableModel extends AbstractTableModel {
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
-	public Class getColumnClass(int col) {
+	public Class<?> getColumnClass(int col) {
 		return currentClasses[col];
 	}
 	
