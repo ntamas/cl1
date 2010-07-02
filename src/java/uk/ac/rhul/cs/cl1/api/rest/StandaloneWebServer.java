@@ -1,7 +1,5 @@
 package uk.ac.rhul.cs.cl1.api.rest;
 
-import java.io.IOException;
-
 import com.sun.jersey.api.container.httpserver.HttpServerFactory;
 import com.sun.net.httpserver.HttpServer;
 
@@ -15,7 +13,7 @@ public class StandaloneWebServer {
 	 * @throws IOException 
 	 * @throws IllegalArgumentException 
 	 */
-	public static void main(String[] args) throws IllegalArgumentException, IOException {
+	public static void main(String[] args) throws Exception {
 		HttpServer server = HttpServerFactory.create("http://localhost:8080/cl1/api");
 		System.out.println("Starting server on port 8080...");
 		server.start();

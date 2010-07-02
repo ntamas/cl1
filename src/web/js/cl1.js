@@ -188,8 +188,8 @@ ClusterONEFrontend.prototype = {
       this.addSuccessMarker("Dataset successfully uploaded.", 1);
       this.setActiveStep(2);
     } else {
-      alert(response);
       /* Error while uploading file */
+      this.debug(response);
       this.showError("Error while uploading file. Please try again later.");
     }
   },

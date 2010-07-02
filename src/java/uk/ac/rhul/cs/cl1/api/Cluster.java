@@ -1,5 +1,6 @@
 package uk.ac.rhul.cs.cl1.api;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +20,7 @@ import uk.ac.rhul.cs.cl1.NodeSet;
  * This class is essentially a list of strings.
  * @author tamas
  */
-public class Cluster {
+public class Cluster implements Serializable {
 	/** The list of nodes in this cluster */
 	List<String> nodes = new ArrayList<String>();
 	

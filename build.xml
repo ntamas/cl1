@@ -208,9 +208,8 @@
 	<target name="war" depends="jar" description="Creates the WAR file">
 		<war destfile="cluster_one-${package.version}.war"
 			 webxml="${build.webinf}/web.xml">
-			<!-- <fileset dir="src/html" />
-			<fileset dir="src/jsp" />  -->
 			<fileset dir="${src.web}" />
+			<zipfileset file="${etc}/logo/png/cl1_logo_64x64.png" prefix="img" />
 			<lib dir="lib/">
 				<include name="tclib.jar" />
 			</lib>
@@ -221,6 +220,9 @@
 				<include name="**/api/**/*.class" />
 				<exclude name="web.xml" />
 			</classes>
+			<metainf dir="${etc}/web">
+				<include name="**/context.xml" />
+			</metainf>
 		</war>
 	</target>
 

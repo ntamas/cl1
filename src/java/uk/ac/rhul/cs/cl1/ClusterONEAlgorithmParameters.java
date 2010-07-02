@@ -1,5 +1,7 @@
 package uk.ac.rhul.cs.cl1;
 
+import java.io.Serializable;
+
 /**
  * Stores the parameters of a Cluster ONE algorithm instance.
  * 
@@ -13,7 +15,7 @@ package uk.ac.rhul.cs.cl1;
  *   
  * @author tamas
  */
-public class ClusterONEAlgorithmParameters {
+public class ClusterONEAlgorithmParameters implements Serializable {
 	/** Minimum size of the clusters that will be returned */
 	protected int minSize = 3;
 	

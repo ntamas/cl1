@@ -1,0 +1,6 @@
+<Context debug="0" reloadable="true">
+	<Resource name="jdbc/ClusterONEDatabase" auth="Container" type="javax.sql.DataSource"
+	          maxActive="100" maxIdle="30" maxWait="10000" username="tamas"
+	          password="" driverClassName="com.mysql.jdbc.Driver"
+	          url="jdbc:mysql://localhost/cl1" />
+</Context>

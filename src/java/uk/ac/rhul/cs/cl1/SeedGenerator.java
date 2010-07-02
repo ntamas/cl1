@@ -2,6 +2,7 @@ package uk.ac.rhul.cs.cl1;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Serializable;
 
 import uk.ac.rhul.cs.utils.StringUtils;
 
@@ -18,7 +19,8 @@ import uk.ac.rhul.cs.utils.StringUtils;
  *  
  * @author tamas
  */
-public abstract class SeedGenerator extends GraphAlgorithm implements Iterable<MutableNodeSet> {
+public abstract class SeedGenerator extends GraphAlgorithm
+implements Iterable<MutableNodeSet>, Serializable {
 	/**
 	 * Constructs a seed generator that is not associated to any graph yet.
 	 */

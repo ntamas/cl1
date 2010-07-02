@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Simple dataset storage class that stores all the datasets in memory.
+ * Simple entity storage class that stores all the entities in memory.
  * 
  * It is meant for testing purposes only.
  * 

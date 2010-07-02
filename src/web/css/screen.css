@@ -30,7 +30,7 @@ h1 {
   font-weight: normal;
   font-style: normal;
   margin: 0px;
-  color: #06c;
+  color: #60c;
 }
 
 h2 {
@@ -38,7 +38,7 @@ h2 {
   padding: 10px 5px 10px 0px;
   font-style: italic;
   margin: 0;
-  color: #06c;
+  color: #60c;
 }
 
 h3 {
@@ -151,6 +151,18 @@ input.number_01, input.positive_integer {
 
 .right {
   text-align: right;
+}
+
+.logo {
+	float: left;
+	padding-right: 10px;
+	margin-top: -8px;
+}
+
+.subtitle {
+	font-size: 14px;
+	color: #888;
+	padding-top: 8px;
 }
 
 /* Step display */

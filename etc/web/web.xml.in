@@ -10,7 +10,13 @@
       This web application provides a RESTful interface to the algorithms
       of Cluster ONE.
     </description>
-
+    
+    <resource-ref>
+      <res-ref-name>jdbc/ClusterONEDatabase</res-ref-name>
+      <res-type>javax.sql.DataSource</res-type>
+      <res-auth>Container</res-auth>
+    </resource-ref>
+    
 	<servlet>
 		<servlet-name>ServletAdaptor</servlet-name>
 		<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
@@ -29,4 +35,9 @@
 		<servlet-name>ServletAdaptor</servlet-name>
 		<url-pattern>/api/*</url-pattern>
 	</servlet-mapping>
+	
+	<mime-mapping>
+		<extension>ico</extension>
+		<mime-type>image/x-icon</mime-type>
+	</mime-mapping>
 </web-app>

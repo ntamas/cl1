@@ -1,5 +1,6 @@
 package uk.ac.rhul.cs.cl1.api;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +27,7 @@ import uk.ac.rhul.cs.cl1.ValuedNodeSet;
  * @author tamas
  */
 @XmlRootElement
-public class ClusterONEResult {
+public class ClusterONEResult implements Serializable {
 	private List<Cluster> clusters = new ArrayList<Cluster>();
 	private ClusterONEAlgorithmParameters parameters = null;
 	
