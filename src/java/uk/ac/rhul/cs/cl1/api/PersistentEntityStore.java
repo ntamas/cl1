@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 
 import javax.sql.DataSource;
 
@@ -37,7 +38,6 @@ public class PersistentEntityStore<T> implements EntityStore<T> {
 		this.dataSource = dataSource;
 		this.tableName = tableName;
 		
-		initStatements();
 		checkSchema();
 	}
 	
@@ -224,7 +224,7 @@ public class PersistentEntityStore<T> implements EntityStore<T> {
 		}
 	}
 	
-	private void deleteSQL(int id) throws IOException, EntityNotFoundException, SQLException {
+	private void deleteSQL(int id) throws EntityNotFoundException, SQLException {
 		Connection conn = getConnection();
 		
 		try {
@@ -243,6 +243,43 @@ public class PersistentEntityStore<T> implements EntityStore<T> {
 	}
 	
 	/**
+	 * Runs a cleanup process on the entity store.
+	 * 
+	 * The cleanup process removes all the items that have not been accessed
+	 * since a given date.
+	 * 
+	 * @param  date the date of the earliest entry that will be kept.
+	 * @return the number of entries that were deleted
+	 * @throws IOException if there was an error while cleaning up the
+	 *                     entity store.
+	 */
+	public int removeOlderThan(Date date) throws IOException {
+		try {
+			return removeOlderThanSQL(date);
+		} catch (SQLException ex) {
+			throw new IOException(ex);
+		}
+	}
+	
+	private int removeOlderThanSQL(Date date) throws SQLException {
+		Connection conn = getConnection();
+		
+		try {
+			PreparedStatement stmt = conn.prepareStatement(
+				"DELETE FROM " + tableName + " WHERE last_accessed_at < ?"
+			);
+			try {
+				stmt.setDate(1, new java.sql.Date(date.getTime()));
+				return stmt.executeUpdate();
+			} finally {
+				stmt.close();
+			}
+		} finally {
+			conn.close();
+		}
+	}
+	
+	/**
 	 * Ensures that the necessary table exists in the database
 	 * @throws SQLException when the tables cannot be created
 	 */
@@ -250,7 +287,7 @@ public class PersistentEntityStore<T> implements EntityStore<T> {
 		Connection conn = getConnection();
 		
 		try {
-			PreparedStatement stmt = getConnection().prepareStatement("SHOW TABLES LIKE ?");
+			PreparedStatement stmt = conn.prepareStatement("SHOW TABLES LIKE ?");
 			try {
 				stmt.setString(1, tableName);
 				ResultSet results = stmt.executeQuery();
@@ -279,12 +316,6 @@ public class PersistentEntityStore<T> implements EntityStore<T> {
 	 */
 	private Connection getConnection() throws SQLException {
 		return dataSource.getConnection();
-	}
-	
-	/**
-	 * Initializes the prepared statements used by this entity store
-	 */
-	private void initStatements() throws SQLException {
 	}
 	
 	/**

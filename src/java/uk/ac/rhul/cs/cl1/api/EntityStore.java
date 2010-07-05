@@ -1,6 +1,7 @@
 package uk.ac.rhul.cs.cl1.api;
 
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * Generic interface for classes that store stuff by IDs.
@@ -18,6 +19,8 @@ import java.io.IOException;
  *     can be used to read the entity.
  *   
  *   - Deleting an entity by ID
+ * 
+ *   - Removing entities that have not been accessed since a given date.
  * 
  * @author tamas
  */
@@ -68,4 +71,17 @@ public interface EntityStore<T> {
 	 * @throws EntityNotFoundException if no such entity exists
 	 */
 	public void delete(String id) throws IOException, EntityNotFoundException;
+	
+	/**
+	 * Runs a cleanup process on the entity store.
+	 * 
+	 * The cleanup process removes all the items that have not been accessed
+	 * since a given date.
+	 * 
+	 * @param  date the date of the earliest entry that will be kept.
+	 * @return the number of entries that were deleted
+	 * @throws IOException if there was an error while cleaning up the
+	 *                     entity store.
+	 */
+	public int removeOlderThan(Date date) throws IOException;
 }

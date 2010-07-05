@@ -2,12 +2,14 @@ package uk.ac.rhul.cs.cl1.api;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
  * Simple entity storage class that stores all the entities in memory.
  * 
- * It is meant for testing purposes only.
+ * It is meant for testing purposes only. In particular, the cleanup method
+ * is not implemented, it never removes any entity from tne entity store.
  * 
  * @author tamas
  */
@@ -75,6 +77,21 @@ public class InMemoryEntityStore<T> implements EntityStore<T> {
 			storage.set(index, null);
 			throw new EntityNotFoundException(id);
 		}
+	}
+	
+	/**
+	 * Runs a cleanup process on the entity store.
+	 * 
+	 * The cleanup process removes all the items that have not been accessed
+	 * since a given date.
+	 * 
+	 * @param  date the date of the earliest entry that will be kept.
+	 * @return the number of entries that were deleted
+	 * @throws IOException if there was an error while cleaning up the
+	 *                     entity store.
+	 */
+	public int removeOlderThan(Date date) throws IOException {
+		return 0;
 	}
 	
 	/**

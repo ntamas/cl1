@@ -1,6 +1,11 @@
 package uk.ac.rhul.cs.cl1.api.rest;
 
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -22,7 +27,9 @@ public class WebApplication {
 	
 	private static EntityStore<String> datasetStore = null;
 	private static EntityStore<ClusterONEResult> resultStore = null;
-
+	private static Timer cleanupTimer = null;
+	private static TimerTask cleanupTask = null;
+	
 	static {
 		init();
 	}
@@ -42,6 +49,21 @@ public class WebApplication {
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
 		}
+		
+		cleanupTask = new TimerTask() {
+			public void run() {
+				Calendar cal = Calendar.getInstance();
+				cal.add(Calendar.DATE, -1);
+				Date date = cal.getTime();
+				try {
+					datasetStore.removeOlderThan(date);
+					resultStore.removeOlderThan(date);
+				} catch (IOException ex) {
+				}
+			}
+		};
+		cleanupTimer = new Timer();
+		cleanupTimer.scheduleAtFixedRate(cleanupTask, 0, 24*3600*1000);
 	}
 	
 	/**
