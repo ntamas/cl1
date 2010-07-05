@@ -25,12 +25,6 @@ public class PersistentEntityStore<T> implements EntityStore<T> {
 	private DataSource dataSource;
 	private String tableName;
 	
-	private PreparedStatement createStmt = null;
-	private PreparedStatement deleteStmt = null;
-	private PreparedStatement getStmt = null;
-	private PreparedStatement replaceStmt = null;
-	private PreparedStatement updateTimestampStmt = null;
-	
 	/**
 	 * Constructs a new persistent entity store using the given connection.
 	 * 
@@ -60,7 +54,15 @@ public class PersistentEntityStore<T> implements EntityStore<T> {
 	 *                     original cause of why the operation failed.
 	 * @return the ID of the newly created entity.
 	 */
-	public synchronized String create(T entity) throws IOException {
+	public String create(T entity) throws IOException {
+		try {
+			return createSQL(entity);
+		} catch (SQLException ex) {
+			throw new IOException(ex);
+		}
+	}
+	
+	private String createSQL(T entity) throws IOException, SQLException {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(bos);
 		oos.writeObject(entity);
@@ -68,16 +70,28 @@ public class PersistentEntityStore<T> implements EntityStore<T> {
 		
 		byte[] data = bos.toByteArray();
 		
+		/* Well, nested try-finally hurts the eyes, but since Java does not have a
+		 * proper RAII pattern implementation, this is still as good as it gets.
+		 */
+		final Connection conn = getConnection();
 		try {
-			createStmt.setBinaryStream(1, new ByteArrayInputStream(data), data.length);
-			createStmt.executeUpdate();
-			
-			ResultSet rs = createStmt.getGeneratedKeys();
-			if (rs.next()) {
-				return Integer.toString(rs.getInt(1));
+			final PreparedStatement stmt = conn.prepareStatement(
+				"INSERT INTO " + tableName + " (data, last_accessed_at) VALUES (?, NOW())",
+				Statement.RETURN_GENERATED_KEYS
+			);
+			try {
+				stmt.setBinaryStream(1, new ByteArrayInputStream(data), data.length);
+				stmt.executeUpdate();
+				
+				final ResultSet rs = stmt.getGeneratedKeys();
+				if (rs.next()) {
+					return Integer.toString(rs.getInt(1));
+				}
+			} finally {
+				stmt.close();
 			}
-		} catch (SQLException ex) {
-			throw new IOException(ex);
+		} finally {
+			conn.close();
 		}
 		
 		throw new IOException("failed to retrieve the ID of the new entity from the database");
@@ -96,22 +110,39 @@ public class PersistentEntityStore<T> implements EntityStore<T> {
 			EntityNotFoundException {
 		int numericId = parseId(id);
 		
+		try {
+			replaceSQL(numericId, entity);
+		} catch (SQLException ex) {
+			throw new IOException(ex);
+		}
+	}
+	
+	private void replaceSQL(int id, T entity)
+	throws IOException, EntityNotFoundException, SQLException {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(bos);
 		oos.writeObject(entity);
 		bos.close();
-		
 		byte[] data = bos.toByteArray();
 		
+		Connection conn = getConnection();		
 		try {
-			replaceStmt.setBinaryStream(1, new ByteArrayInputStream(data), data.length);
-			replaceStmt.setInt(2, numericId);
-			if (replaceStmt.executeUpdate() == 0) {
-				/* No affected rows */
-				throw new EntityNotFoundException(id);
+			PreparedStatement stmt = conn.prepareStatement(
+				"UPDATE " + tableName + " SET data = ?, last_accessed_at = NOW() WHERE id = ?"
+			);
+			
+			try {
+				stmt.setBinaryStream(1, new ByteArrayInputStream(data), data.length);
+				stmt.setInt(2, id);
+				if (stmt.executeUpdate() == 0) {
+					/* No affected rows */
+					throw new EntityNotFoundException(Integer.toString(id));
+				}
+			} finally {
+				stmt.close();
 			}
-		} catch (SQLException ex) {
-			throw new IOException(ex);
+		} finally {
+			conn.close();
 		}
 	}
 	
@@ -126,30 +157,52 @@ public class PersistentEntityStore<T> implements EntityStore<T> {
 	 * 
 	 * @throws EntityNotFoundException if no such entity exists
 	 */
-	@SuppressWarnings("unchecked")
-	public synchronized T get(String id) throws IOException, EntityNotFoundException {
+	public T get(String id) throws IOException, EntityNotFoundException {
 		int numericId = parseId(id);
-		ResultSet rs = null;
-		ObjectInputStream ois = null;
-		T result = null;
 		
 		try {
-			updateTimestamp(numericId);
-			
-			getStmt.setInt(1, numericId);
-			rs = getStmt.executeQuery();
-			if (!rs.next())
-				throw new EntityNotFoundException(id);
-			
-			ois = new ObjectInputStream(rs.getBinaryStream(1));
-			result = (T)ois.readObject();
+			return getSQL(numericId);
 		} catch (SQLException ex) {
 			throw new IOException(ex);
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private T getSQL(int id)
+	throws IOException, EntityNotFoundException, SQLException {
+		ObjectInputStream ois = null;
+		
+		Connection conn = getConnection();
+		
+		try {
+			updateTimestamp(id, conn);
+			
+			PreparedStatement stmt = conn.prepareStatement(
+				"SELECT data FROM " + tableName + " WHERE id = ?"
+			);
+			try {
+				stmt.setInt(1, id);
+				ResultSet rs = stmt.executeQuery();
+				try {
+					if (!rs.next())
+						throw new EntityNotFoundException(Integer.toString(id));
+					
+					ois = new ObjectInputStream(rs.getBinaryStream(1));
+				} finally {
+					rs.close();
+				}
+			} finally {
+				stmt.close();
+			}
+		} finally {
+			conn.close();
+		}
+		
+		try {
+			return (T)ois.readObject();
 		} catch (ClassNotFoundException ex) {
 			throw new IOException(ex);
 		}
-		
-		return result;
 	}
 	
 	/**
@@ -164,12 +217,28 @@ public class PersistentEntityStore<T> implements EntityStore<T> {
 	 */
 	public void delete(String id) throws IOException, EntityNotFoundException {
 		int numericId = parseId(id);
-		
 		try {
-			deleteStmt.setInt(1, numericId);
-			deleteStmt.executeUpdate();
+			deleteSQL(numericId);
 		} catch (SQLException ex) {
 			throw new IOException(ex);
+		}
+	}
+	
+	private void deleteSQL(int id) throws IOException, EntityNotFoundException, SQLException {
+		Connection conn = getConnection();
+		
+		try {
+			PreparedStatement stmt = conn.prepareStatement(
+				"DELETE FROM " + tableName + " WHERE id = ?"
+			);
+			try {
+				stmt.setInt(1, id);
+				stmt.executeUpdate();
+			} finally {
+				stmt.close();
+			}
+		} finally {
+			conn.close();
 		}
 	}
 	
@@ -178,19 +247,30 @@ public class PersistentEntityStore<T> implements EntityStore<T> {
 	 * @throws SQLException when the tables cannot be created
 	 */
 	private void checkSchema() throws SQLException {
-		PreparedStatement stmt;
-		ResultSet results;
+		Connection conn = getConnection();
 		
-		stmt = getConnection().prepareStatement("SHOW TABLES LIKE ?");
-		stmt.setString(1, tableName);
-		results = stmt.executeQuery();
-		if (!results.next()) {
-			/* No such table, we have to create it */
-			stmt.executeUpdate("CREATE TABLE "+tableName+
-				               " (id INTEGER NOT NULL AUTO_INCREMENT," +
-				               "  data LONGBLOB," +
-				               "  last_accessed_at TIMESTAMP NOT NULL, " +
-				               "  PRIMARY KEY (id))");
+		try {
+			PreparedStatement stmt = getConnection().prepareStatement("SHOW TABLES LIKE ?");
+			try {
+				stmt.setString(1, tableName);
+				ResultSet results = stmt.executeQuery();
+				try {
+					if (!results.next()) {
+						/* No such table, we have to create it */
+						stmt.executeUpdate("CREATE TABLE "+tableName+
+							               " (id INTEGER NOT NULL AUTO_INCREMENT," +
+							               "  data LONGBLOB," +
+							               "  last_accessed_at TIMESTAMP NOT NULL, " +
+							               "  PRIMARY KEY (id))");
+					}
+				} finally {
+					results.close();
+				}
+			} finally {
+				stmt.close();
+			}
+		} finally {
+			conn.close();
 		}
 	}
 	
@@ -205,24 +285,6 @@ public class PersistentEntityStore<T> implements EntityStore<T> {
 	 * Initializes the prepared statements used by this entity store
 	 */
 	private void initStatements() throws SQLException {
-		Connection conn = getConnection();
-		
-		createStmt = conn.prepareStatement(
-			"INSERT INTO " + tableName + " (data, last_accessed_at) VALUES (?, NOW())",
-			Statement.RETURN_GENERATED_KEYS
-		);
-		deleteStmt = conn.prepareStatement(
-			"DELETE FROM " + tableName + " WHERE id = ?"
-		);
-		getStmt = conn.prepareStatement(
-			"SELECT data FROM " + tableName + " WHERE id = ?"
-		);
-		replaceStmt = conn.prepareStatement(
-			"UPDATE " + tableName + " SET data = ?, last_accessed_at = NOW() WHERE id = ?"
-		);
-		updateTimestampStmt = conn.prepareStatement(
-			"UPDATE " + tableName + " SET last_accessed_at = NOW() WHERE id = ?"
-		);
 	}
 	
 	/**
@@ -246,11 +308,19 @@ public class PersistentEntityStore<T> implements EntityStore<T> {
 	/**
 	 * Updates the timestamp of a given entity by the current time
 	 * 
-	 * @param  id  the ID of the entity
+	 * @param  id    the ID of the entity
+	 * @param  conn  an existing database connection to use
 	 * @throws SQLException if something went wrong with the database operations
 	 */
-	private synchronized void updateTimestamp(int id) throws SQLException {
-		updateTimestampStmt.setInt(1, id);
-		updateTimestampStmt.executeUpdate();
+	private void updateTimestamp(int id, Connection conn) throws SQLException {
+		PreparedStatement stmt = conn.prepareStatement(
+			"UPDATE " + tableName + " SET last_accessed_at = NOW() WHERE id = ?"
+		);
+		try {
+			stmt.setInt(1, id);
+			stmt.executeUpdate();
+		} finally {
+			stmt.close();
+		}
 	}
 }
