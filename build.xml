@@ -5,6 +5,11 @@
 		<file file="etc/cl1.properties"/>
 	</loadproperties>
 
+	<!-- Compiler constants -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="on"/>
+	<property name="deprecation" value="on"/>
+
 	<!-- Directories -->
 	<property name="build" location="build" />
 	<property name="src" location="src" />
@@ -70,7 +75,7 @@
 	</tstamp>
 
 	<!-- Initializes the build tree, creates the necessary directories -->
-	<target name="-init" depends="-cytoscape_warning,-procope_warning"
+	<target name="-init" depends="-cytoscape_warning,-procope_warning,-web_warning"
 		    description="Initializes the build process">
 		<mkdir dir="${build}" />
 		<mkdir dir="${build.java}" />
@@ -86,7 +91,7 @@
 		<echo message="Procope plugin will not be built: procope_core-${procope.version}.jar not found" level="warning" />
 	</target>
 	<target name="-web_warning" unless="lib.jsr311.path">
-		<echo message="Web interface will not be built: jsr311-api-${lib.jsr311.path}.jar not found" level="warning" />
+		<echo message="Web interface will not be built: jsr311-api-${jersey.jsr311.version}.jar not found" level="warning" />
 	</target>
 
 	<!-- Deletes the existing build -->
@@ -104,11 +109,13 @@
 	</target>
 
 	<!-- Compiles the base classes -->
-	<target name="compile_java_base">
-		<javac srcdir="${src.java}" destdir="${build.java}" target="1.5">
+	<target name="compile_java_base" depends="-init">
+		<javac srcdir="${src.java}" destdir="${build.java}" target="1.5"
+			   debug="${debug}" deprecation="${deprecation}"
+			   optimize="${optimize}">
 			<exclude name="**/cytoscape/*" />
 			<exclude name="**/procope/*" />
-			<exclude name="**/api/*" />
+			<exclude name="**/api/**/*" />
 			<exclude name="**/CommitmentStatisticsCalculator.java" />
 			<classpath>
 				<path refid="classpath.base" />
@@ -119,7 +126,9 @@
 	<!-- Compiles the Cytoscape plugin -->
 	<target name="compile_java_cytoscape_plugin" if="lib.cytoscape.path"
 		    depends="compile_java_base">
-		<javac srcdir="${src.java}" destdir="${build.java}" target="1.5">
+		<javac srcdir="${src.java}" destdir="${build.java}" target="1.5"
+			   debug="${debug}" deprecation="${deprecation}"
+			   optimize="${optimize}">
 			<include name="${package.name.slashed}/ui/cytoscape/*.java" />
 			<classpath>
 				<path refid="classpath.base" />
@@ -137,7 +146,9 @@
 	<!-- Compiles the Procope plugin -->
 	<target name="compile_java_procope_plugin" if="lib.procope.path"
 		    depends="compile_java_base">
-		<javac srcdir="${src.java}" destdir="${build.java}" target="1.5">
+		<javac srcdir="${src.java}" destdir="${build.java}" target="1.5"
+			   debug="${debug}" deprecation="${deprecation}"
+			   optimize="${optimize}">
 			<include name="${package.name.slashed}/ui/procope/*.java" />
 			<classpath>
 				<path refid="classpath.base" />
