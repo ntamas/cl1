@@ -250,6 +250,23 @@
         </zip>
     </target>
 
+	<!-- Creates a ZIP file containing the source code -->
+	<target name="source_zip" description="Creates a ZIP file containing the source code">
+		<zip destfile="cluster_one-${package.version}_src.zip">
+			<fileset dir=".">
+				<include name="build.xml" />
+			</fileset>
+			<zipfileset dir="${doc}" prefix="doc" />
+			<zipfileset dir="${etc}" prefix="etc" />
+			<zipfileset dir="${lib}" prefix="lib">
+				<exclude name="junit*.jar" />
+			</zipfileset>
+			<zipfileset dir="${src}" prefix="src" />
+			<zipfileset dir="${test}" prefix="test" />
+			<zipfileset dir="${tools}" prefix="tools" />
+		</zip>
+	</target>
+
 	<!-- Tests the whole thing -->
 	<target name="test" depends="compile, compile_tests" description="Runs JUnit tests in the distribution">
 		<junit printsummary="yes" fork="yes" haltonfailure="yes">
