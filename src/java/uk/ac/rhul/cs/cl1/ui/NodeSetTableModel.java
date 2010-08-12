@@ -127,6 +127,20 @@ public class NodeSetTableModel extends AbstractTableModel {
 		return currentHeaders[col];
 	}
 	
+	/**
+	 * Returns the names of members in a given row.
+	 * 
+	 * @param row  the index of the row for which we need the list
+	 * @return  an array containing the names of the members
+	 */
+	public String[] getMemberNames(int row) {
+		NodeSet nodeSet = this.nodeSets.get(row);
+		if (nodeSet == null)
+			return new String[0];
+		
+		return nodeSet.getMemberNames();
+	}
+	
 	public Object getValueAt(int row, int col) {
 		NodeSet nodeSet = this.nodeSets.get(row);
 		if (nodeSet == null)

@@ -2,6 +2,8 @@ package uk.ac.rhul.cs.cl1.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,17 +17,20 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
+import javax.swing.JToolTip;
 import javax.swing.ListSelectionModel;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.cl1.ValuedNodeSet;
 import uk.ac.rhul.cs.cl1.ui.NodeSetTableModel;
+import uk.ac.rhul.cs.utils.StringUtils;
 
 /**
  * A Swing panel that shows the results of a Cluster ONE run
@@ -71,7 +76,26 @@ public class ResultViewerPanel extends JPanel {
 		countLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
 		
 		/* Add the result table */
-		table = new JTable();
+		table = new JTable() {
+			@Override
+			public JToolTip createToolTip() {
+				JMultiLineToolTip toolTip = new JMultiLineToolTip();
+				toolTip.setFixedWidth(300);
+				return toolTip;
+			}
+			@Override
+			public String getToolTipText(MouseEvent e) {
+				TableModel model = getTableModel();
+				if (!(model instanceof NodeSetTableModel))
+					return "";
+				
+				Point p = e.getPoint();
+				int rowIndex = convertRowIndexToModel(rowAtPoint(p));
+				return StringUtils.join(
+						((NodeSetTableModel)model).getMemberNames(rowIndex), ", ");
+			}
+		};
+
 		table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		table.setIntercellSpacing(new Dimension(0, 4));
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);

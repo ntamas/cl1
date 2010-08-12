@@ -179,4 +179,19 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	public boolean isHaircutNeeded() {
 		return (haircutThreshold > 0.0 && haircutThreshold <= 1.0);
 	}
+	
+	/**
+	 * Returns a nice string summary of the algorithm parameters.
+	 */
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Minimum size: " + minSize + "\n");
+		sb.append("Minimum density: " + minDensity + "\n");
+		sb.append("Overlap threshold: " + overlapThreshold + "\n");
+		sb.append("Haircut threshold: " + haircutThreshold + "\n");
+		sb.append("Merging method: " + mergingMethod + "\n");
+		sb.append("Seed generator: " + seedGenerator + "\n");
+		
+		return sb.toString();
+	}
 }
