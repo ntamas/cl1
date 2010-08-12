@@ -1,7 +1,7 @@
 package uk.ac.rhul.cs.cl1.ui;
 
+import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 
 import javax.swing.BorderFactory;
@@ -9,6 +9,8 @@ import javax.swing.CellRendererPane;
 import javax.swing.JComponent;
 import javax.swing.JTextArea;
 import javax.swing.JToolTip;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicToolTipUI;
 
@@ -72,8 +74,11 @@ class MultiLineToolTipUI extends BasicToolTipUI {
 	/// Shared instance of this UI class
 	static MultiLineToolTipUI instance = new MultiLineToolTipUI();
 	
-	/// The font used to render the tooltip
-	Font font;
+	/// The border used by the tooltip
+	Border tooltipBorder = new CompoundBorder(
+			BorderFactory.createLineBorder(Color.BLACK, 1),
+			BorderFactory.createEmptyBorder(2, 2, 2, 2)
+	);
 	
 	JToolTip tip;
 	protected CellRendererPane rendererPane;
@@ -106,8 +111,8 @@ class MultiLineToolTipUI extends BasicToolTipUI {
 	public void paint(Graphics g, JComponent c) {
 		Dimension size = c.getSize();
 		textArea.setBackground(c.getBackground());
-		rendererPane.paintComponent(g, textArea, c, 1, 1,
-				size.width-1, size.height-1, true);
+		rendererPane.paintComponent(g, textArea, c, 0, 0,
+				size.width, size.height, true);
 	}
 	
 	/**
@@ -123,7 +128,7 @@ class MultiLineToolTipUI extends BasicToolTipUI {
 			return new Dimension(0, 0);
 		
 		textArea = new JTextArea(tipText);
-		textArea.setBorder(BorderFactory.createEmptyBorder());
+		textArea.setBorder(tooltipBorder);
 		rendererPane.removeAll();
 		rendererPane.add(textArea);
 		textArea.setWrapStyleWord(true);
