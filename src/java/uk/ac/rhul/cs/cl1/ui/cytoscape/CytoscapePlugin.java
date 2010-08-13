@@ -257,6 +257,10 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 				affinity = - (nodeSet.getRemovalAffinity(i) - currentQuality);
 			else
 				affinity = nodeSet.getAdditionAffinity(i) - currentQuality;
+			
+			if (Double.isNaN(affinity))
+				affinity = 0.0;
+
 			nodeAttributes.setAttribute(node.getIdentifier(), ATTRIBUTE_AFFINITY, affinity);
 			i++;
 		}
