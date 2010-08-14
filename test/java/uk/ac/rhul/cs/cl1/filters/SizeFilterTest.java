@@ -2,6 +2,7 @@ package uk.ac.rhul.cs.cl1.filters;
 
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.MutableNodeSet;
@@ -19,6 +20,7 @@ public class SizeFilterTest {
 		}
 	}
 	
+	@Test
 	public void testFilter() {
 		SizeFilter filter = new SizeFilter();
 		MutableNodeSet nodeSet = new MutableNodeSet(graph);
