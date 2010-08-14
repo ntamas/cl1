@@ -21,27 +21,6 @@ public abstract class ClusterGrowthProcess {
 	protected MutableNodeSet nodeSet = null;
 	
 	/**
-	 * Whether it is allowed to contract the nodeset during the growth process
-	 */
-	protected boolean contractionAllowed = true;
-	
-	/**
-	 * @return whether it is allowed to contract the cluster during the growth process
-	 */
-	public boolean isContractionAllowed() {
-		return contractionAllowed;
-	}
-
-	/**
-	 * Sets whether it is allowed to contract the cluster during growth
-	 * 
-	 * @param contractionAllowed  whether it is allowed to contract the cluster during growth
-	 */
-	public void setContractionAllowed(boolean contractionAllowed) {
-		this.contractionAllowed = contractionAllowed;
-	}
-
-	/**
 	 * Creates a new growth process that operates on the given nodeset
 	 */
 	public ClusterGrowthProcess(MutableNodeSet nodeSet) {

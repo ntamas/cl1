@@ -10,9 +10,42 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 	/** Density limit that is enforced while growing the complex */
 	protected double minDensity;
 	
-	/** Whether to add or remove only a single node in each step if multiple nodes have the same affinity */
+	/**
+	 * Whether to add or remove only a single node in each step if multiple nodes have the same affinity
+	 */
 	protected boolean onlySingleNode = false;
 	
+	/**
+	 * Whether it is allowed to contract the nodeset during the growth process
+	 */
+	protected boolean contractionAllowed = true;
+	
+	/**
+	 * Whether the initial seed nodes should always be kept as part of the cluster
+	 */
+	protected boolean keepInitialSeeds = false;
+	
+	/**
+	 * The set of initial seed nodes
+	 */
+	private NodeSet initialSeeds = null;
+	
+	/**
+	 * @return whether it is allowed to contract the cluster during the growth process
+	 */
+	public boolean isContractionAllowed() {
+		return contractionAllowed;
+	}
+
+	/**
+	 * Sets whether it is allowed to contract the cluster during growth
+	 * 
+	 * @param contractionAllowed  whether it is allowed to contract the cluster during growth
+	 */
+	public void setContractionAllowed(boolean contractionAllowed) {
+		this.contractionAllowed = contractionAllowed;
+	}
+
 	/**
 	 * Returns the minimum density that must be maintained while growing the cluster
 	 * @return the minimum density
@@ -35,6 +68,7 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 	public GreedyClusterGrowthProcess(MutableNodeSet nodeSet, double minDensity) {
 		super(nodeSet);
 		this.setMinDensity(minDensity);
+		initialSeeds = nodeSet.freeze();
 	}
 
 	/**
@@ -81,6 +115,10 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 			// bestAffinity = quality;
 			// bestNodes.clear();
 			for (Integer node: nodeSet) {
+				// Don't process nodes that were in the initial seed
+				if (keepInitialSeeds && initialSeeds.contains(node))
+					continue;
+				
 				double affinity = nodeSet.getRemovalAffinity(node);
 				
 				// The following condition is necessary to avoid cases when a
