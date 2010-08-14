@@ -6,6 +6,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import uk.ac.rhul.cs.cl1.filters.NodeSetDensityFilter;
+import uk.ac.rhul.cs.cl1.filters.NodeSetSizeFilter;
 import uk.ac.rhul.cs.utils.ArrayUtils;
 
 /**
@@ -110,10 +112,12 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 	 * Executes the algorithm on the graph set earlier by setGraph()
 	 */
 	public void run() throws ClusterONEException {
-		boolean needHaircut = parameters.isHaircutNeeded();
-		double minSize = parameters.getMinSize();
 		double minDensity = parameters.getMinDensity();
+		boolean needHaircut = parameters.isHaircutNeeded();
 		double haircutThreshold = parameters.getHaircutThreshold();
+		
+		NodeSetSizeFilter sizeFilter = new NodeSetSizeFilter(parameters.getMinSize());
+		NodeSetDensityFilter densityFilter = new NodeSetDensityFilter(minDensity);
 		
 		ValuedNodeSetList result = new ValuedNodeSetList();
 		HashSet<NodeSet> addedNodeSets = new HashSet<NodeSet>();
@@ -144,11 +148,11 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 				cluster.haircut(haircutThreshold);
 			
 			/* Check the size of the cluster -- if too small, skip it */
-			if (cluster.size() < minSize)
+			if (!sizeFilter.filter(cluster))
 				continue;
 			
 			/* Check the density of the cluster -- if too sparse, skip it */
-			if (cluster.getDensity() < minDensity)
+			if (!densityFilter.filter(cluster))
 				continue;
 			
 			/* Convert the cluster to a valued nodeset */

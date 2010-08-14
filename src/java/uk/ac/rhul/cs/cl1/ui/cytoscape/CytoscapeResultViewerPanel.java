@@ -80,6 +80,11 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 	protected AbstractAction saveClusterAction;
 	
 	/**
+	 * The "Convert to Cytoscape group..." element of the popup menu
+	 */
+	protected AbstractAction saveClusterAsCyGroupAction;
+	
+	/**
 	 * Creates a result viewer panel associated to the given {@link CyNetwork}
 	 * and {@link CyNetworkView}
 	 * 
@@ -253,6 +258,12 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		saveClusterAction = new SaveClusterAction(this);
 		saveClusterAction.setEnabled(false);
 		clusterPopup.add(saveClusterAction);
+		
+		clusterPopup.addSeparator();
+		
+		saveClusterAsCyGroupAction = new SaveClusterAsCyGroupAction(this);
+		saveClusterAsCyGroupAction.setEnabled(false);
+		clusterPopup.add(saveClusterAsCyGroupAction);
 	}
 
 	/**
@@ -288,6 +299,7 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		extractClusterAction.setEnabled(nodes.size() > 0);
 		copyToClipboardAction.setEnabled(nodes.size() > 0);
 		saveClusterAction.setEnabled(nodes.size() > 0);
+		saveClusterAsCyGroupAction.setEnabled(nodes.size() > 0);
 	}
 
 	class CloseAction extends AbstractAction {
