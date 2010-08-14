@@ -1,8 +1,11 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.cl1.seeding;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+
+import uk.ac.rhul.cs.cl1.MutableNodeSet;
+import uk.ac.rhul.cs.cl1.NodeSet;
 
 /**
  * Seed generator class that takes a collection of NodeSet objects and

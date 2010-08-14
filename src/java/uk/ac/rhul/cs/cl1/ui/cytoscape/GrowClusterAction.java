@@ -17,8 +17,8 @@ import cytoscape.view.CyNetworkView;
 
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
 import uk.ac.rhul.cs.cl1.NodeSet;
-import uk.ac.rhul.cs.cl1.NodeSetCollectionBasedSeedGenerator;
 import uk.ac.rhul.cs.cl1.ValuedNodeSet;
+import uk.ac.rhul.cs.cl1.seeding.NodeSetCollectionBasedSeedGenerator;
 
 /**
  * Action that grows a cluster from a given node and selects the

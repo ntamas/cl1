@@ -1,9 +1,13 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.cl1.seeding;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 
+import uk.ac.rhul.cs.cl1.ClusterGrowthProcess;
+import uk.ac.rhul.cs.cl1.Graph;
+import uk.ac.rhul.cs.cl1.GraphAlgorithm;
+import uk.ac.rhul.cs.cl1.MutableNodeSet;
 import uk.ac.rhul.cs.utils.StringUtils;
 
 /**

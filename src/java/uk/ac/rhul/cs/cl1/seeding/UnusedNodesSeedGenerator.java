@@ -1,9 +1,13 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.cl1.seeding;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.ListIterator;
+
+import uk.ac.rhul.cs.cl1.Graph;
+import uk.ac.rhul.cs.cl1.MutableNodeSet;
+import uk.ac.rhul.cs.cl1.NodeSet;
 
 import com.sosnoski.util.hashset.IntHashSet;
 

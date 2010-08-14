@@ -7,7 +7,7 @@ import uk.ac.rhul.cs.cl1.MutableNodeSet;
  * 
  * @author ntamas
  */
-public class NodeSetSizeFilter implements NodeSetFilter {
+public class SizeFilter implements NodeSetFilter {
 	/**
 	 * The lower size threshold used by the filter
 	 */
@@ -21,7 +21,7 @@ public class NodeSetSizeFilter implements NodeSetFilter {
 	/**
 	 * Constructs a filter with no size limits
 	 */
-	public NodeSetSizeFilter() {
+	public SizeFilter() {
 		this(0, Integer.MAX_VALUE);
 	}
 	
@@ -30,7 +30,7 @@ public class NodeSetSizeFilter implements NodeSetFilter {
 	 * 
 	 * @param  minSize  the lower size limit to be used
 	 */
-	public NodeSetSizeFilter(int minSize) {
+	public SizeFilter(int minSize) {
 		this(minSize, Integer.MAX_VALUE);
 	}
 	
@@ -40,7 +40,7 @@ public class NodeSetSizeFilter implements NodeSetFilter {
 	 * @param  minSize  the lower size limit to be used
 	 * @param  maxSize  the upper size limit to be used
 	 */
-	public NodeSetSizeFilter(int minSize, int maxSize) {
+	public SizeFilter(int minSize, int maxSize) {
 		this.minSize = minSize;
 		this.maxSize = maxSize;
 	}
@@ -53,5 +53,41 @@ public class NodeSetSizeFilter implements NodeSetFilter {
 	 */
 	public boolean filter(MutableNodeSet nodeSet) {
 		return nodeSet.size() >= minSize && nodeSet.size() <= maxSize;
+	}
+
+	/**
+	 * Gets the lower bound of the size filter.
+	 * 
+	 * @return the minimum size of the filter
+	 */
+	public int getMinSize() {
+		return minSize;
+	}
+
+	/**
+	 * Gets the upper bound of the size filter.
+	 * 
+	 * @return the maximum size of the filter
+	 */
+	public int getMaxSize() {
+		return maxSize;
+	}
+
+	/**
+	 * Sets the lower bound of the size filter.
+	 * 
+	 * @param minSize the minimum size to set
+	 */
+	public void setMinSize(int minSize) {
+		this.minSize = minSize;
+	}
+
+	/**
+	 * Sets the upper bound of the size filter.
+	 * 
+	 * @param maxSize the maximum size to set
+	 */
+	public void setMaxSize(int maxSize) {
+		this.maxSize = maxSize;
 	}
 }

@@ -1,6 +1,10 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.cl1.seeding;
 
 import java.util.Iterator;
+
+import uk.ac.rhul.cs.cl1.Edge;
+import uk.ac.rhul.cs.cl1.Graph;
+import uk.ac.rhul.cs.cl1.MutableNodeSet;
 
 /**
  * Seed generator class where every single edge of a graph will be generated as

@@ -6,8 +6,10 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import uk.ac.rhul.cs.cl1.filters.NodeSetDensityFilter;
-import uk.ac.rhul.cs.cl1.filters.NodeSetSizeFilter;
+import uk.ac.rhul.cs.cl1.filters.DensityFilter;
+import uk.ac.rhul.cs.cl1.filters.SizeFilter;
+import uk.ac.rhul.cs.cl1.seeding.SeedGenerator;
+import uk.ac.rhul.cs.cl1.seeding.SeedIterator;
 import uk.ac.rhul.cs.utils.ArrayUtils;
 
 /**
@@ -116,8 +118,8 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 		boolean needHaircut = parameters.isHaircutNeeded();
 		double haircutThreshold = parameters.getHaircutThreshold();
 		
-		NodeSetSizeFilter sizeFilter = new NodeSetSizeFilter(parameters.getMinSize());
-		NodeSetDensityFilter densityFilter = new NodeSetDensityFilter(minDensity);
+		SizeFilter sizeFilter = new SizeFilter(parameters.getMinSize());
+		DensityFilter densityFilter = new DensityFilter(minDensity);
 		
 		ValuedNodeSetList result = new ValuedNodeSetList();
 		HashSet<NodeSet> addedNodeSets = new HashSet<NodeSet>();

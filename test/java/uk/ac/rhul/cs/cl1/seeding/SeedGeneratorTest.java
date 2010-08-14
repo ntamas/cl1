@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.cl1.seeding;
 
 import static org.junit.Assert.*;
 
@@ -6,6 +6,11 @@ import java.util.Iterator;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import uk.ac.rhul.cs.cl1.Edge;
+import uk.ac.rhul.cs.cl1.Graph;
+import uk.ac.rhul.cs.cl1.MutableNodeSet;
+import uk.ac.rhul.cs.cl1.seeding.SeedGenerator;
 
 public class SeedGeneratorTest {
 	static Graph graph = null;

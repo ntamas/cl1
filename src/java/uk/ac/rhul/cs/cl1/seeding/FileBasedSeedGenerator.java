@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.cl1.seeding;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
+
+import uk.ac.rhul.cs.cl1.Graph;
+import uk.ac.rhul.cs.cl1.MutableNodeSet;
 
 import com.sosnoski.util.hashmap.StringIntHashMap;
 

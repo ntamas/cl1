@@ -2,6 +2,9 @@ package uk.ac.rhul.cs.cl1;
 
 import java.io.Serializable;
 
+import uk.ac.rhul.cs.cl1.seeding.EveryNodeSeedGenerator;
+import uk.ac.rhul.cs.cl1.seeding.SeedGenerator;
+
 /**
  * Stores the parameters of a Cluster ONE algorithm instance.
  * 
