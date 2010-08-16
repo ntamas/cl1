@@ -67,13 +67,17 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	public ClusterONEAlgorithmParametersPanel() {
 		super();
 		
+		ClusterONEAlgorithmParameters defaultParams =
+			new ClusterONEAlgorithmParameters();
+		
 		subpanels = new TreeMap<Section, JPanel>();
 		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		
 		/* Minimum cluster size spinner */	
 		minimumClusterSizeSpinner = new JSpinner();
 		minimumClusterSizeSpinner.setModel(
-				new SpinnerNumberModel(3, 1, Integer.MAX_VALUE, 1)
+				new SpinnerNumberModel(defaultParams.getMinSize(),
+						1, Integer.MAX_VALUE, 1)
 		);
 		((JSpinner.NumberEditor)minimumClusterSizeSpinner.getEditor()).getTextField().setColumns(5);
 		this.addComponent(Section.BASIC, "Minimum size:", minimumClusterSizeSpinner);
@@ -81,7 +85,8 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 		/* Minimum cluster density spinner */
 		minimumClusterDensitySpinner = new JSpinner();
 		minimumClusterDensitySpinner.setModel(
-				new SpinnerNumberModel(0.2, 0.0, 1.0, 0.05)
+				new SpinnerNumberModel(defaultParams.getMinDensity(),
+						0.0, 1.0, 0.05)
 		);
 		((JSpinner.NumberEditor)minimumClusterDensitySpinner.getEditor()).getTextField().setColumns(5);
 		this.addComponent(Section.BASIC, "Minimum density:", minimumClusterDensitySpinner);
@@ -89,7 +94,8 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 		/* Haircut threshold spinner */
 		haircutThresholdSpinner = new JSpinner();
 		haircutThresholdSpinner.setModel(
-				new SpinnerNumberModel(0.2, 0.0, 1.0, 0.05)
+				new SpinnerNumberModel(defaultParams.getHaircutThreshold(),
+						0.0, 1.0, 0.05)
 		);
 		((JSpinner.NumberEditor)haircutThresholdSpinner.getEditor()).getTextField().setColumns(5);
 		this.addComponent(Section.ADVANCED, "Haircut threshold:", haircutThresholdSpinner);
@@ -101,7 +107,8 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 		/* Overlap threshold spinner */
 		overlapThresholdSpinner = new JSpinner();
 		overlapThresholdSpinner.setModel(
-				new SpinnerNumberModel(0.8, 0.0, 1.0, 0.05)
+				new SpinnerNumberModel(defaultParams.getOverlapThreshold(),
+						0.0, 1.0, 0.05)
 		);
 		((JSpinner.NumberEditor)overlapThresholdSpinner.getEditor()).getTextField().setColumns(5);
 		this.addComponent(Section.BASIC, "Overlap threshold:", overlapThresholdSpinner);
@@ -117,6 +124,8 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	 */
 	public ClusterONEAlgorithmParameters getParameters() {
 		ClusterONEAlgorithmParameters result = new ClusterONEAlgorithmParameters();
+		
+		result.setFluffClusters(true);
 		
 		result.setMinSize((Integer)minimumClusterSizeSpinner.getValue());
 		result.setMinDensity((Double)minimumClusterDensitySpinner.getValue());

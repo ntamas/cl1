@@ -301,7 +301,7 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		extractClusterAction.setEnabled(nodes.size() > 0);
 		copyToClipboardAction.setEnabled(nodes.size() > 0);
 		saveClusterAction.setEnabled(nodes.size() > 0);
-		saveClusterAsCyGroupAction.setEnabled(nodes.size() > 0);
+		// saveClusterAsCyGroupAction.setEnabled(nodes.size() > 0);
 	}
 
 	class CloseAction extends AbstractAction {

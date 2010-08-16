@@ -54,6 +54,8 @@ public class CommandLineApplication {
 				params.setMergingMethod("none");
 			if (cmd.hasOption("haircut"))
 				params.setHaircutThreshold(Double.parseDouble(cmd.getOptionValue("haircut")));
+			if (cmd.hasOption("fluff"))
+				params.setFluffClusters(true);
 			if (cmd.hasOption("max-overlap"))
 				params.setOverlapThreshold(Double.parseDouble(cmd.getOptionValue("max-overlap")));
 			if (cmd.hasOption("seed-method"))
@@ -164,6 +166,11 @@ public class CommandLineApplication {
 	             .withDescription("specifies the haircut threshold for clusters")
 	             .withType(Float.class).hasArg().create());
 		
+		/* fluffing option (advanced) */
+		options.addOption(OptionBuilder.withLongOpt("fluff")
+				.withDescription("fluffs the clusters")
+				.withType(Boolean.class).create("f"));
+
 		/* seeding method option (advanced) */
 		options.addOption(OptionBuilder.withLongOpt("seed-method")
 				 .withDescription("specifies the seed generation method to use")

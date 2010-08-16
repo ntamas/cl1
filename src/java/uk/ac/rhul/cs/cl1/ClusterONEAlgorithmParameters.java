@@ -23,7 +23,7 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	protected int minSize = 3;
 	
 	/** Minimum density of the clusters that will be returned */
-	protected double minDensity = 0.35;
+	protected double minDensity = 0.4;
 	
 	/**
 	 * Overlap threshold value.
@@ -34,12 +34,21 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	
 	/**
 	 * Haircut threshold value.
+	 * 
 	 * After generating cohesive subgroups, vertices having an internal weight
 	 * less than the average internal weight times this threshold will be
-	 * removed from the subgroups. If negative or larger than 1, no haircut
-	 * will be performed.
+	 * removed from the subgroups. If negative, no haircut will be performed.
 	 */
-	protected double haircutThreshold = 0.2;
+	protected double haircutThreshold = 0.4;
+	
+	/**
+	 * Whether to fluff the clusters.
+	 * 
+	 * After generating cohesive subgroups, external boundary vertices
+	 * connected to more than half of the internal vertices will be added to
+	 * the subgroups if this is true.
+	 */
+	protected boolean fluffClusters = false;
 	
 	/**
 	 * Complex merging method.
@@ -56,7 +65,7 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	 * The seed generation method.
 	 */
 	protected SeedGenerator seedGenerator = new EveryNodeSeedGenerator();
-
+	
 	/**
 	 * Returns the haircut threshold used by the algorithm
 	 * 
@@ -112,7 +121,27 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	public SeedGenerator getSeedGenerator() {
 		return seedGenerator;
 	}
-
+	
+	/**
+	 * Returns whether we will fluff the clusters or not.
+	 * 
+	 * Yes, this is a funny name, but I wanted to keep this class compatible with
+	 * JavaBean naming conventions, which prefers an "is" prefix for boolean
+	 * getters.
+	 */
+	public boolean isFluffClusters() {
+		return this.fluffClusters;
+	}
+	
+	/**
+	 * Sets whether we want to fluff the clusters or not.
+	 * 
+	 * @param  fluffClusters  whether we want to fluff the clusters or not.
+	 */
+	public void setFluffClusters(boolean fluffClusters) {
+		this.fluffClusters = fluffClusters;
+	}
+	
 	/**
 	 * Sets the merging method that will be used by the algorithm.
 	 * 
