@@ -10,7 +10,6 @@ import uk.ac.rhul.cs.cl1.filters.DensityFilter;
 import uk.ac.rhul.cs.cl1.filters.FilterChain;
 import uk.ac.rhul.cs.cl1.filters.FluffingFilter;
 import uk.ac.rhul.cs.cl1.filters.HaircutFilter;
-import uk.ac.rhul.cs.cl1.filters.KCoreFilter;
 import uk.ac.rhul.cs.cl1.filters.SizeFilter;
 import uk.ac.rhul.cs.cl1.seeding.SeedGenerator;
 import uk.ac.rhul.cs.cl1.seeding.SeedIterator;
