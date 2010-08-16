@@ -162,8 +162,7 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 		if (subpanels.containsKey(section))
 			return subpanels.get(section);
 		
-		JPanel newPanel = new JPanel();
-		newPanel.setBorder(BorderFactory.createTitledBorder(section.getTitle()));
+		JPanel newPanel = constructNewSubpanel(section.getTitle());
 		
 		double sizes[][] = {
 				{TableLayout.PREFERRED, 10, TableLayout.PREFERRED},
@@ -173,6 +172,15 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 		this.add(newPanel);
 		subpanels.put(section, newPanel);
 		
+		return newPanel;
+	}
+	
+	/**
+	 * Constructs a new subpanel with the given title
+	 */
+	protected JPanel constructNewSubpanel(String title) {
+		JPanel newPanel = new JPanel();
+		newPanel.setBorder(BorderFactory.createTitledBorder(title));
 		return newPanel;
 	}
 	

@@ -13,7 +13,7 @@ import uk.ac.rhul.cs.cl1.MutableNodeSet;
  * on them.
  * 
  * A fluffing operation expands a nodeset by adding neighbouring nodes that
- * are connected to at least half of the members of the original nodeset.
+ * are connected to at least two third of the members of the original nodeset.
  * 
  * The fluffing operation may be iterative or non-iterative; iterative fluffing
  * repeats the fluffing operation until no new nodes can be added.
@@ -43,7 +43,7 @@ public class FluffingFilter implements NodeSetFilter {
 			return true;
 		
 		do {
-			int minCount = (int)Math.ceil(nodeSet.size() / 2.0);
+			int minCount = (int)Math.floor(2.0 * nodeSet.size() / 3.0);
 			SortedSet<Integer> members = nodeSet.getMembers();
 			toAdd.clear();
 			

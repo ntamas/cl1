@@ -7,7 +7,8 @@ import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.MutableNodeSet;
 
 /**
- * Contracts a nodeset to one of its k-cores and accepts the nodeset.
+ * Contracts a nodeset to one of its k-cores and accepts the nodeset
+ * if there is a k-core in the nodeset, otherwise rejects it.
  * 
  * A k-core of a nodeset is a subset of the nodeset such that every
  * vertex has at least k connections to other vertices in the core.
@@ -36,7 +37,8 @@ public class KCoreFilter implements NodeSetFilter {
 	}
 	
 	/**
-	 * Contracts the given nodeset to its k-core and accepts it.
+	 * Contracts the given nodeset to its k-core and accepts it if there is a
+	 * k-core in the nodeset.
 	 */
 	public boolean filter(MutableNodeSet nodeSet) {
 		boolean finished = false;
@@ -62,7 +64,7 @@ public class KCoreFilter implements NodeSetFilter {
 			nodeSet.remove(toRemove.toArray());
 		}
 		
-		return true;
+		return !nodeSet.isEmpty();
 	}
 
 	/**
