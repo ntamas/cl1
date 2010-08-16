@@ -163,33 +163,6 @@ public class MutableNodeSet extends NodeSet {
 	}
 	
 	/**
-	 * Performs a haircut operation on the nodeset
-	 * 
-	 * The haircut operation tries to eliminate vertices that connect only loosely
-	 * to the rest of the nodeset. This is achieved by removing vertices whose
-	 * internal weight is less than some percentage (e.g., 20%) of the average
-	 * internal weight of the cluster.
-	 */
-	public void haircut(double threshold) {
-		while (!this.members.isEmpty()) {
-			int minIdx = this.members.first();
-			double minInWeight = this.inWeights[minIdx];
-			double limit = 2 * this.totalInternalEdgeWeight / this.size() * threshold;
-			
-			for (int i: this.members) {
-				if (this.inWeights[i] < minInWeight) {
-					minInWeight = this.inWeights[i];
-					minIdx = i;
-				}
-			}
-			if (minInWeight < limit)
-				this.remove(minIdx);
-			else
-				break;
-		}
-	}
-	
-	/**
 	 * Returns the addition affinity of a node to this nodeset
 	 * 
 	 * The addition affinity of a node is defined as the value of the quality function

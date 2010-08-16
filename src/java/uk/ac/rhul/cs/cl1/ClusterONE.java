@@ -8,6 +8,7 @@ import java.util.concurrent.Executors;
 
 import uk.ac.rhul.cs.cl1.filters.DensityFilter;
 import uk.ac.rhul.cs.cl1.filters.FilterChain;
+import uk.ac.rhul.cs.cl1.filters.HaircutFilter;
 import uk.ac.rhul.cs.cl1.filters.SizeFilter;
 import uk.ac.rhul.cs.cl1.seeding.SeedGenerator;
 import uk.ac.rhul.cs.cl1.seeding.SeedIterator;
@@ -116,8 +117,6 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 	 */
 	public void run() throws ClusterONEException {
 		double minDensity = parameters.getMinDensity();
-		boolean needHaircut = parameters.isHaircutNeeded();
-		double haircutThreshold = parameters.getHaircutThreshold();
 		
 		ValuedNodeSetList result = new ValuedNodeSetList();
 		HashSet<NodeSet> addedNodeSets = new HashSet<NodeSet>();
@@ -131,6 +130,7 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 		
 		/* Construct a filter chain to postprocess the filters */
 		FilterChain postFilters = new FilterChain();
+		postFilters.add(new HaircutFilter(parameters.getHaircutThreshold(), true));
 		postFilters.add(new SizeFilter(parameters.getMinSize()));
 		postFilters.add(new DensityFilter(minDensity));
 		
@@ -148,11 +148,7 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 			if (shouldStop)
 				return;
 			
-			/* Do a haircut operation on the cluster if necessary */
-			if (needHaircut)
-				cluster.haircut(haircutThreshold);
-			
-			/* Check the size and density of the cluster */
+			/* Do a haircut operation, then check the size and density of the cluster */
 			if (!postFilters.filter(cluster))
 				continue;
 			

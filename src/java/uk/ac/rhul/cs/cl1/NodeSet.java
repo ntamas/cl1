@@ -264,6 +264,13 @@ public class NodeSet implements Iterable<Integer> {
 	}
 	
 	/**
+	 * Returns whether the nodeset is empty or not
+	 */
+	public boolean isEmpty() {
+		return this.members.isEmpty();
+	}
+	
+	/**
 	 * Returns the number of nodes in this nodeset
 	 */
 	public int size() {
