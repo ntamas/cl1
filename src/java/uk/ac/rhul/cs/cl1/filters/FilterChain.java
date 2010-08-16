@@ -17,13 +17,12 @@ import uk.ac.rhul.cs.cl1.MutableNodeSet;
  * @author tamas
  */
 public class FilterChain implements NodeSetFilter {
-	private List<NodeSetFilter> filters;
+	private List<NodeSetFilter> filters = new ArrayList<NodeSetFilter>();
 	
 	/**
 	 * Constructs a new, empty filter chain that accepts every nodeset.
 	 */
 	public FilterChain() {
-		filters = new ArrayList<NodeSetFilter>();
 	}
 	
 	/**
