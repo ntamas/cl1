@@ -7,6 +7,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import uk.ac.rhul.cs.cl1.filters.DensityFilter;
+import uk.ac.rhul.cs.cl1.filters.FilterChain;
 import uk.ac.rhul.cs.cl1.filters.SizeFilter;
 import uk.ac.rhul.cs.cl1.seeding.SeedGenerator;
 import uk.ac.rhul.cs.cl1.seeding.SeedIterator;
@@ -118,9 +119,6 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 		boolean needHaircut = parameters.isHaircutNeeded();
 		double haircutThreshold = parameters.getHaircutThreshold();
 		
-		SizeFilter sizeFilter = new SizeFilter(parameters.getMinSize());
-		DensityFilter densityFilter = new DensityFilter(minDensity);
-		
 		ValuedNodeSetList result = new ValuedNodeSetList();
 		HashSet<NodeSet> addedNodeSets = new HashSet<NodeSet>();
 		
@@ -130,7 +128,12 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 		/* Simple sanity checks */
 		if (ArrayUtils.min(graph.getEdgeWeights()) < 0.0)
 			throw new ClusterONEException("Edge weights must all be non-negative");
-
+		
+		/* Construct a filter chain to postprocess the filters */
+		FilterChain postFilters = new FilterChain();
+		postFilters.add(new SizeFilter(parameters.getMinSize()));
+		postFilters.add(new DensityFilter(minDensity));
+		
 		/* For each seed, start growing a cluster */
 		monitor.setStatus("Growing clusters from seeds...");
 		monitor.setPercentCompleted(0);
@@ -149,12 +152,8 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 			if (needHaircut)
 				cluster.haircut(haircutThreshold);
 			
-			/* Check the size of the cluster -- if too small, skip it */
-			if (!sizeFilter.filter(cluster))
-				continue;
-			
-			/* Check the density of the cluster -- if too sparse, skip it */
-			if (!densityFilter.filter(cluster))
+			/* Check the size and density of the cluster */
+			if (!postFilters.filter(cluster))
 				continue;
 			
 			/* Convert the cluster to a valued nodeset */

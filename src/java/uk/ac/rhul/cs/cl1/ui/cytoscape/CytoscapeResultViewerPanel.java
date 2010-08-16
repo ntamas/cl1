@@ -261,9 +261,11 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		
 		clusterPopup.addSeparator();
 		
+		/*
 		saveClusterAsCyGroupAction = new SaveClusterAsCyGroupAction(this);
 		saveClusterAsCyGroupAction.setEnabled(false);
 		clusterPopup.add(saveClusterAsCyGroupAction);
+		*/
 	}
 
 	/**

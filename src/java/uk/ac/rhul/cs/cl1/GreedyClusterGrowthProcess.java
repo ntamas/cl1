@@ -21,6 +21,11 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 	protected boolean contractionAllowed = true;
 	
 	/**
+	 * Whether it is allowed to remove any of the nodes that are part of the original seed
+	 */
+	protected boolean seedRemovalAllowed = true;
+	
+	/**
 	 * Whether the initial seed nodes should always be kept as part of the cluster
 	 */
 	protected boolean keepInitialSeeds = false;
@@ -30,6 +35,24 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 	 */
 	private NodeSet initialSeeds = null;
 	
+	/**
+	 * @return whether it is allowed to remove the original seeds from the cluster during
+	 *         the growth process
+	 */
+	public boolean isSeedRemovalAllowed() {
+		return seedRemovalAllowed;
+	}
+
+	/**
+	 * Sets whether it is allowed to remove the original seeds from the cluster during
+	 * the growth process.
+	 * 
+	 * @param  seedRemovalAllowed  whether it is allowed to remove the original seeds
+	 */
+	public void setSeedRemovalAllowed(boolean seedRemovalAllowed) {
+		this.seedRemovalAllowed = seedRemovalAllowed;
+	}
+
 	/**
 	 * @return whether it is allowed to contract the cluster during the growth process
 	 */
@@ -112,8 +135,7 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 		
 		if (this.isContractionAllowed() && this.nodeSet.size() > 1) {
 			/* Try removing nodes. Can we do better than adding nodes? */
-			// bestAffinity = quality;
-			// bestNodes.clear();
+			
 			for (Integer node: nodeSet) {
 				// Don't process nodes that were in the initial seed
 				if (keepInitialSeeds && initialSeeds.contains(node))
