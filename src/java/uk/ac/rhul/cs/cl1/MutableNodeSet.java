@@ -140,6 +140,22 @@ public class MutableNodeSet extends NodeSet {
 	}
 	
 	/**
+	 * Adds more nodes to this nodeset
+	 * 
+	 * @param   nodes    a collection of the nodes being added
+	 * @return  the number of nodes that were not members originally
+	 */
+	public int add(int[] nodes) {
+		int result = 0;
+		
+		for (int i: nodes)
+			if (this.add(i))
+				result++;
+		
+		return result;
+	}
+	
+	/**
 	 * Clears the nodeset
 	 */
 	public void clear() {

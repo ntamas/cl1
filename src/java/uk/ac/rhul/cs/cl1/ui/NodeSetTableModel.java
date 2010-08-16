@@ -210,6 +210,22 @@ public class NodeSetTableModel extends AbstractTableModel {
 	}
 	
 	/**
+	 * Removes the given nodeset from the table model
+	 */
+	public void remove(NodeSet nodeSet) {
+		int index = nodeSets.indexOf(nodeSet);
+		
+		if (index < 0)
+			return;
+		
+		nodeSets.remove(index);
+		nodeSetIcons.remove(index);
+		nodeSetDetails.remove(index);
+		
+		fireTableRowsDeleted(index, index);
+	}
+	
+	/**
 	 * Returns whether the table model is in detailed mode
 	 */
 	public void setDetailedMode(boolean mode) {

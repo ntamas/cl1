@@ -8,6 +8,9 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 
+import uk.ac.rhul.cs.cl1.NodeSet;
+import uk.ac.rhul.cs.cl1.ui.NodeSetTableModel;
+
 /**
  * Action that removes the selected clusters from the result list
  * 
@@ -30,13 +33,16 @@ public class RemoveClusterFromResultAction extends AbstractAction {
 	}
 	
 	/**
-	 * Returns the list of nodes that should be saved
+	 * Returns the list of nodes that should be removed
 	 */
-	protected List<List<Node>> getNodeListsToBeSaved() {
+	protected List<List<Node>> getNodeListsToBeRemoved() {
 		return this.resultViewer.getSelectedCytoscapeNodeSets();
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-		// TODO
+		NodeSetTableModel model = this.resultViewer.getTableModel();
+		
+		for (NodeSet nodeSet: this.resultViewer.getSelectedNodeSets())
+			model.remove(nodeSet);
 	}
 }

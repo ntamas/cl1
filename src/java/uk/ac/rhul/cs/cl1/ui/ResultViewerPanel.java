@@ -37,7 +37,7 @@ import uk.ac.rhul.cs.utils.StringUtils;
  * 
  * @author tamas
  */
-public class ResultViewerPanel extends JPanel {
+public class ResultViewerPanel extends JPanel implements TableModelListener {
 	/**
 	 * Information label showing the number of elements in the resulting nodeset
 	 */
@@ -202,29 +202,15 @@ public class ResultViewerPanel extends JPanel {
 	 * Sets the list of nodesets to be shown in this result viewer panel
 	 */
 	public void setNodeSets(List<ValuedNodeSet> set) {
-		int n = set.size();
-		
 		/* Set up the table model, ensure that the table's columns are reformatted when
 		 * the model is updated (i.e. when switching detailed mode on/off)
 		 */
 		NodeSetTableModel model = new NodeSetTableModel(set);
-		model.addTableModelListener(new TableModelListener() {
-			public void tableChanged(TableModelEvent arg0) {
-				setupTableColumnModel();
-			}
-		});
+		model.addTableModelListener(this);
 		table.setModel(model);
-		
-		setupTableColumnModel();
+		tableChanged(null);
 		
 		scrollPane.setPreferredSize(table.getPreferredSize());
-		
-		if (n == 0)
-			countLabel.setText("No clusters");
-		else if (n == 1)
-			countLabel.setText("1 cluster");
-		else
-			countLabel.setText(set.size()+" clusters");
 		
 		/* Try to make the table sortable. If the JRE is too old, simply leave it as is */
 		try {
@@ -293,5 +279,29 @@ public class ResultViewerPanel extends JPanel {
 			model.addSelectionInterval(j, j);
 		}
 		model.setValueIsAdjusting(false);
+	}
+	
+	/**
+	 * Updates the counter label that specifies the number of clusters
+	 */
+	private void updateCounterLabel() {
+		int n = getTableModel().getRowCount();
+		
+		if (n == 0)
+			countLabel.setText("No clusters");
+		else if (n == 1)
+			countLabel.setText("1 cluster");
+		else
+			countLabel.setText(n+" clusters");
+	}
+	
+	/**
+	 * Method fired when the table model changes
+	 * 
+	 * @param  event  the event that triggered the invocation of this method
+	 */
+	public void tableChanged(TableModelEvent event) {
+		setupTableColumnModel();
+		updateCounterLabel();
 	}
 }

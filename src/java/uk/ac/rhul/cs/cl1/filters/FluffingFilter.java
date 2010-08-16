@@ -60,8 +60,7 @@ public class FluffingFilter implements NodeSetFilter {
 					toAdd.add(i);
 			}
 			
-			for (int i: toAdd.toArray())
-				nodeSet.add(i);
+			nodeSet.add(toAdd.toArray());
 		} while (iterative && toAdd.size() > 0);
 		
 		return true;

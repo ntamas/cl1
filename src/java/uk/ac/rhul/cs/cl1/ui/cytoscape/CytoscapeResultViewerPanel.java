@@ -80,6 +80,11 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 	protected AbstractAction saveClusterAction;
 	
 	/**
+	 * The "Remove" element of the popup menu
+	 */
+	protected AbstractAction removeClusterAction;
+	
+	/**
 	 * The "Convert to Cytoscape group..." element of the popup menu
 	 */
 	protected AbstractAction saveClusterAsCyGroupAction;
@@ -259,9 +264,13 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		saveClusterAction.setEnabled(false);
 		clusterPopup.add(saveClusterAction);
 		
-		clusterPopup.addSeparator();
+		removeClusterAction = new RemoveClusterFromResultAction(this);
+		removeClusterAction.setEnabled(false);
+		clusterPopup.add(removeClusterAction);
 		
 		/*
+		clusterPopup.addSeparator();
+		
 		saveClusterAsCyGroupAction = new SaveClusterAsCyGroupAction(this);
 		saveClusterAsCyGroupAction.setEnabled(false);
 		clusterPopup.add(saveClusterAsCyGroupAction);
@@ -298,10 +307,12 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		network.setSelectedEdgeState(network.getConnectingEdges(nodes), true);
 		networkView.redrawGraph(false, true);
 		
-		extractClusterAction.setEnabled(nodes.size() > 0);
-		copyToClipboardAction.setEnabled(nodes.size() > 0);
-		saveClusterAction.setEnabled(nodes.size() > 0);
-		// saveClusterAsCyGroupAction.setEnabled(nodes.size() > 0);
+		boolean enabled = nodes.size() > 0;
+		extractClusterAction.setEnabled(enabled);
+		copyToClipboardAction.setEnabled(enabled);
+		saveClusterAction.setEnabled(enabled);
+		removeClusterAction.setEnabled(enabled);
+		// saveClusterAsCyGroupAction.setEnabled(enabled);
 	}
 
 	class CloseAction extends AbstractAction {
