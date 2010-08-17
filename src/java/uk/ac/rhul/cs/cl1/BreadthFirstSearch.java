@@ -1,10 +1,6 @@
 package uk.ac.rhul.cs.cl1;
 
-import java.util.Iterator;
-
 import com.sosnoski.util.array.IntArray;
-import com.sosnoski.util.hashset.IntHashSet;
-import com.sosnoski.util.queue.IntQueue;
 
 /**
  * Breadth first search algorithm on a graph.
@@ -47,8 +43,8 @@ public class BreadthFirstSearch extends GraphAlgorithm implements Iterable<Integ
 	/**
 	 * Returns an iterator that will iterate over the nodes visited during the traversal
 	 */
-	public Iterator<Integer> iterator() {
-		return new BFSIterator();
+	public BreadthFirstSearchIterator iterator() {
+		return new BreadthFirstSearchIterator(graph, seedNode, subgraph);
 	}
 	
 	/**
@@ -62,84 +58,18 @@ public class BreadthFirstSearch extends GraphAlgorithm implements Iterable<Integ
 	}
 	
 	/**
-	 * Restricts the BFS iterator the given subgraph
+	 * Restricts the BFS iterator to the given subgraph
 	 */
 	public void restrictToSubgraph(int[] subgraph) {
 		this.subgraph = subgraph;
 	}
 	
 	/**
-	 * Restricts the BFS iterator the given subgraph
+	 * Restricts the BFS iterator to the given subgraph
 	 */
 	public void restrictToSubgraph(Integer[] subgraph) {
 		this.subgraph = new int[subgraph.length];
 		for (int i = 0; i < this.subgraph.length; i++)
 			this.subgraph[i] = subgraph[i];
-	}
-	
-	/**
-	 * Internal iterator class
-	 */
-	class BFSIterator implements Iterator<Integer> {
-		/** Queue that holds the nodes that are to be visited */
-		IntQueue q = new IntQueue();
-		/** Set that holds the nodes that have already been visited */
-		IntHashSet visited = new IntHashSet();
-		
-		/** Constructs a BFS iterator with the current seed node */
-		public BFSIterator() {
-			q.add(seedNode);
-			
-			if (subgraph != null) {
-				IntHashSet s = new IntHashSet();
-				int i, n = graph.getNodeCount();
-				
-				for (i = 0; i < subgraph.length; i++)
-					s.add(subgraph[i]);
-				
-				for (i = 0; i < n; i++)
-					if (!s.contains(i))
-						visited.add(i);
-			}
-		}
-		
-		public boolean hasNext() {
-			return !q.isEmpty();
-		}
-		
-		/** Returns the index of the next visited node */
-		public Integer next() {
-			Integer result = q.remove();
-			int[] neighbors = graph.getAdjacentNodeIndicesArray(result, Directedness.OUT);
-			
-			/* Add the current node to the set of visited nodes */
-			visited.add(result);
-			
-			/* Check all the neighbors and add the nodes not visited to the queue */
-			for (int neighbor: neighbors) {
-				if (!this.visited.contains(neighbor)) {
-					q.add(neighbor);
-					this.visited.add(neighbor);
-				}
-			}
-			
-			return result;
-		}
-
-		public void remove() {
-			throw new UnsupportedOperationException();
-		}
-		
-		/**
-		 * Restricts the iterator by assuming that some of the nodes were visited already.
-		 * 
-		 * This is useful when you want to check that a subgraph of a given graph is connected
-		 * by itself or not -- you just have to restrict the iterator by assuming that all
-		 * vertices not in the subgraph were visited already.
-		 */
-		public void assumeVisited(int[] vertices) {
-			for (int i: vertices)
-				visited.add(i);
-		}
 	}
 }
