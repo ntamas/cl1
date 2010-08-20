@@ -308,4 +308,33 @@ public class Graph implements Iterable<Edge> {
 			return inEdgeAdjacencyLists.get(nodeIndex).size();
 		return outEdgeAdjacencyLists.get(nodeIndex).size() + inEdgeAdjacencyLists.get(nodeIndex).size();
 	}
+	
+	/**
+	 * Returns the total weight of edges incident on the node with the given index
+	 */
+	public double getStrength(int nodeIndex) {
+		return getStrength(nodeIndex, Directedness.ALL);
+	}
+	
+	/**
+	 * Returns the total weight of in/outedges incident on the node with the given index
+	 */
+	public double getStrength(int nodeIndex, Directedness mode) {
+		IntArray neis = null;
+		double result = 0.0;
+		
+		if (!directed || mode != Directedness.IN) {
+			neis = outEdgeAdjacencyLists.get(nodeIndex);
+			for (int eidx: neis.toArray())
+				result += weights.get(eidx);
+		}
+		
+		if (directed && mode == Directedness.IN) {
+			neis = inEdgeAdjacencyLists.get(nodeIndex);
+			for (int eidx: neis.toArray())
+				result += weights.get(eidx);
+		}
+		
+		return result;
+	}
 }

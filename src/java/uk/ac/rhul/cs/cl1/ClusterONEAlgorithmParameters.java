@@ -23,7 +23,7 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	protected int minSize = 3;
 	
 	/** Minimum density of the clusters that will be returned */
-	protected double minDensity = 0.4;
+	protected double minDensity = 0.3;
 	
 	/**
 	 * Overlap threshold value.
@@ -39,16 +39,16 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	 * less than the average internal weight times this threshold will be
 	 * removed from the subgroups. If negative, no haircut will be performed.
 	 */
-	protected double haircutThreshold = 0.4;
+	protected double haircutThreshold = 0.3;
 	
 	/**
 	 * Whether to fluff the clusters.
 	 * 
 	 * After generating cohesive subgroups, external boundary vertices
-	 * connected to more than half of the internal vertices will be added to
+	 * connected to more than 2/3 of the internal vertices will be added to
 	 * the subgroups if this is true.
 	 */
-	protected boolean fluffClusters = false;
+	protected boolean fluffClusters = true;
 	
 	/**
 	 * Complex merging method.

@@ -45,9 +45,12 @@ public class UnusedNodesSeedGenerator extends EveryNodeSeedGenerator {
 			
 			Collections.sort(nodes, new Comparator<Integer>() {
 				public int compare(Integer foo, Integer bar) {
+					/* First, compare by degrees */
 					int comp = graph.getDegree(bar) - graph.getDegree(foo);
 					if (comp != 0)
 						return comp;
+					
+					/* Compare by numeric IDs */
 					return foo - bar;
 				}
 			});
