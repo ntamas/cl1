@@ -18,7 +18,7 @@ import java.util.List;
  * @author ntamas
  *
  */
-public class Graph extends uk.ac.rhul.cs.cl1.Graph {
+public class Graph extends uk.ac.rhul.cs.graph.Graph {
 	/** Mapping from integer node IDs to Cytoscape nodes */
 	protected List<Node> nodeMapping = new ArrayList<Node>();
 	

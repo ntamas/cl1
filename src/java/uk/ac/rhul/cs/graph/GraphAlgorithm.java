@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.graph;
 
 /**
  * Abstract class for an algorithm that will be run on a graph.

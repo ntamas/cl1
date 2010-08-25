@@ -4,6 +4,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.TreeSet;
 
+import uk.ac.rhul.cs.graph.Directedness;
+import uk.ac.rhul.cs.graph.Edge;
+import uk.ac.rhul.cs.graph.Graph;
 import uk.ac.rhul.cs.stats.independentsamples.MannWhitneyTest;
 import uk.ac.rhul.cs.stats.tests.H1;
 

@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import uk.ac.rhul.cs.cl1.Graph;
+import uk.ac.rhul.cs.graph.Graph;
 
 /**
  * Default implementation for some of the methods of {@link GraphWriter}

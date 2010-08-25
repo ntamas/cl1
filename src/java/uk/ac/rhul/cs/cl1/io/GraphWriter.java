@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import uk.ac.rhul.cs.cl1.Graph;
+import uk.ac.rhul.cs.graph.Graph;
 
 /**
  * Interface specification for all the graph writers

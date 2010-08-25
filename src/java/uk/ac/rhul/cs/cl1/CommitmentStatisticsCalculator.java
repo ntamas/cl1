@@ -18,6 +18,7 @@ import procope.evaluation.complexquality.go.TermSimilaritiesSchlicker;
 import procope.evaluation.complexquality.go.FunctionalSimilaritiesSchlicker.FunctionalSimilarityMeasure;
 import procope.evaluation.complexquality.go.TermSimilaritiesSchlicker.TermSimilarityMeasure;
 import procope.tools.namemapping.ProteinManager;
+import uk.ac.rhul.cs.graph.Graph;
 import uk.ac.rhul.cs.stats.correlation.LinearCorrelation;
 import uk.ac.rhul.cs.stats.datastructures.PairedData;
 

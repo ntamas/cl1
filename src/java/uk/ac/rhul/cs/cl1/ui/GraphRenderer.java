@@ -13,10 +13,10 @@ import java.util.concurrent.Callable;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-import uk.ac.rhul.cs.cl1.Edge;
-import uk.ac.rhul.cs.cl1.Graph;
-import uk.ac.rhul.cs.cl1.GraphLayoutAlgorithm;
-import uk.ac.rhul.cs.cl1.Layout;
+import uk.ac.rhul.cs.graph.Edge;
+import uk.ac.rhul.cs.graph.Graph;
+import uk.ac.rhul.cs.graph.GraphLayoutAlgorithm;
+import uk.ac.rhul.cs.graph.Layout;
 
 /**
  * Class that is responsible for rendering a graph with a given layout to

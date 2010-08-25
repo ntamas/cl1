@@ -21,13 +21,13 @@ import javax.ws.rs.core.UriInfo;
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
 import uk.ac.rhul.cs.cl1.ClusterONEException;
-import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.ValuedNodeSetList;
 import uk.ac.rhul.cs.cl1.api.ClusterONEResult;
 import uk.ac.rhul.cs.cl1.api.EntityNotFoundException;
 import uk.ac.rhul.cs.cl1.api.EntityStore;
 import uk.ac.rhul.cs.cl1.io.GraphReader;
 import uk.ac.rhul.cs.cl1.io.GraphReaderFactory;
+import uk.ac.rhul.cs.graph.Graph;
 
 /**
  * REST resource handling results produced by Cluster ONE.

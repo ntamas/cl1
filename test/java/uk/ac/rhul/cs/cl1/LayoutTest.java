@@ -7,6 +7,8 @@ import java.awt.geom.Rectangle2D;
 import org.junit.Before;
 import org.junit.Test;
 
+import uk.ac.rhul.cs.graph.Layout;
+
 public class LayoutTest {
 	Layout layout = null;
 	

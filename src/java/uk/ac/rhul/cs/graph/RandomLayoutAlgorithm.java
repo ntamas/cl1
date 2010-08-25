@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.graph;
 
 /**
  * Layout algorithm that places the graph nodes randomly in the unit square

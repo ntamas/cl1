@@ -16,11 +16,11 @@ import javax.swing.table.AbstractTableModel;
 import com.sosnoski.util.hashmap.ObjectIntHashMap;
 
 import uk.ac.rhul.cs.cl1.ClusterONE;
-import uk.ac.rhul.cs.cl1.FruchtermanReingoldLayoutAlgorithm;
-import uk.ac.rhul.cs.cl1.Graph;
-import uk.ac.rhul.cs.cl1.GraphLayoutAlgorithm;
 import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.cl1.ValuedNodeSet;
+import uk.ac.rhul.cs.graph.FruchtermanReingoldLayoutAlgorithm;
+import uk.ac.rhul.cs.graph.Graph;
+import uk.ac.rhul.cs.graph.GraphLayoutAlgorithm;
 
 /**
  * Table model that can be used to show a list of {@link NodeSet} objects

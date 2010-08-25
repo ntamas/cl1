@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.graph;
 
 /**
  * Simple enum to describe different directedness modes for some graph operations.

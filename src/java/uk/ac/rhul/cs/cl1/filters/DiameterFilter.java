@@ -1,8 +1,8 @@
 package uk.ac.rhul.cs.cl1.filters;
 
-import uk.ac.rhul.cs.cl1.BreadthFirstSearch;
-import uk.ac.rhul.cs.cl1.BreadthFirstSearchIterator;
 import uk.ac.rhul.cs.cl1.MutableNodeSet;
+import uk.ac.rhul.cs.graph.BreadthFirstSearch;
+import uk.ac.rhul.cs.graph.BreadthFirstSearchIterator;
 
 /**
  * Filters node sets based on their diameter.

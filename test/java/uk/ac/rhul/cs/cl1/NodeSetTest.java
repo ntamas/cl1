@@ -5,6 +5,8 @@ import static junit.framework.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import uk.ac.rhul.cs.graph.Graph;
+
 /**
  * Test cases for the NodeSet class
  * 

@@ -8,7 +8,7 @@ import java.beans.PropertyChangeListener;
 import java.util.Iterator;
 import java.util.WeakHashMap;
 
-import uk.ac.rhul.cs.cl1.UniqueIDGenerator;
+import uk.ac.rhul.cs.utils.UniqueIDGenerator;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;

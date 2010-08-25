@@ -3,7 +3,7 @@ package uk.ac.rhul.cs.cl1.io;
 import java.io.IOException;
 import java.io.Reader;
 
-import uk.ac.rhul.cs.cl1.Graph;
+import uk.ac.rhul.cs.graph.Graph;
 
 /// Interface specification for all the graph readers
 public interface GraphReader {

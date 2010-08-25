@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.SortedSet;
 
+import uk.ac.rhul.cs.graph.BreadthFirstSearch;
+import uk.ac.rhul.cs.graph.Graph;
 import uk.ac.rhul.cs.utils.Multiset;
 import uk.ac.rhul.cs.utils.TreeMultiset;
 

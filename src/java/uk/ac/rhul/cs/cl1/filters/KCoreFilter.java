@@ -2,9 +2,9 @@ package uk.ac.rhul.cs.cl1.filters;
 
 import com.sosnoski.util.array.IntArray;
 
-import uk.ac.rhul.cs.cl1.Directedness;
-import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.MutableNodeSet;
+import uk.ac.rhul.cs.graph.Directedness;
+import uk.ac.rhul.cs.graph.Graph;
 
 /**
  * Contracts a nodeset to one of its k-cores and accepts the nodeset

@@ -4,9 +4,9 @@ import java.util.SortedSet;
 
 import com.sosnoski.util.array.IntArray;
 
-import uk.ac.rhul.cs.cl1.Directedness;
-import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.MutableNodeSet;
+import uk.ac.rhul.cs.graph.Directedness;
+import uk.ac.rhul.cs.graph.Graph;
 
 /**
  * Filter that accepts each nodeset after performing a fluffing operation

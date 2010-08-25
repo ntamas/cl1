@@ -4,8 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.MutableNodeSet;
+import uk.ac.rhul.cs.graph.Graph;
 
 public class FilterChainTest {
 

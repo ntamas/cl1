@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.graph;
 
 import java.util.ArrayList;
 import java.util.Arrays;

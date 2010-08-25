@@ -8,6 +8,9 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import uk.ac.rhul.cs.graph.BreadthFirstSearch;
+import uk.ac.rhul.cs.graph.Graph;
+
 public class BreadthFirstSearchTest {
 	static Graph graph = null;
 	

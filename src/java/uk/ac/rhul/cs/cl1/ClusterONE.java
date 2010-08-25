@@ -13,6 +13,8 @@ import uk.ac.rhul.cs.cl1.filters.HaircutFilter;
 import uk.ac.rhul.cs.cl1.filters.SizeFilter;
 import uk.ac.rhul.cs.cl1.seeding.SeedGenerator;
 import uk.ac.rhul.cs.cl1.seeding.SeedIterator;
+import uk.ac.rhul.cs.graph.Graph;
+import uk.ac.rhul.cs.graph.GraphAlgorithm;
 import uk.ac.rhul.cs.utils.ArrayUtils;
 
 /**

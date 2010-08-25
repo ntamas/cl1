@@ -1,10 +1,12 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
+import uk.ac.rhul.cs.graph.Graph;
 
 /**
  * Class that is used in graph readers to generate unique numeric IDs for string IDs

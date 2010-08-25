@@ -2,6 +2,8 @@ package uk.ac.rhul.cs.cl1;
 
 import java.util.Collection;
 
+import uk.ac.rhul.cs.graph.Graph;
+
 import com.sosnoski.util.hashmap.ObjectIntHashMap;
 
 /**

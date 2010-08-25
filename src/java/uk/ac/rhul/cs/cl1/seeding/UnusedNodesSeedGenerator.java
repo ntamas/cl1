@@ -5,9 +5,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.ListIterator;
 
-import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.MutableNodeSet;
 import uk.ac.rhul.cs.cl1.NodeSet;
+import uk.ac.rhul.cs.graph.Graph;
 
 import com.sosnoski.util.hashset.IntHashSet;
 

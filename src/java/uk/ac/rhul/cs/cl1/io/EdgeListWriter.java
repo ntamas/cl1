@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import uk.ac.rhul.cs.cl1.Edge;
-import uk.ac.rhul.cs.cl1.Graph;
+import uk.ac.rhul.cs.graph.Edge;
+import uk.ac.rhul.cs.graph.Graph;
 import uk.ac.rhul.cs.utils.ArrayUtils;
 
 /**

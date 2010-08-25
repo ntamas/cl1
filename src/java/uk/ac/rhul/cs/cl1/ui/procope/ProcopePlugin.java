@@ -10,11 +10,11 @@ import procope.tools.ProCopeException;
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
 import uk.ac.rhul.cs.cl1.ClusterONEException;
-import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.NodeSet;
-import uk.ac.rhul.cs.cl1.UniqueIDGenerator;
 import uk.ac.rhul.cs.cl1.ui.ClusterONEAlgorithmParametersDialog;
 import uk.ac.rhul.cs.cl1.ui.SwingTaskMonitor;
+import uk.ac.rhul.cs.graph.Graph;
+import uk.ac.rhul.cs.utils.UniqueIDGenerator;
 
 /**
  * ProCope plugin version of Cluster ONE.

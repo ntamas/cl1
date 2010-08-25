@@ -4,8 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 
-import uk.ac.rhul.cs.cl1.Graph;
-import uk.ac.rhul.cs.cl1.UniqueIDGenerator;
+import uk.ac.rhul.cs.graph.Graph;
+import uk.ac.rhul.cs.utils.UniqueIDGenerator;
 
 /**
  * Reads a graph specified by an edge list representation from an input stream

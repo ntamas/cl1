@@ -9,8 +9,8 @@ import java.io.LineNumberReader;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
-import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.MutableNodeSet;
+import uk.ac.rhul.cs.graph.Graph;
 
 import com.sosnoski.util.hashmap.StringIntHashMap;
 

@@ -17,12 +17,12 @@ import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
 import uk.ac.rhul.cs.cl1.ClusterONEException;
 // import uk.ac.rhul.cs.cl1.CommitmentStatisticsCalculator;
-import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.cl1.io.GraphReader;
 import uk.ac.rhul.cs.cl1.io.GraphReaderFactory;
 import uk.ac.rhul.cs.cl1.io.GraphReaderFactory.Format;
 import uk.ac.rhul.cs.cl1.ui.ConsoleTaskMonitor;
+import uk.ac.rhul.cs.graph.Graph;
 
 /// The command line interface to Cluster ONE
 public class CommandLineApplication {

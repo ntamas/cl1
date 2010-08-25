@@ -7,10 +7,10 @@ import java.util.Iterator;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import uk.ac.rhul.cs.cl1.Edge;
-import uk.ac.rhul.cs.cl1.Graph;
 import uk.ac.rhul.cs.cl1.MutableNodeSet;
 import uk.ac.rhul.cs.cl1.seeding.SeedGenerator;
+import uk.ac.rhul.cs.graph.Edge;
+import uk.ac.rhul.cs.graph.Graph;
 
 public class SeedGeneratorTest {
 	static Graph graph = null;
