@@ -137,7 +137,8 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 		
 		/* Construct a filter chain to postprocess the filters */
 		FilterChain postFilters = new FilterChain();
-		postFilters.add(new HaircutFilter(parameters.getHaircutThreshold(), true));
+		if (parameters.getHaircutThreshold() > 0)
+			postFilters.add(new HaircutFilter(parameters.getHaircutThreshold(), true));
 		if (parameters.isFluffClusters())
 			postFilters.add(new FluffingFilter());
 		postFilters.add(new SizeFilter(parameters.getMinSize()));

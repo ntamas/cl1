@@ -9,6 +9,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
@@ -44,22 +45,24 @@ public class CommandLineApplication {
 		try {
 			cmd = parser.parse(this.options, args);
 			
-			if (cmd.hasOption("input-format"))
-				formatSpec = cmd.getOptionValue("input-format");
-			if (cmd.hasOption("min-size"))
-				params.setMinSize(Integer.parseInt(cmd.getOptionValue("min-size")));
-			if (cmd.hasOption("min-density"))
-				params.setMinDensity(Double.parseDouble(cmd.getOptionValue("min-density")));
-			if (cmd.hasOption("no-merge"))
-				params.setMergingMethod("none");
-			if (cmd.hasOption("haircut"))
-				params.setHaircutThreshold(Double.parseDouble(cmd.getOptionValue("haircut")));
 			if (cmd.hasOption("fluff"))
 				params.setFluffClusters(true);
-			if (cmd.hasOption("no-fluff"))
-				params.setFluffClusters(false);
+			if (cmd.hasOption("haircut"))
+				params.setHaircutThreshold(Double.parseDouble(cmd.getOptionValue("haircut")));
+			if (cmd.hasOption("input-format"))
+				formatSpec = cmd.getOptionValue("input-format");
 			if (cmd.hasOption("max-overlap"))
 				params.setOverlapThreshold(Double.parseDouble(cmd.getOptionValue("max-overlap")));
+			if (cmd.hasOption("min-density"))
+				params.setMinDensity(Double.parseDouble(cmd.getOptionValue("min-density")));
+			if (cmd.hasOption("min-size"))
+				params.setMinSize(Integer.parseInt(cmd.getOptionValue("min-size")));
+			if (cmd.hasOption("no-fluff"))
+				params.setFluffClusters(false);
+			if (cmd.hasOption("no-merge"))
+				params.setMergingMethod("none");
+			if (cmd.hasOption("penalty"))
+				params.setNodePenalty(Double.parseDouble(cmd.getOptionValue("penalty")));
 			if (cmd.hasOption("seed-method"))
 				params.setSeedGenerator(cmd.getOptionValue("seed-method").toString());
 		} catch (ParseException ex) {
@@ -150,13 +153,13 @@ public class CommandLineApplication {
 		
 		/* minimum size option */
 		options.addOption(OptionBuilder.withLongOpt("min-size")
-				 .withDescription("specifies the minimum size of clusters")
-				 .withType(Integer.class).hasArg().create("s"));
+				     .withDescription("specifies the minimum size of clusters")
+				     .withType(Integer.class).hasArg().create("s"));
 		
 		/* minimum density option */
 		options.addOption(OptionBuilder.withLongOpt("min-density")
-	             .withDescription("specifies the minimum density of clusters")
-	             .withType(Float.class).hasArg().create("d"));
+	                .withDescription("specifies the minimum density of clusters")
+	                .withType(Float.class).hasArg().create("d"));
 		
 		/* maximum overlap option (advanced) */
 		options.addOption(OptionBuilder.withLongOpt("max-overlap")
@@ -168,34 +171,36 @@ public class CommandLineApplication {
 	             .withDescription("specifies the haircut threshold for clusters")
 	             .withType(Float.class).hasArg().create());
 		
+		/* penalty scores of nodes (advanced) */
+		options.addOption(OptionBuilder.withLongOpt("penalty")
+				.withDescription("set the node penalty value")
+				.withType(Float.class).hasArg().create());
+		
+		OptionGroup fluffGroup = new OptionGroup();
+		
 		/* fluffing option (advanced) */
-		options.addOption(OptionBuilder.withLongOpt("fluff")
-				.withDescription("fluffs the clusters (default)")
-				.withType(Boolean.class).create());
-
-		/* fluffing option (advanced) */
-		options.addOption(OptionBuilder.withLongOpt("no-fluff")
-				.withDescription("don't fluff the clusters")
-				.withType(Boolean.class).create("F"));
-
+		fluffGroup.addOption(OptionBuilder.withLongOpt("fluff")
+				  .withDescription("fluffs the clusters")
+				  .withType(Boolean.class).create());
+		fluffGroup.addOption(OptionBuilder.withLongOpt("no-fluff")
+				  .withDescription("don't fluff the clusters (default)")
+				  .withType(Boolean.class).create());
+		options.addOptionGroup(fluffGroup);
+		
 		/* seeding method option (advanced) */
 		options.addOption(OptionBuilder.withLongOpt("seed-method")
 				 .withDescription("specifies the seed generation method to use")
-				 .withType(String.class).hasArg().create("S"));
+				 .withType(String.class).hasArg().create());
 		
 		/* any other parameter (advanced) */
-		options.addOption(OptionBuilder.withLongOpt("param")
+		/* options.addOption(OptionBuilder.withLongOpt("param")
 				.withDescription("specifies the value of an advanced named parameter of the algorithm")
-				.withArgName("name=value").hasArgs(2).withValueSeparator().create("p"));
+				.withArgName("name=value").hasArgs(2).withValueSeparator().create("p")); */
 		
 		/* skip the merging phase (useful for debugging only) */
 		options.addOption(OptionBuilder.withLongOpt("no-merge")
 				.withDescription("don't merge highly overlapping clusters")
-				.create("n"));
-		
-		/* options.addOption(OptionBuilder.withLongOpt("commitment-stats")
-				.withDescription("suppress regular output and calculate commitment statistics instead")
-				.create()); */
+				.create());
 	}
 
 	/// Shows the usage instructions

@@ -46,6 +46,9 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	/** Spinner component for adjusting the minimum cluster density */
 	protected JSpinner minimumClusterDensitySpinner;
 	
+	/** Spinner component for selecting the amount of node penalty */
+	protected JSpinner nodePenaltySpinner;
+	
 	/** Spinner component for selecting the haircut threshold */
 	protected JSpinner haircutThresholdSpinner;
 	
@@ -91,6 +94,15 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 		((JSpinner.NumberEditor)minimumClusterDensitySpinner.getEditor()).getTextField().setColumns(5);
 		this.addComponent(Section.BASIC, "Minimum density:", minimumClusterDensitySpinner);
 		
+		/* Node penalty spinner */
+		nodePenaltySpinner = new JSpinner();
+		nodePenaltySpinner.setModel(
+				new SpinnerNumberModel(defaultParams.getNodePenalty(),
+						0.0, 10.0, 0.2)
+		);
+		((JSpinner.NumberEditor)nodePenaltySpinner.getEditor()).getTextField().setColumns(5);
+		this.addComponent(Section.ADVANCED, "Node penalty:", nodePenaltySpinner);
+		
 		/* Haircut threshold spinner */
 		haircutThresholdSpinner = new JSpinner();
 		haircutThresholdSpinner.setModel(
@@ -111,7 +123,7 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 						0.0, 1.0, 0.05)
 		);
 		((JSpinner.NumberEditor)overlapThresholdSpinner.getEditor()).getTextField().setColumns(5);
-		this.addComponent(Section.BASIC, "Overlap threshold:", overlapThresholdSpinner);
+		this.addComponent(Section.ADVANCED, "Overlap threshold:", overlapThresholdSpinner);
 		
 		/* Seed selection method */
 		seedMethodCombo = new JComboBox(seedMethods);
@@ -125,12 +137,11 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	public ClusterONEAlgorithmParameters getParameters() {
 		ClusterONEAlgorithmParameters result = new ClusterONEAlgorithmParameters();
 		
-		result.setFluffClusters(true);
-		
 		result.setMinSize((Integer)minimumClusterSizeSpinner.getValue());
 		result.setMinDensity((Double)minimumClusterDensitySpinner.getValue());
 		result.setHaircutThreshold((Double)haircutThresholdSpinner.getValue());
 		result.setOverlapThreshold((Double)overlapThresholdSpinner.getValue());
+		result.setNodePenalty((Double)nodePenaltySpinner.getValue());
 		
 		try {
 			if (seedMethodCombo.getSelectedIndex() == 0)

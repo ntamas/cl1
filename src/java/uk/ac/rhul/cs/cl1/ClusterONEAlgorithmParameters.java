@@ -8,13 +8,10 @@ import uk.ac.rhul.cs.cl1.seeding.SeedGenerator;
 /**
  * Stores the parameters of a Cluster ONE algorithm instance.
  * 
- * The following parameters are supported:
- * <ul>
- * <li>minSize: minimum size of the clusters that will be returned</li>
- * <li>minDensity: minimum density of the clusters that will be returned</li>
- * <li>overlapThreshold: cluster pairs whose match coefficient is larger than this threshold
- * will be merged to a single cluster in a post-processing step</li>
- * </ul>
+ * There is a wide variety of parameters for the algorithm, but the default
+ * settings are more or less sensible and suitable for biological scenarios.
+ * 
+ * See the documentation of the class variables for more details on the parameters.
  *   
  * @author tamas
  */
@@ -39,7 +36,17 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	 * less than the average internal weight times this threshold will be
 	 * removed from the subgroups. If negative, no haircut will be performed.
 	 */
-	protected double haircutThreshold = 0.3;
+	protected double haircutThreshold = 0;
+	
+	/**
+	 * Node penalty.
+	 * 
+	 * When nonzero, each node is assumed to have an extra external weight equal
+	 * to this amount, no matter what the other internal nodes are. This can
+	 * be used to account for noise in the initial data; see {@link CohesivenessFunction}
+	 * for more details.
+	 */
+	protected double nodePenalty = 2.0;
 	
 	/**
 	 * Whether to fluff the clusters.
@@ -48,7 +55,7 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	 * connected to more than 2/3 of the internal vertices will be added to
 	 * the subgroups if this is true.
 	 */
-	protected boolean fluffClusters = true;
+	protected boolean fluffClusters = false;
 	
 	/**
 	 * Complex merging method.
@@ -101,6 +108,17 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	}
 
 	/**
+	 * Returns the penalty value associated with each node.
+	 * 
+	 * See {@link CohesivenessFunction} for more details about what it is.
+	 * 
+	 * @return  the penalty value
+	 */
+	public double getNodePenalty() {
+		return nodePenalty;
+	}
+	
+	/**
 	 * Returns the overlap threshold of the algorithm.
 	 * 
 	 * The overlap threshold controls whether two given clusters will be merged in the final
@@ -120,7 +138,7 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	 * @return  the quality function
 	 */
 	public QualityFunction getQualityFunction() {
-		return new CohesivenessFunction();
+		return new CohesivenessFunction(nodePenalty);
 	}
 	
 	/**
@@ -175,7 +193,18 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	public void setMinSize(int minSize) {
 		this.minSize = Math.max(1, minSize);
 	}
-
+	
+	/**
+	 * Sets the penalty value associated with each node.
+	 * 
+	 * See {@link CohesivenessFunction} for more details about what it is.
+	 * 
+	 * @param  penalty  the penalty value
+	 */
+	public void setNodePenalty(double penalty) {
+		this.nodePenalty = penalty;
+	}
+	
 	/**
 	 * Sets the overlap threshold of the algorithm.
 	 * 
