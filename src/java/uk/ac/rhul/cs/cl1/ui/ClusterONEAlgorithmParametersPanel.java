@@ -6,6 +6,7 @@ import java.util.TreeMap;
 import info.clearthought.layout.TableLayout;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -23,22 +24,32 @@ import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
 public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	/** Sections used in this panel */
 	public enum Section {
-		BASIC("Basic parameters"),
-		ADVANCED("Advanced parameters");
+		BASIC("Basic parameters", true),
+		ADVANCED("Advanced parameters", false);
 		
 		/** Title of the section */
 		protected String title;
 		
-		Section(String title) {
+		/** Whether the section should be expanded by default */
+		protected boolean expanded;
+		
+		Section(String title, boolean expanded) {
 			this.title = title;
+			this.expanded = expanded;
 		}
 		
 		/** Returns the title of the section */
 		public String getTitle() { return this.title; }
+		
+		/** Returns whether the section is expanded by default */
+		public boolean isExpanded() { return this.expanded; }
 	}
 
-	/** Subpanel components corresponding to each panel */
+	/** Subpanel components corresponding to each section */
 	protected TreeMap<Section, JPanel> subpanels = null;
+	
+	/** Layouts of the subpanel components corresponding to each section */
+	protected TreeMap<Section, TableLayout> layouts = null;
 	
 	/** Spinner component for adjusting the minimum cluster size */
 	protected JSpinner minimumClusterSizeSpinner;
@@ -74,6 +85,8 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 			new ClusterONEAlgorithmParameters();
 		
 		subpanels = new TreeMap<Section, JPanel>();
+		layouts = new TreeMap<Section, TableLayout>();
+		
 		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		
 		/* Minimum cluster size spinner */	
@@ -168,19 +181,26 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	
 	/**
 	 * Returns the subpanel corresponding to the given section
+	 * 
+	 * If the section has not been used yet, this method also creates the
+	 * corresponding section and sets an appropriate layout on it.
 	 */
 	public JPanel getSubpanel(Section section) {
 		if (subpanels.containsKey(section))
 			return subpanels.get(section);
 		
-		JPanel newPanel = constructNewSubpanel(section.getTitle());
+		CollapsiblePanel newPanel = constructNewSubpanel(section.getTitle());
+		newPanel.setExpanded(section.isExpanded());
 		
 		double sizes[][] = {
 				{TableLayout.PREFERRED, 10, TableLayout.PREFERRED},
 				{TableLayout.PREFERRED}
 		};
-		newPanel.setLayout(new TableLayout(sizes));
+		layouts.put(section, new TableLayout(sizes));
+		newPanel.setLayout(layouts.get(section));
+		
 		this.add(newPanel);
+		this.add(Box.createVerticalStrut(10));
 		subpanels.put(section, newPanel);
 		
 		return newPanel;
@@ -189,9 +209,9 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	/**
 	 * Constructs a new subpanel with the given title
 	 */
-	protected JPanel constructNewSubpanel(String title) {
-		JPanel newPanel = new JPanel();
-		newPanel.setBorder(BorderFactory.createTitledBorder(title));
+	protected CollapsiblePanel constructNewSubpanel(String title) {
+		CollapsiblePanel newPanel = new CollapsiblePanel(title);
+		newPanel.setBorder(BorderFactory.createEtchedBorder());
 		return newPanel;
 	}
 	
@@ -204,7 +224,7 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	public void addComponent(Section section, String caption, Component component) {
 		JLabel label = new JLabel(caption);
 		JPanel subpanel = this.getSubpanel(section);
-		TableLayout layout = (TableLayout)subpanel.getLayout();
+		TableLayout layout = this.layouts.get(section);
 		
 		int numRows = layout.getNumRow();
 		layout.insertRow(numRows, TableLayout.PREFERRED);

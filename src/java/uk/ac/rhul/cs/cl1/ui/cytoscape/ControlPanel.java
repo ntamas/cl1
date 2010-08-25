@@ -24,6 +24,7 @@ import cytoscape.view.cytopanels.CytoPanel;
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
 import uk.ac.rhul.cs.cl1.ui.ClusterONEAlgorithmParametersPanel;
+import uk.ac.rhul.cs.cl1.ui.CollapsiblePanel;
 
 /**
  * Cytoscape control panel for Cluster ONE
@@ -44,6 +45,7 @@ public class ControlPanel extends JPanel {
 		super();
 		
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		
 		JPanel algorithmParametersPanel = constructAlgorithmParametersPanel();
 		
@@ -91,10 +93,7 @@ public class ControlPanel extends JPanel {
 	
 	protected JPanel constructSelectionInfoPanel() {
 		JPanel selectionInfoPanel = new SelectionPropertiesPanel();
-		
-		selectionInfoPanel.setBorder(BorderFactory.createTitledBorder("Selection info"));
-		
-		return selectionInfoPanel;
+		return new CollapsiblePanel(selectionInfoPanel, "Selection info");
 	}
 	
 	protected JPanel constructButtonPanel() {
