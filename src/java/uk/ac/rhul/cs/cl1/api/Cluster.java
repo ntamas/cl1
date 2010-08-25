@@ -8,6 +8,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 
 import uk.ac.rhul.cs.cl1.NodeSet;
+import uk.ac.rhul.cs.cl1.QualityFunction;
 
 /**
  * A single cluster in the single run of the Cluster ONE algorithm.
@@ -72,16 +73,25 @@ public class Cluster implements Serializable {
 	 * {@link ClusterONE} (which is a list of {@link NodeSet}s) and the
 	 * REST API package.
 	 * 
-	 * @param nodeSet  the {@link NodeSet} to be converted to a
-	 *                 {@link Cluster}.
+	 * @param nodeSet      the {@link NodeSet} to be converted to a
+	 *                     {@link Cluster}.
+	 * @param qualityFunc  the quality function to be used for calculating
+	 *                     the quality of the cluster.
+	 *                     
 	 * @return the newly constructed {@link Cluster} object.
 	 */
-	public static Cluster fromNodeSet(NodeSet nodeSet) {
+	public static Cluster fromNodeSet(NodeSet nodeSet, QualityFunction qualityFunc) {
 		Cluster cluster = new Cluster(nodeSet.getMemberNames());
+		
 		cluster.density = nodeSet.getDensity();
 		cluster.inWeight = nodeSet.getTotalInternalEdgeWeight();
 		cluster.outWeight = nodeSet.getTotalBoundaryEdgeWeight();
-		cluster.quality = nodeSet.getQuality();
+		
+		if (qualityFunc != null)
+			cluster.quality = qualityFunc.calculate(nodeSet);
+		else
+			cluster.quality = 0.0;
+		
 		return cluster;
 	}
 }

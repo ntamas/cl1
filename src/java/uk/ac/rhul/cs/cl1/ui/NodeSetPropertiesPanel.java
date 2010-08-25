@@ -11,7 +11,9 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import uk.ac.rhul.cs.cl1.CohesivenessFunction;
 import uk.ac.rhul.cs.cl1.NodeSet;
+import uk.ac.rhul.cs.cl1.QualityFunction;
 
 /**
  * A panel that shows some properties of a {@link NodeSet}
@@ -20,6 +22,13 @@ import uk.ac.rhul.cs.cl1.NodeSet;
 public class NodeSetPropertiesPanel extends JPanel {
 	/** The nodeset for which we are showing the properties */
 	protected NodeSet nodeSet = null;
+	
+	/**
+	 * The quality function we are working with
+	 * 
+	 * @todo  Fix it, it should not be hardwired here
+	 */
+	protected final QualityFunction qualityFunc = new CohesivenessFunction();
 	
 	/** An information label */
 	protected JLabel label = null;
@@ -105,7 +114,7 @@ public class NodeSetPropertiesPanel extends JPanel {
 					PValueRenderer.formatValue(this.nodeSet.getDensity(), false),
 					3, 1);
 			model.setValueAt(
-					PValueRenderer.formatValue(this.nodeSet.getQuality(), false),
+					PValueRenderer.formatValue(qualityFunc.calculate(this.nodeSet), false),
 					4, 1);
 			model.setValueAt(
 					PValueRenderer.formatValue(this.nodeSet.getSignificance(), false),

@@ -16,7 +16,9 @@ import javax.swing.table.AbstractTableModel;
 import com.sosnoski.util.hashmap.ObjectIntHashMap;
 
 import uk.ac.rhul.cs.cl1.ClusterONE;
+import uk.ac.rhul.cs.cl1.CohesivenessFunction;
 import uk.ac.rhul.cs.cl1.NodeSet;
+import uk.ac.rhul.cs.cl1.QualityFunction;
 import uk.ac.rhul.cs.cl1.ValuedNodeSet;
 import uk.ac.rhul.cs.graph.FruchtermanReingoldLayoutAlgorithm;
 import uk.ac.rhul.cs.graph.Graph;
@@ -30,6 +32,13 @@ import uk.ac.rhul.cs.graph.GraphLayoutAlgorithm;
  */
 public class NodeSetTableModel extends AbstractTableModel {
 	private static final Color DARK_RED = new Color(128, 0, 0);
+	
+	/**
+	 * The quality function we are working with
+	 * 
+	 * @todo  Fix it, it should not be hardwired here
+	 */
+	protected final QualityFunction qualityFunc = new CohesivenessFunction();
 	
 	/** Column headers for the simple mode */
 	String[] simpleHeaders = { "Cluster", "Details" };
@@ -175,7 +184,7 @@ public class NodeSetTableModel extends AbstractTableModel {
 		if (col == 4)
 			return nodeSet.getTotalBoundaryEdgeWeight();
 		if (col == 5)
-			return nodeSet.getQuality();
+			return qualityFunc.calculate(nodeSet);
 		if (col == 6)
 			return nodeSet.getSignificance();
 		

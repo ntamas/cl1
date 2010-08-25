@@ -21,6 +21,7 @@ import javax.ws.rs.core.UriInfo;
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
 import uk.ac.rhul.cs.cl1.ClusterONEException;
+import uk.ac.rhul.cs.cl1.QualityFunction;
 import uk.ac.rhul.cs.cl1.ValuedNodeSetList;
 import uk.ac.rhul.cs.cl1.api.ClusterONEResult;
 import uk.ac.rhul.cs.cl1.api.EntityNotFoundException;
@@ -94,11 +95,14 @@ public class ResultResource {
 		if (seedingMethod != null)
 			params.setSeedGenerator(seedingMethod);
 		
+		// Retrieve the quality function we will use
+		QualityFunction func = params.getQualityFunction();
+		
 		// Run the algorithm and fetch the results
 		ClusterONE algorithm = new ClusterONE(params);
 		algorithm.runOnGraph(graph);
 		ClusterONEResult result =
-			ClusterONEResult.fromNodeSetList((ValuedNodeSetList)algorithm.getResults());
+			ClusterONEResult.fromNodeSetList((ValuedNodeSetList)algorithm.getResults(), func);
 		result.setParameters(params);
 		
 		// Store the results

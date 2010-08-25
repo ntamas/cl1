@@ -124,12 +124,16 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 		ValuedNodeSetList result = new ValuedNodeSetList();
 		HashSet<NodeSet> addedNodeSets = new HashSet<NodeSet>();
 		
-		SeedGenerator seedGenerator = parameters.getSeedGenerator();	
-		seedGenerator.setGraph(graph);
-		
 		/* Simple sanity checks */
 		if (ArrayUtils.min(graph.getEdgeWeights()) < 0.0)
 			throw new ClusterONEException("Edge weights must all be non-negative");
+		
+		/* Get the seed generator from the parameters */
+		SeedGenerator seedGenerator = parameters.getSeedGenerator();	
+		seedGenerator.setGraph(graph);
+		
+		/* Get the quality function from the parameters */
+		QualityFunction qualityFunc = parameters.getQualityFunction();
 		
 		/* Construct a filter chain to postprocess the filters */
 		FilterChain postFilters = new FilterChain();
@@ -146,10 +150,13 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 		SeedIterator it = seedGenerator.iterator();
 		while (it.hasNext()) {
 			MutableNodeSet cluster = it.next();
-			ClusterGrowthProcess growthProcess = new GreedyClusterGrowthProcess(cluster, minDensity);
+			ClusterGrowthProcess growthProcess =
+				new GreedyClusterGrowthProcess(cluster, minDensity, qualityFunc);
+			
+			/* Run the growth process */
 			while (!shouldStop && growthProcess.step());
 			
-			/* Were we stopped? */
+			/* Were we interrupted by the user? */
 			if (shouldStop)
 				return;
 			

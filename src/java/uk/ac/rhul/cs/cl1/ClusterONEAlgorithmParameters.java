@@ -113,7 +113,16 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	public double getOverlapThreshold() {
 		return overlapThreshold;
 	}
-
+	
+	/**
+	 * Returns the quality function that will be used by the algorithm.
+	 * 
+	 * @return  the quality function
+	 */
+	public QualityFunction getQualityFunction() {
+		return new CohesivenessFunction();
+	}
+	
 	/**
 	 * Returns the seed generation method of the algorithm.
 	 * @return the seed generation method

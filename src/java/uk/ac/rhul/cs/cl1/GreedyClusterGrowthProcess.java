@@ -7,7 +7,14 @@ import com.sosnoski.util.array.IntArray;
  * @author ntamas
  */
 public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
-	/** Density limit that is enforced while growing the complex */
+	/**
+	 * Quality function used to assess the suitability of clusters
+	 */
+	protected QualityFunction qualityFunction;
+	
+	/**
+	 * Density limit that is enforced while growing the cluster
+	 */
 	protected double minDensity;
 	
 	/**
@@ -34,6 +41,22 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 	 * The set of initial seed nodes
 	 */
 	private NodeSet initialSeeds = null;
+	
+	/**
+	 * Creates a new greedy growth process that operates on the given nodeset
+	 * and uses the given quality function.
+	 * 
+	 * @param  nodeSet      the initial nodeset that will be grown
+	 * @param  minDensity   minimum density that should be maintained while growing
+	 * @param  qualityFunc  the quality function being used
+	 */
+	public GreedyClusterGrowthProcess(MutableNodeSet nodeSet, double minDensity,
+			QualityFunction qualityFunc) {
+		super(nodeSet);
+		this.setMinDensity(minDensity);
+		this.setQualityFunction(qualityFunc);
+		initialSeeds = nodeSet.freeze();
+	}
 	
 	/**
 	 * @return whether it is allowed to remove the original seeds from the cluster during
@@ -78,22 +101,29 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 	}
 
 	/**
+	 * Returns the quality function that is being used by the growth process
+	 * @return the quality function
+	 */
+	public QualityFunction getQualityFunction() {
+		return qualityFunction;
+	}
+	
+	/**
 	 * Sets the minimum density that must be maintained while growing the cluster
 	 * @param minDensity the minimum density
 	 */
 	public void setMinDensity(double minDensity) {
 		this.minDensity = Math.max(0, minDensity);
 	}
-
+	
 	/**
-	 * Creates a new greedy growth process that operates on the given nodeset
+	 * Sets the quality function that is being used by the growth process
+	 * @param  qualityFunc  the new quality function to be used
 	 */
-	public GreedyClusterGrowthProcess(MutableNodeSet nodeSet, double minDensity) {
-		super(nodeSet);
-		this.setMinDensity(minDensity);
-		initialSeeds = nodeSet.freeze();
+	public void setQualityFunction(QualityFunction qualityFunc) {
+		this.qualityFunction = qualityFunc;
 	}
-
+	
 	/**
 	 * Determines the suggested action by examining all possibilities and choosing
 	 * the one that increases the goal function the most
@@ -103,7 +133,7 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 	@Override
 	public ClusterGrowthAction getSuggestedAction() {
 		IntArray bestNodes = new IntArray();
-		final double quality = nodeSet.getQuality();
+		final double quality = qualityFunction.calculate(nodeSet);
 		double bestAffinity;
 		boolean bestIsAddition = true;
 		
@@ -123,7 +153,7 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 			if (n >= 4 && internalWeight < internalWeightLimit)
 				continue;
 			
-			double affinity = nodeSet.getAdditionAffinity(node);
+			double affinity = qualityFunction.getAdditionAffinity(nodeSet, node);
 			if (affinity > bestAffinity) {
 				bestAffinity = affinity;
 				bestNodes.clear();
@@ -141,7 +171,7 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 				if (keepInitialSeeds && initialSeeds.contains(node))
 					continue;
 				
-				double affinity = nodeSet.getRemovalAffinity(node);
+				double affinity = qualityFunction.getRemovalAffinity(nodeSet, node);
 				
 				// The following condition is necessary to avoid cases when a
 				// node is repeatedly added and removed from the same set

@@ -11,8 +11,10 @@ import javax.swing.JOptionPane;
 
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
+import uk.ac.rhul.cs.cl1.CohesivenessFunction;
 import uk.ac.rhul.cs.cl1.MutableNodeSet;
 import uk.ac.rhul.cs.cl1.NodeSet;
+import uk.ac.rhul.cs.cl1.QualityFunction;
 import uk.ac.rhul.cs.cl1.ValuedNodeSet;
 import uk.ac.rhul.cs.utils.Pair;
 
@@ -248,15 +250,18 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 		
 		int i = 0;
 		MutableNodeSet nodeSet = new MutableNodeSet(graph, nodes);
-		double currentQuality = nodeSet.getQuality(), affinity;
+		QualityFunction func = new CohesivenessFunction(); // TODO: fix it, it should not be hardwired
+		double currentQuality = func.calculate(nodeSet);
+		double affinity;
+		
 		for (Node node: graph.getNodeMapping()) {
 			if (nodeSet.contains(i))
 				/* multiplying by -1 here: we want internal nodes to have a positive
 				 * affinity if they "should" belong to the cluster
 				 */
-				affinity = - (nodeSet.getRemovalAffinity(i) - currentQuality);
+				affinity = - (func.getRemovalAffinity(nodeSet, i) - currentQuality);
 			else
-				affinity = nodeSet.getAdditionAffinity(i) - currentQuality;
+				affinity = func.getAdditionAffinity(nodeSet, i) - currentQuality;
 			
 			if (Double.isNaN(affinity))
 				affinity = 0.0;

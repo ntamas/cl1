@@ -3,7 +3,9 @@ package uk.ac.rhul.cs.cl1.ui;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
+import uk.ac.rhul.cs.cl1.CohesivenessFunction;
 import uk.ac.rhul.cs.cl1.NodeSet;
+import uk.ac.rhul.cs.cl1.QualityFunction;
 
 /**
  * Detailed statistics about a nodeset.
@@ -22,6 +24,13 @@ public class NodeSetDetails implements Comparable<NodeSetDetails> {
 	 * The associated nodeset
 	 */
 	protected final NodeSet nodeSet;
+	
+	/**
+	 * The quality function we are working with
+	 * 
+	 * @todo  Fix it, it should not be hardwired here
+	 */
+	protected final QualityFunction qualityFunc = new CohesivenessFunction();
 	
 	/**
 	 * Cached string representation
@@ -50,7 +59,7 @@ public class NodeSetDetails implements Comparable<NodeSetDetails> {
 		sb.append("<br>");
 		
 		sb.append("Quality: ");
-		sb.append(fractionalFormat.format(nodeSet.getQuality()));
+		sb.append(fractionalFormat.format(qualityFunc.calculate(nodeSet)));
 		sb.append("<br>");
 		
 		double significance = nodeSet.getSignificance();
@@ -90,8 +99,8 @@ public class NodeSetDetails implements Comparable<NodeSetDetails> {
 		if (sigThis > sigThat)
 			return BEFORE;
 		
-		double qThis = this.nodeSet.getQuality();
-		double qThat = other.nodeSet.getQuality();
+		double qThis = qualityFunc.calculate(this.nodeSet);
+		double qThat = qualityFunc.calculate(other.nodeSet);
 		int sizeThis = this.nodeSet.size();
 		int sizeThat = other.nodeSet.size();
 				

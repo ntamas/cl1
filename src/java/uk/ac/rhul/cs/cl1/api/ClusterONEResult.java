@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
+import uk.ac.rhul.cs.cl1.QualityFunction;
 import uk.ac.rhul.cs.cl1.ValuedNodeSet;
 
 /**
@@ -58,15 +59,19 @@ public class ClusterONEResult implements Serializable {
 	 * {@link ClusterONE} (which is a {@link ValuedNodeSetList}) and the
 	 * REST API package.
 	 * 
-	 * @param nodeSetList  a list of {@link ValuedNodeSet} objects that are to
-	 *                     be converted to a {@link ClusterONEResult}.
+	 * @param  nodeSetList  a list of {@link ValuedNodeSet} objects that are to
+	 *                      be converted to a {@link ClusterONEResult}.
+	 * @param  qualityFunc  the quality function to calculate the quality of the
+	 *                      nodesets.
+	 *                      
 	 * @return the newly constructed {@link ClusterONEResult} object.
 	 */
-	public static ClusterONEResult fromNodeSetList(List<ValuedNodeSet> nodeSetList) {
+	public static ClusterONEResult fromNodeSetList(List<ValuedNodeSet> nodeSetList,
+			QualityFunction func) {
 		ClusterONEResult result = new ClusterONEResult();
 		
 		for (ValuedNodeSet nodeSet: nodeSetList) {
-			result.clusters.add(Cluster.fromNodeSet(nodeSet));
+			result.clusters.add(Cluster.fromNodeSet(nodeSet, func));
 		}
 		
 		return result;

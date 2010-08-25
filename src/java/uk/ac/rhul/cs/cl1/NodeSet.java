@@ -59,11 +59,6 @@ public class NodeSet implements Iterable<Integer> {
 	protected double totalBoundaryEdgeWeight = 0.0;
 	
 	/**
-	 * Quality of the nodeset according to the standard Cluster ONE quality function
-	 */
-	protected Double quality = null;
-	
-	/**
 	 * Significance of the nodeset
 	 */
 	protected Double significance = null;
@@ -418,15 +413,6 @@ public class NodeSet implements Iterable<Integer> {
 	 */
 	public double getMeetMinCoefficientWith(NodeSet other) {
 		return (double)(this.getIntersectionSizeWith(other)) / Math.min(this.size(), other.size()); 
-	}
-	
-	/**
-	 * Returns the value of the quality function for this nodeset
-	 */
-	public double getQuality() {
-		if (quality == null)
-			quality = this.totalInternalEdgeWeight / (this.totalInternalEdgeWeight + this.totalBoundaryEdgeWeight);
-		return quality;
 	}
 	
 	/**

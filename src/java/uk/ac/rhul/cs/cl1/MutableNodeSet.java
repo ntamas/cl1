@@ -182,24 +182,6 @@ public class MutableNodeSet extends NodeSet {
 	}
 	
 	/**
-	 * Returns the addition affinity of a node to this nodeset
-	 * 
-	 * The addition affinity of a node is defined as the value of the quality function
-	 * when the nodeset is augmented by the given node.
-	 * 
-	 * @param   nodeIndex   the index of the node
-	 * @precondition   the node is not in the set
-	 */
-	public double getAdditionAffinity(int nodeIndex) {
-		double num, den;
-		
-		num = this.totalInternalEdgeWeight + this.inWeights[nodeIndex];
-		den = this.totalInternalEdgeWeight + this.totalBoundaryEdgeWeight + this.outWeights[nodeIndex];
-		
-		return num/den;
-	}
-	
-	/**
 	 * Returns the commitment of a node to this nodeset
 	 * 
 	 * The commitment of a node is defined as the total weight of edges leading from
@@ -241,24 +223,6 @@ public class MutableNodeSet extends NodeSet {
 	}
 	
 	/**
-	 * Returns the removal affinity of a node to this nodeset
-	 * 
-	 * The affinity of a node is defined as the value of the quality function when the node is
-	 * removed from the nodeset.
-	 * 
-	 * @param   nodeIndex   the index of the node
-	 * @precondition    the node is already in the set
-	 */
-	public double getRemovalAffinity(int nodeIndex) {
-		double num, den;
-		
-		num = this.totalInternalEdgeWeight - this.inWeights[nodeIndex];
-		den = this.totalInternalEdgeWeight + this.totalBoundaryEdgeWeight - this.outWeights[nodeIndex];
-		
-		return num/den;
-	}
-	
-	/**
 	 * Returns an IntHashSet for efficient repeated membership checks
 	 * 
 	 * MutableNodeSet maintains memberHashSet in parallel with the ordinary members
@@ -274,10 +238,9 @@ public class MutableNodeSet extends NodeSet {
 	}
 	
 	/**
-	 * Invalidates the cached quality value when the nodeset changes
+	 * Invalidates the cached member variables when the nodeset changes
 	 */
 	private void invalidateCache() {
-		this.quality = null;
 	}
 
 	/**
