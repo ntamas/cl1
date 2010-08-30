@@ -45,6 +45,11 @@ public class CommandLineApplication {
 		try {
 			cmd = parser.parse(this.options, args);
 			
+			if (cmd.hasOption("version")) {
+				showVersion();
+				return 0;
+			}
+			
 			if (cmd.hasOption("fluff"))
 				params.setFluffClusters(true);
 			if (cmd.hasOption("haircut"))
@@ -76,7 +81,7 @@ public class CommandLineApplication {
 		
 		// Check if we have an input file name or if we have the -h option
 		if (cmd.getArgList().size() == 0 || cmd.hasOption('h')) {
-			usage();
+			showUsage();
 			return 0;
 		}		
 		
@@ -146,6 +151,9 @@ public class CommandLineApplication {
 		/* help option */
 		options.addOption("h", "help", false, "shows this help message");
 		
+		/* version option */
+		options.addOption("v", "version", false, "shows the version number");
+		
 		/* input format override option */
 		options.addOption(OptionBuilder.withLongOpt("input-format")
 				.withDescription("specifies the format of the input file (sif or edge_list)")
@@ -204,11 +212,18 @@ public class CommandLineApplication {
 	}
 
 	/// Shows the usage instructions
-	public void usage() {
+	public void showUsage() {
 		HelpFormatter formatter = new HelpFormatter();
-		System.out.println(ClusterONE.applicationName+" "+ClusterONE.version);
+		showVersion();
 		System.out.println("");
 		formatter.printHelp("cl1", options, true);
+	}
+	
+	/**
+	 * Shows the version information
+	 */
+	public void showVersion() {
+		System.out.println(ClusterONE.applicationName+" "+ClusterONE.version);
 	}
 	
 	/**

@@ -104,6 +104,7 @@ Basic command line options
 -h, --help          shows a general help message
 -d, --min-density   sets the minimum density of predicted complexes
 -s, --min-size      sets the minimum size of the predicted complexes
+-v, --version       shows the version information
 
 Advanced command line options
 -----------------------------
