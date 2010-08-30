@@ -26,6 +26,7 @@ import cytoscape.view.cytopanels.CytoPanelState;
 import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.cl1.ui.NodeSetTableModel;
 import uk.ac.rhul.cs.cl1.ui.PopupMenuTrigger;
+import uk.ac.rhul.cs.cl1.ui.RemoveClusterFromResultAction;
 import uk.ac.rhul.cs.cl1.ui.ResultViewerPanel;
 
 /**

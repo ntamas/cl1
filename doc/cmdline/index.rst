@@ -138,7 +138,7 @@ Advanced command line options
                     last merging phase). This is useful for debugging purposes only.
 
 --penalty           sets a penalty value for the inclusion of each node. When you set
-                    this option to *x*, Cluster ONE will assume each node to have an
+                    this option to *x*, Cluster ONE will assume that each node has an
                     extra boundary weight of *x* when it considers the addition of the
                     node to a cluster (see [1]_ for more details). It can be used to
                     model the possibility of uncharted connections for each node, so

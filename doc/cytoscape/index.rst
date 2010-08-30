@@ -40,7 +40,7 @@ The Cluster ONE menu
 ====================
 
 Cluster ONE installs itself into the Plugins menu of Cytoscape under
-a submenu named Cluster ONE. This submenu has the following items:
+a submenu named **Cluster ONE**. This submenu has the following items:
 
 **Start**
     Shows the `control panel`_ of Cluster ONE, which is the main entry
@@ -92,7 +92,8 @@ Control panel
 The control panel of Cluster ONE is to be found on a separate tab in the
 control panel of Cytoscape (see the left hand side of the Cytoscape user
 interface). The panel consists of two large parts: the `Parameters`_ box lets
-you set the parameters of the algorithm, while the `Selection info`_ box lets
+you set the parameters of the algorithm (this is subdivided into `Basic
+parameters`_ and `Advanced parameters`_), while the `Selection info`_ box lets
 you examine some properties of the currently selected set of nodes (such as the
 total weight of edges within the set and at the boundary of the set, or the
 value of the Cluster ONE quality function).
@@ -151,6 +152,19 @@ Basic parameters
 
 Advanced parameters
 ^^^^^^^^^^^^^^^^^^^
+
+If you do not see these parameters in the `control panel`_, click on the
+**Advanced parameters** label to expand the container holding them.
+
+**Node penalty**
+    Penalty value corresponding to each node. When you set this option to
+    a specific value *x*, Cluster ONE will assume that each node has an
+    extra boundary weight of *x* when it considers the addition of the node
+    to a cluster (see [1]_ for more details). It can be used to model the
+    possibility of uncharted connections for each node, so nodes with only
+    a single weak connection to a cluster will not be added to the cluster as
+    the penalty value will outweigh the benefits of adding the node. The
+    default penalty value is 2.
 
 **Merging method** and **Overlap threshold**
     After an initial set of clusters are found, Cluster ONE tries to
@@ -224,7 +238,9 @@ set of nodes in the current Cytoscape view.
     sum of the in-weight and the out-weight. The rationale behind this measure
     is that a good cluster contains many heavyweight edges within the cluster
     itself, and it is connected to the rest of the network only by a few lightweight
-    edges.
+    edges. If the penalty value set in the `Advanced parameters`_ panel is larger
+    than zero, the out-weight of the cluster will be increased by the penalty
+    value times the number of nodes in the cluster accordingly.
 
 **P-value**
     The p-value of a one-sided Mann-Whitney U test performed on the in-weights
@@ -341,6 +357,8 @@ clicked on.
     the ones handled by the **Copy to clipboard** operation (either a
     plain text based format or the GenePro format).
 
+**Remove**
+    Removes the selected clusters from the result list.
 
 References
 ==========
