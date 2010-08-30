@@ -4,11 +4,10 @@
 ./build
 ./dist
 ./lib/junit-4.7.jar
-./cluster_one-0.1.jar
+./cluster_one-*.jar
+./cluster_one-*.zip
+./cluster_one-*.war
 ./cytotest.sh
 ./*.cys
 etc/logo/png
 ./reports/*
-./cluster_one-0.1.zip
-cluster_one-0.1.war
-./cluster_one-0.1_src.zip
