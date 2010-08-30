@@ -171,6 +171,10 @@ Advanced command line options
                         in the file, every node that is not part of any of the seeds
                         will also be considered as a potential seed on its own.
 
+                      - ``single(*node1*,*node2*,...)``: a single seed will be used
+                        with the given nodes as members. Node names must be separated
+                        by commas or spaces.
+
                       - ``stdin``: seeds will be given on the standard input, one by
                         line. Each line must contain a space-separated list of node
                         IDs that will be part of the seed. It may be useful to use
