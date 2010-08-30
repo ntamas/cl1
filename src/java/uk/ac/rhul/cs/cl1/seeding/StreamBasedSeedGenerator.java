@@ -27,6 +27,11 @@ public class StreamBasedSeedGenerator extends SeedGenerator {
 	BufferedReader reader = null;
 	
 	/**
+	 * Delimiters to be used when tokenizing the lines from the stream
+	 */
+	String delimiters = " \t\r\n";
+	
+	/**
 	 * Constructs a new seed generator backed by the given stream.
 	 * 
 	 * @param  stream  the stream from which we will read the seeds. The stream
@@ -44,6 +49,13 @@ public class StreamBasedSeedGenerator extends SeedGenerator {
 	public StreamBasedSeedGenerator(Graph graph, BufferedReader reader) {
 		super(graph);
 		this.reader = reader;
+	}
+	
+	/**
+	 * Gets the delimiters used when splitting a line into node names
+	 */
+	public String getDelimiters() {
+		return this.delimiters;
 	}
 	
 	/**
@@ -85,7 +97,7 @@ public class StreamBasedSeedGenerator extends SeedGenerator {
 					return;
 				}
 
-				StringTokenizer st = new StringTokenizer(line);
+				StringTokenizer st = new StringTokenizer(line, delimiters);
 				
 				/* Process current line */
 				while (st.hasMoreTokens()) {
@@ -122,6 +134,15 @@ public class StreamBasedSeedGenerator extends SeedGenerator {
 	 */
 	public SeedIterator iterator() {
 		return new IteratorImpl();
+	}
+	
+	/**
+	 * Sets the delimiters used when splitting a line into node names
+	 * 
+	 * @param  delimiters  a string containing characters to be used as delimiters
+	 */
+	public void setDelimiters(String delimiters) {
+		this.delimiters = delimiters;
 	}
 	
 	/**

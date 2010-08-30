@@ -1,8 +1,10 @@
 package uk.ac.rhul.cs.cl1.seeding;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
+import java.io.StringReader;
 
 import uk.ac.rhul.cs.cl1.ClusterGrowthProcess;
 import uk.ac.rhul.cs.cl1.MutableNodeSet;
@@ -84,6 +86,16 @@ implements Iterable<MutableNodeSet>, Serializable {
 		
 		if (specification.equals("stdin"))
 			return new StreamBasedSeedGenerator(graph, System.in);
+		
+		if (specification.startsWith("single(") && specification.endsWith(")")) {
+			String seeds = StringUtils.substring(specification, 7, -1);
+			StreamBasedSeedGenerator result = new StreamBasedSeedGenerator(
+					graph, new BufferedReader(new StringReader(seeds))
+			);
+			result.setDelimiters(", \n\t\r");
+			return result;
+		}
+		
 		if (specification.startsWith("file(") && specification.endsWith(")")) {
 			String filename = StringUtils.substring(specification, 5, -1);
 			try {
