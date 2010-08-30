@@ -82,6 +82,8 @@ implements Iterable<MutableNodeSet>, Serializable {
 		if (specification.equals("edges"))
 			return new EveryEdgeSeedGenerator(graph);
 		
+		if (specification.equals("stdin"))
+			return new StreamBasedSeedGenerator(graph, System.in);
 		if (specification.startsWith("file(") && specification.endsWith(")")) {
 			String filename = StringUtils.substring(specification, 5, -1);
 			try {

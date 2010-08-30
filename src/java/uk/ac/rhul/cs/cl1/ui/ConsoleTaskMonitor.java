@@ -121,7 +121,11 @@ public class ConsoleTaskMonitor implements TaskMonitor {
 		writer.write(progress);
 		writer.append(']');
 		
-		writer.format("%4d%% ", percent);
+		if (percent >= 0)
+			writer.format("%4d%% ", percent);
+		else
+			writer.write("      ");
+
 		writer.append(StringUtils.substring(message, 0, getConsoleWidth() - progressBarWidth - 8));
 		
 		if (percent == 100)
