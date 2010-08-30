@@ -29,7 +29,48 @@ please cite one of the suggested `references`_.
 The one-minute guide to using Cluster ONE
 =========================================
 
-TODO
+Cluster ONE is distributed in a Java archive file (JAR), which contains both
+the command line application and the Cytoscape plugin. In this document, we
+are assuming that you want to use Cluster ONE from the Cytoscape graphical
+user interface. If you are interested in the command line interface, please
+refer to the documentation distributed with the command line interface itself.
+
+Cluster ONE can be installed from the Cytoscape plugin manager. Launch
+Cytoscape if you have not done so, click on the **Manage plugins** item of the
+**Plugins** menu, select the **Analysis** subgroup within the **Available for
+install** category, select the line starting with **ClusterONE** and click on
+the **Install** button. Cytoscape should download and install the selected
+version of Cluster ONE for you. If you see more than one version of Cluster
+ONE, make sure you install the most recent one. If you don't see any Cluster
+ONE version, first check whether you have installed it already (look for a
+menu called **Cluster ONE** within the **Plugins** submenu), and if you
+haven't, check the **Show outdated plugins** checkbox in the **Manage plugins**
+dialog.
+
+If you managed to install Cluster ONE successfully, you should see a new menu
+item called **Cluster ONE** in the **Plugins** submenu. Now, do the following:
+
+- Load the network you wish to analyse into Cytoscape.
+   
+- Click on **Plugins/Cluster ONE/Start** to start Cluster ONE. This will add
+  a new panel called **Cluster ONE** to the control panels on the left.
+
+- If your network is weighted, select the name of the weight attribute on the
+  Cluster ONE control panel next to **Edge weights**.
+
+- Click on the **Start** button at the bottom of the panel. Cluster ONE should
+  detect the densely connected regions of your network and list them in a
+  new panel on the Cytoscape result panel, which is usually on the right hand
+  side of the window.
+
+- Clicking on a cluster in the result panel will highlight the cluster in the
+  network view. Double-clicking on a cluster will extract it as a new
+  subnetwork. Right-clicking on a cluster will bring up a context menu with
+  additional operations that you might find useful.
+
+- When you are finished with analysing the results, click on the **Close**
+  button (|close|) in the upper right corner of the result panel.
+
 
 Description of the algorithm
 ============================
