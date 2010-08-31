@@ -29,8 +29,18 @@ public class SelectionPropertiesPanel extends NodeSetPropertiesPanel
 	/** The network view we are watching for selection changes */
 	CyNetworkView watchedNetworkView = null;
 	
-	public SelectionPropertiesPanel() {
+	/**
+	 * Constructs the panel with the given control panel as parent.
+	 * 
+	 * @param  panel  the control panel where the selection properties
+	 *                panel will be added to.
+	 */
+	public SelectionPropertiesPanel(ControlPanel panel) {
 		super();
+		
+		if (panel != null) {
+			this.setQualityFunction(panel.getParameters().getQualityFunction());
+		}
 		
 		/* If there is a network view in focus right now, watch that */
 		setWatchedNetworkView(Cytoscape.getCurrentNetworkView());
@@ -39,6 +49,8 @@ public class SelectionPropertiesPanel extends NodeSetPropertiesPanel
 		Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(
 				CytoscapeDesktop.NETWORK_VIEW_FOCUSED, this
 		);
+		
+		updateNodeSetFromSelection();
 	}
 	
 	/**

@@ -11,7 +11,6 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
-import uk.ac.rhul.cs.cl1.CohesivenessFunction;
 import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.cl1.QualityFunction;
 
@@ -25,10 +24,8 @@ public class NodeSetPropertiesPanel extends JPanel {
 	
 	/**
 	 * The quality function we are working with
-	 * 
-	 * @todo  Fix it, it should not be hardwired here
 	 */
-	protected final QualityFunction qualityFunc = new CohesivenessFunction();
+	protected QualityFunction qualityFunc = null;
 	
 	/** An information label */
 	protected JLabel label = null;
@@ -103,6 +100,13 @@ public class NodeSetPropertiesPanel extends JPanel {
 	/** Updates the components of the panel when the nodeset changed */
 	protected void updatePanel() {
 		if (nodeSet != null) {
+			String qualityStr;
+			
+			if (qualityFunc != null)
+				qualityStr = PValueRenderer.formatValue(qualityFunc.calculate(this.nodeSet), false);
+			else
+				qualityStr = null;
+			
 			model.setValueAt(this.nodeSet.size(), 0, 1);
 			model.setValueAt(
 					PValueRenderer.formatValue(this.nodeSet.getTotalInternalEdgeWeight(), false),
@@ -113,9 +117,7 @@ public class NodeSetPropertiesPanel extends JPanel {
 			model.setValueAt(
 					PValueRenderer.formatValue(this.nodeSet.getDensity(), false),
 					3, 1);
-			model.setValueAt(
-					PValueRenderer.formatValue(qualityFunc.calculate(this.nodeSet), false),
-					4, 1);
+			model.setValueAt(qualityStr, 4, 1);
 			model.setValueAt(
 					PValueRenderer.formatValue(this.nodeSet.getSignificance(), false),
 					5, 1);
@@ -132,13 +134,30 @@ public class NodeSetPropertiesPanel extends JPanel {
 	public NodeSet getNodeSet() {
 		return nodeSet;
 	}
-
+	
+	/**
+	 * Returns the {@link QualityFunction} we use to calculate the quality of nodesets
+	 * @return the quality function
+	 */
+	public QualityFunction getQualityFunction() {
+		return qualityFunc;
+	}
+	
 	/**
 	 * Sets the {@link NodeSet} whose properties are shown
 	 * @param nodeSet the nodeSet to show
 	 */
 	public void setNodeSet(NodeSet nodeSet) {
 		this.nodeSet = nodeSet;
+		updatePanel();
+	}
+	
+	/**
+	 * Sets the {@link QualityFunction} being used to calculate the quality
+	 * @param qualityFunc the quality function
+	 */
+	public void setQualityFunction(QualityFunction qualityFunc) {
+		this.qualityFunc = qualityFunc;
 		updatePanel();
 	}
 }

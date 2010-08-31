@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -24,6 +26,7 @@ import cytoscape.view.cytopanels.CytoPanel;
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
 import uk.ac.rhul.cs.cl1.ui.ClusterONEAlgorithmParametersPanel;
+import uk.ac.rhul.cs.cl1.ui.ClusterONEAlgorithmParametersPanel.Section;
 import uk.ac.rhul.cs.cl1.ui.CollapsiblePanel;
 
 /**
@@ -31,9 +34,12 @@ import uk.ac.rhul.cs.cl1.ui.CollapsiblePanel;
  * 
  * @author tamas
  */
-public class ControlPanel extends JPanel {
+public class ControlPanel extends JPanel implements PropertyChangeListener {
 	/** Algorithm parameters panel embedded inside the control panel */
 	protected ClusterONEAlgorithmParametersPanel algorithmParametersPanel;
+	
+	/** Selection info panel embedded inside the control panel */
+	protected SelectionPropertiesPanel selectionInfoPanel;
 	
 	/** Combobox for selecting the appropriate weight attribute */
 	protected JComboBox weightAttributeCombo;
@@ -84,15 +90,23 @@ public class ControlPanel extends JPanel {
 		weightPanel.add(weightAttributeCombo);
 		weightPanel.add(Box.createHorizontalStrut(3));
 		weightPanel.add(weightAttributeRefreshButton);
-		algorithmParametersPanel.addComponent("Edge weights:", weightPanel);
+		algorithmParametersPanel.addComponent(Section.BASIC, "Edge weights:", weightPanel);
 		
+		try {
+			algorithmParametersPanel.monitorComponent(weightAttributeCombo);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 		algorithmParametersPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+		
+		algorithmParametersPanel.addPropertyChangeListener(
+				"parameters", this);
 		
 		return algorithmParametersPanel;
 	}
 	
 	protected JPanel constructSelectionInfoPanel() {
-		JPanel selectionInfoPanel = new SelectionPropertiesPanel();
+		selectionInfoPanel = new SelectionPropertiesPanel(this);
 		return new CollapsiblePanel(selectionInfoPanel, "Selection info");
 	}
 	
@@ -179,5 +193,20 @@ public class ControlPanel extends JPanel {
 			weightAttributeCombo.addItem(name);
 		if (currentItem != null)
 			weightAttributeCombo.setSelectedItem(currentItem);
+	}
+	
+	/**
+	 * Called when the algorithm parameters have changed.
+	 * 
+	 * This method will update the properties of the current selection in the
+	 * info panel accordingly.
+	 */
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getSource() == algorithmParametersPanel) {
+			selectionInfoPanel.setQualityFunction(
+				getParameters().getQualityFunction()
+			);
+			selectionInfoPanel.updateNodeSetFromSelection();
+		}
 	}
 }

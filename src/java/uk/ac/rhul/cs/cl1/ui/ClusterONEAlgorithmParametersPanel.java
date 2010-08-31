@@ -1,6 +1,12 @@
 package uk.ac.rhul.cs.cl1.ui;
 
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeSupport;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.TreeMap;
 
 import info.clearthought.layout.TableLayout;
@@ -12,6 +18,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
 
@@ -76,7 +84,42 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	
 	/** Merging methods */
 	protected String[] mergingMethods = {"Match coefficient", "Meet/min coefficient"};
+	
+	/** Internal class to listen for change and action events from subcomponents */
+	private class PropertyChangeManager extends PropertyChangeSupport
+		implements ActionListener, ChangeListener {
+		public PropertyChangeManager(Object sourceBean) {
+			super(sourceBean);
+		}
 
+		/**
+		 * Called when one of the comboboxes in the panel change their values.
+		 * 
+		 * @param event  the actual event which describes what changed exactly.
+		 *               Unfortunately we cannot simply forward it outside as
+		 *               we don't want to expose the internal widgets directly,
+		 *               so we simply call {@link fire()}.
+		 */
+		public void actionPerformed(ActionEvent event) {
+			fireParametersChanged();
+		}
+
+		/**
+		 * Called when one of the spinners in the panel change their values.
+		 * 
+		 * @param event  the actual event which describes what changed exactly.
+		 *               Unfortunately we cannot simply forward it outside as
+		 *               we don't want to expose the internal widgets directly,
+		 *               so we simply call {@link fire()}.
+		 */
+		public void stateChanged(ChangeEvent event) {
+			fireParametersChanged();
+		}
+	}
+	
+	/** Private class to ease the firing of PropertyChangeEvents when something changed */
+	private final PropertyChangeManager changeManager = new PropertyChangeManager(this);
+	
 	public ClusterONEAlgorithmParametersPanel() {
 		super();
 		
@@ -89,57 +132,35 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		
 		/* Minimum cluster size spinner */	
-		minimumClusterSizeSpinner = new JSpinner();
-		minimumClusterSizeSpinner.setModel(
-				new SpinnerNumberModel(defaultParams.getMinSize(),
-						1, Integer.MAX_VALUE, 1)
+		minimumClusterSizeSpinner = addSpinner(Section.BASIC, "Minimum size:",
+			new SpinnerNumberModel(defaultParams.getMinSize(), 1, Integer.MAX_VALUE, 1)
 		);
-		((JSpinner.NumberEditor)minimumClusterSizeSpinner.getEditor()).getTextField().setColumns(5);
-		this.addComponent(Section.BASIC, "Minimum size:", minimumClusterSizeSpinner);
 		
 		/* Minimum cluster density spinner */
-		minimumClusterDensitySpinner = new JSpinner();
-		minimumClusterDensitySpinner.setModel(
-				new SpinnerNumberModel(defaultParams.getMinDensity(),
-						0.0, 1.0, 0.05)
+		minimumClusterDensitySpinner = addSpinner(Section.BASIC, "Minimum density:",
+			new SpinnerNumberModel(defaultParams.getMinDensity(), 0.0, 1.0, 0.05)
 		);
-		((JSpinner.NumberEditor)minimumClusterDensitySpinner.getEditor()).getTextField().setColumns(5);
-		this.addComponent(Section.BASIC, "Minimum density:", minimumClusterDensitySpinner);
 		
 		/* Node penalty spinner */
-		nodePenaltySpinner = new JSpinner();
-		nodePenaltySpinner.setModel(
-				new SpinnerNumberModel(defaultParams.getNodePenalty(),
-						0.0, 10.0, 0.2)
+		nodePenaltySpinner = addSpinner(Section.ADVANCED, "Node penalty:",
+			new SpinnerNumberModel(defaultParams.getNodePenalty(), 0.0, 10.0, 0.2)
 		);
-		((JSpinner.NumberEditor)nodePenaltySpinner.getEditor()).getTextField().setColumns(5);
-		this.addComponent(Section.ADVANCED, "Node penalty:", nodePenaltySpinner);
 		
 		/* Haircut threshold spinner */
-		haircutThresholdSpinner = new JSpinner();
-		haircutThresholdSpinner.setModel(
-				new SpinnerNumberModel(defaultParams.getHaircutThreshold(),
-						0.0, 1.0, 0.05)
+		haircutThresholdSpinner = addSpinner(Section.ADVANCED, "Haircut threshold:",
+			new SpinnerNumberModel(defaultParams.getHaircutThreshold(), 0.0, 1.0, 0.05)
 		);
-		((JSpinner.NumberEditor)haircutThresholdSpinner.getEditor()).getTextField().setColumns(5);
-		this.addComponent(Section.ADVANCED, "Haircut threshold:", haircutThresholdSpinner);
 		
 		/* Merging method combobox */
-		mergingMethodCombo = new JComboBox(mergingMethods);
-		this.addComponent(Section.ADVANCED, "Merging method:", mergingMethodCombo);
+		mergingMethodCombo = addComboBox(Section.ADVANCED, "Merging method:", mergingMethods);
 		
 		/* Overlap threshold spinner */
-		overlapThresholdSpinner = new JSpinner();
-		overlapThresholdSpinner.setModel(
-				new SpinnerNumberModel(defaultParams.getOverlapThreshold(),
-						0.0, 1.0, 0.05)
+		overlapThresholdSpinner = addSpinner(Section.ADVANCED, "Overlap threshold:",
+			new SpinnerNumberModel(defaultParams.getOverlapThreshold(), 0.0, 1.0, 0.05)
 		);
-		((JSpinner.NumberEditor)overlapThresholdSpinner.getEditor()).getTextField().setColumns(5);
-		this.addComponent(Section.ADVANCED, "Overlap threshold:", overlapThresholdSpinner);
 		
 		/* Seed selection method */
-		seedMethodCombo = new JComboBox(seedMethods);
-		this.addComponent(Section.ADVANCED, "Seeding method:", seedMethodCombo);
+		seedMethodCombo = addComboBox(Section.ADVANCED, "Seeding method:", seedMethods);
 	}
 
 	/**
@@ -215,7 +236,11 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	}
 	
 	/**
-	 * Adds a new component to the end of the parameters panel
+	 * Adds a new component to the end of the parameters panel.
+	 * 
+	 * The panel will <em>not</em> register itself to the component to listen to
+	 * change events, you have to do it manually from the caller.
+	 * 
 	 * @param section    the section to add the component to
 	 * @param caption    caption of the component in the left column
 	 * @param component  the component itself that should go in the right column
@@ -232,11 +257,97 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	}
 	
 	/**
-	 * Adds a new component to the Basic parameters section of the panel
+	 * Adds a combobox to the parameters panel.
+	 * 
+	 * This method will also register the panel to listen for changes of the
+	 * selected item in the combobox and fire a {@link PropertyChangeEvent}
+	 * if needed.
+	 * 
+	 * @param section    the section to add the component to
 	 * @param caption    caption of the component in the left column
-	 * @param component  the component itself that should go in the right column
+	 * @param items      the array of items in the combo box
 	 */
-	public void addComponent(String caption, Component component) {
-		addComponent(Section.BASIC, caption, component);
+	public JComboBox addComboBox(Section section, String caption, String[] items) {
+		JComboBox combo = new JComboBox(items);
+		this.addComponent(section, caption, combo);
+		combo.addActionListener(changeManager);
+		return combo;
+	}
+	
+	/**
+	 * Adds a spinner to the parameters panel.
+	 * 
+	 * This method will also register the panel to listen for changes of the spinner
+	 * value and fire a {@link PropertyChangeEvent} if needed.
+	 * 
+	 * @param section    the section to add the component to
+	 * @param caption    caption of the component in the left column
+	 * @param model      the model of the spinner value
+	 */
+	public JSpinner addSpinner(Section section, String caption, SpinnerNumberModel model) {
+		JSpinner spinner = new JSpinner();
+		spinner.setModel(model);
+		((JSpinner.NumberEditor)spinner.getEditor()).getTextField().setColumns(5);
+		this.addComponent(section, caption, spinner);
+		spinner.addChangeListener(changeManager);
+		return spinner;
+	}
+	
+	/**
+	 * Notifies registered {@link PropertyChangeListener}s that one of the algorithm
+	 * properties have changed.
+	 * 
+	 * Currently this is a very dumb method, it will fire a simple
+	 * {@link PropertyChangeEvent} with null old and new values and
+	 * "algorithm_parameters" as source, so the caller would not know which
+	 * property changed exactly. However, this is enough for our purposes for
+	 * the time being.
+	 */
+	protected void fireParametersChanged() {
+		firePropertyChange("parameters", null, null);
+	}
+	
+	/**
+	 * Registers a component to be monitored by the panel.
+	 * 
+	 * Whenever the component fires an {@link ActionEvent} or a {@link ChangeEvent},
+	 * the algorithm panel will assume that the algorithm parameters depend on the
+	 * value of that component and therefore will fire a {@link PropertyChangeEvent}.
+	 * This method is used by {@link addComponent}.
+	 * 
+	 * @param  component  the component to be monitored. We will use reflection to
+	 *                    figure out whether the component supports the following
+	 *                    methods (in the following order of priority):
+	 *                    <tt>addChangeListener</tt>, <tt>addActionListener</tt>.
+	 */
+	public void monitorComponent(Component component)
+	       throws IllegalArgumentException, IllegalAccessException,
+	              InvocationTargetException, NoSuchMethodException {
+		Class<?> cls = component.getClass();
+		Method method = null;
+		
+		// First, try with addChangeListener()
+		try {
+			method = cls.getMethod("addChangeListener", ChangeListener.class);
+		} catch (SecurityException e) {
+		} catch (NoSuchMethodException e) {
+		}
+		
+		// If unsuccessful, try with addActionListener()
+		if (method == null) {
+			try {
+				method = cls.getMethod("addActionListener", ActionListener.class);
+			} catch (SecurityException e) {
+			} catch (NoSuchMethodException e) {
+			}
+		}
+		
+		// If we found at least one suitable method, invoke it
+		if (method != null) {
+			method.invoke(component, changeManager);
+		} else {
+			// No suitable method was found, throw an InvocationTargetException
+			throw new NoSuchMethodException();
+		}
 	}
 }

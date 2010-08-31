@@ -8,6 +8,8 @@ import java.beans.PropertyChangeListener;
 import java.util.Iterator;
 import java.util.WeakHashMap;
 
+import uk.ac.rhul.cs.utils.ObjectUtils;
+import uk.ac.rhul.cs.utils.Pair;
 import uk.ac.rhul.cs.utils.UniqueIDGenerator;
 
 import cytoscape.CyNetwork;
@@ -36,7 +38,8 @@ import cytoscape.data.CyAttributes;
  */
 public class CyNetworkCache implements PropertyChangeListener {
 	/** Internal weak hash map used as a storage area */
-	WeakHashMap<CyNetwork, Graph> storage = new WeakHashMap<CyNetwork, Graph>();
+	WeakHashMap<CyNetwork, Pair<String, Graph> > storage =
+		new WeakHashMap<CyNetwork, Pair<String, Graph> >();
 	
 	/**
 	 * Constructor
@@ -64,12 +67,13 @@ public class CyNetworkCache implements PropertyChangeListener {
 	 */
 	public Graph convertCyNetworkToGraph(CyNetwork network, String weightAttr)
 			throws NonNumericAttributeException {
-		Graph graph = storage.get(network);
+		Pair<String, Graph> attrNameAndGraph = storage.get(network);
 		
-		if (graph != null)
-			return graph;
+		if (attrNameAndGraph != null &&
+			ObjectUtils.equals(weightAttr, attrNameAndGraph.getLeft()))
+			return attrNameAndGraph.getRight();
 		
-		graph = new Graph();
+		Graph graph = new Graph();
 		UniqueIDGenerator<Node> nodeIdGen = new UniqueIDGenerator<Node>(graph);
 		CyAttributes edgeAttrs = Cytoscape.getEdgeAttributes();
 		Double weight;
@@ -97,9 +101,7 @@ public class CyNetworkCache implements PropertyChangeListener {
 		
 		graph.setNodeMapping(nodeIdGen.getReversedList());
 		
-		this.storage.put(network, graph);
-		
-		// network.addCyNetworkListener(this);
+		this.storage.put(network, Pair.create(weightAttr, graph));
 		
 		return graph;
 	}
@@ -124,7 +126,7 @@ public class CyNetworkCache implements PropertyChangeListener {
 		ControlPanel panel = ControlPanel.getShownInstance();
 		
 		if (panel == null)
-			return null;
+			return convertCyNetworkToGraph(network, null);
 		
 		return convertCyNetworkToGraph(network, panel.getWeightAttributeName());
 	}
