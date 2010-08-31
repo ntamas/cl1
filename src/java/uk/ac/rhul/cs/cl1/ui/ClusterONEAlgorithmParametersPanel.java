@@ -5,7 +5,6 @@ import java.util.TreeMap;
 
 import info.clearthought.layout.TableLayout;
 
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
@@ -211,7 +210,7 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	 */
 	protected CollapsiblePanel constructNewSubpanel(String title) {
 		CollapsiblePanel newPanel = new CollapsiblePanel(title);
-		newPanel.setBorder(BorderFactory.createEtchedBorder());
+		// newPanel.setBorder(BorderFactory.createEtchedBorder());
 		return newPanel;
 	}
 	
