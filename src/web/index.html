@@ -58,13 +58,13 @@ protein2 protein4 weight
           <label for="min_density">Minimum cluster density:</label>
           <input class="number_01 required" id="min_density" name="min_density" value="0.35" />
         </div>
-        <div>
-          <label for="overlap_threshold">Overlap threshold:</label>
-          <input class="number_01 required" id="overlap_threshold" name="overlap_threshold" value="0.8" />
-        </div>
       </fieldset>
       <fieldset>
         <legend>Advanced parameters</legend>
+        <div>
+          <label for="node_penalty">Node penalty:</label>
+          <input class="positive_float required" id="node_penalty" name="node_penalty" value="2" />
+        </div>
         <div>
           <label for="haircut_threshold">Haircut threshold:</label>
           <input class="number_01 required" id="haircut_threshold" name="haircut_threshold" value="0.2" />
@@ -75,6 +75,10 @@ protein2 protein4 weight
             <option value="match">Match coefficient</option>
             <option value="meet/min">Meet/min coefficient</option>
           </select>
+        </div>
+        <div>
+          <label for="overlap_threshold">Overlap threshold:</label>
+          <input class="number_01 required" id="overlap_threshold" name="overlap_threshold" value="0.8" />
         </div>
         <div>
           <label for="seeding_method">Seeding method:</label>

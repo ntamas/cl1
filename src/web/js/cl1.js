@@ -9,6 +9,15 @@ jQuery.validator.addMethod("positive_integer", function(value, element) {
   return (parseInt(value) >= 1);
 }, "Please enter a positive integer");
 
+/** Form validation routine that accepts positive floats */
+jQuery.validator.addMethod("positive_float", function(value, element) {
+  if (this.optional(element))
+    return true;
+  if (!/^\d+(.\d*)?$/.test(value))
+    return false;
+  return (parseInt(value) >= 1);
+}, "Please enter a positive integer");
+
 /** Form validation routine that accepts numbers between 0 and 1 */
 jQuery.validator.addMethod("number_01", function(value, element) {
   if (this.optional(element))

@@ -56,9 +56,10 @@ public class ResultResource {
 	public Response create(@FormParam("dataset_id") String datasetId,
 			               @FormParam("min_size") Integer minSize,
 			               @FormParam("min_density") Double minDensity,
-			               @FormParam("overlap_threshold") Double overlapThreshold,
+			               @FormParam("node_penalty") Double nodePenalty,
 			               @FormParam("haircut_threshold") Double haircutThreshold,
 			               @FormParam("merging_method") String mergingMethod,
+			               @FormParam("overlap_threshold") Double overlapThreshold,
 			               @FormParam("seeding_method") String seedingMethod)
 	throws IOException, ClusterONEException, InstantiationException {
 		EntityStore<String> datasetStore = WebApplication.getDatasetStore();
@@ -86,12 +87,14 @@ public class ResultResource {
 			params.setMinSize(minSize);
 		if (minDensity != null)
 			params.setMinDensity(minDensity);
-		if (overlapThreshold != null)
-			params.setOverlapThreshold(overlapThreshold);
+		if (nodePenalty != null)
+			params.setNodePenalty(nodePenalty);
 		if (haircutThreshold != null)
 			params.setHaircutThreshold(haircutThreshold);
 		if (mergingMethod != null)
 			params.setMergingMethod(mergingMethod);
+		if (overlapThreshold != null)
+			params.setOverlapThreshold(overlapThreshold);
 		if (seedingMethod != null)
 			params.setSeedGenerator(seedingMethod);
 		
