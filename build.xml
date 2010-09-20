@@ -36,7 +36,7 @@
     <property name="build.doc" location="${build}/doc" />
     <property name="build.doc.cmdline" location="${build.doc}/cmdline" />
 	<property name="build.doc.cytoscape" location="${build}/java/${package.name.slashed}/ui/cytoscape/help" />
-
+	
 	<!-- External dependencies -->
 	<condition property="lib.cytoscape.path" value="${cytoscape.path}/cytoscape.jar">
 		<available file="${cytoscape.path}/cytoscape.jar" />
@@ -53,8 +53,8 @@
 	<condition property="lib.jersey-json.path" value="${jersey.path}/lib/jersey-json-${jersey.version}.jar">
 		<available file="${jersey.path}/lib/jersey-json-${jersey.version}.jar" />
 	</condition>
-	<condition property="lib.jersey-multipart.path" value="${jersey.path}/contrib/jersey-multipart-${jersey.version}.jar">
-		<available file="${jersey.path}/contrib/jersey-multipart-${jersey.version}.jar" />
+	<condition property="lib.jersey-multipart.path" value="${jersey.path}/contribs/jersey-multipart-${jersey.version}.jar">
+		<available file="${jersey.path}/contribs/jersey-multipart-${jersey.version}.jar" />
 	</condition>
 
 	<!-- Set up the default classpath -->
