@@ -4,9 +4,9 @@ import cytoscape.task.TaskMonitor;
 
 /**
  * Compatibility wrapper class between Cytoscape's TaskMonitor
- * and Cluster ONE's TaskMonitor
+ * and ClusterONE's TaskMonitor
  * 
- * This class disguises a Cluster ONE TaskMonitor as a Cytoscape TaskMonitor.
+ * This class disguises a ClusterONE TaskMonitor as a Cytoscape TaskMonitor.
  * 
  * @author ntamas
  */

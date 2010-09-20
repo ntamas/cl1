@@ -35,7 +35,7 @@ public class ClusterONECytoscapeTask extends ClusterONE implements Task {
 		} catch (ClusterONEException e) {
 			cytoscapeTaskMonitor.setException(e, e.getMessage());
 		} catch (Exception e) {
-			cytoscapeTaskMonitor.setException(e, "Unexpected error while running Cluster ONE. "+
+			cytoscapeTaskMonitor.setException(e, "Unexpected error while running ClusterONE. "+
 					"Please notify the plugin authors!");
 		}
 	}

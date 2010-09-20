@@ -26,7 +26,7 @@ import uk.ac.rhul.cs.cl1.api.EntityNotFoundException;
 import uk.ac.rhul.cs.cl1.api.EntityStore;
 
 /**
- * REST resource handling datasets on which Cluster ONE can operate.
+ * REST resource handling datasets on which ClusterONE can operate.
  * 
  * @author tamas
  */

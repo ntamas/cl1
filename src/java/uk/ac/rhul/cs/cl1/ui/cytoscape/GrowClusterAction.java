@@ -43,7 +43,7 @@ public class GrowClusterAction extends CytoscapeAction {
 	private GrowClusterAction() {
 		super("Grow cluster from selected nodes");
 		this.putValue(AbstractAction.MNEMONIC_KEY, KeyEvent.VK_S);
-		this.setPreferredMenu("Plugins.Cluster ONE");
+		this.setPreferredMenu("Plugins.ClusterONE");
 	}
 	
 	/**
@@ -106,7 +106,7 @@ public class GrowClusterAction extends CytoscapeAction {
 		/* Run the algorithm, get the results */
 		List<ValuedNodeSet> clusters = CytoscapePlugin.runAlgorithm(graph, parameters, weightAttr);
 		if (clusters == null) {
-			CytoscapePlugin.showBugMessage("No results returned from Cluster ONE.");
+			CytoscapePlugin.showBugMessage("No results returned from ClusterONE.");
 			return;
 		}
 		
@@ -116,7 +116,7 @@ public class GrowClusterAction extends CytoscapeAction {
 		}
 		
 		if (clusters.size() > 1) {
-			CytoscapePlugin.showBugMessage("More than one cluster was returned from Cluster ONE.");
+			CytoscapePlugin.showBugMessage("More than one cluster was returned from ClusterONE.");
 			return;
 		}
 		

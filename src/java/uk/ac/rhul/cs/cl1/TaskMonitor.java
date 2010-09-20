@@ -4,7 +4,7 @@ package uk.ac.rhul.cs.cl1;
  * Interface for monitoring the progress of a task.
  * 
  * This is essentially equivalent to Cytoscape's cytoscape.task.TaskMonitor
- * interface. Cluster ONE algorithms communicate with objects implementing this
+ * interface. ClusterONE algorithms communicate with objects implementing this
  * interface to report their progress -- this means that they can easily communicate
  * with the Cytoscape UI as well.
  * 

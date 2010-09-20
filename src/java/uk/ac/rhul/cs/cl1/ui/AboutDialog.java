@@ -21,7 +21,7 @@ import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.utils.StringUtils;
 
 /**
- * The about dialog box for Cluster ONE.
+ * The about dialog box for ClusterONE.
  * 
  * @author Tamas Nepusz <tamas@cs.rhul.ac.uk>
  */
@@ -33,7 +33,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 	 * @param modal   the modality of the dialog box
 	 */
 	public AboutDialog(Frame owner, boolean modal) {
-		super(owner, "About Cluster ONE", modal);
+		super(owner, "About ClusterONE", modal);
 		setResizable(false);
 		
         JPanel contentPane = new JPanel();

@@ -33,7 +33,7 @@ import uk.ac.rhul.cs.cl1.ui.NodeSetTableModel;
 import uk.ac.rhul.cs.utils.StringUtils;
 
 /**
- * A Swing panel that shows the results of a Cluster ONE run
+ * A Swing panel that shows the results of a ClusterONE run
  * 
  * @author tamas
  */

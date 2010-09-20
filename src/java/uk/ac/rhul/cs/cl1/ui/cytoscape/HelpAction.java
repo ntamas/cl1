@@ -12,7 +12,7 @@ import javax.swing.AbstractAction;
 import cytoscape.util.CytoscapeAction;
 
 /**
- * An action that shows the Cluster ONE Help contents.
+ * An action that shows the ClusterONE Help contents.
  * 
  * @author tamas
  */
@@ -29,7 +29,7 @@ public class HelpAction extends CytoscapeAction {
 	 */
 	public HelpAction(String helpID, String label) {
 		super(label);
-		setPreferredMenu("Plugins.Cluster ONE");
+		setPreferredMenu("Plugins.ClusterONE");
 		this.putValue(AbstractAction.MNEMONIC_KEY, KeyEvent.VK_H);
 		this.helpID = helpID;
 	}
@@ -56,7 +56,7 @@ public class HelpAction extends CytoscapeAction {
 			helpBroker.setCurrentID(helpID);
 			csh = new CSH.DisplayHelpFromSource(helpBroker);
 		} catch (Exception ex) {
-			CytoscapePlugin.showErrorMessage("Cluster ONE Help cannot be started. Please see the Cluster ONE website instead.");
+			CytoscapePlugin.showErrorMessage("ClusterONE Help cannot be started. Please see the ClusterONE website instead.");
 			return;
 		}
 	}

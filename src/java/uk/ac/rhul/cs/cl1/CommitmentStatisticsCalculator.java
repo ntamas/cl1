@@ -26,7 +26,7 @@ import uk.ac.rhul.cs.stats.datastructures.PairedData;
  * Auxiliary class to calculate the commitment statistics for a set of complexes.
  * 
  * This class is not used directly in the application, it was only used to calculate
- * some results for the Cluster ONE paper. It also won't compile without the Procope
+ * some results for the ClusterONE paper. It also won't compile without the Procope
  * libraries.
  * 
  * @author tamas

@@ -18,7 +18,7 @@ import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CyNetworkView;
 
 /**
- * An action that starts Cluster ONE by showing it on the Cytoscape control panel.
+ * An action that starts ClusterONE by showing it on the Cytoscape control panel.
  * 
  * @author tamas
  */
@@ -29,7 +29,7 @@ public class StartAction extends CytoscapeAction {
 	public StartAction() {
 		super("Start");
 		this.putValue(AbstractAction.MNEMONIC_KEY, KeyEvent.VK_S);
-		setPreferredMenu("Plugins.Cluster ONE");
+		setPreferredMenu("Plugins.ClusterONE");
 	}
 	
 	@Override
@@ -44,7 +44,7 @@ public class StartAction extends CytoscapeAction {
 		
 		if (network == null || network.getNodeCount() == 0) {
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-					"You must select a non-empty network before starting Cluster ONE",
+					"You must select a non-empty network before starting ClusterONE",
 					"Error - no network selected",
 					JOptionPane.ERROR_MESSAGE);
 			return;
@@ -61,10 +61,10 @@ public class StartAction extends CytoscapeAction {
 		if (results.getLeft() == null)
 			return;
 		
-		/* Ensure that the Cluster ONE visual styles are registered */
+		/* Ensure that the ClusterONE visual styles are registered */
 		VisualStyleManager.ensureVizMapperStylesRegistered(false);
 		
-		/* Set one of the Cluster ONE visual styles */
+		/* Set one of the ClusterONE visual styles */
 		Cytoscape.getVisualMappingManager().setVisualStyle(VisualStyleManager.VISUAL_STYLE_BY_STATUS);
 		Cytoscape.getVisualMappingManager().applyAppearances();
 		networkView.redrawGraph(false, true);

@@ -17,7 +17,7 @@ import uk.ac.rhul.cs.cl1.api.EntityStore;
 import uk.ac.rhul.cs.cl1.api.PersistentEntityStore;
 
 /**
- * Class that represents the Cluster ONE web interface as a whole
+ * Class that represents the ClusterONE web interface as a whole
  * 
  * @author tamas
  *

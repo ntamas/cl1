@@ -6,7 +6,7 @@
 <helpset version="2.0">
 
   <!-- title -->
-  <title>Cluster ONE Cytoscape plugin - Help</title>
+  <title>ClusterONE Cytoscape plugin - Help</title>
 
   <!-- maps -->
   <maps>

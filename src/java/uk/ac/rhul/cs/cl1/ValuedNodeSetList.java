@@ -10,10 +10,10 @@ import uk.ac.rhul.cs.utils.Multiset;
 import uk.ac.rhul.cs.utils.TreeMultiset;
 
 /**
- * A list of {@link ValuedNodeSet} objects, typically used as a result object in Cluster ONE.
+ * A list of {@link ValuedNodeSet} objects, typically used as a result object in ClusterONE.
  * 
  * This object is practically an ArrayList of {@link ValuedNodeSet} objects with some
- * extra methods that allow Cluster ONE to clean up the list by merging highly overlapping
+ * extra methods that allow ClusterONE to clean up the list by merging highly overlapping
  * nodesets.
  * 
  * @author ntamas

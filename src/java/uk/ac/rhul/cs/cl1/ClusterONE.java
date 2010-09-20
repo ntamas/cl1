@@ -18,7 +18,7 @@ import uk.ac.rhul.cs.graph.GraphAlgorithm;
 import uk.ac.rhul.cs.utils.ArrayUtils;
 
 /**
- * Main class for the Cluster ONE algorithm.
+ * Main class for the ClusterONE algorithm.
  * 
  * This class represents an instance of the algorithm along with all its
  * necessary parameters. The main entry point of the algorithm is the
@@ -30,12 +30,12 @@ import uk.ac.rhul.cs.utils.ArrayUtils;
  */
 public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 	/** The name of the application that will appear on the user interface */
-	public static final String applicationName = "Cluster ONE";
+	public static final String applicationName = "ClusterONE";
 	
 	/** The version number of the application */
 	public static final String version = "0.9";
 
-	/** A thread pool used for asynchronous operations within Cluster ONE */
+	/** A thread pool used for asynchronous operations within ClusterONE */
 	private static Executor threadPool = null;
 
 	/** The clustering result as a list of {@link ValuedNodeSet} objects */
@@ -100,7 +100,7 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 	}
 	
 	/**
-	 * Returns a thread pool used by Cluster ONE for asynchronous operations
+	 * Returns a thread pool used by ClusterONE for asynchronous operations
 	 */
 	public static Executor getThreadPool() {
 		if (threadPool == null)

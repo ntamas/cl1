@@ -1,9 +1,9 @@
-Cluster ONE strives to discover densely connected and possibly overlapping
+ClusterONE strives to discover densely connected and possibly overlapping
 regions within the Cytoscape network you are working with. The interpretation
 of these regions depends on the context (i.e. what the network represents) and
 it is left up to you. For instance, in protein-protein interaction networks
 derived from high-throughput AP-MS experiments, these dense regions usually
-correspond to protein complexes or fractions of them. Cluster ONE works by
+correspond to protein complexes or fractions of them. ClusterONE works by
 "growing" dense regions out of small seeds (typically one or two vertices),
 driven by a quality function called *cohesiveness*.
 
@@ -41,7 +41,7 @@ Cytoscape and use that attribute to drive the cluster growth process. From now
 on, such confidence values will simply be called *edge weights* and the above
 mentioned quality measure will be referred to as *cohesiveness*.
 
-Cluster ONE essentially looks for groups of high cohesiveness. This is achieved
+ClusterONE essentially looks for groups of high cohesiveness. This is achieved
 by adopting a greedy strategy: starting from a single seed vertex (or a small
 set of vertices that are strongly bound together), one can extend the group
 step by step with new vertices so that the newly added vertex always increases
@@ -49,13 +49,10 @@ the cohesiveness of a group as much as possible. Removals are also allowed if
 removing a vertex from the group increases its cohesiveness. The process stops
 when it is not possible to increase the cohesiveness of the group by adding
 another external boundary vertex or removing an internal boundary vertex.  See
-the Cluster ONE paper [1]_ for the description of the exact procedure.  The
+the ClusterONE paper [1]_ for the description of the exact procedure.  The
 growth process is repeated either for every vertex or every connected vertex
 pair to obtain an initial set of cohesive subgroups. Subgroups smaller than a
 given size or having a density less than a given threshold are thrown away.
 Finally, redundant cohesive subgroups (i.e. those that overlap significantly
 with each other) are merged to form larger subgroups to make the results easier
 to interpret.
-
-
-

@@ -53,7 +53,7 @@ public class SaveClusterAsCyGroupAction extends AbstractAction {
 				JOptionPane.showInputDialog(resultViewer,
 						"Please enter the name template of the Cytoscape group.\n\n"+
 						"#{index} will be replaced with a unique numeric index.",
-						"Cluster ONE group #{index}");
+						"ClusterONE group #{index}");
 			if (nameTemplate == null)
 				return;
 			

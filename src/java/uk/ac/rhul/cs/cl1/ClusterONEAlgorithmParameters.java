@@ -6,7 +6,7 @@ import uk.ac.rhul.cs.cl1.seeding.EveryNodeSeedGenerator;
 import uk.ac.rhul.cs.cl1.seeding.SeedGenerator;
 
 /**
- * Stores the parameters of a Cluster ONE algorithm instance.
+ * Stores the parameters of a ClusterONE algorithm instance.
  * 
  * There is a wide variety of parameters for the algorithm, but the default
  * settings are more or less sensible and suitable for biological scenarios.

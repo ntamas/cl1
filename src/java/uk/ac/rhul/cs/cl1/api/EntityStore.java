@@ -7,7 +7,7 @@ import java.util.Date;
  * Generic interface for classes that store stuff by IDs.
  * 
  * This is the interface that must be implemented by storage providers
- * providers used in the web interface of Cluster ONE. Providers must
+ * providers used in the web interface of ClusterONE. Providers must
  * be capable of at least the following operations:
  * 
  *   - Constructing a new entity with an automatically assigned

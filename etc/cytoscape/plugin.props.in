@@ -1,7 +1,7 @@
 pluginName=ClusterONE
-pluginDescription=The Cluster ONE plugin finds overlapping protein complexes in a protein interaction network loaded into Cytoscape.
+pluginDescription=The ClusterONE plugin finds overlapping protein complexes in a protein interaction network loaded into Cytoscape.
 pluginVersion=@package.version@
-cytoscapeVersion=2.6,2.7
+cytoscapeVersion=2.6,2.7,2.8
 pluginCategory=Analysis
 
 # projectURL=

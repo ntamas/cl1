@@ -28,7 +28,7 @@ public class AffinityColouringAction extends CytoscapeAction {
 				"Color the nodes of the selected network by their affinity to "+
 				"the currently selected set of nodes as a cluster");
 		this.putValue(AbstractAction.MNEMONIC_KEY, KeyEvent.VK_A);
-		this.setPreferredMenu("Plugins.Cluster ONE");
+		this.setPreferredMenu("Plugins.ClusterONE");
 	}
 	
 	/**

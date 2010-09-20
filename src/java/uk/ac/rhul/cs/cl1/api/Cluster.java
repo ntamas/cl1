@@ -11,7 +11,7 @@ import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.cl1.QualityFunction;
 
 /**
- * A single cluster in the single run of the Cluster ONE algorithm.
+ * A single cluster in the single run of the ClusterONE algorithm.
  * 
  * Theoretically, this class would belong to the main package and not
  * the <tt>api</tt> subpackage. However, this class needs some annotations

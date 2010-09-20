@@ -25,12 +25,12 @@ import uk.ac.rhul.cs.cl1.io.GraphReaderFactory.Format;
 import uk.ac.rhul.cs.cl1.ui.ConsoleTaskMonitor;
 import uk.ac.rhul.cs.graph.Graph;
 
-/// The command line interface to Cluster ONE
+/// The command line interface to ClusterONE
 public class CommandLineApplication {
-	/// Options object to describe the command line options accepted by Cluster ONE
+	/// Options object to describe the command line options accepted by ClusterONE
 	protected Options options = null;
 	
-	/// Constructor of the command line entry point to Cluster ONE
+	/// Constructor of the command line entry point to ClusterONE
 	public CommandLineApplication() {
 		initOptions();
 	}
@@ -143,7 +143,7 @@ public class CommandLineApplication {
 		return 0;
 	}
 	
-	/// Initializes the Options object that describes the command line options accepted by Cluster ONE
+	/// Initializes the Options object that describes the command line options accepted by ClusterONE
 	@SuppressWarnings("static-access")
 	protected void initOptions() {
 		options = new Options();
@@ -255,7 +255,7 @@ public class CommandLineApplication {
 	}
 	
 	/**
-	 * Starts the command line version of Cluster ONE
+	 * Starts the command line version of ClusterONE
 	 * 
 	 * @param args
 	 */

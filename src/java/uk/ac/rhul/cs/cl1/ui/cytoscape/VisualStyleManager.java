@@ -23,7 +23,7 @@ import cytoscape.visual.mappings.LinearNumberToColorInterpolator;
 import cytoscape.visual.mappings.ObjectMapping;
 
 /**
- * Class responsible for registering and maintaining Cluster ONE related
+ * Class responsible for registering and maintaining ClusterONE related
  * visual styles in Cytoscape.
  * 
  * @author ntamas
@@ -32,15 +32,15 @@ public class VisualStyleManager {
 	/**
 	 * VizMapper visual style name for coloring nodes by their status
 	 */
-	public static final String VISUAL_STYLE_BY_STATUS = "Cluster ONE - Status";
+	public static final String VISUAL_STYLE_BY_STATUS = "ClusterONE - Status";
 	
 	/**
 	 * VizMapper visual style name for coloring nodes by their status
 	 */
-	public static final String VISUAL_STYLE_BY_AFFINITY = "Cluster ONE - Affinity";
+	public static final String VISUAL_STYLE_BY_AFFINITY = "ClusterONE - Affinity";
 	
 	/**
-	 * Ensure that the Cluster ONE VizMapper styles are registered
+	 * Ensure that the ClusterONE VizMapper styles are registered
 	 * 
 	 * @param  recreate   whether to re-create the styles even if they exist
 	 */

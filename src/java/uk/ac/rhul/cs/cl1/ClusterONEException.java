@@ -1,7 +1,7 @@
 package uk.ac.rhul.cs.cl1;
 
 /**
- * Exception thrown when an error happens in Cluster ONE.
+ * Exception thrown when an error happens in ClusterONE.
  * 
  * @author ntamas
  */

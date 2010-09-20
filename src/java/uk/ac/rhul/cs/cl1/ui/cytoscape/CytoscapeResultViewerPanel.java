@@ -144,7 +144,7 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 			lastUsedSerialNumber++;
 		}
 		CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST);
-		String title = "Cluster ONE result "+serialNumber;
+		String title = "ClusterONE result "+serialNumber;
 		cytoPanel.add(title, null, this, title);
 		cytoPanel.setSelectedIndex(cytoPanel.indexOfComponent(this));
 		

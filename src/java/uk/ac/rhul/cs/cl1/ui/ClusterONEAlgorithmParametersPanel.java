@@ -24,7 +24,7 @@ import javax.swing.event.ChangeListener;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
 
 /**
- * Component that lets the user adjust the algorithm parameters of Cluster ONE
+ * Component that lets the user adjust the algorithm parameters of ClusterONE
  * 
  * @author ntamas
  */

@@ -4,11 +4,11 @@
           "http://java.sun.com/dtd/web-app_2_3.dtd">
 
 <web-app>
-    <display-name>Cluster ONE web interface</display-name>
+    <display-name>ClusterONE web interface</display-name>
     
     <description>
       This web application provides a RESTful interface to the algorithms
-      of Cluster ONE.
+      of ClusterONE.
     </description>
     
     <resource-ref>

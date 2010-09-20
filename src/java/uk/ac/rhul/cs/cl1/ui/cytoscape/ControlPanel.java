@@ -30,7 +30,7 @@ import uk.ac.rhul.cs.cl1.ui.ClusterONEAlgorithmParametersPanel.Section;
 import uk.ac.rhul.cs.cl1.ui.CollapsiblePanel;
 
 /**
- * Cytoscape control panel for Cluster ONE
+ * Cytoscape control panel for ClusterONE
  * 
  * @author tamas
  */

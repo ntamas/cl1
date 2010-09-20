@@ -12,7 +12,7 @@ import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
 
 /**
- * An action that shows or hides the Cluster ONE control panel in Cytoscape
+ * An action that shows or hides the ClusterONE control panel in Cytoscape
  * 
  * @author tamas
  */
@@ -22,7 +22,7 @@ public class ShowControlPanelAction extends CytoscapeAction {
 	 */
 	public ShowControlPanelAction() {
 		super("Start");
-		setPreferredMenu("Plugins.Cluster ONE");
+		setPreferredMenu("Plugins.ClusterONE");
 	}
 	
 	@Override
@@ -32,9 +32,9 @@ public class ShowControlPanelAction extends CytoscapeAction {
 	
 
 	/**
-	 * Adds the Cluster ONE control panel to the Cytoscape control panel
+	 * Adds the ClusterONE control panel to the Cytoscape control panel
 	 * 
-	 * If the Cluster ONE control panel is already open, no new control panel
+	 * If the ClusterONE control panel is already open, no new control panel
 	 * will be added, the existing one will be selected instead.
 	 */
 	@Override

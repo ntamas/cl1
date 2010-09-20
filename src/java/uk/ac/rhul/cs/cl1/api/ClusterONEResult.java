@@ -12,7 +12,7 @@ import uk.ac.rhul.cs.cl1.QualityFunction;
 import uk.ac.rhul.cs.cl1.ValuedNodeSet;
 
 /**
- * The results of a single run of the Cluster ONE algorithm on a single
+ * The results of a single run of the ClusterONE algorithm on a single
  * graph.
  * 
  * Theoretically, this class would belong to the main package and not
@@ -20,7 +20,7 @@ import uk.ac.rhul.cs.cl1.ValuedNodeSet;
  * from JAXB-2.0 to facilitate JSON marshalling in the API output, and we
  * don't want to include dependency on JAXB in the main package.
  *
- * A Cluster ONE result object contains the following elements:
+ * A ClusterONE result object contains the following elements:
  * 
  * - A list of {@link Cluster} objects. Each cluster is essentially a list
  *   of strings with some associated metadata.
@@ -78,7 +78,7 @@ public class ClusterONEResult implements Serializable {
 	}
 
 	/**
-	 * Returns the parameter settings of Cluster ONE that were used to
+	 * Returns the parameter settings of ClusterONE that were used to
 	 * generate this results.
 	 * 
 	 * @return the parameter settings or null if not specified
@@ -89,7 +89,7 @@ public class ClusterONEResult implements Serializable {
 	}
 
 	/**
-	 * Sets the parameter settings of Cluster ONE that were used to
+	 * Sets the parameter settings of ClusterONE that were used to
 	 * generate this result.
 	 *
 	 * @param parameters the parameter settings.

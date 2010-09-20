@@ -9,14 +9,14 @@ jQuery.validator.addMethod("positive_integer", function(value, element) {
   return (parseInt(value) >= 1);
 }, "Please enter a positive integer");
 
-/** Form validation routine that accepts positive floats */
-jQuery.validator.addMethod("positive_float", function(value, element) {
+/** Form validation routine that accepts non-negative floats */
+jQuery.validator.addMethod("nonnegative_float", function(value, element) {
   if (this.optional(element))
     return true;
   if (!/^\d+(.\d*)?$/.test(value))
     return false;
-  return (parseInt(value) >= 1);
-}, "Please enter a positive integer");
+  return (parseFloat(value) >= 0);
+}, "Please enter a non-negative float");
 
 /** Form validation routine that accepts numbers between 0 and 1 */
 jQuery.validator.addMethod("number_01", function(value, element) {
@@ -108,7 +108,7 @@ ClusterONEFrontend.prototype = {
     return settings;
   },
     
-  /** Initializes the Cluster ONE frontend page */
+  /** Initializes the ClusterONE frontend page */
   init: function() {
     /* Set up the upload button */
     new AjaxUpload('upload-button', {
@@ -281,7 +281,7 @@ ClusterONEFrontend.prototype = {
   
   /** Shows an error message that is likely to correspond to a bug */
   showBug: function(msg) {
-    msg = msg + "<br/><br/>This is likely a bug in Cluster ONE. Please contact the maintainers!";
+    msg = msg + "<br/><br/>This is likely a bug in ClusterONE. Please contact the maintainers!";
     return this.showError(msg);
   },
   
@@ -341,7 +341,7 @@ ClusterONEFrontend.prototype = {
 
 /***************************************************************************/
 
-/** Class representing the results of a Cluster ONE run */
+/** Class representing the results of a ClusterONE run */
 function ClusterONEResult() {
   this.clusters = [];
   this.parameters = [];
@@ -385,7 +385,7 @@ ClusterONEResult.prototype = {
     if (!win) return;
 
     win.document.write("<html><head>" +
-                       "  <title>Cluster ONE results</title>" +
+                       "  <title>ClusterONE results</title>" +
                        "  <link type=\"text/css\" rel=\"stylesheet\" href=\"css/screen.css\" />" +
                        "</head>" +
                        "<body><div id=\"results\"></div></body>" +

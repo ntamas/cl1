@@ -17,13 +17,13 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 
 /**
- * Class holding Cluster ONE's own representations of Cytoscape networks.
+ * Class holding ClusterONE's own representations of Cytoscape networks.
  * 
  * This class encapsulates a weak hash map mapping {@link CyNetwork} instances to
  * {@link Graph} instances.
  * 
- * Whenever a Cytoscape network is processed by Cluster ONE, it will check whether
- * a corresponding Cluster ONE representation already exists in this hash map. If
+ * Whenever a Cytoscape network is processed by ClusterONE, it will check whether
+ * a corresponding ClusterONE representation already exists in this hash map. If
  * so, the network representation is not created again. The hash map does not stop
  * Java from freeing the memory associated to the Cytoscape network when the network
  * is discarded by Cytoscape.
@@ -53,7 +53,7 @@ public class CyNetworkCache implements PropertyChangeListener {
 	}
 	
 	/**
-	 * Returns the Cluster ONE representation of the given {@link CyNetwork}.
+	 * Returns the ClusterONE representation of the given {@link CyNetwork}.
 	 * 
 	 * If the {@link CyNetwork} was not seen before by this instance, a network
 	 * listener will be registered on the {@link CyNetwork} to ensure that the
@@ -107,7 +107,7 @@ public class CyNetworkCache implements PropertyChangeListener {
 	}
 	
 	/**
-	 * Returns the Cluster ONE representation of the given {@link CyNetwork}.
+	 * Returns the ClusterONE representation of the given {@link CyNetwork}.
 	 * 
 	 * If the {@link CyNetwork} was not seen before by this instance, a network
 	 * listener will be registered on the {@link CyNetwork} to ensure that the

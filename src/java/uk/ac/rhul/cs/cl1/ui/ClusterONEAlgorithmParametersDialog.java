@@ -34,18 +34,18 @@ public class ClusterONEAlgorithmParametersDialog extends JDialog implements Acti
 	protected int resultCode;
 	
 	public ClusterONEAlgorithmParametersDialog() {
-		super((Dialog)null, "Cluster ONE algorithm parameters", true);
+		super((Dialog)null, "ClusterONE algorithm parameters", true);
 		setLocationRelativeTo(null);
 		initialize();
 	}
 	
 	public ClusterONEAlgorithmParametersDialog(Dialog owner) {
-		super(owner, "Cluster ONE algorithm parameters", true);
+		super(owner, "ClusterONE algorithm parameters", true);
 		initialize();
 	}
 	
 	public ClusterONEAlgorithmParametersDialog(Frame owner) {
-		super(owner, "Cluster ONE algorithm parameters", true);
+		super(owner, "ClusterONE algorithm parameters", true);
 		initialize();
 	}
 	

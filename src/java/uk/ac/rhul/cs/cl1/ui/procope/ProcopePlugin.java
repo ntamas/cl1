@@ -17,7 +17,7 @@ import uk.ac.rhul.cs.graph.Graph;
 import uk.ac.rhul.cs.utils.UniqueIDGenerator;
 
 /**
- * ProCope plugin version of Cluster ONE.
+ * ProCope plugin version of ClusterONE.
  * 
  * @author tamas
  */
@@ -89,7 +89,7 @@ public class ProcopePlugin implements Clusterer {
 		UniqueIDGenerator<Integer> idGen = new UniqueIDGenerator<Integer>(result);
 		
 		if (net.isDirected()) 
-			throw new ProCopeException("Cluster ONE supports undirected graphs only");
+			throw new ProCopeException("ClusterONE supports undirected graphs only");
 		
 		int[] edges = net.getEdgesArray();
 		
@@ -101,9 +101,9 @@ public class ProcopePlugin implements Clusterer {
 			if (weight == Float.NaN)
 				continue;
 			if (weight < 0.0)
-				throw new ProCopeException("negative weights are not supported by Cluster ONE");
+				throw new ProCopeException("negative weights are not supported by ClusterONE");
 			if (weight > 1.0)
-				throw new ProCopeException("scores larger than 1.0 are not supported by Cluster ONE");
+				throw new ProCopeException("scores larger than 1.0 are not supported by ClusterONE");
 			
 			result.createEdge(protein1, protein2, weight);
 		}

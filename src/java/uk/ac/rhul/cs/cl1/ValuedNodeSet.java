@@ -10,7 +10,7 @@ import com.sosnoski.util.hashmap.ObjectIntHashMap;
  * Nodeset with a value associated to each node
  * 
  * This class can be used to attach arbitrary attributes to the nodes of a
- * {@link NodeSet}. Cluster ONE uses this to keep track of the number of
+ * {@link NodeSet}. ClusterONE uses this to keep track of the number of
  * cohesive subgroups a given node participated in when merging overlapping
  * cohesive subgroups.
  * 

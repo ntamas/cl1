@@ -1,8 +1,8 @@
 .. -*- coding: utf-8 -*-
 
-==================================
-Cluster ONE command line interface
-==================================
+=================================
+ClusterONE command line interface
+=================================
 
 :Author: Tamás Nepusz, Haiyuan Yu, Alberto Paccanaro
 :Contact: tamas@cs.rhul.ac.uk
@@ -10,20 +10,20 @@ Cluster ONE command line interface
 Introduction
 ============
 
-This is the documentation of the command line interface of Cluster ONE,
+This is the documentation of the command line interface of ClusterONE,
 created by Tamás Nepusz, Haiyuan Yu and Alberto Paccanaro.
 
-If you use results calculated by Cluster ONE in a publication,
+If you use results calculated by ClusterONE in a publication,
 please cite one of the suggested `references`_.
 
 
 .. contents:: Table of contents
    :backlinks: none
 
-The one-minute guide to using Cluster ONE
-=========================================
+The one-minute guide to using ClusterONE
+========================================
 
-The command line interface of Cluster ONE is distributed in a Java archive file
+The command line interface of ClusterONE is distributed in a Java archive file
 (JAR). Its name is likely to be something like ``cluster_one-X.Y.jar``, where
 ``X.Y`` is the version number. In the document, we will simply use the name
 without the version number.
@@ -32,13 +32,13 @@ In the rest of this document, a dollar (``$``) sign at the start of a line in
 the examples represents the shell prompt of the operating system. There is no
 need to type it.
 
-The easiest use-case is to run Cluster ONE on an input file containing
+The easiest use-case is to run ClusterONE on an input file containing
 id1-id2-weight triplets. Assuming that you have the Java interpreter on the
 path of your operating system, this is as simple as::
 
     $ java -jar cluster_one.jar input_file.txt
 
-Cluster ONE also works on SIF files (Standard Interaction Format). It ignores
+ClusterONE also works on SIF files (Standard Interaction Format). It ignores
 the interaction types and assumes each interaction to have a weight of 1.0::
 
     $ java -jar cluster_one.jar input_file.sif
@@ -81,9 +81,9 @@ Description of the algorithm
 Invocation
 ==========
 
-Cluster ONE is distributed as a Java archive (JAR) file. Assuming that you have
+ClusterONE is distributed as a Java archive (JAR) file. Assuming that you have
 already installed Java and the Java executable (``java`` on Linux and Mac OS X,
-``java.exe`` on Windows) is already on the system path, you can start Cluster ONE
+``java.exe`` on Windows) is already on the system path, you can start ClusterONE
 as follows::
 
     $ java -jar cluster_one.jar [options] input_file
@@ -98,8 +98,8 @@ The following command line options are recognised:
 Basic command line options
 --------------------------
 
--f, --input-format  specifies the format of the input file (sif or edge_list). Use
-                    this option only if Cluster ONE failed to detect the format
+-f, --input-format  specifies the format of the input file (``sif`` or ``edge_list``).
+                    Use this option only if ClusterONE failed to detect the format
                     automatically.
 -h, --help          shows a general help message
 -d, --min-density   sets the minimum density of predicted complexes
@@ -139,7 +139,7 @@ Advanced command line options
                     last merging phase). This is useful for debugging purposes only.
 
 --penalty           sets a penalty value for the inclusion of each node. When you set
-                    this option to *x*, Cluster ONE will assume that each node has an
+                    this option to *x*, ClusterONE will assume that each node has an
                     extra boundary weight of *x* when it considers the addition of the
                     node to a cluster (see [1]_ for more details). It can be used to
                     model the possibility of uncharted connections for each node, so
@@ -190,7 +190,7 @@ Input file formats
 The following input file formats are recognised:
 
 **Cytoscape SIF files**
-    When the extension of the input file is ``.sif``, Cluster ONE will
+    When the extension of the input file is ``.sif``, ClusterONE will
     automatically try to parse the file according to the SIF format
     of Cytoscape. Each line of the file must be according to the following
     format::
@@ -199,12 +199,12 @@ The following input file formats are recognised:
 
     where ``id1`` and ``id2`` are the IDs of the two interacting proteins and
     ``type`` is the interaction type (which will silently be ignored by
-    Cluster ONE). Each edge will have unit weight. The columns of the input
+    ClusterONE). Each edge will have unit weight. The columns of the input
     file may be separated by spaces or tabs; however, make sure that you do
     not mix these separator characters.
 
 **Weighted edge lists**
-    This is the default file format assumed by Cluster ONE unless the file
+    This is the default file format assumed by ClusterONE unless the file
     extension suggests otherwise. Each line of the file has the following
     format::
 
@@ -216,13 +216,13 @@ The following input file formats are recognised:
     with hash marks (``#``) or percentage signs (``%``) are considered as
     comments and they are silently ignored.
 
-If Cluster ONE fails to recognise the input format of your file, feel free to
+If ClusterONE fails to recognise the input format of your file, feel free to
 specify it using the ``--input-format`` command line option.
 
 References
 ==========
 
-If you use results calculated by Cluster ONE in a publication,
+If you use results calculated by ClusterONE in a publication,
 please cite the following reference:
 
 .. [1] Nepusz T, Yu H, Paccanaro A: Detecting overlapping protein complexes

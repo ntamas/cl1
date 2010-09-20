@@ -29,7 +29,7 @@ import cytoscape.view.CytoscapeDesktop;
 
 public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements PropertyChangeListener {
 	/**
-	 * Attribute name used by Cluster ONE to store status information for each node.
+	 * Attribute name used by ClusterONE to store status information for each node.
 	 * 
 	 * A node can have one and only one of the following status values:
 	 * 
@@ -42,13 +42,13 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 	public static final String ATTRIBUTE_STATUS = "cl1.Status";
 	
 	/**
-	 * Attribute name used by Cluster ONE to store affinities of vertices to a
+	 * Attribute name used by ClusterONE to store affinities of vertices to a
 	 * given cluster.
 	 */
 	public static final String ATTRIBUTE_AFFINITY = "cl1.Affinity";
 	
 	/**
-	 * Local cache for converted Cluster ONE representations of Cytoscape networks
+	 * Local cache for converted ClusterONE representations of Cytoscape networks
 	 */
 	private static CyNetworkCache networkCache = new CyNetworkCache();
 	
@@ -70,20 +70,20 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 		GrowClusterAction.getGlobalInstance().setEnabled(false);
 		AffinityColouringAction.getGlobalInstance().setEnabled(false);
 		
-		/* Set up the attributes that will be used by Cluster ONE */
+		/* Set up the attributes that will be used by ClusterONE */
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		nodeAttributes.setAttributeDescription(ATTRIBUTE_STATUS,
-				"This attribute is used by the Cluster ONE plugin to indicate the status "+
-				"of a node after a Cluster ONE run. The status codes are as follows:\n\n"+
+				"This attribute is used by the ClusterONE plugin to indicate the status "+
+				"of a node after a ClusterONE run. The status codes are as follows:\n\n"+
 				"Outlier = the node is not part of any cluster (i.e. it is an outlier)\n"+
 				"Cluster = the node is part of exactly one cluster\n"+
 				"Overlap = the node is part of multiple clusters (i.e. it is an overlap)"
 		);
 		nodeAttributes.setAttributeDescription(ATTRIBUTE_AFFINITY,
-				"This attribute is used by the Cluster ONE plugin to indicate the "+
+				"This attribute is used by the ClusterONE plugin to indicate the "+
 				"affinity of a node to a given cluster. The attribute values can be "+
 				"(re)calculated manually by right-clicking on a cluster in the "+
-				"Cluster ONE result table and selecting the appropriate menu item."
+				"ClusterONE result table and selecting the appropriate menu item."
 		);
 		
 		/* Register ourselves as a listener for newly created networks and network view
@@ -127,12 +127,12 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 	}
 	
 	/**
-	 * Runs Cluster ONE with the given parameters on the given Cytoscape network
+	 * Runs ClusterONE with the given parameters on the given Cytoscape network
 	 * 
 	 * @param network        the network we are running the algorithm on
-	 * @param parameters     the algorithm parameters of Cluster ONE
+	 * @param parameters     the algorithm parameters of ClusterONE
 	 * @param weightAttr     edge attribute holding edge weights
-	 * @param setAttributes  whether to set Cluster ONE related node/edge attributes on the
+	 * @param setAttributes  whether to set ClusterONE related node/edge attributes on the
 	 *                       network in the end
 	 */
 	protected static Pair<List<ValuedNodeSet>, List<Node>> runAlgorithm(CyNetwork network,
@@ -153,10 +153,10 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 	}
 	
 	/**
-	 * Runs Cluster ONE with the given parameters on the given graph
+	 * Runs ClusterONE with the given parameters on the given graph
 	 * 
 	 * @param graph          the graph we are running the algorithm on
-	 * @param parameters     the algorithm parameters of Cluster ONE
+	 * @param parameters     the algorithm parameters of ClusterONE
 	 * @param weightAttr     edge attribute holding edge weights
 	 */
 	protected static List<ValuedNodeSet> runAlgorithm(Graph graph,
@@ -181,10 +181,10 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 	}
 	
 	/**
-	 * Sets some Cluster ONE specific node status attributes on a CyNetwork that
+	 * Sets some ClusterONE specific node status attributes on a CyNetwork that
 	 * will be used by VizMapper later.
 	 * 
-	 * @param graph      the Cluster ONE graph representation
+	 * @param graph      the ClusterONE graph representation
 	 * @param results    results of the analysis
 	 */
 	private static void setStatusAttributesOnGraph(Graph graph, List<ValuedNodeSet> results) {
@@ -225,10 +225,10 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 	}
 	
 	/**
-	 * Sets the Cluster ONE specific node affinity attributes on a CyNetwork that
+	 * Sets the ClusterONE specific node affinity attributes on a CyNetwork that
 	 * will be used by VizMapper later.
 	 * 
-	 * @param graph    the Cluster ONE graph representation
+	 * @param graph    the ClusterONE graph representation
 	 * @param nodes    the list of the selected node indices
 	 */
 	public static void setAffinityAttributesOnGraph(Graph graph, List<Integer> nodes) {
@@ -270,7 +270,7 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 			i++;
 		}
 		
-		/* Set the appropriate Cluster ONE visual style */
+		/* Set the appropriate ClusterONE visual style */
 		VisualStyleManager.ensureVizMapperStylesRegistered(false);
 		VisualStyleManager.updateAffinityStyleRange();
 		Cytoscape.getVisualMappingManager().setVisualStyle(VisualStyleManager.VISUAL_STYLE_BY_AFFINITY);
@@ -301,7 +301,7 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 	}
 
 	/**
-	 * Shows a message dialog box that informs the user about a possible bug in Cluster ONE.
+	 * Shows a message dialog box that informs the user about a possible bug in ClusterONE.
 	 * 
 	 * @param  message   the message to be shown
 	 */

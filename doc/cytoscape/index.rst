@@ -1,8 +1,8 @@
 .. -*- coding: utf-8 -*-
 
-============================
-Cluster ONE Cytoscape plugin
-============================
+===========================
+ClusterONE Cytoscape plugin
+===========================
 
 :Author: Tamás Nepusz, Haiyuan Yu, Alberto Paccanaro
 :Contact: tamas@cs.rhul.ac.uk
@@ -13,37 +13,37 @@ Introduction
 .. image:: images/logo.png
    :width: 270
    :height: 84
-   :alt: Cluster ONE logo
+   :alt: ClusterONE logo
    :align: center
 
-This is the documentation of the Cluster ONE Cytoscape plugin,
+This is the documentation of the ClusterONE Cytoscape plugin,
 created by Tamás Nepusz, Haiyuan Yu and Alberto Paccanaro.
 
-If you use results calculated by Cluster ONE in a publication,
+If you use results calculated by ClusterONE in a publication,
 please cite one of the suggested `references`_.
 
 
 .. contents:: Table of contents
    :backlinks: none
 
-The one-minute guide to using Cluster ONE
-=========================================
+The one-minute guide to using ClusterONE
+========================================
 
-Cluster ONE is distributed in a Java archive file (JAR), which contains both
+ClusterONE is distributed in a Java archive file (JAR), which contains both
 the command line application and the Cytoscape plugin. In this document, we
-are assuming that you want to use Cluster ONE from the Cytoscape graphical
+are assuming that you want to use ClusterONE from the Cytoscape graphical
 user interface. If you are interested in the command line interface, please
 refer to the documentation distributed with the command line interface itself.
 
-Cluster ONE can be installed from the Cytoscape plugin manager. Launch
+ClusterONE can be installed from the Cytoscape plugin manager. Launch
 Cytoscape if you have not done so, click on the **Manage plugins** item of the
 **Plugins** menu, select the **Analysis** subgroup within the **Available for
 install** category, select the line starting with **ClusterONE** and click on
 the **Install** button. Cytoscape should download and install the selected
-version of Cluster ONE for you. If you see more than one version of Cluster
+version of ClusterONE for you. If you see more than one version of Cluster
 ONE, make sure you install the most recent one. If you don't see any Cluster
 ONE version, first check whether you have installed it already (look for a
-menu called **Cluster ONE** within the **Plugins** submenu), and if you
+menu called **ClusterONE** within the **Plugins** submenu), and if you
 haven't, check the **Show outdated plugins** checkbox in the **Manage plugins**
 dialog.
 
@@ -52,13 +52,13 @@ item called **Cluster ONE** in the **Plugins** submenu. Now, do the following:
 
 - Load the network you wish to analyse into Cytoscape.
    
-- Click on **Plugins/Cluster ONE/Start** to start Cluster ONE. This will add
-  a new panel called **Cluster ONE** to the control panels on the left.
+- Click on **Plugins/ClusterONE/Start** to start ClusterONE. This will add
+  a new panel called **ClusterONE** to the control panels on the left.
 
 - If your network is weighted, select the name of the weight attribute on the
-  Cluster ONE control panel next to **Edge weights**.
+  ClusterONE control panel next to **Edge weights**.
 
-- Click on the **Start** button at the bottom of the panel. Cluster ONE should
+- Click on the **Start** button at the bottom of the panel. ClusterONE should
   detect the densely connected regions of your network and list them in a
   new panel on the Cytoscape result panel, which is usually on the right hand
   side of the window.
@@ -77,18 +77,18 @@ Description of the algorithm
 
 .. include:: ../cmdline/description.rst
 
-The Cluster ONE menu
-====================
+The ClusterONE menu
+===================
 
-Cluster ONE installs itself into the Plugins menu of Cytoscape under
-a submenu named **Cluster ONE**. This submenu has the following items:
+ClusterONE installs itself into the Plugins menu of Cytoscape under
+a submenu named **ClusterONE**. This submenu has the following items:
 
 **Start**
-    Shows the `control panel`_ of Cluster ONE, which is the main entry
-    point to the clustering algorithm implemented in Cluster ONE.
+    Shows the `control panel`_ of ClusterONE, which is the main entry
+    point to the clustering algorithm implemented in ClusterONE.
 
 **Grow cluster from selected nodes**
-    Grows a single cluster according to the steps of the Cluster ONE algorithm,
+    Grows a single cluster according to the steps of the ClusterONE algorithm,
     starting from the selected nodes which will be treated as a single seed set.
     For more details about the growth process, please refer to the
     `description of the algorithm`. The resulting cluster will be selected
@@ -97,7 +97,7 @@ a submenu named **Cluster ONE**. This submenu has the following items:
     plugin (available from Plugins -> Manage plugins) to remember the
     original selection.
 
-    This menu item remains disabled until you start the Cluster ONE plugin
+    This menu item remains disabled until you start the ClusterONE plugin
     using the corresponding menu item.
 
 **Color nodes by affinity**
@@ -110,38 +110,38 @@ a submenu named **Cluster ONE**. This submenu has the following items:
     by starting from a small seed cluster and repeatedly adding nodes to
     the cluster that increase the quality function the most. Note that
     you will have to recalculate the affinities every time you modify the
-    cluster, Cluster ONE won't do that automatically.
+    cluster, ClusterONE won't do that automatically.
 
     Node coloring is implemented using a custom VizMapper style. This style
     is selected automatically when you click on this menu item, but you can
     always return to your original style in the VizMapper panel of Cytoscape.
 
-    This menu item remains disabled until you start the Cluster ONE plugin
+    This menu item remains disabled until you start the ClusterONE plugin
     using the corresponding menu item.
 
 **Help**
-    Shows the manual of Cluster ONE (this document) in a separate window.
+    Shows the manual of ClusterONE (this document) in a separate window.
 
 **About**
-    Shows the authors, the preferred citation for Cluster ONE
+    Shows the authors, the preferred citation for ClusterONE
     (see also `References`_) and the URL of its homepage.
 
 
 Control panel
 =============
 
-The control panel of Cluster ONE is to be found on a separate tab in the
+The control panel of ClusterONE is to be found on a separate tab in the
 control panel of Cytoscape (see the left hand side of the Cytoscape user
 interface). The panel consists of two large parts: the `Parameters`_ box lets
 you set the parameters of the algorithm (this is subdivided into `Basic
 parameters`_ and `Advanced parameters`_), while the `Selection info`_ box lets
 you examine some properties of the currently selected set of nodes (such as the
 total weight of edges within the set and at the boundary of the set, or the
-value of the Cluster ONE quality function).
+value of the ClusterONE quality function).
 
 Click on the **Start** button at the bottom of the panel to start the clustering
 process. The `result viewer`_ will open automatically when the results are ready.
-Use the **Close panel** button to hide the Cluster ONE control panel.
+Use the **Close panel** button to hide the ClusterONE control panel.
 
 After a successful clustering process, the nodes of the network will be colored
 according to the number of clusters they participate in. Nodes that correspond
@@ -163,18 +163,18 @@ Basic parameters
 ^^^^^^^^^^^^^^^^
 
 **Minimum size**
-    The minimum size of clusters deemed relevant by Cluster ONE.
-    This is a hard threshold: whenever Cluster ONE finds a cluster
+    The minimum size of clusters deemed relevant by ClusterONE.
+    This is a hard threshold: whenever ClusterONE finds a cluster
     smaller than the minimum size, the cluster will be discarded
     immediately.
 
 **Minimum density**
-    The minimum density of clusters deemed relevant by Cluster ONE.
+    The minimum density of clusters deemed relevant by ClusterONE.
     The density of a cluster is the total sum of edge weights within
     the cluster, divided by the number of theoretically possible
     edges within the cluster. In other words, this is the average edge
     weight within the cluster if missing edges are assumed to have a
-    weight of zero. Whenever Cluster ONE finds a cluster that has a
+    weight of zero. Whenever ClusterONE finds a cluster that has a
     smaller density than the value given here, the cluster will be
     discarded immediately. Increase the minimum density if you get
     too many clusters and they seem too sparse, or decrease it if you
@@ -186,7 +186,7 @@ Basic parameters
     name of the attribute in the list, click on the **Refresh** button
     (|refresh|) next to the combo box to re-scan the network for numeric edge
     attributes. This is necessary when you added the edge attribute you are
-    looking for after you opened the Cluster ONE control panel.
+    looking for after you opened the ClusterONE control panel.
 
 .. |refresh| image:: images/refresh.png
 
@@ -199,7 +199,7 @@ If you do not see these parameters in the `control panel`_, click on the
 
 **Node penalty**
     Penalty value corresponding to each node. When you set this option to
-    a specific value *x*, Cluster ONE will assume that each node has an
+    a specific value *x*, ClusterONE will assume that each node has an
     extra boundary weight of *x* when it considers the addition of the node
     to a cluster (see [1]_ for more details). It can be used to model the
     possibility of uncharted connections for each node, so nodes with only
@@ -208,9 +208,9 @@ If you do not see these parameters in the `control panel`_, click on the
     default penalty value is 2.
 
 **Merging method** and **Overlap threshold**
-    After an initial set of clusters are found, Cluster ONE tries to
+    After an initial set of clusters are found, ClusterONE tries to
     merge highly overlapping (and thus redundant) clusters in order to
-    clean up the result. For each pair of clusters found, Cluster ONE
+    clean up the result. For each pair of clusters found, ClusterONE
     calculates a score that quantifies the overlap between them, and
     two clusters are merged if this overlap is larger than a given
     threshold (specified by the **Overlap threshold** textbox). There
@@ -228,7 +228,7 @@ If you do not see these parameters in the `control panel`_, click on the
     will result in more clusters being merged.
 
 **Seeding method**
-    Cluster ONE works by growing clusters from initial "seeds", driven
+    ClusterONE works by growing clusters from initial "seeds", driven
     by a goal function that is maximized greedily (see the Cluster
     ONE paper [1]_ for more details). A seed can be an arbitrary subgraph,
     but in most cases, it is either a single node or a single edge.
@@ -350,7 +350,7 @@ Toolbar
     This button toggles between the `simple view`_ and the `detailed view`_.
 
 |find| **Find clusters of selected nodes**
-    By clicking this button, Cluster ONE will evaluate all the nodes that are
+    By clicking this button, ClusterONE will evaluate all the nodes that are
     selected in the current Cytoscape network and select the clusters in which
     at least one of the selected nodes participate. It can primarily be used
     to find the cluster(s) of a single node after selecting that node in the
@@ -404,7 +404,7 @@ clicked on.
 References
 ==========
 
-If you use results calculated by Cluster ONE in a publication,
+If you use results calculated by ClusterONE in a publication,
 please cite the following reference:
 
 .. [1] Nepusz T, Yu H, Paccanaro A: Detecting overlapping protein complexes

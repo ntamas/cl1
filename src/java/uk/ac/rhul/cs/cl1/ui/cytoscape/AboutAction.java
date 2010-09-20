@@ -11,7 +11,7 @@ import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 
 /**
- * An action that shows the Cluster ONE About dialog.
+ * An action that shows the ClusterONE About dialog.
  * 
  * @author tamas
  */
@@ -21,7 +21,7 @@ public class AboutAction extends CytoscapeAction {
 	 */
 	public AboutAction() {
 		super("About...");
-		setPreferredMenu("Plugins.Cluster ONE");
+		setPreferredMenu("Plugins.ClusterONE");
 		this.putValue(AbstractAction.MNEMONIC_KEY, KeyEvent.VK_A);
 	}
 	

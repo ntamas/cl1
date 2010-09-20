@@ -31,7 +31,7 @@ import uk.ac.rhul.cs.cl1.io.GraphReaderFactory;
 import uk.ac.rhul.cs.graph.Graph;
 
 /**
- * REST resource handling results produced by Cluster ONE.
+ * REST resource handling results produced by ClusterONE.
  * 
  * @author tamas
  */
@@ -42,7 +42,7 @@ public class ResultResource {
 	EntityStore<ClusterONEResult> resultStore = WebApplication.getResultStore();
 	
 	/**
-	 * Creates a new result by running Cluster ONE on a dataset.
+	 * Creates a new result by running ClusterONE on a dataset.
 	 * 
 	 * @param datasetId  the ID of the dataset
 	 * @return an HTTP response containing the location of the result

@@ -1,0 +1,5 @@
+-Xms20m
+-Xmx20g
+-d64
+-Dswing.aatext=true
+-Dawt.useSystemAAFontSettings=lcd

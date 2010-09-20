@@ -3,7 +3,7 @@ package uk.ac.rhul.cs.cl1;
 /**
  * Task monitor that does nothing.
  * 
- * This task monitor is used when the Cluster ONE algorithm is
+ * This task monitor is used when the ClusterONE algorithm is
  * invoked from the web interface.
  * 
  * @author tamas

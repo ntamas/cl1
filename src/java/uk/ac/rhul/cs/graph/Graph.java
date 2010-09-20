@@ -11,7 +11,7 @@ import com.sosnoski.util.array.StringArray;
 import com.sosnoski.util.hashmap.ObjectIntHashMap;
 
 /**
- *  Graph class used in Cluster ONE
+ *  Graph class used in ClusterONE
  *  
  *  This class uses a simple adjacency list representation in the background.
  */
