@@ -17,6 +17,8 @@ import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.text.html.HTMLEditorKit;
 
+import cytoscape.Cytoscape;
+
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.utils.StringUtils;
 
@@ -64,6 +66,7 @@ public class AboutDialog extends JDialog implements ActionListener {
         editorPane.setText(text);
         editorPane.setBackground(Color.white);
         editorPane.setAlignmentX(0.5f);
+        editorPane.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
         
         JButton closeButton = new JButton("Close");
         closeButton.setActionCommand("close");
@@ -80,6 +83,9 @@ public class AboutDialog extends JDialog implements ActionListener {
         
         setContentPane(contentPane);
         pack();
+        
+        setSize(400, 300);
+        setLocationRelativeTo(Cytoscape.getDesktop());
 	}
 	
 	/**

@@ -193,7 +193,7 @@
 	<target name="-copy_resources" depends="compile_java" description="Copies resource files to the build tree">
 		<copy todir="${build.java}/${package.name.slashed}/resources">
 			<fileset dir="${src.java}/${package.name.slashed}/resources" />
-			<fileset file="${doc}/cytoscape/images/logo.png" />
+			<fileset file="${doc}/images/logo.png" />
 		</copy>
 	</target>
 

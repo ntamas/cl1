@@ -408,7 +408,7 @@ If you use results calculated by ClusterONE in a publication,
 please cite the following reference:
 
 .. [1] Nepusz T, Yu H, Paccanaro A: Detecting overlapping protein complexes
-       in protein-protein interaction networks. In preparation.
+       from protein-protein interaction networks. In preparation.
 
 Some other papers that might be of interest (and were referenced earlier
 in this help file):
