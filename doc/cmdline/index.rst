@@ -154,7 +154,7 @@ Advanced command line options
 
                       - ``unused_nodes``: nodes will be tried in the descending
                         order of their weights (where the weight of a node is the
-                        sum of the weights on its adjacent edges), and whenever a
+                        sum of the weights on its incident edges), and whenever a
                         cluster is found, the nodes in that cluster will be excluded
                         from the list of potential seeds. In other words, the node
                         with the largest weight that does *not* participate in any

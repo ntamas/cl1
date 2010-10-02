@@ -16,8 +16,8 @@ called *internal vertices*, while vertices not in |V0| are called *external
 vertices*.  An edge that is situated between two internal vertices is an
 *internal edge*, an edge going between an internal and an external vertex is a
 *boundary edge*, and an edge between two external vertices is an *external
-edge*. An internal vertex adjacent to at least one boundary edge is an
-*internal boundary vertex*, while an external vertex adjacent to at least one
+edge*. An internal vertex incident on at least one boundary edge is an
+*internal boundary vertex*, while an external vertex incident on at least one
 boundary edge is an *external boundary vertex*. The following figure illustrates
 these concepts:
 
