@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.cl1.graph;
 
 import static org.junit.Assert.*;
 

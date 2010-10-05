@@ -3,10 +3,10 @@ package uk.ac.rhul.cs.graph;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
-import com.sosnoski.util.array.IntArray;
-import com.sosnoski.util.hashset.IntHashSet;
+import uk.ac.rhul.cs.utils.IntegerRange;
 
 /**
  * Finds all the maximal cliques in a graph using the Bron-Kerbosch algorithm.
@@ -28,23 +28,55 @@ public class BronKerboschMaximalCliqueFinder extends GraphAlgorithm {
 	 *                     potential clique
 	 * @param  alreadyFound  the set of vertices already found
 	 */
-	protected void findCliques(Collection<IntArray> result,
-			              IntHashSet potentialClique,
+	protected void findCliques(Collection<List<Integer>> result,
+			              HashSet<Integer> potentialClique,
 			              HashSet<Integer> candidates,
-			              IntArray alreadyFound) {
+			              HashSet<Integer> alreadyFound) {
 		if (isAnyConnectedToAllCandidates(alreadyFound, candidates))
 			return;
 		
-		for (Integer candidate: candidates) {
-			// TODO
+		Graph graph = this.getGraph();
+		Iterator<Integer> it = candidates.iterator();
+		
+		while (it.hasNext()) {
+			Integer candidate = it.next();
+			
+			// create newCandidates and newAlreadyFound
+			HashSet<Integer> newCandidates = new HashSet<Integer>();
+			HashSet<Integer> newAlreadyFound = new HashSet<Integer>();
+			
+			// move candidate node to potentialClique
+			potentialClique.add(candidate);
+			it.remove();
+			
+			// create newCandidates by removing nodes in candidates that are
+			// not connected to the candidate node
+			int[] neis = graph.getAdjacentNodeIndicesArray(candidate, Directedness.ALL);
+			for (int nei: neis) {
+				if (candidates.contains(nei))
+					newCandidates.add(nei);
+				if (alreadyFound.contains(nei))
+					newAlreadyFound.add(nei);
+			}
+			
+			if (newCandidates.isEmpty() && newAlreadyFound.isEmpty()) {
+				// this is a maximal clique
+				result.add(new ArrayList<Integer>(potentialClique));
+			} else {
+				// recursive call
+				findCliques(result, potentialClique, newCandidates, newAlreadyFound);
+			}
+			
+			alreadyFound.add(candidate);
+			potentialClique.remove(candidate);
 		}
 	}
 	
 	/**
 	 * Returns the list of all maximal cliques
 	 */
-	public List<IntArray> getMaximalCliques() {
-		List<IntArray> result = new ArrayList<IntArray>();
+	public List<List<Integer>> getMaximalCliques() {
+		List<List<Integer>> result = new ArrayList<List<Integer>>();
 		getMaximalCliques(result);
 		return result;
 	}
@@ -54,11 +86,12 @@ public class BronKerboschMaximalCliqueFinder extends GraphAlgorithm {
 	 * 
 	 * @param  result  the collection in which the result will be stored
 	 */
-	public void getMaximalCliques(Collection<IntArray> result) {
-		IntHashSet potentialClique = new IntHashSet();
+	public void getMaximalCliques(Collection<List<Integer>> result) {
+		HashSet<Integer> potentialClique = new HashSet<Integer>();
 		HashSet<Integer> candidates = new HashSet<Integer>();
-		IntArray alreadyFound = new IntArray();
+		HashSet<Integer> alreadyFound = new HashSet<Integer>();
 		
+		candidates.addAll(new IntegerRange(graph.getNodeCount()));
 		findCliques(result, potentialClique, candidates, alreadyFound);
 	}
 	
@@ -71,12 +104,26 @@ public class BronKerboschMaximalCliqueFinder extends GraphAlgorithm {
 	 * @return  true if at least one node is connected to all the candidates,
 	 *          false otherwise
 	 */
-	protected boolean isAnyConnectedToAllCandidates(IntArray nodes,
+	protected boolean isAnyConnectedToAllCandidates(HashSet<Integer> nodes,
 			HashSet<Integer> candidates) {
 		Graph graph = this.getGraph();
+		HashSet<Integer> neiSet = new HashSet<Integer>();
 		
-		for (int i = 0; i < nodes.size(); i++) {
-			// TODO
+		for (int node: nodes) {
+			int[] neis = graph.getAdjacentNodeIndicesArray(node, Directedness.ALL);
+			
+			if (neis.length < candidates.size())
+				continue;
+			
+			neiSet.clear();
+			for (int nei: neis)
+				neiSet.add(nei);
+			if (neiSet.size() < candidates.size())
+				continue;
+			
+			neiSet.retainAll(candidates);
+			if (neiSet.size() == candidates.size())
+				return true;
 		}
 		
 		return false;
