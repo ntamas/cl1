@@ -164,6 +164,9 @@ Advanced command line options
                       - ``edges``: every edge will be considered once, each yielding
                         a seed consisting of the two endpoints of the edge.
 
+                      - ``cliques``: every *maximal* clique of the graph will be
+                        considered once as a seed.
+
                       - ``file(*filename*)``: seeds will be generated from the given
                         file. Each line of the file must contain a space-separated
                         list of node IDs that will be part of the seed (and of course

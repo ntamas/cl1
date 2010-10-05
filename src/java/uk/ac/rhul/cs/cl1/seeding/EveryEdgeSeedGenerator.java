@@ -53,11 +53,6 @@ public class EveryEdgeSeedGenerator extends SeedGenerator {
 			steps++;
 			return result;
 		}
-
-		public void remove() {
-			throw new UnsupportedOperationException();
-		}
-		
 	}
 	
 	/** Constructs a seed generator that is not associated to any graph yet */

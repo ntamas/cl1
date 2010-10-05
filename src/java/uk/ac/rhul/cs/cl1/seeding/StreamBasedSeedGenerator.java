@@ -120,10 +120,6 @@ public class StreamBasedSeedGenerator extends SeedGenerator {
 			processLine();
 			return result;
 		}
-		
-		public void remove() {
-			throw new UnsupportedOperationException();
-		}
 	}
 	
 	/**

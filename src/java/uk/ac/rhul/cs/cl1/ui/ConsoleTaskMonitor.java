@@ -17,6 +17,13 @@ public class ConsoleTaskMonitor implements TaskMonitor {
 	/** State of the spinner when the task is running indeterminately */
 	protected int spinnerState = 0;
 	
+	/** The time of the last update of the progress bar.
+	 * 
+	 * When in indeterminate state, this timestamp ensures that the progress bar is not updated
+	 * too frequently.
+	 */
+	protected long lastUpdatedAt = -1;
+	
 	/** Width of the progress bar in characters */
 	protected int progressBarWidth = 20;
 
@@ -71,9 +78,13 @@ public class ConsoleTaskMonitor implements TaskMonitor {
 		if (percent < -1 || percent > 100)
 			throw new IllegalArgumentException("percentage must be between -1 and 100");
 		if (percent == -1) {
-			this.spinnerState = (this.spinnerState + 1) % 4;
-		}
-		if (this.percent != percent || percent == -1) {
+			this.percent = -1;
+			if (System.currentTimeMillis() - lastUpdatedAt > 100) {
+				this.spinnerState++;
+				this.dirty = true;
+				updateDisplay();
+			}
+		} else if (this.percent != percent) {
 			this.percent = percent;
 			this.dirty = true;
 			updateDisplay();
@@ -134,6 +145,8 @@ public class ConsoleTaskMonitor implements TaskMonitor {
 			writer.append('\r');
 		
 		writer.flush();
+		
+		lastUpdatedAt = System.currentTimeMillis();
 	}
 	
 	/**

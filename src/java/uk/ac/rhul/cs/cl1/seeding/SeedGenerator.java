@@ -84,6 +84,9 @@ implements Iterable<MutableNodeSet>, Serializable {
 		if (specification.equals("edges"))
 			return new EveryEdgeSeedGenerator(graph);
 		
+		if (specification.equals("cliques"))
+			return new MaximalCliqueSeedGenerator(graph);
+		
 		if (specification.equals("stdin"))
 			return new StreamBasedSeedGenerator(graph, System.in);
 		
@@ -106,6 +109,7 @@ implements Iterable<MutableNodeSet>, Serializable {
 				throw new InstantiationException("IO error while reading file: "+filename);
 			}
 		}
+		
 		throw new InstantiationException("unknown seed generator type: "+specification);
 	}
 	

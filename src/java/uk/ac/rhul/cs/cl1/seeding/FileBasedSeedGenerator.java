@@ -177,10 +177,6 @@ public class FileBasedSeedGenerator extends SeedGenerator {
 			processLine();
 			return result;
 		}
-		
-		public void remove() {
-			throw new UnsupportedOperationException();
-		}
 	}
 	
 	/**

@@ -37,4 +37,11 @@ public abstract class SeedIterator implements Iterator<MutableNodeSet> {
 	 */
 	public void processFoundCluster(NodeSet cluster) {
 	}
+	
+	/**
+	 * Removals are not supported in seed iterators by default.
+	 */
+	public void remove() {
+		throw new UnsupportedOperationException();
+	}
 }

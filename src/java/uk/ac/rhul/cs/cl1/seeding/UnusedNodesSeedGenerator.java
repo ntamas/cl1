@@ -85,10 +85,6 @@ public class UnusedNodesSeedGenerator extends EveryNodeSeedGenerator {
 			return result;
 		}
 
-		public void remove() {
-			throw new UnsupportedOperationException();
-		}
-		
 		public void processFoundCluster(NodeSet cluster) {
 			for (int i: cluster)
 				usedNodes.add(i);
