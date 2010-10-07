@@ -152,7 +152,19 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 		
 		SeedIterator it = seedGenerator.iterator();
 		while (it.hasNext()) {
+			/* Get the next seed */
 			MutableNodeSet cluster = it.next();
+			
+			if (cluster == null) {
+				/* This happens when we are using a seed generator running in a
+				 * separate thread (such as MaximalCliqueSeedGenerator) and that
+				 * thread is interrupted for whatever reason.
+				 */
+				shouldStop = true;
+				return;
+			}
+			
+			/* Construct a growth process from the seed */
 			ClusterGrowthProcess growthProcess =
 				new GreedyClusterGrowthProcess(cluster, minDensity, qualityFunc);
 			

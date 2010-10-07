@@ -142,12 +142,10 @@ public class IntegerRange extends AbstractList<Integer> {
 			return result;
 		}
 
-		@Override
 		public int previousIndex() {
 			return index-1;
 		}
 
-		@Override
 		public void remove() {
 			throw new UnsupportedOperationException();
 		}

@@ -1,12 +1,23 @@
 package uk.ac.rhul.cs.cl1.seeding;
 
-import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import uk.ac.rhul.cs.cl1.MutableNodeSet;
 import uk.ac.rhul.cs.graph.BronKerboschMaximalCliqueFinder;
 import uk.ac.rhul.cs.graph.Graph;
+import uk.ac.rhul.cs.utils.BlockingQueueAdapter;
 
+/**
+ * Seed generator that returns every maximal clique of a graph as a seed.
+ * 
+ * Maximal cliques are sought for in a separate thread; a blocking queue is
+ * used to store the detected cliques. The contents of the queue is produced
+ * by a {@link BronKerboschMaximalCliqueFinder} and consumed by the user of
+ * the maximal clique seed generator via its iterator.
+ * 
+ * @author ntamas
+ */
 public class MaximalCliqueSeedGenerator extends SeedGenerator {
 	/**
 	 * Constructs a maximal clique seed generator with no associated graph.
@@ -43,29 +54,47 @@ public class MaximalCliqueSeedGenerator extends SeedGenerator {
 		BronKerboschMaximalCliqueFinder cliqueFinder;
 		
 		/**
-		 * The list of maximal cliques found by the clique finder.
+		 * A blocking queue in which the clique finder stores the cliques.
 		 */
-		List<List<Integer>> cliques = null;
+		ArrayBlockingQueue<List<Integer>> cliques =
+			new ArrayBlockingQueue<List<Integer>>(100);
 		
 		/**
-		 * An iterator over the list of maximal cliques
+		 * The thread in which the clique finder runs
 		 */
-		Iterator<List<Integer>> iterator = null;
+		Thread cliqueFinderThread = null;
 		
 		public IteratorImpl() {
 			cliqueFinder = new BronKerboschMaximalCliqueFinder();
 			cliqueFinder.setGraph(graph);
-			cliques = cliqueFinder.getMaximalCliques();
 			
-			iterator = cliques.iterator();
+			cliqueFinderThread = new Thread(new Runnable() {
+				public void run() {
+					BlockingQueueAdapter<List<Integer>> cliqueCollection =
+						new BlockingQueueAdapter<List<Integer>>(cliques);
+					cliqueFinder.getMaximalCliques(cliqueCollection);
+				}
+			});
+			cliqueFinderThread.start();
 		}
 		
 		public boolean hasNext() {
-			return iterator.hasNext();
+			if (cliques.isEmpty()) {
+				/* Queue is empty. Is the thread still running? */
+				if (cliqueFinderThread.isAlive() &&
+					!cliqueFinderThread.isInterrupted())
+					return true;
+				return false;
+			}
+			return true;
 		}
 
 		public MutableNodeSet next() {
-			return new MutableNodeSet(graph, iterator.next());
+			try {
+				return new MutableNodeSet(graph, cliques.take());
+			} catch (InterruptedException ex) {
+				return null;
+			}
 		}
 	}
 }
