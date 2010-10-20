@@ -58,14 +58,20 @@ implements Iterable<MutableNodeSet>, Serializable {
 	/**
 	 * Factory method that can construct seed generators from a simple string description.
 	 * The following specifiers are recognised at the moment:
+	 * 
 	 * <ul>
 	 * <li><tt>nodes</tt> - generates a singleton seed for each node of the graph</li>
-	 * <li><tt>file(<i>filename.txt</i>)</tt> - opens <tt>filename.txt</tt> and interprets
-	 *     each line as a seed set. Lines in the file must contain node names separated by
-	 *     spaces.</li> 
 	 * <li><tt>unused_nodes</tt> - generates a singleton seed for each node of the graph
 	 *     if it wasn't found so far as part of a cluster</li>
 	 * <li><tt>edges</tt> - generates a seed containing the two endpoints for each edge of the graph</li>
+	 * <li><tt>cliques</tt> - generates a seed for every maximal clique in the graph</li>
+	 * <li><tt>stdin</tt> - reads seeds from the standard input. Each line in the standard
+	 *     input must contain node names spearated by spaces.
+	 * <li><tt>file(<i>filename.txt</i>)</tt> - opens <tt>filename.txt</tt> and interprets
+	 *     each line as a seed set. Lines in the file must contain node names separated by
+	 *     spaces.</li> 
+	 * <li><tt>single(<i>node1</i>,<i>node2</i>,[...],<i>nodeN</i>)</tt> - generates a
+	 *     single seed with the given nodes.</li>
 	 * </ul>
 	 * 
 	 * @param  specification   the specification string
