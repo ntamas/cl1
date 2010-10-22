@@ -259,6 +259,7 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 		sb.append("Minimum density: " + minDensity + "\n");
 		sb.append("Overlap threshold: " + overlapThreshold + "\n");
 		sb.append("Haircut threshold: " + haircutThreshold + "\n");
+		sb.append("Node penalty: " + nodePenalty + "\n");
 		sb.append("Merging method: " + mergingMethod + "\n");
 		sb.append("Seed generator: " + seedGenerator + "\n");
 		

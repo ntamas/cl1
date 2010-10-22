@@ -138,6 +138,10 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 		boolean bestIsAddition = true;
 		
 		int n = nodeSet.size();
+		
+		if (n == 0)
+			return ClusterGrowthAction.terminate();
+
 		double den = (n + 1) * n / 2.0;
 		double internalWeightLimit = this.minDensity * den - nodeSet.getTotalInternalEdgeWeight();
 		

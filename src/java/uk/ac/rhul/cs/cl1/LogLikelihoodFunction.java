@@ -25,6 +25,12 @@ package uk.ac.rhul.cs.cl1;
  * goal function of our nodeset is then the log-likelihood of the event that the above model
  * generates exactly our nodeset.
  * 
+ * This goal function is good to assess the quality of a cluster based on a strict,
+ * model-based criterion, but it is not good to drive a greedy growth process, since
+ * it is almost always "safer" to contract small communities completely. It would require
+ * a fairly large seed to reach the point where the expansion of the community yields
+ * better log-likelihood scores than contraction.
+ * 
  * @author tamas
  *
  */
