@@ -43,17 +43,20 @@ public class KCoreFilter implements NodeSetFilter {
 	public boolean filter(MutableNodeSet nodeSet) {
 		boolean finished = false;
 		Graph graph = nodeSet.getGraph();
-		IntArray toRemove = new IntArray();
+		MutableNodeSet nodeSetCopy = new MutableNodeSet(nodeSet);
 		
+		if (k <= 0)
+			return true;
+
 		while (!finished) {
-			finished = true;
+			IntArray toRemove = new IntArray();
 			
-			for (int i: nodeSet) {
+			for (int i: nodeSetCopy) {
 				int[] neis = graph.getAdjacentNodeIndicesArray(i, Directedness.ALL);
 				int numNeis = 0;
 				
 				for (int nei: neis) {
-					if (nodeSet.contains(nei))
+					if (nodeSetCopy.contains(nei))
 						numNeis++;
 				}
 				
@@ -61,10 +64,11 @@ public class KCoreFilter implements NodeSetFilter {
 					toRemove.add(i);
 			}
 			
-			nodeSet.remove(toRemove.toArray());
+			nodeSetCopy.remove(toRemove.toArray());
+			finished = (toRemove.size() == 0);
 		}
 		
-		return !nodeSet.isEmpty();
+		return !nodeSetCopy.isEmpty();
 	}
 
 	/**

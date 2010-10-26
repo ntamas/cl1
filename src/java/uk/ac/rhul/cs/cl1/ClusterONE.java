@@ -10,6 +10,7 @@ import uk.ac.rhul.cs.cl1.filters.DensityFilter;
 import uk.ac.rhul.cs.cl1.filters.FilterChain;
 import uk.ac.rhul.cs.cl1.filters.FluffingFilter;
 import uk.ac.rhul.cs.cl1.filters.HaircutFilter;
+import uk.ac.rhul.cs.cl1.filters.KCoreFilter;
 import uk.ac.rhul.cs.cl1.filters.SizeFilter;
 import uk.ac.rhul.cs.cl1.seeding.SeedGenerator;
 import uk.ac.rhul.cs.cl1.seeding.SeedIterator;
@@ -145,6 +146,8 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 			postFilters.add(new FluffingFilter());
 		postFilters.add(new SizeFilter(parameters.getMinSize()));
 		postFilters.add(new DensityFilter(minDensity));
+		if (parameters.getKCoreThreshold() > 0)
+			postFilters.add(new KCoreFilter(parameters.getKCoreThreshold()));
 		
 		/* For each seed, start growing a cluster */
 		monitor.setStatus("Growing clusters from seeds...");

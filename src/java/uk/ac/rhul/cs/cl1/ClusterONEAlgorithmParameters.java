@@ -39,6 +39,15 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	protected double haircutThreshold = 0;
 	
 	/**
+	 * k-core threshold value.
+	 * 
+	 * After generating cohesive subgroups, those which do not contain a
+	 * k-core may be thrown away. k is specified by this threshold value.
+	 * If it is zero or negative, the filter will obviously be disabled.
+	 */
+	protected int kCoreThreshold = 0;
+
+	/**
 	 * Node penalty.
 	 * 
 	 * When nonzero, each node is assumed to have an extra external weight equal
@@ -72,6 +81,15 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	 * The seed generation method.
 	 */
 	protected SeedGenerator seedGenerator = new EveryNodeSeedGenerator();
+	
+	/**
+	 * Returns the k-core threshold used by the algorithm
+	 * 
+	 * @return the k-core threshold
+	 */
+	public int getKCoreThreshold() {
+		return kCoreThreshold;
+	}
 	
 	/**
 	 * Returns the haircut threshold used by the algorithm
@@ -158,6 +176,15 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	 */
 	public boolean isFluffClusters() {
 		return this.fluffClusters;
+	}
+	
+	/**
+	 * Sets the k-core threshold.
+	 * 
+	 * @param  kCoreThreshold  the new k-core threshold
+	 */
+	public void setKCoreThreshold(int kCoreThreshold) {
+		this.kCoreThreshold = kCoreThreshold;
 	}
 	
 	/**
@@ -259,6 +286,7 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 		sb.append("Minimum density: " + minDensity + "\n");
 		sb.append("Overlap threshold: " + overlapThreshold + "\n");
 		sb.append("Haircut threshold: " + haircutThreshold + "\n");
+		sb.append("K-core threshold: " + kCoreThreshold + "\n");
 		sb.append("Node penalty: " + nodePenalty + "\n");
 		sb.append("Merging method: " + mergingMethod + "\n");
 		sb.append("Seed generator: " + seedGenerator + "\n");

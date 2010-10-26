@@ -54,6 +54,8 @@ public class CommandLineApplication {
 				params.setFluffClusters(true);
 			if (cmd.hasOption("haircut"))
 				params.setHaircutThreshold(Double.parseDouble(cmd.getOptionValue("haircut")));
+			if (cmd.hasOption("k-core"))
+				params.setKCoreThreshold(Integer.parseInt(cmd.getOptionValue("k-core")));
 			if (cmd.hasOption("input-format"))
 				formatSpec = cmd.getOptionValue("input-format");
 			if (cmd.hasOption("max-overlap"))
@@ -183,6 +185,11 @@ public class CommandLineApplication {
 		options.addOption(OptionBuilder.withLongOpt("penalty")
 				.withDescription("set the node penalty value")
 				.withType(Float.class).hasArg().create());
+		
+		/* k-core threshold (advanced) */
+		options.addOption(OptionBuilder.withLongOpt("k-core")
+		             .withDescription("specifies the minimum k-core index of clusters")
+		             .withType(Integer.class).hasArg().create());
 		
 		OptionGroup fluffGroup = new OptionGroup();
 		
