@@ -12,7 +12,7 @@ import uk.ac.rhul.cs.graph.Graph;
  * 
  * @author tamas
  */
-public abstract class DefaultGraphWriter implements GraphWriter {
+public abstract class AbstractGraphWriter implements GraphWriter {
 	/**
 	 * Saves the graph to the given file
 	 * 

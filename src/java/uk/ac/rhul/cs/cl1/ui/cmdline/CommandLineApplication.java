@@ -17,11 +17,10 @@ import org.apache.commons.cli.PosixParser;
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
 import uk.ac.rhul.cs.cl1.ClusterONEException;
-// import uk.ac.rhul.cs.cl1.CommitmentStatisticsCalculator;
-import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.cl1.io.GraphReader;
 import uk.ac.rhul.cs.cl1.io.GraphReaderFactory;
 import uk.ac.rhul.cs.cl1.io.GraphReaderFactory.Format;
+import uk.ac.rhul.cs.cl1.io.PlainTextClusteringWriter;
 import uk.ac.rhul.cs.cl1.ui.ConsoleTaskMonitor;
 import uk.ac.rhul.cs.graph.Graph;
 
@@ -125,23 +124,17 @@ public class CommandLineApplication {
 			return 1;
 		}
 		
-		// Show the results
-		/* if (cmd.hasOption("commitment-stats")) {
-			CommitmentStatisticsCalculator calc = new CommitmentStatisticsCalculator();
-			try {
-				System.out.println(calc.run(algorithm.getResults()));
-			} catch (IOException ex) {
-				ex.printStackTrace();
-				return 4;
-			}
-			return 0;
-		} */
-		
 		System.err.println("Detected "+algorithm.getResults().size()+" complexes");
-		for (NodeSet nodeSet: algorithm.getResults()) {
-			System.out.println(nodeSet);
+		
+		PlainTextClusteringWriter writer = new PlainTextClusteringWriter();
+		try {
+			writer.writeClustering(algorithm.getResults(), System.out);
+		} catch (IOException ex) {
+			System.err.println("IO error while printing the results: ");
+			System.err.println(ex.getMessage());
+			return 1;
 		}
-
+		
 		return 0;
 	}
 	

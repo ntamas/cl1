@@ -538,6 +538,13 @@ public class NodeSet implements Iterable<Integer> {
 	 * Prints the nodes in this set to a string
 	 */
 	public String toString() {
-		return StringUtils.join(getMemberNames(), ' ');
+		return toString(" ");
+	}
+	
+	/**
+	 * Prints the nodes in this set to a string using a given separator
+	 */
+	public String toString(String separator) {
+		return StringUtils.join(getMemberNames(), separator);
 	}
 }

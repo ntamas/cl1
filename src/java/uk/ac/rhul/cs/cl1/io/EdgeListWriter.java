@@ -12,7 +12,7 @@ import uk.ac.rhul.cs.utils.ArrayUtils;
  * Writes a graph specified by an edge list representation to an output stream
  * @author ntamas
  */
-public class EdgeListWriter extends DefaultGraphWriter {
+public class EdgeListWriter extends AbstractGraphWriter {
 	/**
 	 * Writes the edge list representation of a graph to the given stream
 	 * 
