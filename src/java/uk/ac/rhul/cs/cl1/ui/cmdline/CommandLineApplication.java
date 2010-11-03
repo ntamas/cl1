@@ -17,10 +17,12 @@ import org.apache.commons.cli.PosixParser;
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
 import uk.ac.rhul.cs.cl1.ClusterONEException;
+import uk.ac.rhul.cs.cl1.io.ClusteringWriter;
+import uk.ac.rhul.cs.cl1.io.CSVClusteringWriter;
+import uk.ac.rhul.cs.cl1.io.ClusteringWriterFactory;
 import uk.ac.rhul.cs.cl1.io.GraphReader;
 import uk.ac.rhul.cs.cl1.io.GraphReaderFactory;
 import uk.ac.rhul.cs.cl1.io.GraphReaderFactory.Format;
-import uk.ac.rhul.cs.cl1.io.PlainTextClusteringWriter;
 import uk.ac.rhul.cs.cl1.ui.ConsoleTaskMonitor;
 import uk.ac.rhul.cs.graph.Graph;
 
@@ -39,7 +41,11 @@ public class CommandLineApplication {
 		CommandLineParser parser = new PosixParser();
 		CommandLine cmd = null;
 		ClusterONEAlgorithmParameters params = new ClusterONEAlgorithmParameters();
-		String formatSpec = null;
+		String inputFormatSpec = null;
+		String outputFormatSpec = null;
+		GraphReaderFactory.Format inputFormat = null;
+		ClusteringWriterFactory.Format outputFormat = null;
+		ClusteringWriter outputWriter = null;
 		
 		try {
 			cmd = parser.parse(this.options, args);
@@ -56,7 +62,7 @@ public class CommandLineApplication {
 			if (cmd.hasOption("k-core"))
 				params.setKCoreThreshold(Integer.parseInt(cmd.getOptionValue("k-core")));
 			if (cmd.hasOption("input-format"))
-				formatSpec = cmd.getOptionValue("input-format");
+				inputFormatSpec = cmd.getOptionValue("input-format");
 			if (cmd.hasOption("max-overlap"))
 				params.setOverlapThreshold(Double.parseDouble(cmd.getOptionValue("max-overlap")));
 			if (cmd.hasOption("min-density"))
@@ -67,6 +73,8 @@ public class CommandLineApplication {
 				params.setFluffClusters(false);
 			if (cmd.hasOption("no-merge"))
 				params.setMergingMethod("none");
+			if (cmd.hasOption("output-format"))
+				outputFormatSpec = cmd.getOptionValue("output-format");
 			if (cmd.hasOption("penalty"))
 				params.setNodePenalty(Double.parseDouble(cmd.getOptionValue("penalty")));
 			if (cmd.hasOption("seed-method"))
@@ -77,7 +85,7 @@ public class CommandLineApplication {
 		} catch (InstantiationException ex) {
 			System.err.println("Failed to construct seed method: "+cmd.getOptionValue("seed-method").toString());
 			ex.printStackTrace();
-			return 2;
+			return 1;
 		}
 		
 		// Check if we have an input file name or if we have the -h option
@@ -89,27 +97,43 @@ public class CommandLineApplication {
 		// Check if we have more than one input file
 		if (cmd.getArgList().size() > 1) {
 			System.err.println("Only a single input file is supported");
-			return 2;
+			return 1;
 		}
 		
 		// Process the options
+		if (inputFormatSpec != null)
+			try {
+				inputFormat = GraphReaderFactory.Format.valueOf(inputFormatSpec.toUpperCase());
+			} catch (IllegalArgumentException ex) {
+				System.err.println("Unknown input file format: "+inputFormatSpec);
+				return 1;
+			}
+		
+		if (outputFormatSpec != null) {
+			try {
+				outputFormat = ClusteringWriterFactory.Format.valueOf(outputFormatSpec.toUpperCase());
+			} catch (IllegalArgumentException ex) {
+				System.err.println("Unknown output file format: "+outputFormatSpec);
+				return 1;
+			}
+		} else {
+			outputFormat = ClusteringWriterFactory.Format.PLAIN;
+		}
+		
+		outputWriter = ClusteringWriterFactory.fromFormat(outputFormat);
+		if (outputFormat == ClusteringWriterFactory.Format.CSV) {
+			((CSVClusteringWriter)outputWriter).setQualityFunction(
+					params.getQualityFunction()
+			);
+		}
+		
 		// Read the input file
 		Graph graph = null;
-		GraphReaderFactory.Format format = null;
-		
-		if (formatSpec != null)
-			try {
-				format = GraphReaderFactory.Format.valueOf(formatSpec.toUpperCase());
-			} catch (IllegalArgumentException ex) {
-				System.err.println("Unknown input file format: "+formatSpec);
-				return 4;
-			}
-
 		try {
-			graph = loadGraph(cmd.getArgs()[0], format);
+			graph = loadGraph(cmd.getArgs()[0], inputFormat);
 		} catch (IOException ex) {
 			System.err.println("IO error while reading input file: "+ex.getMessage());
-			return 3;
+			return 1;
 		}
 		System.err.println("Loaded graph with "+graph.getNodeCount()+" nodes and "+graph.getEdgeCount()+" edges");
 		
@@ -126,9 +150,8 @@ public class CommandLineApplication {
 		
 		System.err.println("Detected "+algorithm.getResults().size()+" complexes");
 		
-		PlainTextClusteringWriter writer = new PlainTextClusteringWriter();
 		try {
-			writer.writeClustering(algorithm.getResults(), System.out);
+			outputWriter.writeClustering(algorithm.getResults(), System.out);
 		} catch (IOException ex) {
 			System.err.println("IO error while printing the results: ");
 			System.err.println(ex.getMessage());
@@ -153,6 +176,11 @@ public class CommandLineApplication {
 		options.addOption(OptionBuilder.withLongOpt("input-format")
 				.withDescription("specifies the format of the input file (sif or edge_list)")
 				.withType(String.class).hasArg().create("f"));
+		
+		/* output format override option */
+		options.addOption(OptionBuilder.withLongOpt("output-format")
+				.withDescription("specifies the format of the output file (plain, detailed or csv)")
+				.withType(String.class).hasArg().create("F"));
 		
 		/* minimum size option */
 		options.addOption(OptionBuilder.withLongOpt("min-size")

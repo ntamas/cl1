@@ -18,6 +18,27 @@ import java.util.Iterator;
  */
 public class StringUtils {
 	/**
+	 * Checks if the string contains any character in the given set of characters.
+	 */
+	public static boolean containsAny(String str, char[] searchChars) {
+		if (str == null || searchChars == null)
+			return false;
+		
+		for (char ch: searchChars) {
+			if (str.indexOf(ch) != -1)
+				return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Checks if the string contains any character in the given set of characters.
+	 */
+	public static boolean containsAny(String str, String searchChars) {
+		return containsAny(str, searchChars.toCharArray());
+	}
+	
+	/**
 	 * Checks if the string is empty or null.
 	 */
 	public static boolean isEmpty(String str) {

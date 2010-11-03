@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 
+import uk.ac.rhul.cs.cl1.io.ClusteringWriterFactory;
 import uk.ac.rhul.cs.utils.StringUtils;
 
 import cytoscape.util.CyFileFilter;
@@ -25,33 +26,6 @@ import cytoscape.util.FileUtil;
  * @author ntamas
  */
 public class SaveClusterAction extends AbstractAction {
-	enum Format {
-		PLAIN("Cluster list", "txt"), GENEPRO("GenePro formatted cluster list", "tab");
-		
-		private String name;
-		private String extension;
-		
-		Format(String name, String extension) {
-			this.name = name;
-			this.extension = extension;
-		}
-		
-		public CyFileFilter getCyFileFilter() {
-			return new CyFileFilter(extension, name);
-		}
-
-		public static Format forFile(File file) {
-			String extension = StringUtils.getFileExtension(file);
-			
-			for (Format format: Format.values()) {
-				if (format.extension.equals(extension))
-					return format;
-			}
-			
-			return null;
-		}
-	};
-	
 	/**
 	 * Result viewer panel associated to the action
 	 */
@@ -69,7 +43,7 @@ public class SaveClusterAction extends AbstractAction {
 	/**
 	 * Writes the names of the given nodes to the given PrintWriter
 	 */
-	protected void writeNodesToFile(PrintWriter wr, List<Node> nodes, Format format) throws IOException {
+	protected void writeNodesToFile(PrintWriter wr, List<Node> nodes) {
 		List<String> nodeNames = new ArrayList<String>();
 		for (Node node: nodes) {
 			nodeNames.add(node.getIdentifier());
@@ -80,12 +54,20 @@ public class SaveClusterAction extends AbstractAction {
 	/**
 	 * Writes the names of the nodes in the given clusters to the given PrintWriter
 	 */
-	protected void writeNodeListsToFile(PrintWriter wr, List<List<Node>> nodeLists, Format format)
+	protected void writeNodeListsToFile(PrintWriter wr, List<List<Node>> nodeLists,
+			ClusteringWriterFactory.Format format)
 			throws IOException {
 		switch (format) {
 		case PLAIN:
 			for (List<Node> nodes: nodeLists) {
-				writeNodesToFile(wr, nodes, format);
+				writeNodesToFile(wr, nodes);
+			}
+			break;
+			
+		case DETAILED:
+			// TODO
+			for (List<Node> nodes: nodeLists) {
+				writeNodesToFile(wr, nodes);
 			}
 			break;
 			
@@ -119,20 +101,26 @@ public class SaveClusterAction extends AbstractAction {
 	}
 	
 	public void actionPerformed(ActionEvent arg0) {
-		Format[] formats = Format.values();
+		ClusteringWriterFactory.Format[] formats =
+			ClusteringWriterFactory.Format.values();
 		CyFileFilter[] filters = new CyFileFilter[formats.length];
 		for (int i = 0; i < formats.length; i++)
-			filters[formats.length - i - 1] = formats[i].getCyFileFilter();
+			filters[formats.length - i - 1] = new CyFileFilter(
+					formats[i].getExtension(),
+					formats[i].getName()
+			);
 		File file = FileUtil.getFile(this.getFileDialogTitle(), FileUtil.SAVE, filters);
 		
 		if (file == null)
 			return;
 		
-		Format format = Format.forFile(file);
+		ClusteringWriterFactory.Format format =
+			ClusteringWriterFactory.Format.forFile(file);
 		if (format == null) {
 			CytoscapePlugin.showErrorMessage("The extension of the given filename does not correspond to\n"+
 					"any of the known formats. Please use one of the default\n"+
-					"extensions (.tab for GenePro files, .txt for cluster lists).");
+					"extensions (.tab for GenePro files, .txt for cluster lists, "+
+					".csv for CSV cluster lists).");
 			return;
 		}
 		
