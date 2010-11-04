@@ -131,6 +131,23 @@ public class ResultViewerPanel extends JPanel implements TableModelListener {
 	}
 	
 	/**
+	 * Retrieves all {@link NodeSet} instances in this result viewer.
+	 * 
+	 * The result will be sorted according to the current ordering of the
+	 * result viewer table.
+	 */
+	public List<NodeSet> getAllNodeSets() {
+		NodeSetTableModel model = this.getTableModel();
+		int numRows = model.getRowCount();
+		
+		List<NodeSet> result = new ArrayList<NodeSet>();
+		for (int i = 0; i < numRows; i++) {
+			result.add(model.getNodeSetByIndex(this.table.convertRowIndexToModel(i)));
+		}
+		return result;
+	}
+	
+	/**
 	 * Retrieves the selected {@link NodeSet}
 	 */
 	public NodeSet getSelectedNodeSet() {

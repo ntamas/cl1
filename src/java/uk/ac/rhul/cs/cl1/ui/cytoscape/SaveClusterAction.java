@@ -1,20 +1,17 @@
 package uk.ac.rhul.cs.cl1.ui.cytoscape;
 
-import giny.model.Node;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.AbstractAction;
 
+import uk.ac.rhul.cs.cl1.NodeSet;
+import uk.ac.rhul.cs.cl1.io.ClusteringWriter;
 import uk.ac.rhul.cs.cl1.io.ClusteringWriterFactory;
-import uk.ac.rhul.cs.utils.StringUtils;
 
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
@@ -41,56 +38,10 @@ public class SaveClusterAction extends AbstractAction {
 	}
 	
 	/**
-	 * Writes the names of the given nodes to the given PrintWriter
-	 */
-	protected void writeNodesToFile(PrintWriter wr, List<Node> nodes) {
-		List<String> nodeNames = new ArrayList<String>();
-		for (Node node: nodes) {
-			nodeNames.add(node.getIdentifier());
-		}
-		wr.println(StringUtils.join(nodeNames.iterator(), ' '));
-	}
-	
-	/**
-	 * Writes the names of the nodes in the given clusters to the given PrintWriter
-	 */
-	protected void writeNodeListsToFile(PrintWriter wr, List<List<Node>> nodeLists,
-			ClusteringWriterFactory.Format format)
-			throws IOException {
-		switch (format) {
-		case PLAIN:
-			for (List<Node> nodes: nodeLists) {
-				writeNodesToFile(wr, nodes);
-			}
-			break;
-			
-		case CSV:
-			// TODO
-			for (List<Node> nodes: nodeLists) {
-				writeNodesToFile(wr, nodes);
-			}
-			break;
-			
-		case GENEPRO:
-			int index = 0;
-			
-			wr.println("CID\tORF");
-			for (List<Node> nodes: nodeLists) {
-				String clusterName = "Complex "+index;
-				for (Node node: nodes) {
-					wr.printf("%s\t%s\n", clusterName, node.getIdentifier());
-				}
-				index++;
-			}
-			break;
-		}
-	}
-	
-	/**
 	 * Returns the list of nodes that should be saved
 	 */
-	protected List<List<Node>> getNodeListsToBeSaved() {
-		return this.resultViewer.getSelectedCytoscapeNodeSets();
+	protected List<NodeSet> getNodeListsToBeSaved() {
+		return this.resultViewer.getSelectedNodeSets();
 	}
 	
 	/**
@@ -124,18 +75,13 @@ public class SaveClusterAction extends AbstractAction {
 			return;
 		}
 		
-		PrintWriter wr = null;
-		
+		ClusteringWriter wr = ClusteringWriterFactory.fromFormat(format);
 		try {
-			wr = new PrintWriter(file);
-			writeNodeListsToFile(wr, this.getNodeListsToBeSaved(), format);
+			wr.writeClustering(this.getNodeListsToBeSaved(), file);
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {
 			CytoscapePlugin.showErrorMessage("I/O error while trying to save the selected clusters to\n"+
 					file.getAbsolutePath());
-		} finally {
-			if (wr != null)
-				wr.close();
 		}
 	}
 }

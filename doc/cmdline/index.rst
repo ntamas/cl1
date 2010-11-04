@@ -100,15 +100,15 @@ The following command line options are recognised:
 Basic command line options
 --------------------------
 
--f, --input-format  specifies the format of the input file (``sif`` or ``edge_list``).
-                    Use this option only if ClusterONE failed to detect the format
-                    automatically.
--F, --output-format specifies the format of the output file (``plain``, ``csv``
-                    or ``genepro``).
--h, --help          shows a general help message
--d, --min-density   sets the minimum density of predicted complexes
--s, --min-size      sets the minimum size of the predicted complexes
--v, --version       shows the version information
+-f, --input-format   specifies the format of the input file (``sif`` or ``edge_list``).
+                     Use this option only if ClusterONE failed to detect the format
+                     automatically.
+-F, --output-format  specifies the format of the output file (``plain``, ``csv``
+                     or ``genepro``).
+-h, --help           shows a general help message
+-d, --min-density    sets the minimum density of predicted complexes
+-s, --min-size       sets the minimum size of the predicted complexes
+-v, --version        shows the version information
 
 Advanced command line options
 -----------------------------

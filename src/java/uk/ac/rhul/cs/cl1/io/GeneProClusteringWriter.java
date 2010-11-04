@@ -5,7 +5,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.List;
 
-import uk.ac.rhul.cs.cl1.ValuedNodeSet;
+import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.graph.Graph;
 
 /**
@@ -18,14 +18,14 @@ import uk.ac.rhul.cs.graph.Graph;
  * @author tamas
  */
 public class GeneProClusteringWriter extends AbstractClusteringWriter {
-	public void writeClustering(List<ValuedNodeSet> clustering,
+	public void writeClustering(List<? extends NodeSet> clustering,
 			OutputStream stream) throws IOException {
 		PrintWriter wr = new PrintWriter(stream);
 		
 		int clusterIndex = 0;
 		String clusterName;
 		
-		for (ValuedNodeSet nodeSet: clustering) {
+		for (NodeSet nodeSet: clustering) {
 			Graph graph = nodeSet.getGraph();
 			
 			clusterIndex++;

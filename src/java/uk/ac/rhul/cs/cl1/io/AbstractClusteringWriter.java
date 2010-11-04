@@ -5,7 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import uk.ac.rhul.cs.cl1.ValuedNodeSet;
+import uk.ac.rhul.cs.cl1.NodeSet;
 
 /**
  * Default implementation for some of the methods of {@link ClusteirngWriter}
@@ -21,7 +21,7 @@ public abstract class AbstractClusteringWriter implements ClusteringWriter {
 	 * @param filename  the filename
 	 * @throws IOException
 	 */
-	public void writeClustering(List<ValuedNodeSet> clustering, String filename)
+	public void writeClustering(List<? extends NodeSet> clustering, String filename)
 			throws IOException {
 		writeClustering(clustering, new File(filename));
 	}
@@ -33,7 +33,7 @@ public abstract class AbstractClusteringWriter implements ClusteringWriter {
 	 * @param file     the file itself
 	 * @throws IOException
 	 */
-	public void writeClustering(List<ValuedNodeSet> clustering, File file)
+	public void writeClustering(List<? extends NodeSet> clustering, File file)
 			throws IOException {
 		FileOutputStream os = new FileOutputStream(file);
 		writeClustering(clustering, os);

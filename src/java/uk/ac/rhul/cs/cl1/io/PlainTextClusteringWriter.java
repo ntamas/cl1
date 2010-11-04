@@ -5,7 +5,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.List;
 
-import uk.ac.rhul.cs.cl1.ValuedNodeSet;
+import uk.ac.rhul.cs.cl1.NodeSet;
 
 /**
  * Writes a clustering to a stream in a simple tab-separated format.
@@ -16,10 +16,10 @@ import uk.ac.rhul.cs.cl1.ValuedNodeSet;
  * @author tamas
  */
 public class PlainTextClusteringWriter extends AbstractClusteringWriter {
-	public void writeClustering(List<ValuedNodeSet> clustering,
+	public void writeClustering(List<? extends NodeSet> clustering,
 			OutputStream stream) throws IOException {
 		PrintWriter wr = new PrintWriter(stream);
-		for (ValuedNodeSet cluster: clustering) {
+		for (NodeSet cluster: clustering) {
 			wr.println(cluster.toString("\t"));
 		}
 		wr.flush();

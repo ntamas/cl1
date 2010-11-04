@@ -6,8 +6,8 @@ import java.io.PrintWriter;
 import java.util.List;
 
 import uk.ac.rhul.cs.cl1.DummyQualityFunction;
+import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.cl1.QualityFunction;
-import uk.ac.rhul.cs.cl1.ValuedNodeSet;
 import uk.ac.rhul.cs.utils.StringUtils;
 
 /**
@@ -54,7 +54,7 @@ public class CSVClusteringWriter extends AbstractClusteringWriter {
 		this.doubleQuoteChar = this.quoteChar + this.quoteChar;
 	}
 	
-	public void writeClustering(List<ValuedNodeSet> clustering,
+	public void writeClustering(List<? extends NodeSet> clustering,
 			OutputStream stream) throws IOException {
 		PrintWriter wr = new PrintWriter(stream);
 		String[] parts = {
@@ -66,7 +66,7 @@ public class CSVClusteringWriter extends AbstractClusteringWriter {
 		
 		wr.println(StringUtils.join(parts, columnSep));
 		
-		for (ValuedNodeSet nodeSet: clustering) {
+		for (NodeSet nodeSet: clustering) {
 			clusterIndex++;
 			
 			parts[0] = Integer.toString(clusterIndex);

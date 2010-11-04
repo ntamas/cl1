@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
-import uk.ac.rhul.cs.cl1.ValuedNodeSet;
+import uk.ac.rhul.cs.cl1.NodeSet;
 
 /**
  * Interface specification for all the clustering writers.
@@ -22,7 +22,7 @@ public interface ClusteringWriter {
 	 * @param stream       the stream to write to
 	 * @throws IOException
 	 */
-	public void writeClustering(List<ValuedNodeSet> clustering,
+	public void writeClustering(List<? extends NodeSet> clustering,
 			OutputStream stream) throws IOException;
 	
 	/**
@@ -32,7 +32,7 @@ public interface ClusteringWriter {
 	 * @param file     the file itself
 	 * @throws IOException
 	 */
-	public void writeClustering(List<ValuedNodeSet> clustering,
+	public void writeClustering(List<? extends NodeSet> clustering,
 			File file) throws IOException;
 	
 	/**
@@ -42,6 +42,6 @@ public interface ClusteringWriter {
 	 * @param filename  the filename
 	 * @throws IOException
 	 */
-	public void writeClustering(List<ValuedNodeSet> clustering,
+	public void writeClustering(List<? extends NodeSet> clustering,
 			String filename) throws IOException;
 }

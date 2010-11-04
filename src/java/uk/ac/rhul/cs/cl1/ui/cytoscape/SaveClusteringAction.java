@@ -1,12 +1,12 @@
 package uk.ac.rhul.cs.cl1.ui.cytoscape;
 
-import giny.model.Node;
-
 import java.awt.event.KeyEvent;
 import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
+
+import uk.ac.rhul.cs.cl1.NodeSet;
 
 /**
  * Action that saves the names of the members of all clusters
@@ -38,8 +38,8 @@ public class SaveClusteringAction extends SaveClusterAction {
 	 * Returns the list of nodes that should be saved
 	 */
 	@Override
-	protected List<List<Node>> getNodeListsToBeSaved() {
-		return this.resultViewer.getAllCytoscapeNodeSets();
+	protected List<NodeSet> getNodeListsToBeSaved() {
+		return this.resultViewer.getAllNodeSets();
 	}
 	
 }
