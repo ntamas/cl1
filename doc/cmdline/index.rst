@@ -90,8 +90,10 @@ as follows::
 
 where ``options`` is a list of command-line options (see below) and ``input_file``
 is the name of the input file to be processed. The order of the command line
-options is irrelevant. The output will simply show the predicted protein complexes,
-one per line. See `Input file formats`_ for the expected format of the input file.
+options is irrelevant. The output will simply show the predicted protein
+complexes, by default, one per line. See `Input file formats`_ for the
+expected format of the input file, and `Output file formats`_ for alternative
+output formats if the default one is not suitable for you.
 
 The following command line options are recognised:
 
@@ -101,6 +103,8 @@ Basic command line options
 -f, --input-format  specifies the format of the input file (``sif`` or ``edge_list``).
                     Use this option only if ClusterONE failed to detect the format
                     automatically.
+-F, --output-format specifies the format of the output file (``plain``, ``csv``
+                    or ``genepro``).
 -h, --help          shows a general help message
 -d, --min-density   sets the minimum density of predicted complexes
 -s, --min-size      sets the minimum size of the predicted complexes
@@ -221,6 +225,30 @@ The following input file formats are recognised:
 
 If ClusterONE fails to recognise the input format of your file, feel free to
 specify it using the ``--input-format`` command line option.
+
+Output file formats
+===================
+
+The following output file formats are available:
+
+**Plain text output** (``plain``)
+    A simple and easy-to-parse output format, where each line represents a
+    cluster. Members of the clusters are separated by Tab characters.
+
+**CSV output** (``csv``)
+    This format is suitable is you need more details about each cluster
+    and/or you want to import the clusters to Microsoft Excel or OpenOffice.
+    Each line corresponds to a cluster and contain the size, density,
+    total internal and boundary weight, the value of the quality function,
+    a P-value and the list of members for each cluster. Columns are
+    separated by commas, and each individual column may optionally be
+    quoted within quotation marks if necessary.
+
+**GenePro output** (``genepro``)
+    Use this format if you want to visualize the clusters later on using
+    the GenePro_ plugin of Cytoscape.
+
+.. _GenePro: http://wodaklab.org/genepro
 
 References
 ==========

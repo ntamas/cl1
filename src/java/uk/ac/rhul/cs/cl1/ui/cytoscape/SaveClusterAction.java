@@ -64,7 +64,7 @@ public class SaveClusterAction extends AbstractAction {
 			}
 			break;
 			
-		case DETAILED:
+		case CSV:
 			// TODO
 			for (List<Node> nodes: nodeLists) {
 				writeNodesToFile(wr, nodes);
