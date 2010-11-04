@@ -62,7 +62,7 @@ public class CSVClusteringWriter extends AbstractClusteringWriter {
 				"External weight", "Quality", "P-value", "Members"
 		};
 		
-		int clusterIndex = 1;
+		int clusterIndex = 0;
 		
 		wr.println(StringUtils.join(parts, columnSep));
 		
