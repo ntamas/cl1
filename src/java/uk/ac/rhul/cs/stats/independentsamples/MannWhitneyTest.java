@@ -44,7 +44,7 @@ public class MannWhitneyTest implements SignificanceTest {
 	/**
 	 * The tie correction that was applied
 	 */
-	private double tieCorrection;
+	private int tieCorrection;
 	
 	/**
 	 * The alternative hypothesis
@@ -115,7 +115,7 @@ public class MannWhitneyTest implements SignificanceTest {
 		
 		/* Calculate tie correction value */
 		Arrays.sort(ranks);
-		tieCorrection = 0.0;
+		tieCorrection = 0;
 		for (i = 0; i < n-1; i++) {
 			if (ranks[i] == ranks[i+1]) {
 				int nties = 1;
@@ -123,37 +123,57 @@ public class MannWhitneyTest implements SignificanceTest {
 					nties++;
 					i++;
 				}
-				tieCorrection += Math.pow(nties, 3) - nties;
+				tieCorrection += nties * (nties * nties - 1);
 			}
 		}
-		tieCorrection = Math.sqrt(1 - tieCorrection / (Math.pow(n, 3) - n));
 		
 		this.alternative = alternative;
-	}
-	
-	public double getSP() {
-		double sd = Math.sqrt(tieCorrection * nA * nB * (nA + nB + 1) / 12.0);
-		double z = (U - nA*nB/2.0) / sd;
-		
-		if (alternative == H1.NOT_EQUAL) {
-			z = Math.abs(z);
-			return 2 * StatsUtils.getZProbability(-z);
-		} else if (alternative == H1.LESS_THAN) {
-			return 1.0 - StatsUtils.getZProbability(z);
-		} else {
-			return StatsUtils.getZProbability(z);
-		}
-	}
-
-	public double getTestStatistic() {
-		return U;
 	}
 	
 	/**
 	 * Returns the tie correction that was applied to the p-value
 	 */
-	public double getTieCorrection() {
+	public int getCorrectionFactor() {
 		return tieCorrection;
+	}
+	
+	public double getSP() {
+		int n = nA + nB;
+		double z = U - nA*nB/2.0;
+		double sd = Math.sqrt((nA * nB / 12.0) * (n + 1) - tieCorrection / (n * (n-1.0)));
+		double continuityCorrection = 0.0;
+		
+		switch (alternative) {
+		case NOT_EQUAL:
+			continuityCorrection = Math.signum(z) * 0.5;
+			break;
+		case LESS_THAN:
+			continuityCorrection = 0.5;
+			break;
+		case GREATER_THAN:
+			continuityCorrection = -0.5;
+			break;
+		}
+		
+		z = (z - continuityCorrection) / sd;
+		
+		switch (alternative) {
+		case NOT_EQUAL:
+			z = Math.abs(z);
+			return 2 * StatsUtils.getZProbability(-z);
+			
+		case LESS_THAN:
+			return 1.0 - StatsUtils.getZProbability(z);
+			
+		case GREATER_THAN:
+			return StatsUtils.getZProbability(z);
+		}
+		
+		return Double.NaN;
+	}
+
+	public double getTestStatistic() {
+		return U;
 	}
 	
 	/**
