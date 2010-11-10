@@ -23,7 +23,7 @@
             Array.prototype.unshift.call(arguments, '[Ajax Upload]');
             console.log( Array.prototype.join.call(arguments, ' '));
         }
-    } 
+    }
 
     /**
      * Attaches event to a dom element.
@@ -598,7 +598,11 @@
                     // Note that IE6 only understands text/html
                     if (doc.body.firstChild && doc.body.firstChild.nodeName.toUpperCase() == 'PRE') {
                     	doc.body.normalize();
-                        response = doc.body.firstChild.firstChild.nodeValue;
+                    	if (doc.body.firstChild.firstChild) {
+                            response = doc.body.firstChild.firstChild.nodeValue;
+                    	} else {
+                    		response = null;
+                    	}
                     }
                     
                     if (settings.responseType && settings.responseType.toLowerCase() == 'json') {

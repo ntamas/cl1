@@ -113,7 +113,7 @@ label.error {
   font-weight: bold;
 }
 
-input.number_01, input.positive_integer {
+input.number_01, input.positive_integer, input.nonnegative_float {
   width: 50px;
   text-align: right;
 }
