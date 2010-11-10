@@ -179,7 +179,7 @@ public class CommandLineApplication {
 		
 		/* output format override option */
 		options.addOption(OptionBuilder.withLongOpt("output-format")
-				.withDescription("specifies the format of the output file (plain, detailed or csv)")
+				.withDescription("specifies the format of the output file (plain, genepro or csv)")
 				.withType(String.class).hasArg().create("F"));
 		
 		/* minimum size option */
