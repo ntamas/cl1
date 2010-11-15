@@ -65,6 +65,8 @@ public class CommandLineApplication {
 				inputFormatSpec = cmd.getOptionValue("input-format");
 			if (cmd.hasOption("max-overlap"))
 				params.setOverlapThreshold(Double.parseDouble(cmd.getOptionValue("max-overlap")));
+			if (cmd.hasOption("merge-method"))
+				params.setMergingMethod(cmd.getOptionValue("merge-method").toString());
 			if (cmd.hasOption("min-density"))
 				params.setMinDensity(Double.parseDouble(cmd.getOptionValue("min-density")));
 			if (cmd.hasOption("min-size"))
@@ -222,6 +224,11 @@ public class CommandLineApplication {
 				  .withDescription("don't fluff the clusters (default)")
 				  .withType(Boolean.class).create());
 		options.addOptionGroup(fluffGroup);
+		
+		/* merging method option (advanced) */
+		options.addOption(OptionBuilder.withLongOpt("merge-method")
+				 .withDescription("specifies the cluster merging method to use (match or meet/min)")
+				 .withType(String.class).hasArg().create());
 		
 		/* seeding method option (advanced) */
 		options.addOption(OptionBuilder.withLongOpt("seed-method")

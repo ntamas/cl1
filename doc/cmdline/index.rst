@@ -136,6 +136,14 @@ Advanced command line options
                     by the product of the sizes of the two clusters
                     being considered, as in the paper of Bader and Hogue [2]_
 
+--merge-method      specifies the method to be used to merge highly overlapping
+                    complexes. More precisely, this switch controls which scoring
+                    function is used to decide whether two complexes overlap
+                    significantly or not. ``merge`` calculates the intersection
+                    size squared, divided by the product of the sizes of the
+                    two complexes, while ``meet/min`` calculates the intersection
+                    size over the size of the smaller complex.
+
 --no-fluff          don't fluff the clusters, this is the default. For more details
                     about fluffing, see the ``--fluff`` switch above.
 
