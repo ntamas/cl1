@@ -1,5 +1,6 @@
 package uk.ac.rhul.cs.cl1.ui.cytoscape;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.net.URL;
@@ -57,6 +58,7 @@ public class HelpAction extends CytoscapeAction {
 			csh = new CSH.DisplayHelpFromSource(helpBroker);
 		} catch (Exception ex) {
 			CytoscapePlugin.showErrorMessage("ClusterONE Help cannot be started. Please see the ClusterONE website instead.");
+			ex.printStackTrace();
 			return;
 		}
 	}
@@ -69,7 +71,17 @@ public class HelpAction extends CytoscapeAction {
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		init();
-		if (csh != null)
+		if (csh != null) {
+			// Set the help ID on the event source to ensure that the proper topic is shown
+			Object source = event.getSource();
+			if (source != null) {
+				try {
+					CSH.setHelpIDString((Component)source, helpID);
+				} catch (ClassCastException ex) {
+					// meh.
+				}
+			}
 			csh.actionPerformed(event);
+		}
 	}
 }

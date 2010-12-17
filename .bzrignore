@@ -3,7 +3,7 @@
 ./.settings
 ./build
 ./dist
-./lib/junit-4.7.jar
+./lib/junit-*.jar
 ./cluster_one-*.jar
 ./cluster_one-*.zip
 ./cluster_one-*.war

@@ -1,241 +1,243 @@
 <?xml version="1.0"?>
 <project name="ClusterONE" default="usage" basedir=".">
-	<!-- Package name and version number -->
-	<loadproperties>
-		<file file="etc/cl1.properties"/>
-	</loadproperties>
+    <!-- Package name and version number -->
+    <loadproperties>
+        <file file="etc/cl1.properties"/>
+    </loadproperties>
 
-	<!-- Compiler constants -->
+    <!-- Compiler constants -->
     <property name="debug" value="on"/>
     <property name="optimize" value="on"/>
-	<property name="deprecation" value="on"/>
+    <property name="deprecation" value="on"/>
 
-	<!-- Directories -->
-	<property name="build" location="build" />
-	<property name="src" location="src" />
-	<property name="test" location="test" />
-	<property name="doc" location="doc" />
-	<property name="etc" location="etc" />
-	<property name="lib" location="lib" />
-	<property name="reports" location="reports" />
-	<property name="tools" location="tools" />
+    <!-- Directories -->
+    <property name="build" location="build" />
+    <property name="src" location="src" />
+    <property name="test" location="test" />
+    <property name="doc" location="doc" />
+    <property name="etc" location="etc" />
+    <property name="lib" location="lib" />
+    <property name="reports" location="reports" />
+    <property name="tools" location="tools" />
 
-	<!-- Access to environment -->
-	<property environment="os" />
+    <!-- Access to environment -->
+    <property environment="os" />
 
-	<!-- DON'T CHANGE ANYTHING BELOW THIS LINE
-	UNLESS YOU KNOW WHAT YOU'RE DOING -->
-	<property name="src.java" location="${src}/java" />
-	<property name="src.java.tests" location="${test}/java" />
-	<property name="src.web" location="${src}/web" />
-	
-	<property name="build.java" location="${build}/java" />
-	<property name="build.java.tests" location="${build}/tests" />
-	<property name="build.webinf" location="${build}/WEB-INF" />
+    <!-- DON'T CHANGE ANYTHING BELOW THIS LINE
+    UNLESS YOU KNOW WHAT YOU'RE DOING -->
+    <property name="src.java" location="${src}/java" />
+    <property name="src.java.tests" location="${test}/java" />
+    <property name="src.web" location="${src}/web" />
+    
+    <property name="build.java" location="${build}/java" />
+    <property name="build.java.tests" location="${build}/tests" />
+    <property name="build.webinf" location="${build}/WEB-INF" />
 
     <property name="build.doc" location="${build}/doc" />
     <property name="build.doc.cmdline" location="${build.doc}/cmdline" />
-	<property name="build.doc.cytoscape" location="${build}/java/${package.name.slashed}/ui/cytoscape/help" />
-	
-	<!-- External dependencies -->
-	<condition property="lib.cytoscape.path" value="${cytoscape.path}/cytoscape.jar">
-		<available file="${cytoscape.path}/cytoscape.jar" />
-	</condition>
-	<condition property="lib.procope.path" value="${procope.path}/lib/procope_core-${procope.version}.jar">
-		<available file="${procope.path}/lib/procope_core-${procope.version}.jar" />
-	</condition>
-	<condition property="lib.jsr311.path" value="${jersey.path}/lib/jsr311-api-${jersey.jsr311.version}.jar">
-		<available file="${jersey.path}/lib/jsr311-api-${jersey.jsr311.version}.jar" />
-	</condition>
-	<condition property="lib.jersey-core.path" value="${jersey.path}/lib/jersey-core-${jersey.version}.jar">
-		<available file="${jersey.path}/lib/jersey-core-${jersey.version}.jar" />
-	</condition>
-	<condition property="lib.jersey-json.path" value="${jersey.path}/lib/jersey-json-${jersey.version}.jar">
-		<available file="${jersey.path}/lib/jersey-json-${jersey.version}.jar" />
-	</condition>
-	<condition property="lib.jersey-multipart.path" value="${jersey.path}/contribs/jersey-multipart-${jersey.version}.jar">
-		<available file="${jersey.path}/contribs/jersey-multipart-${jersey.version}.jar" />
-	</condition>
+    <property name="build.doc.cytoscape" location="${build}/java/${package.name.slashed}/ui/cytoscape/help" />
+    
+    <!-- External dependencies -->
+    <condition property="lib.cytoscape.path" value="${cytoscape.path}/cytoscape.jar">
+        <available file="${cytoscape.path}/cytoscape.jar" />
+    </condition>
+    <condition property="lib.procope.path" value="${procope.path}/lib/procope_core-${procope.version}.jar">
+        <available file="${procope.path}/lib/procope_core-${procope.version}.jar" />
+    </condition>
+    <condition property="lib.jsr311.path" value="${jersey.path}/lib/jsr311-api-${jersey.jsr311.version}.jar">
+        <available file="${jersey.path}/lib/jsr311-api-${jersey.jsr311.version}.jar" />
+    </condition>
+    <condition property="lib.jersey-core.path" value="${jersey.path}/lib/jersey-core-${jersey.version}.jar">
+        <available file="${jersey.path}/lib/jersey-core-${jersey.version}.jar" />
+    </condition>
+    <condition property="lib.jersey-json.path" value="${jersey.path}/lib/jersey-json-${jersey.version}.jar">
+        <available file="${jersey.path}/lib/jersey-json-${jersey.version}.jar" />
+    </condition>
+    <condition property="lib.jersey-multipart.path" value="${jersey.path}/contribs/jersey-multipart-${jersey.version}.jar">
+        <available file="${jersey.path}/contribs/jersey-multipart-${jersey.version}.jar" />
+    </condition>
 
-	<!-- Set up the default classpath -->
-	<path id="classpath.base">
-		<pathelement location="lib/tclib.jar" />
-		<pathelement location="lib/commons-cli-1.2.jar" />
-		<pathelement location="lib/tablelayout.jar" />
-		<pathelement location="${lib.cytoscape.path}" />
-		<pathelement location="${lib.procope.path}" />
-		<pathelement location="${lib.jsr311.path}" />
-		<pathelement location="${lib.jersey-core.path}" />
-		<pathelement location="${lib.jersey-json.path}" />
-		<pathelement location="${lib.jersey-multipart.path}" />
-	</path>
+    <!-- Set up the default classpath -->
+    <path id="classpath.base">
+        <pathelement location="lib/tclib.jar" />
+        <pathelement location="lib/commons-cli-1.2.jar" />
+        <pathelement location="lib/tablelayout.jar" />
+        <pathelement location="${lib.cytoscape.path}" />
+        <pathelement location="${lib.procope.path}" />
+        <pathelement location="${lib.jsr311.path}" />
+        <pathelement location="${lib.jersey-core.path}" />
+        <pathelement location="${lib.jersey-json.path}" />
+        <pathelement location="${lib.jersey-multipart.path}" />
+    </path>
 
-	<tstamp>
-		<format property="TODAY" pattern="MMMM dd, yyyy" locale="en" />
-	</tstamp>
+    <tstamp>
+        <format property="TODAY" pattern="MMMM dd, yyyy" locale="en" />
+    </tstamp>
 
-	<!-- Initializes the build tree, creates the necessary directories -->
-	<target name="-init" depends="-cytoscape_warning,-procope_warning,-web_warning"
-		    description="Initializes the build process">
-		<mkdir dir="${build}" />
-		<mkdir dir="${build.java}" />
-		<mkdir dir="${build.java.tests}" />
-		<mkdir dir="${build.webinf}" />
-		<mkdir dir="${reports}" />
-	</target>
-	<target name="-cytoscape_warning" unless="lib.cytoscape.path">
-		<echo message="Cytoscape plugin will not be built: cytoscape.jar not found."
-			  level="warning" />
-	</target>
-	<target name="-procope_warning" unless="lib.procope.path">
-		<echo message="Procope plugin will not be built: procope_core-${procope.version}.jar not found" level="warning" />
-	</target>
-	<target name="-web_warning" unless="lib.jsr311.path">
-		<echo message="Web interface will not be built: jsr311-api-${jersey.jsr311.version}.jar not found" level="warning" />
-	</target>
+    <!-- Initializes the build tree, creates the necessary directories -->
+    <target name="-init" depends="-cytoscape_warning,-procope_warning,-web_warning"
+            description="Initializes the build process">
+        <mkdir dir="${build}" />
+        <mkdir dir="${build.java}" />
+        <mkdir dir="${build.java.tests}" />
+        <mkdir dir="${build.webinf}" />
+        <mkdir dir="${reports}" />
+    </target>
+    <target name="-cytoscape_warning" unless="lib.cytoscape.path">
+        <echo message="Cytoscape plugin will not be built: cytoscape.jar not found."
+              level="warning" />
+    </target>
+    <target name="-procope_warning" unless="lib.procope.path">
+        <echo message="Procope plugin will not be built: procope_core-${procope.version}.jar not found" level="warning" />
+    </target>
+    <target name="-web_warning" unless="lib.jsr311.path">
+        <echo message="Web interface will not be built: jsr311-api-${jersey.jsr311.version}.jar not found" level="warning" />
+    </target>
 
-	<!-- Deletes the existing build -->
-	<target name="clean" description="Cleans up the build directories">
-		<!-- Delete build directories -->
-		<delete dir="${build.java}" />
-		<delete dir="${build.webinf}" />
-		<delete dir="${reports}" />
-	</target>
+    <!-- Deletes the existing build -->
+    <target name="clean" description="Cleans up the build directories">
+        <!-- Delete build directories -->
+        <delete dir="${build.java}" />
+        <delete dir="${build.webinf}" />
+        <delete dir="${reports}" />
+    </target>
 
-	<!-- Compiles the Java source code -->
-	<target name="compile_java"
-		depends="-init,compile_java_base,compile_java_cytoscape_plugin,compile_java_procope_plugin,compile_java_rest_api"
-		description="--> compile Java code">
-	</target>
+    <!-- Compiles the Java source code -->
+    <target name="compile_java"
+        depends="-init,compile_java_base,compile_java_cytoscape_plugin,compile_java_procope_plugin,compile_java_rest_api"
+        description="--> compile Java code">
+    </target>
 
-	<!-- Compiles the base classes -->
-	<target name="compile_java_base" depends="-init">
-		<javac srcdir="${src.java}" destdir="${build.java}" target="1.5"
-			   debug="${debug}" deprecation="${deprecation}"
-			   optimize="${optimize}">
-			<exclude name="**/cytoscape/*" />
-			<exclude name="**/procope/*" />
-			<exclude name="**/api/**/*" />
-			<exclude name="**/CommitmentStatisticsCalculator.java" />
-			<classpath>
-				<path refid="classpath.base" />
-			</classpath>
-		</javac>
-	</target>
+    <!-- Compiles the base classes -->
+    <target name="compile_java_base" depends="-init">
+        <javac srcdir="${src.java}" destdir="${build.java}" target="1.5"
+               debug="${debug}" deprecation="${deprecation}"
+               optimize="${optimize}" includeAntRuntime="false">
+            <exclude name="**/cytoscape/*" />
+            <exclude name="**/procope/*" />
+            <exclude name="**/api/**/*" />
+            <exclude name="**/CommitmentStatisticsCalculator.java" />
+            <classpath>
+                <path refid="classpath.base" />
+            </classpath>
+        </javac>
+    </target>
 
-	<!-- Compiles the Cytoscape plugin -->
-	<target name="compile_java_cytoscape_plugin" if="lib.cytoscape.path"
-		    depends="compile_java_base">
-		<javac srcdir="${src.java}" destdir="${build.java}" target="1.5"
-			   debug="${debug}" deprecation="${deprecation}"
-			   optimize="${optimize}">
-			<include name="${package.name.slashed}/ui/cytoscape/*.java" />
-			<classpath>
-				<path refid="classpath.base" />
-			</classpath>
-		</javac>
-		<copy file="${etc}/cytoscape/plugin.props.in"
-			tofile="${build.java}/${package.name.slashed}/ui/cytoscape/plugin.props" />
-		<replace file="${build.java}/${package.name.slashed}/ui/cytoscape/plugin.props">
-			<replacefilter token="@today@" value="${TODAY}" />
-			<replacefilter token="@package.name@" value="${package.name}" />
-			<replacefilter token="@package.version@" value="${package.version}" />
-		</replace>
-	</target>
+    <!-- Compiles the Cytoscape plugin -->
+    <target name="compile_java_cytoscape_plugin" if="lib.cytoscape.path"
+            depends="compile_java_base">
+        <javac srcdir="${src.java}" destdir="${build.java}" target="1.5"
+               debug="${debug}" deprecation="${deprecation}"
+               optimize="${optimize}" includeAntRuntime="false">
+            <include name="${package.name.slashed}/ui/cytoscape/*.java" />
+            <classpath>
+                <path refid="classpath.base" />
+            </classpath>
+        </javac>
+        <copy file="${etc}/cytoscape/plugin.props.in"
+            tofile="${build.java}/${package.name.slashed}/ui/cytoscape/plugin.props" />
+        <replace file="${build.java}/${package.name.slashed}/ui/cytoscape/plugin.props">
+            <replacefilter token="@today@" value="${TODAY}" />
+            <replacefilter token="@package.name@" value="${package.name}" />
+            <replacefilter token="@package.version@" value="${package.version}" />
+        </replace>
+    </target>
 
-	<!-- Compiles the Procope plugin -->
-	<target name="compile_java_procope_plugin" if="lib.procope.path"
-		    depends="compile_java_base">
-		<javac srcdir="${src.java}" destdir="${build.java}" target="1.5"
-			   debug="${debug}" deprecation="${deprecation}"
-			   optimize="${optimize}">
-			<include name="${package.name.slashed}/ui/procope/*.java" />
-			<classpath>
-				<path refid="classpath.base" />
-			</classpath>
-		</javac>
-	</target>
-	
-	<!-- Compiles the web interface -->
-	<target name="compile_java_rest_api" if="lib.jsr311.path"
-		    depends="compile_java_base">
-		<javac srcdir="${src.java}" destdir="${build.java}" target="1.5">
-			<include name="${package.name.slashed}/api/rest/*.java" />
-			<exclude name="${package.name.slashed}/api/rest/StandaloneWebServer.java" />
-			<classpath>
-				<path refid="classpath.base" />
-			</classpath>
-		</javac>
-		<copy file="${etc}/web/web.xml.in" tofile="${build.webinf}/web.xml" />
-		<replace file="${build.webinf}/web.xml">
-			<replacefilter token="@package.name@" value="${package.name}" />
-			<replacefilter token="@package.version@" value="${package.version}" />
-		</replace>
-	</target>
-	
-	<!-- Compiles the Java tests -->
-	<target name="compile_tests" depends="-init"
-		description="--> compile Java tests">
-		<javac srcdir="${src.java.tests}" destdir="${build.java.tests}">
-			<classpath>
-				<path refid="classpath.base" />
-				<pathelement location="${build.java}" />
-				<pathelement location="${lib}/junit-4.7.jar" />
-			</classpath>
-		</javac>
-	</target>
+    <!-- Compiles the Procope plugin -->
+    <target name="compile_java_procope_plugin" if="lib.procope.path"
+            depends="compile_java_base">
+        <javac srcdir="${src.java}" destdir="${build.java}" target="1.5"
+               debug="${debug}" deprecation="${deprecation}"
+               optimize="${optimize}" includeAntRuntime="false">
+            <include name="${package.name.slashed}/ui/procope/*.java" />
+            <classpath>
+                <path refid="classpath.base" />
+            </classpath>
+        </javac>
+    </target>
+    
+    <!-- Compiles the web interface -->
+    <target name="compile_java_rest_api" if="lib.jsr311.path"
+            depends="compile_java_base">
+        <javac srcdir="${src.java}" destdir="${build.java}" target="1.5"
+               debug="${debug}" deprecation="${deprecation}"
+               optimize="${optimize}" includeAntRuntime="false">
+            <include name="${package.name.slashed}/api/rest/*.java" />
+            <exclude name="${package.name.slashed}/api/rest/StandaloneWebServer.java" />
+            <classpath>
+                <path refid="classpath.base" />
+            </classpath>
+        </javac>
+        <copy file="${etc}/web/web.xml.in" tofile="${build.webinf}/web.xml" />
+        <replace file="${build.webinf}/web.xml">
+            <replacefilter token="@package.name@" value="${package.name}" />
+            <replacefilter token="@package.version@" value="${package.version}" />
+        </replace>
+    </target>
+    
+    <!-- Compiles the Java tests -->
+    <target name="compile_tests" depends="-init"
+        description="--> compile Java tests">
+        <javac srcdir="${src.java.tests}" destdir="${build.java.tests}">
+            <classpath>
+                <path refid="classpath.base" />
+                <pathelement location="${build.java}" />
+                <pathelement location="${lib}/junit-4.7.jar" />
+            </classpath>
+        </javac>
+    </target>
 
-	<!-- Compiles the whole thing -->
-	<target name="compile" depends="compile_java" description="Compiles all the source files">
-	</target>
+    <!-- Compiles the whole thing -->
+    <target name="compile" depends="compile_java" description="Compiles all the source files">
+    </target>
 
-	<!-- Copies resource files to the build tree -->
-	<target name="-copy_resources" depends="compile_java" description="Copies resource files to the build tree">
-		<copy todir="${build.java}/${package.name.slashed}/resources">
-			<fileset dir="${src.java}/${package.name.slashed}/resources" />
-			<fileset file="${doc}/images/logo.png" />
-		</copy>
-	</target>
+    <!-- Copies resource files to the build tree -->
+    <target name="-copy_resources" depends="compile_java" description="Copies resource files to the build tree">
+        <copy todir="${build.java}/${package.name.slashed}/resources">
+            <fileset dir="${src.java}/${package.name.slashed}/resources" />
+            <fileset file="${doc}/images/logo.png" />
+        </copy>
+    </target>
 
-	<!-- Creates the JAR file -->
-	<target name="jar" depends="compile,doc,-copy_resources" description="Creates the JAR file">
-		<jar destfile="cluster_one-${package.version}.jar" basedir="${build.java}"
-			 excludes="**/api/**/*.class">
-			<zipfileset src="lib/tclib.jar" includes="**/*.class" />
-			<zipfileset src="lib/commons-cli-1.2.jar" includes="**/*.class" />
-			<zipfileset src="lib/tablelayout.jar" includes="**/*.class" />
-			<manifest>
-				<attribute name="Manifest-Version" value="1.0" />
-				<attribute name="Extension-Name" value="${package.name}" />
-				<attribute name="Implementation-Version" value="${package.version}" />
-				<attribute name="Main-Class" value="${package.name}.ui.cmdline.CommandLineApplication" />
-				<attribute name="Cytoscape-Plugin" value="${package.name}.ui.cytoscape.CytoscapePlugin" />
-				<attribute name="Class-Path" value="${lib.procope.path}" />
-			</manifest>
-		</jar>
-	</target>
-	
-	<!-- Creates the WAR file -->
-	<target name="war" depends="jar" description="Creates the WAR file">
-		<war destfile="cluster_one-${package.version}.war"
-			 webxml="${build.webinf}/web.xml">
-			<fileset dir="${src.web}" />
-			<zipfileset file="${etc}/logo/png/cl1_logo_64x64.png" prefix="img" />
-			<lib dir="lib/">
-				<include name="tclib.jar" />
-			</lib>
-			<lib dir=".">
-				<include name="cluster_one-${package.version}.jar" />
-			</lib>
-			<classes dir="${build.java}">
-				<include name="**/api/**/*.class" />
-				<exclude name="web.xml" />
-			</classes>
-			<metainf dir="${etc}/web">
-				<include name="**/context.xml" />
-			</metainf>
-		</war>
-	</target>
+    <!-- Creates the JAR file -->
+    <target name="jar" depends="compile,doc,-copy_resources" description="Creates the JAR file">
+        <jar destfile="cluster_one-${package.version}.jar" basedir="${build.java}"
+             excludes="**/api/**/*.class">
+            <zipfileset src="lib/tclib.jar" includes="**/*.class" />
+            <zipfileset src="lib/commons-cli-1.2.jar" includes="**/*.class" />
+            <zipfileset src="lib/tablelayout.jar" includes="**/*.class" />
+            <manifest>
+                <attribute name="Manifest-Version" value="1.0" />
+                <attribute name="Extension-Name" value="${package.name}" />
+                <attribute name="Implementation-Version" value="${package.version}" />
+                <attribute name="Main-Class" value="${package.name}.ui.cmdline.CommandLineApplication" />
+                <attribute name="Cytoscape-Plugin" value="${package.name}.ui.cytoscape.CytoscapePlugin" />
+                <attribute name="Class-Path" value="${lib.procope.path}" />
+            </manifest>
+        </jar>
+    </target>
+    
+    <!-- Creates the WAR file -->
+    <target name="war" depends="jar" description="Creates the WAR file">
+        <war destfile="cluster_one-${package.version}.war"
+             webxml="${build.webinf}/web.xml">
+            <fileset dir="${src.web}" />
+            <zipfileset file="${etc}/logo/png/cl1_logo_64x64.png" prefix="img" />
+            <lib dir="lib/">
+                <include name="tclib.jar" />
+            </lib>
+            <lib dir=".">
+                <include name="cluster_one-${package.version}.jar" />
+            </lib>
+            <classes dir="${build.java}">
+                <include name="**/api/**/*.class" />
+                <exclude name="web.xml" />
+            </classes>
+            <metainf dir="${etc}/web">
+                <include name="**/context.xml" />
+            </metainf>
+        </war>
+    </target>
 
     <!-- Creates a distributable ZIP file -->
     <target name="zip" depends="jar,doc" description="Creates a distributable ZIP file">
@@ -250,93 +252,93 @@
         </zip>
     </target>
 
-	<!-- Creates a ZIP file containing the source code -->
-	<target name="source_zip" description="Creates a ZIP file containing the source code">
-		<zip destfile="cluster_one-${package.version}_src.zip">
-			<fileset dir=".">
-				<include name="build.xml" />
-			</fileset>
-			<zipfileset dir="${doc}" prefix="doc" />
-			<zipfileset dir="${etc}" prefix="etc" />
-			<zipfileset dir="${lib}" prefix="lib">
-				<exclude name="junit*.jar" />
-			</zipfileset>
-			<zipfileset dir="${src}" prefix="src" />
-			<zipfileset dir="${test}" prefix="test" />
-			<zipfileset dir="${tools}" prefix="tools" />
-		</zip>
-	</target>
+    <!-- Creates a ZIP file containing the source code -->
+    <target name="source_zip" description="Creates a ZIP file containing the source code">
+        <zip destfile="cluster_one-${package.version}_src.zip">
+            <fileset dir=".">
+                <include name="build.xml" />
+            </fileset>
+            <zipfileset dir="${doc}" prefix="doc" />
+            <zipfileset dir="${etc}" prefix="etc" />
+            <zipfileset dir="${lib}" prefix="lib">
+                <exclude name="junit*.jar" />
+            </zipfileset>
+            <zipfileset dir="${src}" prefix="src" />
+            <zipfileset dir="${test}" prefix="test" />
+            <zipfileset dir="${tools}" prefix="tools" />
+        </zip>
+    </target>
 
-	<!-- Tests the whole thing -->
-	<target name="test" depends="compile, compile_tests" description="Runs JUnit tests in the distribution">
-		<junit printsummary="yes" fork="yes" haltonfailure="yes">
-			<classpath>
-				<path refid="classpath.base" />
-				<pathelement location="${build.java.tests}" />
-				<pathelement location="${build.java}" />
-				<pathelement location="${lib}/junit-4.7.jar" />
-			</classpath>
+    <!-- Tests the whole thing -->
+    <target name="test" depends="compile, compile_tests" description="Runs JUnit tests in the distribution">
+        <junit printsummary="yes" fork="yes" haltonfailure="yes">
+            <classpath>
+                <path refid="classpath.base" />
+                <pathelement location="${build.java.tests}" />
+                <pathelement location="${build.java}" />
+                <pathelement location="${lib}/junit-4.7.jar" />
+            </classpath>
 
-			<formatter type="plain" />
+            <formatter type="plain" />
 
-			<batchtest todir="${reports}">
-				<fileset dir="${build.java.tests}">
-					<include name="**/*Test*.class" />
-					<exclude name="**/AllTests.class" />
-				</fileset>
-			</batchtest>
-		</junit>
-	</target>
+            <batchtest todir="${reports}">
+                <fileset dir="${build.java.tests}">
+                    <include name="**/*Test*.class" />
+                    <exclude name="**/AllTests.class" />
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
 
-	<!-- Command line interface documentation -->
-	<target name="doc_cmdline" description="Builds the command line interface documentation">
-		<mkdir dir="${build.doc.cmdline}" />
-		<mkdir dir="${build.doc.cmdline}/images" />
-		<exec executable="rst2html.py">
-			<arg value="${doc}/cmdline/index.rst" />
-			<arg value="${build.doc.cmdline}/index.html" />
-		</exec>
-		<copy todir="${build.doc.cmdline}/images">
-			<fileset dir="${doc}/images">
-				<include name="*.*" />
-			</fileset>
-		</copy>
-	</target>
+    <!-- Command line interface documentation -->
+    <target name="doc_cmdline" description="Builds the command line interface documentation">
+        <mkdir dir="${build.doc.cmdline}" />
+        <mkdir dir="${build.doc.cmdline}/images" />
+        <exec executable="rst2html">
+            <arg value="${doc}/cmdline/index.rst" />
+            <arg value="${build.doc.cmdline}/index.html" />
+        </exec>
+        <copy todir="${build.doc.cmdline}/images">
+            <fileset dir="${doc}/images">
+                <include name="*.*" />
+            </fileset>
+        </copy>
+    </target>
 
-	<!-- Cytoscape documentation -->
-	<target name="doc_cytoscape" description="Builds the Cytoscape plugin documentation" if="cytoscape.path">
-		<mkdir dir="${build.doc.cytoscape}" />
-		<mkdir dir="${build.doc.cytoscape}/images" />
-		<exec executable="rst2html.py">
-			<arg value="${doc}/cytoscape/index.rst" />
-			<arg value="${build.doc.cytoscape}/index.html" />
-		</exec>
-		<exec executable="python">
-			<arg value="${tools}/generate_javahelp.py" />
-			<arg value="${build.doc.cytoscape}/index.html" />
-		</exec>
-		<copy todir="${build.doc.cytoscape}/images">
-			<fileset dir="${doc}/images">
-				<include name="*.*" />
-			</fileset>
-			<fileset dir="${doc}/cytoscape/images">
-				<include name="*.*" />
-			</fileset>
-		</copy>
-		<copy file="${doc}/cytoscape/cl1.hs"
-			tofile="${build.doc.cytoscape}/cl1.hs" />
-	</target>
+    <!-- Cytoscape documentation -->
+    <target name="doc_cytoscape" description="Builds the Cytoscape plugin documentation" if="cytoscape.path">
+        <mkdir dir="${build.doc.cytoscape}" />
+        <mkdir dir="${build.doc.cytoscape}/images" />
+        <exec executable="rst2html">
+            <arg value="${doc}/cytoscape/index.rst" />
+            <arg value="${build.doc.cytoscape}/index.html" />
+        </exec>
+        <exec executable="python">
+            <arg value="${tools}/generate_javahelp.py" />
+            <arg value="${build.doc.cytoscape}/index.html" />
+        </exec>
+        <copy todir="${build.doc.cytoscape}/images">
+            <fileset dir="${doc}/images">
+                <include name="*.*" />
+            </fileset>
+            <fileset dir="${doc}/cytoscape/images">
+                <include name="*.*" />
+            </fileset>
+        </copy>
+        <copy file="${doc}/cytoscape/cl1.hs"
+            tofile="${build.doc.cytoscape}/cl1.hs" />
+    </target>
 
-	<target name="doc" depends="doc_cmdline, doc_cytoscape" description="Builds the documentation" />
+    <target name="doc" depends="doc_cmdline, doc_cytoscape" description="Builds the documentation" />
 
-	<!-- Main targets -->
-	<target name="build" depends="compile, doc, jar" description="Builds the whole project" />
-	<target name="rebuild" depends="clean, build" description="Rebuilds the project from scratch" />
+    <!-- Main targets -->
+    <target name="build" depends="compile, doc, jar" description="Builds the whole project" />
+    <target name="rebuild" depends="clean, build" description="Rebuilds the project from scratch" />
 
-	<!-- Usage information target -->
-	<target name="usage" description="Display usage information">
-		<echo message="  Execute 'ant -projecthelp' for build file help." />
-		<echo message="  Execute 'ant -help' for Ant help." />
-	</target>
-	<target name="help" depends="usage" />
+    <!-- Usage information target -->
+    <target name="usage" description="Display usage information">
+        <echo message="  Execute 'ant -projecthelp' for build file help." />
+        <echo message="  Execute 'ant -help' for Ant help." />
+    </target>
+    <target name="help" depends="usage" />
 </project>

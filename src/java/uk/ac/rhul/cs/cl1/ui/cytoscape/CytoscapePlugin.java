@@ -63,7 +63,7 @@ public class CytoscapePlugin extends cytoscape.plugin.CytoscapePlugin implements
 		cyMenus.addAction(new ShowControlPanelAction());
 		cyMenus.addAction(GrowClusterAction.getGlobalInstance());
 		cyMenus.addAction(AffinityColouringAction.getGlobalInstance());
-		cyMenus.addAction(new HelpAction());
+		cyMenus.addAction(new HelpAction("introduction"));
 		cyMenus.addAction(new AboutAction());
 		
 		/* Disable actions depending on the control panel */

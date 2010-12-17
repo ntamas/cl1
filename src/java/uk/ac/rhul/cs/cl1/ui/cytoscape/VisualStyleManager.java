@@ -59,12 +59,19 @@ public class VisualStyleManager {
 	}
 	
 	/**
-	 * Ensure that the visual style that colors nodes by their statuses is registered
+	 * Ensure that the visual style that colors nodes by their statuses is registered.
+	 * 
+	 * This method uses some features of Cytoscape that are deprecated from 2.8
+	 * onwards. We suppress the deprecation warnings since we want to keep on
+	 * supporting older versions of Cytoscape for as long as possible. The
+	 * Cytoscape documentation says that the deprecated functions will be removed
+	 * in Nov 2011.
 	 * 
 	 * @param  catalog    the Cytoscape {@link CalculatorCatalog} where the style
 	 *                    has to be registered
 	 * @param  recreate   whether to re-create the styles even if they exist
 	 */
+	@SuppressWarnings("deprecation")
 	private static void ensureVisualStyleByStatusRegistered(
 			CalculatorCatalog catalog, boolean recreate) {
 		if (catalog.getVisualStyleNames().contains(VISUAL_STYLE_BY_STATUS)) {
@@ -105,12 +112,19 @@ public class VisualStyleManager {
 	
 	/**
 	 * Ensure that the visual style that colors nodes by their affinities to
-	 * a cluster is registered
+	 * a cluster is registered.
+	 * 
+	 * This method uses some features of Cytoscape that are deprecated from 2.8
+	 * onwards. We suppress the deprecation warnings since we want to keep on
+	 * supporting older versions of Cytoscape for as long as possible. The
+	 * Cytoscape documentation says that the deprecated functions will be removed
+	 * in Nov 2011.
 	 * 
 	 * @param  catalog    the Cytoscape {@link CalculatorCatalog} where the style
 	 *                    has to be registered
 	 * @param  recreate   whether to re-create the styles even if they exist
 	 */
+	@SuppressWarnings("deprecation")
 	private static void ensureVisualStyleByAffinityRegistered(
 			CalculatorCatalog catalog, boolean recreate) {
 		if (catalog.getVisualStyleNames().contains(VISUAL_STYLE_BY_AFFINITY)) {
@@ -148,10 +162,10 @@ public class VisualStyleManager {
 		NodeAppearanceCalculator nac = myStyle.getNodeAppearanceCalculator();
 		
 		/* Create the node color calculator */
-		ContinuousMapping colorMapping = new ContinuousMapping(Color.WHITE, ObjectMapping.NODE_MAPPING);
 		Color minColor = Color.blue;
 		Color midColor = Color.white;
 		Color maxColor = Color.red;
+		ContinuousMapping colorMapping = new ContinuousMapping(Color.WHITE, ObjectMapping.NODE_MAPPING);
 		colorMapping.setControllingAttributeName(CytoscapePlugin.ATTRIBUTE_AFFINITY, Cytoscape.getCurrentNetwork(), false);
 		colorMapping.setInterpolator(new LinearNumberToColorInterpolator());
 		colorMapping.addPoint(-maxAbsValue, new BoundaryRangeValues(minColor, minColor, minColor));
