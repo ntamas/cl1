@@ -113,6 +113,11 @@ Basic command line options
 Advanced command line options
 -----------------------------
 
+--debug             turns on debugging mode. The debugging mode prints more details
+                    about the progress of the cluster growth process. You should not turn
+                    this option on unless you think you have found a bug in ClusterONE and
+                    you would like to track it down.
+
 --fluff             fluffs the clusters as a post-processing step. This is not used
                     in the published algorithm, but it may be useful for your specific
                     problem. The idea is to check whether the external boundary nodes

@@ -6,6 +6,9 @@ package uk.ac.rhul.cs.graph;
  * @author ntamas
  */
 public abstract class GraphAlgorithm {
+	/** Whether the algorithm will run in debug mode or not */
+	protected boolean debugMode = false;
+	
 	/** The graph on which we are running the algorithm */
 	protected Graph graph = null;
 
@@ -25,6 +28,17 @@ public abstract class GraphAlgorithm {
 	}
 
 	/**
+	 * Returns whether the algorithm is running in debug mode or not.
+	 * 
+	 * Some algorithms may print more details if they are in debug mode.
+	 * 
+	 * @return whether the algorithm is running in debug mode or not.
+	 */
+	public boolean getDebugMode() {
+		return debugMode;
+	}
+
+	/**
 	 * Returns the graph on which we are running the algorithm.
 	 * @return the graph
 	 */
@@ -39,6 +53,15 @@ public abstract class GraphAlgorithm {
 		shouldStop = true;
 	}
 	
+	/**
+	 * Turns the debug mode on or off.
+	 * 
+	 * @param debugMode the debugMode to set
+	 */
+	public void setDebugMode(boolean debugMode) {
+		this.debugMode = debugMode;
+	}
+
 	/**
 	 * Sets the graph on which we are running the algorithm.
 	 * @param graph the graph to set

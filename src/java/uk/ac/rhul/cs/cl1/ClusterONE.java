@@ -170,6 +170,8 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 			/* Construct a growth process from the seed */
 			ClusterGrowthProcess growthProcess =
 				new GreedyClusterGrowthProcess(cluster, minDensity, qualityFunc);
+			if (debugMode)
+				growthProcess.setDebugMode(debugMode);
 			
 			/* Run the growth process */
 			while (!shouldStop && growthProcess.step());

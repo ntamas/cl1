@@ -1,5 +1,7 @@
 package uk.ac.rhul.cs.cl1;
 
+import java.util.Arrays;
+
 import com.sosnoski.util.array.IntArray;
 
 /**
@@ -91,7 +93,7 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 	public void setContractionAllowed(boolean contractionAllowed) {
 		this.contractionAllowed = contractionAllowed;
 	}
-
+	
 	/**
 	 * Returns the minimum density that must be maintained while growing the cluster
 	 * @return the minimum density
@@ -150,6 +152,11 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 		 * density of the cluster under the prescribed limit
 		 */
 		
+		if (debugMode) {
+			System.err.println("Current nodeset: " + nodeSet);
+			System.err.println("Current quality: " + quality);
+		}
+		
 		/* Try the addition of some nodes */
 		bestAffinity = quality;
 		for (Integer node: nodeSet.getExternalBoundaryNodeIterator()) {
@@ -158,6 +165,9 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 				continue;
 			
 			double affinity = qualityFunction.getAdditionAffinity(nodeSet, node);
+			if (debugMode) {
+				System.err.println("Considering addition of " + node + ", affinity = " + affinity);
+			}
 			if (affinity > bestAffinity) {
 				bestAffinity = affinity;
 				bestNodes.clear();
@@ -176,10 +186,14 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 					continue;
 				
 				double affinity = qualityFunction.getRemovalAffinity(nodeSet, node);
+				if (debugMode) {
+					System.err.println("Considering removal of " + node + ", affinity = " + affinity);
+				}
 				
 				// The following condition is necessary to avoid cases when a
-				// node is repeatedly added and removed from the same set
-				if (affinity <= quality)
+				// node is repeatedly added and removed from the same set.
+				// The addition of 1e-8 counteracts rounding errors.
+				if (affinity < quality + 1e-12)
 					continue;
 				
 				if (affinity < bestAffinity)
@@ -207,15 +221,23 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 			}
 		}
 		
-		if (bestNodes.size() == 0 || bestAffinity == quality)
+		if (bestNodes.size() == 0 || bestAffinity == quality) {
+			if (debugMode)
+				System.err.println("Proposing termination");
 			return ClusterGrowthAction.terminate();
+		}
 		
 		if (bestNodes.size() > 1 && onlySingleNode)
 			bestNodes.setSize(1);
 		
-		if (bestIsAddition)
+		if (bestIsAddition) {
+			if (debugMode)
+				System.err.println("Proposing addition of " + Arrays.toString(bestNodes.toArray()));
 			return ClusterGrowthAction.addition(bestNodes.toArray());
-		else
+		} else {
+			if (debugMode)
+				System.err.println("Proposing removal of " + Arrays.toString(bestNodes.toArray()));
 			return ClusterGrowthAction.removal(bestNodes.toArray());
+		}
 	}
 }

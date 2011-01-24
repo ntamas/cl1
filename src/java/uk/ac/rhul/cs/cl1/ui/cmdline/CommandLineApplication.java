@@ -31,6 +31,9 @@ public class CommandLineApplication {
 	/// Options object to describe the command line options accepted by ClusterONE
 	protected Options options = null;
 	
+	/// Whether we are running in debug mode
+	protected boolean debugMode = false;
+
 	/// Constructor of the command line entry point to ClusterONE
 	public CommandLineApplication() {
 		initOptions();
@@ -55,6 +58,8 @@ public class CommandLineApplication {
 				return 0;
 			}
 			
+			if (cmd.hasOption("debug"))
+				debugMode = true;
 			if (cmd.hasOption("fluff"))
 				params.setFluffClusters(true);
 			if (cmd.hasOption("haircut"))
@@ -141,6 +146,7 @@ public class CommandLineApplication {
 		
 		// Start the algorithm
 		ClusterONE algorithm = new ClusterONE(params);
+		algorithm.setDebugMode(debugMode);
 		algorithm.setTaskMonitor(new ConsoleTaskMonitor());
 		try {
 			algorithm.runOnGraph(graph);
@@ -239,6 +245,10 @@ public class CommandLineApplication {
 		/* options.addOption(OptionBuilder.withLongOpt("param")
 				.withDescription("specifies the value of an advanced named parameter of the algorithm")
 				.withArgName("name=value").hasArgs(2).withValueSeparator().create("p")); */
+		
+		/* debug mode option (advanced) */
+		options.addOption(OptionBuilder.withLongOpt("debug")
+				.withDescription("turns on the debug mode").withType(Boolean.class).create());
 		
 		/* skip the merging phase (useful for debugging only) */
 		options.addOption(OptionBuilder.withLongOpt("no-merge")
