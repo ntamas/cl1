@@ -83,7 +83,8 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	protected String[] seedMethods = {"From unused nodes", "From every node", "From every edge"};
 	
 	/** Merging methods */
-	protected String[] mergingMethods = {"Match coefficient", "Meet/min coefficient"};
+	protected String[] mergingMethods = {"Match coefficient",
+			"Simpson coefficient", "Jaccard similarity", "Dice similarity"};
 	
 	/** Internal class to listen for change and action events from subcomponents */
 	private class PropertyChangeManager extends PropertyChangeSupport
@@ -190,9 +191,13 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 		}
 		
 		if (mergingMethodCombo.getSelectedIndex() == 0)
-			result.setMergingMethod("match");
+			result.setMergingMethodName("match");
 		else if (mergingMethodCombo.getSelectedIndex() == 1)
-			result.setMergingMethod("meet/min");
+			result.setMergingMethodName("simpson");
+		else if (mergingMethodCombo.getSelectedIndex() == 2)
+			result.setMergingMethodName("jaccard");
+		else if (mergingMethodCombo.getSelectedIndex() == 3)
+			result.setMergingMethodName("dice");
 		else
 			return null;
 

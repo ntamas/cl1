@@ -71,8 +71,10 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	 * 
 	 * Possible values:
 	 * <ul>
+	 * <li>dice: Dice similarity</li>
+	 * <li>jaccard: Jaccard similarity</li>
 	 * <li>match: match coefficient</li>
-	 * <li>meet/min: meet/min coefficient</li>
+	 * <li>meet/min or simpson: Simpson coefficient</li>
 	 * </ul>
 	 */
 	protected String mergingMethod = "match";
@@ -101,11 +103,11 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	}
 	
 	/**
-	 * Returns the merging method used by the algorithm
+	 * Returns the name of the merging method used by the algorithm
 	 * 
-	 * @return the merging method
+	 * @return the name of the merging method
 	 */
-	public String getMergingMethod() {
+	public String getMergingMethodName() {
 		return mergingMethod;
 	}
 
@@ -168,6 +170,25 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	}
 	
 	/**
+	 * Returns the similarity function used to compare clusters.
+	 * 
+	 * This is indirectly specified by the value of {@link mergingMethod}.
+	 * 
+	 * @throws ClusterONEException if the merging method is unknown
+	 */
+	public NodeSetSimilarityFunction getSimilarityFunction() throws ClusterONEException {
+		if (mergingMethod.equals("match"))
+			return new MatchingScore();
+		if (mergingMethod.equals("meet/min") || mergingMethod.equals("simpson"))
+			return new SimpsonCoefficient();
+		if (mergingMethod.equals("jaccard"))
+			return new JaccardSimilarity();
+		if (mergingMethod.equals("dice"))
+			return new DiceSimilarity();
+		throw new ClusterONEException("Unknown merging method: " + mergingMethod);
+	}
+	
+	/**
 	 * Returns whether we will fluff the clusters or not.
 	 * 
 	 * Yes, this is a funny name, but I wanted to keep this class compatible with
@@ -197,12 +218,12 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	}
 	
 	/**
-	 * Sets the merging method that will be used by the algorithm.
+	 * Sets the name of the merging method that will be used by the algorithm.
 	 * 
 	 * @param mergingMethod the merging method to use
 	 */
-	public void setMergingMethod(String mergingMethod) {
-		this.mergingMethod = mergingMethod;
+	public void setMergingMethodName(String mergingMethod) {
+		this.mergingMethod = mergingMethod.toLowerCase();
 	}
 
 	/**

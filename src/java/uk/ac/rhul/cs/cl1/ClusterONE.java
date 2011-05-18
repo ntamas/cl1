@@ -121,8 +121,8 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 	 */
 	public void run() throws ClusterONEException {
 		double minDensity = parameters.getMinDensity();
-		boolean hasMergingMethod = parameters.getMergingMethod() != null &&
-		                           !parameters.getMergingMethod().equals("none");
+		boolean hasMergingMethod = parameters.getMergingMethodName() != null &&
+		                           !parameters.getMergingMethodName().equals("none");
 		
 		ValuedNodeSetList result = new ValuedNodeSetList();
 		HashSet<NodeSet> addedNodeSets = new HashSet<NodeSet>();
@@ -208,7 +208,7 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 		if (hasMergingMethod) {
 			monitor.setPercentCompleted(0);
 			monitor.setStatus("Merging highly overlapping clusters...");
-			result = result.mergeOverlapping(parameters.getMergingMethod(),
+			result = result.mergeOverlapping(parameters.getSimilarityFunction(),
 					parameters.getOverlapThreshold(), monitor);
 			monitor.setPercentCompleted(100);
 		}

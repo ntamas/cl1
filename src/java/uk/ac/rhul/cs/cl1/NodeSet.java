@@ -387,35 +387,6 @@ public class NodeSet implements Iterable<Integer> {
 	}
 	
 	/**
-	 * Returns the matching ratio of this nodeset and another
-	 * 
-	 * The matching ratio is the size of the intersection of the two nodesets
-	 * squared, divided by the product of the sizes of the two nodesets.
-	 * 
-	 * @return   the meet/min coefficient
-	 * @precondition   the two nodesets must belong to the same graph and they
-	 *                 must not be empty
-	 */
-	public double getMatchingRatioWith(NodeSet other) {
-		double isect = this.getIntersectionSizeWith(other);
-		return isect * isect / (this.size() * other.size());
-	}
-	
-	/**
-	 * Returns the meet/min coefficient of this nodeset with another
-	 * 
-	 * The meet/min coefficient is the size of the intersection of the two nodesets,
-	 * divided by the minimum of the sizes of the two nodesets.
-	 * 
-	 * @return   the meet/min coefficient
-	 * @precondition   the two nodesets must belong to the same graph and they
-	 *                 must not be empty
-	 */
-	public double getMeetMinCoefficientWith(NodeSet other) {
-		return (double)(this.getIntersectionSizeWith(other)) / Math.min(this.size(), other.size()); 
-	}
-	
-	/**
 	 * Returns the statistical significance of the nodeset
 	 * 
 	 * The statistical significance of the nodeset is the p-value of a one-sided

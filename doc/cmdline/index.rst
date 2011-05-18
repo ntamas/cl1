@@ -144,10 +144,23 @@ Advanced command line options
 --merge-method      specifies the method to be used to merge highly overlapping
                     complexes. More precisely, this switch controls which scoring
                     function is used to decide whether two complexes overlap
-                    significantly or not. ``merge`` calculates the intersection
-                    size squared, divided by the product of the sizes of the
-                    two complexes, while ``meet/min`` calculates the intersection
-                    size over the size of the smaller complex.
+                    significantly or not. The following values are accepted:
+                    
+                      - ``merge`` calculates the intersection size squared,
+                        divided by the product of the sizes of the two complexes.
+                        This is also called the *matching score*. This is the
+                        default.
+                        
+                      - ``meet/min`` or ``simpson`` calculates the Simpson coefficient,
+                        i.e. the intersection size over the size of the smaller complex.
+
+                      - ``jaccard`` calculates the Jaccard similarity, i.e. the
+                        intersection size over the size of the union of the two
+                        complexes.
+
+                      - ``dice`` calculates the Dice similarity, i.e. twice the
+                        intersection size over the sum of the sizes of the two
+                        complexes.
 
 --no-fluff          don't fluff the clusters, this is the default. For more details
                     about fluffing, see the ``--fluff`` switch above.

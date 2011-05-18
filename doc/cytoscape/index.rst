@@ -220,8 +220,14 @@ If you do not see these parameters in the `control panel`_, click on the
           divided by the product of the sizes of the two clusters being
           considered, as in the paper of Bader and Hogue [2]_.
 
-        - The *meet/min coefficient* divides the size of the overlap
+        - The *Simpson coefficient* divides the size of the overlap
           by the size of the smaller cluster.
+
+        - The *Jaccard similarity* divides the size of the overlap by the
+          size of the union of the two clusters.
+
+        - The *Dice similarity* divides twice the size of the overlap by
+          the sum of the sizes of the two clusters.
 
     The default settings (match coefficient with a threshold of 0.8)
     seem to be satisfactory for most use-cases. Decreasing the threshold

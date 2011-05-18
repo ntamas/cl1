@@ -26,22 +26,17 @@ public class ValuedNodeSetList extends ArrayList<ValuedNodeSet> {
 	 * details. This version is different only in one respect: it does
 	 * not report its progress to a {@link TaskMonitor}.
 	 * 
-	 * @param mergingMethod  Determines which method to use to calculate the
-	 *                    size of overlap between two nodesets. <tt>match</tt>
-	 *                    means the matching coefficient, <tt>meet/min</tt>
-	 *                    means the meet/min coefficient.
-	 * 
+	 * @param  similarityFunc  specifies the similarity function to use
 	 * @param  threshold  the overlap threshold. Nodesets will be merged
 	 *                    if their overlap is at least as large as the
 	 *                    given threshold.
 	 *
 	 * @return  a new nodeset list where no two nodesets have an overlap
 	 *          larger than or eqal to the given threshold
-	 *
-	 * @see NodeSet.mergeOverlapping(double, TaskMonitor)
 	 */
-	public ValuedNodeSetList mergeOverlapping(String mergingMethod, double threshold) {
-		return mergeOverlapping(mergingMethod, threshold, null);
+	public ValuedNodeSetList mergeOverlapping(
+			NodeSetSimilarityFunction similarityFunc, double threshold) {
+		return mergeOverlapping(similarityFunc, threshold, null);
 	}
 
 	/**
@@ -53,25 +48,19 @@ public class ValuedNodeSetList extends ArrayList<ValuedNodeSet> {
 	 * given threshold. The connected components of the graph will be
 	 * used to derive the new nodesets in the result.
 	 * 
-	 * @param mergingMethod  Determines which method to use to calculate the
-	 *                    size of overlap between two nodesets. <tt>match</tt>
-	 *                    means the matching coefficient, <tt>meet/min</tt>
-	 *                    means the meet/min coefficient.
-	 * 
+	 * @param  similarityFunc  specifies the similarity function to use
 	 * @param  threshold  the overlap threshold. Nodesets will be merged
 	 *                    if their overlap is at least as large as the
 	 *                    given threshold.
-	 *
 	 * @param  monitor    a {@link TaskMonitor} to report our progress to
 	 * 
 	 * @return  a new nodeset list where no two nodesets have an overlap
 	 *          larger than or equal to the given threshold, and no nodeset
 	 *          has a density smaller than minDensity
-	 *
-	 * @see NodeSet.getMeetMinCoefficientWith()
 	 */
-	public ValuedNodeSetList mergeOverlapping(String mergingMethod, double threshold,
-			TaskMonitor monitor) {
+	public ValuedNodeSetList mergeOverlapping(
+			NodeSetSimilarityFunction similarityFunc,
+			double threshold, TaskMonitor monitor) {
 		int i, n = this.size();
 		long stepsTotal = n * (n-1) / 2, stepsTaken = 0;
 		ValuedNodeSetList result = new ValuedNodeSetList();
@@ -91,17 +80,9 @@ public class ValuedNodeSetList extends ArrayList<ValuedNodeSet> {
 		
 		for (i = 0; i < n; i++) {
 			NodeSet v1 = this.get(i);
-			
-			if (mergingMethod.equals("match")) {
-				for (int j = i+1; j < n; j++) {
-					if (v1.getMatchingRatioWith(this.get(j)) >= threshold)
-						overlapGraph.createEdge(i, j);
-				}
-			} else if (mergingMethod.equals("meet/min")) {
-				for (int j = i+1; j < n; j++) {
-					if (v1.getMeetMinCoefficientWith(this.get(j)) >= threshold)
-						overlapGraph.createEdge(i, j);
-				}
+			for (int j = i+1; j < n; j++) {
+				if (similarityFunc.getSimilarity(v1, this.get(j)) >= threshold)
+					overlapGraph.createEdge(i, j);
 			}
 			
 			stepsTaken += (n - i - 1);
