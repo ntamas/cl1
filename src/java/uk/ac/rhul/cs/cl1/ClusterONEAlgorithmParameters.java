@@ -176,15 +176,15 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	 * 
 	 * @throws ClusterONEException if the merging method is unknown
 	 */
-	public NodeSetSimilarityFunction getSimilarityFunction() throws ClusterONEException {
+	public SimilarityFunction<NodeSet> getSimilarityFunction() throws ClusterONEException {
 		if (mergingMethod.equals("match"))
-			return new MatchingScore();
+			return new MatchingScore<NodeSet>();
 		if (mergingMethod.equals("meet/min") || mergingMethod.equals("simpson"))
-			return new SimpsonCoefficient();
+			return new SimpsonCoefficient<NodeSet>();
 		if (mergingMethod.equals("jaccard"))
-			return new JaccardSimilarity();
+			return new JaccardSimilarity<NodeSet>();
 		if (mergingMethod.equals("dice"))
-			return new DiceSimilarity();
+			return new DiceSimilarity<NodeSet>();
 		throw new ClusterONEException("Unknown merging method: " + mergingMethod);
 	}
 	

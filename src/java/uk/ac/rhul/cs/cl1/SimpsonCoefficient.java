@@ -5,20 +5,21 @@ package uk.ac.rhul.cs.cl1;
  * 
  * @author ntamas
  */
-public class SimpsonCoefficient implements NodeSetSimilarityFunction {
+public class SimpsonCoefficient<T extends Object & Sized & Intersectable<? super T> >
+implements SimilarityFunction<T> {
 	/**
-	 * Returns the Simpson coefficient of this nodeset with another
+	 * Returns the Simpson coefficient between two sets.
 	 * 
-	 * The Simpson coefficient is the size of the intersection of the two nodesets,
-	 * divided by the minimum of the sizes of the two nodesets. It is sometimes
+	 * The Simpson coefficient is the size of the intersection of the two sets,
+	 * divided by the minimum of the sizes of the two sets. It is sometimes
 	 * also called the meet/min coefficient
 	 * 
-	 * @param   set1  the first nodeset
-	 * @param   set2  the second nodeset
+	 * @param   set1  the first set
+	 * @param   set2  the second set
 	 * @return   the Simpson coefficient
-	 * @precondition   the two nodesets must belong to the same graph
+	 * @precondition   the two sets must belong to the same graph
 	 */
-	public double getSimilarity(NodeSet set1, NodeSet set2) {
+	public double getSimilarity(T set1, T set2) {
 		double den = Math.min(set1.size(), set2.size());
 		if (den == 0)
 			return 0.0;

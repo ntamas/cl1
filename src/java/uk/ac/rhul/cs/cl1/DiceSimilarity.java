@@ -8,19 +8,18 @@ package uk.ac.rhul.cs.cl1;
  * 
  * @author ntamas
  */
-public class DiceSimilarity implements NodeSetSimilarityFunction {
+public class DiceSimilarity<T extends Object & Sized & Intersectable<? super T> > implements SimilarityFunction<T> {
 	/**
-	 * Calculates the Dice similarity between two nodesets.
+	 * Calculates the Dice similarity between two objects.
 	 * 
 	 * The Dice similarity is defined as twice the size of the intersection, divided 
-	 * by the sum of the sizes of the two nodesets.
+	 * by the sum of the sizes of the two objects.
 	 * 
-	 * @param   set1  the first nodeset
-	 * @param   set2  the second nodeset
+	 * @param   set1  the first object
+	 * @param   set2  the second object
 	 * @return   the Dice similarity
-	 * @precondition   the two nodesets must belong to the same graph
 	 */
-	public double getSimilarity(NodeSet set1, NodeSet set2) {
+	public double getSimilarity(T set1, T set2) {
 		double num = set1.getIntersectionSizeWith(set2);
 		if (num == 0)
 			return 0;

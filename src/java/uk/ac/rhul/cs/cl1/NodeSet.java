@@ -35,7 +35,7 @@ import com.sosnoski.util.hashset.IntHashSet;
  * 
  * @author Tamas Nepusz <tamas@cs.rhul.ac.uk>
  */
-public class NodeSet implements Iterable<Integer> {
+public class NodeSet implements Iterable<Integer>, Intersectable<NodeSet>, Sized {
 	/**
 	 * The graph associated with this node set
 	 */
@@ -361,6 +361,29 @@ public class NodeSet implements Iterable<Integer> {
 		}
 		
 		return result;
+	}
+	
+	/**
+	 * Returns the intersection of this nodeset with another
+	 */
+	public NodeSet getIntersectionWith(NodeSet other) {
+		Set<Integer> smaller = null;
+		IntHashSet larger = null;
+		IntArray intersection = new IntArray();
+		
+		if (this.size() < other.size()) {
+			smaller = this.members;
+			larger = other.getMemberHashSet();
+		} else {
+			smaller = other.members;
+			larger = this.getMemberHashSet();
+		}
+		
+		for (int member: smaller)
+			if (larger.contains(member))
+				intersection.add(member);
+		
+		return new NodeSet(this.getGraph(), intersection.toArray());
 	}
 	
 	/**

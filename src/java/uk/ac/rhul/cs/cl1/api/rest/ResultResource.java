@@ -92,7 +92,7 @@ public class ResultResource {
 		if (haircutThreshold != null)
 			params.setHaircutThreshold(haircutThreshold);
 		if (mergingMethod != null)
-			params.setMergingMethod(mergingMethod);
+			params.setMergingMethodName(mergingMethod);
 		if (overlapThreshold != null)
 			params.setOverlapThreshold(overlapThreshold);
 		if (seedingMethod != null)

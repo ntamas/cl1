@@ -1,34 +1,34 @@
 package uk.ac.rhul.cs.cl1;
 
 /**
- * Calculates the matching score between two nodesets.
+ * Calculates the matching score between two sets.
  * 
  * The matching score is defined as the size of the intersection squared,
- * divided by the product of the sizes of the two nodesets. An alternative
+ * divided by the product of the sizes of the two sets. An alternative
  * but equivalent definition is the product of the precision and the recall
- * between the two nodesets.
+ * between the two sets.
  * 
  * @author ntamas
  */
-public class MatchingScore implements NodeSetSimilarityFunction {
+public class MatchingScore<T extends Object & Sized & Intersectable<? super T> > implements SimilarityFunction<T> {
 	/**
-	 * Returns the matching score between two nodesets.
+	 * Returns the matching score between two sets.
 	 * 
 	 * The matching score is defined as the size of the intersection squared,
-	 * divided by the product of the sizes of the two nodesets. An alternative
+	 * divided by the product of the sizes of the two sets. An alternative
 	 * but equivalent definition is the product of the precision and the recall
-	 * between the two nodesets.
+	 * between the two sets.
 	 * 
-	 * @param   set1  the first nodeset
-	 * @param   set2  the second nodeset
+	 * @param   set1  the first set
+	 * @param   set2  the second set
 	 * @return   the matching score
-	 * @precondition   the two nodesets must belong to the same graph
+	 * @precondition   the two sets must belong to the same graph
 	 */
-	public double getSimilarity(NodeSet set1, NodeSet set2) {
+	public double getSimilarity(T set1, T set2) {
 		double num = set1.getIntersectionSizeWith(set2);
 		if (num == 0)
 			return 0;
 		
-		return num / set1.size() / set2.size();
+		return num * num / set1.size() / set2.size();
 	}
 }
