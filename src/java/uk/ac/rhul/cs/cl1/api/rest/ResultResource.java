@@ -60,7 +60,8 @@ public class ResultResource {
 			               @FormParam("haircut_threshold") Double haircutThreshold,
 			               @FormParam("merging_method") String mergingMethod,
 			               @FormParam("overlap_threshold") Double overlapThreshold,
-			               @FormParam("seeding_method") String seedingMethod)
+			               @FormParam("seeding_method") String seedingMethod,
+			               @FormParam("similarity") String similarityFunctionName)
 	throws IOException, ClusterONEException, InstantiationException {
 		EntityStore<String> datasetStore = WebApplication.getDatasetStore();
 		Response resp;
@@ -97,6 +98,8 @@ public class ResultResource {
 			params.setOverlapThreshold(overlapThreshold);
 		if (seedingMethod != null)
 			params.setSeedGenerator(seedingMethod);
+		if (similarityFunctionName != null)
+			params.setSimilarityFunction(similarityFunctionName);
 		
 		// Retrieve the quality function we will use
 		QualityFunction func = params.getQualityFunction();

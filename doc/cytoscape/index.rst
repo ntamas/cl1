@@ -207,14 +207,15 @@ If you do not see these parameters in the `control panel`_, click on the
     the penalty value will outweigh the benefits of adding the node. The
     default penalty value is 2.
 
-**Merging method** and **Overlap threshold**
+**Merging method**, **Overlap threshold** and **Similarity function**
     After an initial set of clusters are found, ClusterONE tries to
     merge highly overlapping (and thus redundant) clusters in order to
     clean up the result. For each pair of clusters found, ClusterONE
     calculates a score that quantifies the overlap between them, and
     two clusters are merged if this overlap is larger than a given
     threshold (specified by the **Overlap threshold** textbox). There
-    are two different ways to calculate the overlap score:
+    are four different ways to calculate the overlap score, as controlled
+    by the **Similarity function** combobox:
 
         - The *match coefficient* takes the size of the overlap squared,
           divided by the product of the sizes of the two clusters being
@@ -228,10 +229,28 @@ If you do not see these parameters in the `control panel`_, click on the
 
         - The *Dice similarity* divides twice the size of the overlap by
           the sum of the sizes of the two clusters.
-
-    The default settings (match coefficient with a threshold of 0.8)
-    seem to be satisfactory for most use-cases. Decreasing the threshold
-    will result in more clusters being merged.
+          
+    Merging can be done in two different ways, as controlled by the
+    **Merging method** combobox:
+    
+        - The *single-pass method* calculates similarity scores between all pairs
+          of complexes and creates a graph where the nodes are the
+          complexes and two nodes are connected if the corresponding
+          complexes have a score higher than the overlap threshold.
+          Complexes in the same connected component of the graph will then
+          be merged.
+                        
+        - The *multi-pass method* calculates similarity scores between all pairs
+          of complexes and stores those pairs that have a score
+          larger than the overlap threshold. The highest scoring pair
+          is then merged and the similarity of the merged complex
+          towards its neighbors is re-calculated. This is repeated
+          until there are no more highly overlapping complexes in
+          the result.
+    
+    The default settings (match coefficient with a threshold of 0.8 using
+    the single-pass algorithm) seem to be satisfactory for most use-cases
+    Decreasing the threshold will result in more clusters being merged.
 
 **Seeding method**
     ClusterONE works by growing clusters from initial "seeds", driven

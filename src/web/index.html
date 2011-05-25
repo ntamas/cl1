@@ -77,6 +77,15 @@ protein2 protein4 weight
           </select>
         </div>
         <div>
+          <label for="similarity">Similarity function:</label>
+          <select name="similarity" id="similarity">
+            <option value="match">Match coefficient</option>
+            <option value="jaccard">Jaccard similarity</option>
+            <option value="dice">Dice similarity</option>
+            <option value="simpson">Simpson coefficient</option>
+          </select>
+        </div>
+        <div>
           <label for="overlap_threshold">Overlap threshold:</label>
           <input class="number_01 required" id="overlap_threshold" name="overlap_threshold" value="0.8" />
         </div>
