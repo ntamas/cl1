@@ -7,11 +7,11 @@ import org.junit.Test;
 import uk.ac.rhul.cs.graph.Graph;
 
 public class MultiPassNodeSetMergerTest {
-
+	Graph graph = new Graph();
+	
 	@Test
 	public void testMergeOverlapping() {
-		Graph graph = new Graph();
-		for (int i = 0; i < 12; i++)
+		for (int i = 0; i < 17; i++)
 			graph.createNode(Integer.toString(i));
 		
 		ValuedNodeSetList nodeSets = new ValuedNodeSetList();
@@ -19,6 +19,9 @@ public class MultiPassNodeSetMergerTest {
 		nodeSets.add(new ValuedNodeSet(graph, 4, 5, 6, 7, 8));
 		nodeSets.add(new ValuedNodeSet(graph, 3, 4, 5, 6, 7, 8, 9, 10, 11));
 		nodeSets.add(new ValuedNodeSet(graph, 3, 4, 5));
+		nodeSets.add(new ValuedNodeSet(graph, 12, 13));
+		nodeSets.add(new ValuedNodeSet(graph, 13, 14));
+		nodeSets.add(new ValuedNodeSet(graph, 15, 16));
 		
 		SimilarityFunction<NodeSet> similarityFunc = new JaccardSimilarity<NodeSet>();
 		double threshold = 0.3;
@@ -29,9 +32,10 @@ public class MultiPassNodeSetMergerTest {
 		ValuedNodeSetList mergedNodeSets;
 		mergedNodeSets = merger.mergeOverlapping(nodeSets, similarityFunc, threshold);
 		
-		assertEquals(2, mergedNodeSets.size());
+		assertEquals(4, mergedNodeSets.size());
 		assertTrue(mergedNodeSets.contains(new ValuedNodeSet(graph, 3, 4, 5, 6, 7, 8, 9, 10, 11)));
 		assertTrue(mergedNodeSets.contains(new ValuedNodeSet(graph, 0, 1, 2, 3, 4, 5)));
+		assertTrue(mergedNodeSets.contains(new ValuedNodeSet(graph, 12, 13, 14)));
+		assertTrue(mergedNodeSets.contains(new ValuedNodeSet(graph, 15, 16)));
 	}
-
 }
