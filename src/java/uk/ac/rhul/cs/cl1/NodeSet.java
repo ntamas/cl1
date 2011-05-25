@@ -93,7 +93,7 @@ public class NodeSet implements Iterable<Integer>, Intersectable<NodeSet>, Sized
 		this(graph);
 		this.setMembers(members);
 	}
-
+	
 	/**
 	 * Checks whether a node is a member of the nodeset or not
 	 * @param    idx   index of the node being tested

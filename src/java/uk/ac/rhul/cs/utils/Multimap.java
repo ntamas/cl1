@@ -1,6 +1,7 @@
 package uk.ac.rhul.cs.utils;
 
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * A collection similar to {@link Map} which may associate multiple
@@ -34,6 +35,12 @@ public interface Multimap<K, V> {
 	 * Returns true if the multimap contains no key-value pairs.
 	 */
 	public boolean isEmpty();
+	
+	/**
+	 * Returns the set of all keys, each appearing once in the returned
+	 * set.
+	 */
+	Set<K> keySet();
 	
 	/**
 	 * Adds the given key-value pair to the multimap.

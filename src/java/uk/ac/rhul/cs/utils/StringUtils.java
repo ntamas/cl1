@@ -101,15 +101,30 @@ public class StringUtils {
 		if (!it.hasNext())
 			return "";
 		
-		StringBuilder sb = new StringBuilder(it.next().toString());
+		Object obj = it.next();
+		StringBuilder sb = new StringBuilder();
+		
+		if (obj == null)
+			sb.append("null");
+		else
+			sb.append(obj);
 		
 		if (separator == null || separator.isEmpty()) {
-			while (it.hasNext())
-				sb.append(it.next());
+			while (it.hasNext()) {
+				obj = it.next();
+				if (obj == null)
+					sb.append("null");
+				else
+					sb.append(obj);
+			}
 		} else {
 			while (it.hasNext()) {
+				obj = it.next();
 				sb.append(separator);
-				sb.append(it.next());
+				if (obj == null)
+					sb.append("null");
+				else
+					sb.append(obj);
 			}
 		}
 		

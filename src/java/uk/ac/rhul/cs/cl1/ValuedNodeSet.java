@@ -49,9 +49,22 @@ public class ValuedNodeSet extends NodeSet {
 	 * @param graph    the graph on which the nodeset is created
 	 * @param members  an array containing the member IDs
 	 */
-	public ValuedNodeSet(Graph graph, int[] members) {
+	public ValuedNodeSet(Graph graph, int... members) {
 		super(graph, members);
 		init();
+	}
+	
+	/**
+	 * Constructs a valued nodeset from a non-valued one using a default
+	 * value of 1 for each node.
+	 * 
+	 * @param  nodeset    the non-valued nodeset
+	 */
+	public ValuedNodeSet(NodeSet nodeset) {
+		this(nodeset, 1);
+		if (nodeset instanceof ValuedNodeSet) {
+			this.values = (ObjectIntHashMap)((ValuedNodeSet) nodeset).values.clone();
+		}
 	}
 	
 	/**

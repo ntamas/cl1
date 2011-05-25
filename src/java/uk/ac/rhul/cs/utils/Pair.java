@@ -34,7 +34,7 @@ public class Pair<L, R> {
 	}
 	
 	/** Equality testing for pairs */
-	public final boolean equals(Object o) {
+	public boolean equals(Object o) {
 		if (!(o instanceof Pair))
 			return false;
 		
@@ -42,7 +42,7 @@ public class Pair<L, R> {
 		return equal(getLeft(), other.getLeft()) && equal(getRight(), other.getRight());
 	}
 	
-	private static final boolean equal(Object o1, Object o2) {
+	protected static final boolean equal(Object o1, Object o2) {
 		if (o1 == null)
 			return o2 == null;
 		return o1.equals(o2);
