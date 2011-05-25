@@ -142,7 +142,27 @@ Advanced command line options
                     being considered, as in the paper of Bader and Hogue [2]_
 
 --merge-method      specifies the method to be used to merge highly overlapping
-                    complexes. More precisely, this switch controls which scoring
+                    complexes. The following values are accepted:
+                    
+                      - ``single`` calculates similarity scores between all pairs
+                        of complexes and creates a graph where the nodes are the
+                        complexes and two nodes are connected if the corresponding
+                        complexes are highly overlapping. Complexes in the same
+                        connected component of the graph will then be merged. As
+                        its name suggests, this is a single-pass method.
+                        
+                      - ``multi`` calculates similarity scores between all pairs
+                        of complexes and stores those pairs that have a score
+                        larger than a given threshold. The highest scoring pair
+                        is then merged and the similarity of the merged complex
+                        towards its neighbors is re-calculated. This is repeated
+                        until there are no more highly overlapping complexes in
+                        the result. As its name suggests, this is a multi-pass
+                        method where similarities are re-calculated after each
+                        merge.
+
+--similarity        specifies the similarity function to be used in the merging
+                    step. More precisely, this switch controls which scoring
                     function is used to decide whether two complexes overlap
                     significantly or not. The following values are accepted:
                     

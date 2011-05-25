@@ -86,11 +86,13 @@ public class CommandLineApplication {
 				params.setNodePenalty(Double.parseDouble(cmd.getOptionValue("penalty")));
 			if (cmd.hasOption("seed-method"))
 				params.setSeedGenerator(cmd.getOptionValue("seed-method").toString());
+			if (cmd.hasOption("similarity"))
+				params.setSimilarityFunction(cmd.getOptionValue("similarity").toString());
 		} catch (ParseException ex) {
 			System.err.println("Failed to parse command line options. Reason: " + ex.getMessage());
 			return 1;
 		} catch (InstantiationException ex) {
-			System.err.println("Failed to construct seed method: "+cmd.getOptionValue("seed-method").toString());
+			System.err.println("Failed to interpret string: "+cmd.getOptionValue("seed-method").toString());
 			ex.printStackTrace();
 			return 1;
 		}
@@ -233,12 +235,17 @@ public class CommandLineApplication {
 		
 		/* merging method option (advanced) */
 		options.addOption(OptionBuilder.withLongOpt("merge-method")
-				 .withDescription("specifies the cluster merging method to use (match, simpson, jaccard or dice)")
+				 .withDescription("specifies the cluster merging method to use (single or multi)")
 				 .withType(String.class).hasArg().create());
 		
 		/* seeding method option (advanced) */
 		options.addOption(OptionBuilder.withLongOpt("seed-method")
 				 .withDescription("specifies the seed generation method to use")
+				 .withType(String.class).hasArg().create());
+		
+		/* similarity function option (advanced) */
+		options.addOption(OptionBuilder.withLongOpt("similarity")
+				 .withDescription("specifies the similarity function to use (match, simpson, jaccard or dice)")
 				 .withType(String.class).hasArg().create());
 		
 		/* any other parameter (advanced) */

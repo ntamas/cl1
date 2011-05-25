@@ -11,6 +11,10 @@ package uk.ac.rhul.cs.cl1;
  * @author ntamas
  */
 public class MatchingScore<T extends Object & Sized & Intersectable<? super T> > implements SimilarityFunction<T> {
+	public String getName() {
+		return "Matching score";
+	}
+	
 	/**
 	 * Returns the matching score between two sets.
 	 * 

@@ -79,11 +79,17 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	/** Combobox for selecting the seeding method */
 	protected JComboBox seedMethodCombo;
 	
+	/** Combobox for selecting the similarity function */
+	protected JComboBox similarityCombo;
+	
+	/** Merging methods */
+	protected String[] mergingMethods = {"Single-pass", "Multi-pass"};
+	
 	/** Seeding methods */
 	protected String[] seedMethods = {"From unused nodes", "From every node", "From every edge"};
 	
-	/** Merging methods */
-	protected String[] mergingMethods = {"Match coefficient",
+	/** Similarity functions */
+	protected String[] similarityFunctions = {"Match coefficient",
 			"Simpson coefficient", "Jaccard similarity", "Dice similarity"};
 	
 	/** Internal class to listen for change and action events from subcomponents */
@@ -155,6 +161,9 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 		/* Merging method combobox */
 		mergingMethodCombo = addComboBox(Section.ADVANCED, "Merging method:", mergingMethods);
 		
+		/* Similarity function combobox */
+		similarityCombo = addComboBox(Section.ADVANCED, "Similarity:", similarityFunctions);
+		
 		/* Overlap threshold spinner */
 		overlapThresholdSpinner = addSpinner(Section.ADVANCED, "Overlap threshold:",
 			new SpinnerNumberModel(defaultParams.getOverlapThreshold(), 0.0, 1.0, 0.05)
@@ -190,17 +199,26 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 			return null;
 		}
 		
-		if (mergingMethodCombo.getSelectedIndex() == 0)
-			result.setMergingMethodName("match");
-		else if (mergingMethodCombo.getSelectedIndex() == 1)
-			result.setMergingMethodName("simpson");
-		else if (mergingMethodCombo.getSelectedIndex() == 2)
-			result.setMergingMethodName("jaccard");
-		else if (mergingMethodCombo.getSelectedIndex() == 3)
-			result.setMergingMethodName("dice");
-		else
+		try {
+			if (similarityCombo.getSelectedIndex() == 0)
+				result.setSimilarityFunction("match");
+			else if (similarityCombo.getSelectedIndex() == 1)
+				result.setSimilarityFunction("simpson");
+			else if (similarityCombo.getSelectedIndex() == 2)
+				result.setSimilarityFunction("jaccard");
+			else if (similarityCombo.getSelectedIndex() == 3)
+				result.setSimilarityFunction("dice");
+			else
+				return null;
+		} catch (InstantiationException ex) {
 			return null;
-
+		}
+		
+		if (mergingMethodCombo.getSelectedIndex() == 0)
+			result.setMergingMethodName("single");
+		else if (mergingMethodCombo.getSelectedIndex() == 1)
+			result.setMergingMethodName("multi");
+		
 		return result;
 	}
 	

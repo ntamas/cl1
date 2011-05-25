@@ -7,6 +7,11 @@ package uk.ac.rhul.cs.cl1;
  */
 public interface SimilarityFunction<T> {
 	/**
+	 * Returns the human-readable name of this function.
+	 */
+	public String getName();
+	
+	/**
 	 * Calculates the similarity between the two given objects.
 	 * 
 	 * @param set1  the first object

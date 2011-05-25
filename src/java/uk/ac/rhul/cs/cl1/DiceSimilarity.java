@@ -9,6 +9,10 @@ package uk.ac.rhul.cs.cl1;
  * @author ntamas
  */
 public class DiceSimilarity<T extends Object & Sized & Intersectable<? super T> > implements SimilarityFunction<T> {
+	public String getName() {
+		return "Dice similarity";
+	}
+	
 	/**
 	 * Calculates the Dice similarity between two objects.
 	 * 

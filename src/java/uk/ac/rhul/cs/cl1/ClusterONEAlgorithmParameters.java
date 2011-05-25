@@ -71,18 +71,21 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	 * 
 	 * Possible values:
 	 * <ul>
-	 * <li>dice: Dice similarity</li>
-	 * <li>jaccard: Jaccard similarity</li>
-	 * <li>match: match coefficient</li>
-	 * <li>meet/min or simpson: Simpson coefficient</li>
+	 * <li>single: single-pass merge</li>
+	 * <li>multi: multi-pass merge</li>
 	 * </ul>
 	 */
-	protected String mergingMethod = "match";
+	protected String mergingMethod = "single";
 	
 	/**
 	 * The seed generation method.
 	 */
 	protected SeedGenerator seedGenerator = new EveryNodeSeedGenerator();
+	
+	/**
+	 * Similarity function used by the complex merging methods.
+	 */
+	protected SimilarityFunction<NodeSet> similarityFunction = new MatchingScore<NodeSet>();
 	
 	/**
 	 * Returns the k-core threshold used by the algorithm
@@ -176,16 +179,8 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	 * 
 	 * @throws ClusterONEException if the merging method is unknown
 	 */
-	public SimilarityFunction<NodeSet> getSimilarityFunction() throws ClusterONEException {
-		if (mergingMethod.equals("match"))
-			return new MatchingScore<NodeSet>();
-		if (mergingMethod.equals("meet/min") || mergingMethod.equals("simpson"))
-			return new SimpsonCoefficient<NodeSet>();
-		if (mergingMethod.equals("jaccard"))
-			return new JaccardSimilarity<NodeSet>();
-		if (mergingMethod.equals("dice"))
-			return new DiceSimilarity<NodeSet>();
-		throw new ClusterONEException("Unknown merging method: " + mergingMethod);
+	public SimilarityFunction<NodeSet> getSimilarityFunction() {
+		return similarityFunction;
 	}
 	
 	/**
@@ -217,6 +212,15 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 		this.fluffClusters = fluffClusters;
 	}
 	
+	/**
+	 * Sets the haircut threshold of the algorithm.
+	 * 
+	 * @param haircutThreshold  the new haircut threshold
+	 */
+	public void setHaircutThreshold(double haircutThreshold) {
+		this.haircutThreshold = haircutThreshold;
+	}
+
 	/**
 	 * Sets the name of the merging method that will be used by the algorithm.
 	 * 
@@ -283,14 +287,41 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	}
 
 	/**
-	 * Sets the haircut threshold of the algorithm.
+	 * Sets the name of the similarity function that will be used by
+	 * the algorithm in the merging step.
 	 * 
-	 * @param haircutThreshold  the new haircut threshold
+	 * Possible values:
+	 * <ul>
+	 * <li>dice: Dice similarity</li>
+	 * <li>jaccard: Jaccard similarity</li>
+	 * <li>match: match coefficient</li>
+	 * <li>meet/min or simpson: Simpson coefficient</li>
+	 * </ul>
+	 * 
+	 * @param   similarityFunctionName  the name of the function to use.
 	 */
-	public void setHaircutThreshold(double haircutThreshold) {
-		this.haircutThreshold = haircutThreshold;
+	public void setSimilarityFunction(String similarityFunctionName) throws InstantiationException {
+		if (similarityFunctionName.equals("match"))
+			this.similarityFunction = new MatchingScore<NodeSet>();
+		if (similarityFunctionName.equals("meet/min") || similarityFunctionName.equals("simpson"))
+			this.similarityFunction = new SimpsonCoefficient<NodeSet>();
+		if (similarityFunctionName.equals("jaccard"))
+			this.similarityFunction = new JaccardSimilarity<NodeSet>();
+		if (similarityFunctionName.equals("dice"))
+			this.similarityFunction = new DiceSimilarity<NodeSet>();
+		throw new InstantiationException("Unknown similarity function: " +similarityFunctionName);
 	}
-
+	
+	/**
+	 * Sets the similarity function that will be used by the algorithm in
+	 * the merging step.
+	 * 
+	 * @param  func  the similarity function
+	 */
+	public void setSimilarityFunction(SimilarityFunction<NodeSet> func) {
+		this.similarityFunction = func;
+	}
+	
 	/**
 	 * Returns whether a haircut operation will be needed.
 	 */
@@ -311,6 +342,7 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 		sb.append("Node penalty: " + nodePenalty + "\n");
 		sb.append("Merging method: " + mergingMethod + "\n");
 		sb.append("Seed generator: " + seedGenerator + "\n");
+		sb.append("Similarity function: " + similarityFunction.getName() + "\n");
 		
 		return sb.toString();
 	}

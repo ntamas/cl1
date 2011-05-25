@@ -27,4 +27,22 @@ public abstract class AbstractNodeSetMerger implements NodeSetMerger {
 	public void setTaskMonitor(TaskMonitor monitor) {
 		this.taskMonitor = monitor;
 	}
+	
+	/**
+	 * Constructs a nodeset merger from a string specification.
+	 */
+	public static AbstractNodeSetMerger fromString(String spec)
+	throws InstantiationException {
+		if (spec != null) {
+			if (spec.equals("single"))
+				return new SinglePassNodeSetMerger();
+			else if (spec.equals("multi"))
+				return new MultiPassNodeSetMerger();
+			else if (spec.equals("none"))
+				return new DummyNodeSetMerger();
+			else if (spec.equals("dummy"))
+				return new DummyNodeSetMerger();
+		}
+		throw new InstantiationException("unknown nodeset merger: " + spec);
+	}
 }

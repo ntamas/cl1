@@ -123,6 +123,7 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 		double minDensity = parameters.getMinDensity();
 		boolean hasMergingMethod = parameters.getMergingMethodName() != null &&
 		                           !parameters.getMergingMethodName().equals("none");
+		AbstractNodeSetMerger merger;
 		
 		ValuedNodeSetList result = new ValuedNodeSetList();
 		HashSet<NodeSet> addedNodeSets = new HashSet<NodeSet>();
@@ -130,6 +131,12 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 		/* Simple sanity checks */
 		if (ArrayUtils.min(graph.getEdgeWeights()) < 0.0)
 			throw new ClusterONEException("Edge weights must all be non-negative");
+		try {
+			merger = AbstractNodeSetMerger.fromString(
+					parameters.getMergingMethodName());
+		} catch (InstantiationException ex) {
+			throw new ClusterONEException(ex.getMessage());
+		}	
 		
 		/* Get the seed generator from the parameters */
 		SeedGenerator seedGenerator = parameters.getSeedGenerator();	
@@ -205,16 +212,10 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 		addedNodeSets = null;
 		
 		/* Merge highly overlapping clusters */
-		if (hasMergingMethod) {
-			AbstractNodeSetMerger merger = new SinglePassNodeSetMerger();
-			merger.setTaskMonitor(monitor);
-			result = merger.mergeOverlapping(result,
-					parameters.getSimilarityFunction(),
-					parameters.getOverlapThreshold());
-		}
-		
-		/* Return the result effectively */
-		this.result = result;
+		merger.setTaskMonitor(monitor);
+		this.result = merger.mergeOverlapping(result,
+				parameters.getSimilarityFunction(),
+				parameters.getOverlapThreshold());
 	}
 	
 	/**

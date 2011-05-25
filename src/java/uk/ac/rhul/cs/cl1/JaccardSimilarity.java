@@ -10,6 +10,10 @@ package uk.ac.rhul.cs.cl1;
  */
 public class JaccardSimilarity<T extends Object & Sized & Intersectable<? super T> >
 implements SimilarityFunction<T> {
+	public String getName() {
+		return "Jaccard similarity";
+	}
+	
 	/**
 	 * Calculates the Jaccard similarity between two objects.
 	 * 

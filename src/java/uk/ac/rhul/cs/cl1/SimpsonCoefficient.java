@@ -7,6 +7,10 @@ package uk.ac.rhul.cs.cl1;
  */
 public class SimpsonCoefficient<T extends Object & Sized & Intersectable<? super T> >
 implements SimilarityFunction<T> {
+	public String getName() {
+		return "Simpson coefficient";
+	}
+	
 	/**
 	 * Returns the Simpson coefficient between two sets.
 	 * 
