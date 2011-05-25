@@ -1,15 +1,16 @@
 package uk.ac.rhul.cs.cl1.ui;
 
+import info.clearthought.layout.TableLayout;
+
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.TreeMap;
-
-import info.clearthought.layout.TableLayout;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -196,6 +197,7 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 			else
 				return null;
 		} catch (InstantiationException ex) {
+			ex.printStackTrace();
 			return null;
 		}
 		

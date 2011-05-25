@@ -303,13 +303,14 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	public void setSimilarityFunction(String similarityFunctionName) throws InstantiationException {
 		if (similarityFunctionName.equals("match"))
 			this.similarityFunction = new MatchingScore<NodeSet>();
-		if (similarityFunctionName.equals("meet/min") || similarityFunctionName.equals("simpson"))
+		else if (similarityFunctionName.equals("meet/min") || similarityFunctionName.equals("simpson"))
 			this.similarityFunction = new SimpsonCoefficient<NodeSet>();
-		if (similarityFunctionName.equals("jaccard"))
+		else if (similarityFunctionName.equals("jaccard"))
 			this.similarityFunction = new JaccardSimilarity<NodeSet>();
-		if (similarityFunctionName.equals("dice"))
+		else if (similarityFunctionName.equals("dice"))
 			this.similarityFunction = new DiceSimilarity<NodeSet>();
-		throw new InstantiationException("Unknown similarity function: " +similarityFunctionName);
+		else
+			throw new InstantiationException("Unknown similarity function: " +similarityFunctionName);
 	}
 	
 	/**

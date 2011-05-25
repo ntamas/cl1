@@ -2,7 +2,7 @@
 <body>
 %logo%
 <p align="center"><b>Version %version%</b><br/><br/>
-(C) 2009 Tamás Nepusz, Haiyuan Yu, Alberto Paccanaro<br/>
+(C) 2009-2011 Tamás Nepusz, Haiyuan Yu, Alberto Paccanaro<br/>
 <a href="http://www.paccanarolab.org">Paccanaro Lab</a>
 <br/><br/>
 <i>Please cite: Nepusz T, Yu H, Paccanaro A: Detecting overlapping protein complexes
