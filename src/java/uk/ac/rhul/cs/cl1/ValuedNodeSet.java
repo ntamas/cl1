@@ -84,10 +84,24 @@ public class ValuedNodeSet extends NodeSet {
 	 * Gets the value corresponding to the given node
 	 * 
 	 * @param  nodeIndex    index of the node whose value is being set
-	 * @return the value itself
+	 * @return the value itself or 0 if the node has no associated value
 	 */
 	public int getValue(int nodeIndex) {
-		return values.get(nodeIndex);
+		return this.getValue(nodeIndex, 0);
+	}
+	
+	/**
+	 * Gets the value corresponding to the given node
+	 * 
+	 * @param  nodeIndex    index of the node whose value is being set
+	 * @param  defaultValue default value to return when the node has no value
+	 * @return the value itself
+	 */
+	public int getValue(int nodeIndex, int defaultValue) {
+		int result = values.get(nodeIndex);
+		if (result == ObjectIntHashMap.DEFAULT_NOT_FOUND)
+			result = defaultValue;
+		return result;
 	}
 	
 	protected void init() {

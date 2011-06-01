@@ -3,6 +3,7 @@ package uk.ac.rhul.cs.cl1;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.PriorityQueue;
+import java.util.TreeMap;
 
 import uk.ac.rhul.cs.graph.Graph;
 import uk.ac.rhul.cs.utils.HashMultimap;
@@ -27,9 +28,35 @@ import uk.ac.rhul.cs.utils.UnorderedPair;
  */
 public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 	/**
+	 * Auxiliary data structure for verification mode; stores how many times
+	 * a given node appeared in the input data.
+	 */
+	private TreeMap<Integer, Integer> counts = new TreeMap<Integer, Integer>();
+	
+	/**
 	 * Returns whether the node set merger is in debug mode.
 	 */
 	protected boolean debugging = false;
+	
+	/**
+	 * Returns whether the node set merger is in verification mode.
+	 * 
+	 * In verification mode, the merger takes note of each node in the
+	 * incoming node set and how many times they appear there. At the
+	 * end of the merging process, the following should hold:
+	 * 
+	 *   - The sum of values of a given node in the resulting list of
+	 *     {@link ValuedNodeSet}s must be equal to the sum of values of
+	 *     the same node in the incoming {@link ValuedNodeSet}.
+	 *     
+	 *   - The similarity score between any pair of nodesets must be
+	 *     smaller than the threshold in the result.
+	 *     
+	 * Verification mode turns on these checks. When the resulting list of
+	 * {@link ValuedNodeSet} instances fail these checks, this means that
+	 * there is a bug in the merging algorithm.
+	 */
+	protected boolean verificationMode = true;
 	
 	class NodeSetPair extends UnorderedPair<ValuedNodeSet> implements Comparable<NodeSetPair> {
 		double similarity;
@@ -68,6 +95,13 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 		return debugging;
 	}
 
+	/**
+	 * Returns whether the node set merger is in verification mode.
+	 */
+	public boolean isVerificationMode() {
+		return verificationMode;
+	}
+
 	public ValuedNodeSetList mergeOverlapping(ValuedNodeSetList nodeSets,
 			SimilarityFunction<NodeSet> similarityFunc, double threshold) {
 		int i, j, n = nodeSets.size();
@@ -78,6 +112,10 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 		
 		if (n == 0)
 			return result;
+		
+		if (verificationMode) {
+			prepareForVerification(nodeSets);
+		}
 		
 		Graph graph = nodeSets.get(0).getGraph();
 		
@@ -166,8 +204,11 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 			unionMembers.addAll(v2.getMembers());
 			
 			ValuedNodeSet unionNodeset = new ValuedNodeSet(graph, unionMembers.elementSet());
-			for (Multiset.Entry<Integer> entry: unionMembers.entrySet())
-				unionNodeset.setValue(entry.getElement(), entry.getCount());
+			for (Multiset.Entry<Integer> entry: unionMembers.entrySet()) {
+				Integer elt = entry.getElement();
+				int count = v1.getValue(elt, 0) + v2.getValue(elt, 0);
+				unionNodeset.setValue(elt, count);
+			}
 			
 			// Update the NodeSetPairs related to either v1 or v2
 			boolean v1SubsetOfv2 = unionNodeset.equals(v2);
@@ -192,6 +233,14 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 				}
 				for (NodeSetPair oldPair: nodesetsToPairs.get(v2)) {
 					ValuedNodeSet v3 = oldPair.getOtherThan(v2);
+					if (unionNodeset == v3) {
+						// This happens when there is a triangle in the similarity
+						// graph, i.e. v1 -- v2 -- v3 -- v1, and v1 is being merged
+						// with v2. unionNodeset was then already added as a neighbor
+						// to v3 in the previous for loop, so we can skip it here.
+						continue;
+					}
+					
 					similarity = similarityFunc.getSimilarity(unionNodeset, v3);
 					nodesetsToPairs.remove(v3, oldPair);
 					
@@ -216,6 +265,9 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 				activeNodesets.add(unionNodeset);
 			} else if (v1SubsetOfv2) {
 				debug("  v1 is subset of v2.");
+				for (int member: v1)
+					v2.setValue(member, v1.getValue(member) + v2.getValue(member));
+				
 				// v1 is subset of v2; unionNodeSet is then equal to v2.
 				// Pairs pertaining to v2 will stay as they are.
 				// Pairs pertaining to v1 have to be updated
@@ -224,7 +276,6 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 					ValuedNodeSet v3 = oldPair.getOtherThan(v1);
 					similarity = similarityFunc.getSimilarity(v2, v3);
 					nodesetsToPairs.remove(v3, oldPair);
-					
 					debug("  Similarity of {" + v2 + "} and {" + v3 + "} is " + similarity);
 					if (similarity < threshold)
 						continue;
@@ -247,6 +298,8 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 				activeNodesets.remove(v1);
 			} else if (v2SubsetOfv1) {
 				debug("  v2 is subset of v1.");
+				for (int member: v2)
+					v1.setValue(member, v2.getValue(member) + v1.getValue(member));
 				
 				// v2 is subset of v1; unionNodeSet is then equal to v1.
 				// Pairs pertaining to v1 will stay as they are.
@@ -290,9 +343,65 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 		// Add the nodesets that are still active
 		result.addAll(activeNodesets);
 		
+		if (verificationMode) {
+			verifyResult(result, similarityFunc, threshold);
+		}
+		
 		return result;
 	}
-
+	
+	/**
+	 * Prepares the input nodeset for verification later on.
+	 */
+	private void prepareForVerification(ValuedNodeSetList input) {
+		counts.clear();
+		for (ValuedNodeSet nodeSet: input) {
+			for (int member: nodeSet) {
+				if (counts.containsKey(member))
+					counts.put(member, counts.get(member) + 1);
+				else
+					counts.put(member, 1);
+			}
+		}
+	}
+	
+	/**
+	 * Verifies the result.
+	 * 
+	 * @see verificationMode for more details.
+	 * @throws RuntimeException if the verification failed
+	 */
+	private void verifyResult(ValuedNodeSetList result,
+			SimilarityFunction<NodeSet> similarityFunc, double threshold) {
+		TreeMap<Integer, Integer> newCounts = new TreeMap<Integer, Integer>();
+		newCounts.clear();
+		for (ValuedNodeSet nodeSet: result) {
+			for (int member: nodeSet) {
+				if (newCounts.containsKey(member))
+					newCounts.put(member, newCounts.get(member) + 1);
+				else
+					newCounts.put(member, 1);
+			}
+		}
+		
+		if (!newCounts.keySet().equals(counts.keySet())) {
+			throw new RuntimeException("newCounts and counts is different!");
+		}
+		
+		for (ValuedNodeSet nodeSet1: result) {
+			for (ValuedNodeSet nodeSet2: result) {
+				if (nodeSet1 == nodeSet2)
+					continue;
+				
+				double sim = similarityFunc.getSimilarity(nodeSet1, nodeSet2);
+				if (sim >= threshold)
+					throw new RuntimeException("similarity of " + nodeSet1 +
+							" and " + nodeSet2 + " is " + sim +
+							", while the threshold is " + threshold);
+			}
+		}
+	}
+	
 	/**
 	 * Turns the debugging mode on or off.
 	 */
@@ -300,6 +409,13 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 		this.debugging = debugging;
 	}
 	
+	/**
+	 * Turns the verification mode on or off.
+	 */
+	public void setVerificationMode(boolean verificationMode) {
+		this.verificationMode = verificationMode;
+	}
+
 	private void debug(String message) {
 		if (!this.debugging)
 			return;
