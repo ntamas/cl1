@@ -3,6 +3,7 @@ package uk.ac.rhul.cs.cl1;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.PriorityQueue;
+import java.util.Set;
 import java.util.TreeMap;
 
 import uk.ac.rhul.cs.graph.Graph;
@@ -163,6 +164,14 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 			System.err.println(pairs);
 		}
 		
+		// Checkpoint
+		if (isVerificationMode()) {
+			ValuedNodeSetList tmpResult = new ValuedNodeSetList();
+			tmpResult.addAll(result);
+			tmpResult.addAll(activeNodesets);
+			verifyResult(tmpResult, similarityFunc, -1);
+		}
+		
 		// Stage 2: merge overlapping pairs one by one
 		if (taskMonitor != null) {
 			taskMonitor.setPercentCompleted(0);
@@ -261,10 +270,10 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 				nodesetsToPairs.removeAll(v2);		
 				activeNodesets.remove(v1);
 				activeNodesets.remove(v2);
-
+				
 				activeNodesets.add(unionNodeset);
-			} else if (v1SubsetOfv2) {
-				debug("  v1 is subset of v2.");
+			} else if (v1SubsetOfv2 && !v2SubsetOfv1) {
+				debug("  v1 is a real subset of v2.");
 				for (int member: v1)
 					v2.setValue(member, v1.getValue(member) + v2.getValue(member));
 				
@@ -296,8 +305,8 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 				// Remove v1 from the mapping from nodesets to pairs
 				nodesetsToPairs.removeAll(v1);
 				activeNodesets.remove(v1);
-			} else if (v2SubsetOfv1) {
-				debug("  v2 is subset of v1.");
+			} else if (v2SubsetOfv1 && !v1SubsetOfv2) {
+				debug("  v2 is a real subset of v1.");
 				for (int member: v2)
 					v1.setValue(member, v2.getValue(member) + v1.getValue(member));
 				
@@ -327,6 +336,13 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 				// Remove v2 from the mapping from nodesets to pairs
 				nodesetsToPairs.removeAll(v2);
 				activeNodesets.remove(v2);
+			} else {
+				// v1 and v2 are equal. This can happen if they were joined via two
+				// independent join paths. We remove v2 and keep v1
+				for (int member: v2)
+					v1.setValue(member, v2.getValue(member) + v1.getValue(member));
+				nodesetsToPairs.removeAll(v2);
+				activeNodesets.remove(v2);
 			}
 			
 			debug("  Active nodesets: " + activeNodesets);
@@ -338,6 +354,21 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 			if (taskMonitor != null) {
 				taskMonitor.setPercentCompleted((int)(100 * (((float)stepsTaken) / stepsTotal)));
 			}
+			
+			// Checkpoint
+			if (isVerificationMode()) {
+				ValuedNodeSetList tmpResult = new ValuedNodeSetList();
+				tmpResult.addAll(result);
+				tmpResult.addAll(activeNodesets);
+				try {
+					verifyResult(tmpResult, similarityFunc, -1);
+				} catch (RuntimeException ex) {
+					System.err.println("Step " + stepsTaken + "\n" +
+							"Verification failed after merging:\n" + v1 + "\nand:\n" + v2);
+					throw ex;
+				}
+			}
+			
 		}
 		
 		// Add the nodesets that are still active
@@ -374,6 +405,7 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 	private void verifyResult(ValuedNodeSetList result,
 			SimilarityFunction<NodeSet> similarityFunc, double threshold) {
 		TreeMap<Integer, Integer> newCounts = new TreeMap<Integer, Integer>();
+		
 		newCounts.clear();
 		for (ValuedNodeSet nodeSet: result) {
 			for (int member: nodeSet) {
@@ -385,8 +417,28 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 		}
 		
 		if (!newCounts.keySet().equals(counts.keySet())) {
-			throw new RuntimeException("newCounts and counts is different!");
+			Graph graph = result.get(0).getGraph();
+			
+			Set<Integer> ks = counts.keySet();
+			StringBuilder sb = new StringBuilder("Nodes only in counts:");
+			ks.removeAll(newCounts.keySet());
+			for (int k: ks) {
+				sb.append(" " + graph.getNodeName(k));
+			}
+			sb.append("\n");
+			
+			ks = newCounts.keySet();
+			sb.append("Nodes only in newCounts:");
+			ks.removeAll(counts.keySet());
+			for (int k: ks) {
+				sb.append(" " + graph.getNodeName(k));
+			}
+			
+			throw new RuntimeException("newCounts and counts is different!\n" + sb.toString());
 		}
+		
+		if (threshold < 0)
+			return;
 		
 		for (ValuedNodeSet nodeSet1: result) {
 			for (ValuedNodeSet nodeSet2: result) {

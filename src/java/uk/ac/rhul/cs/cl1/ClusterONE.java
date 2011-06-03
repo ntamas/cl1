@@ -121,8 +121,6 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 	 */
 	public void run() throws ClusterONEException {
 		double minDensity = parameters.getMinDensity();
-		boolean hasMergingMethod = parameters.getMergingMethodName() != null &&
-		                           !parameters.getMergingMethodName().equals("none");
 		AbstractNodeSetMerger merger;
 		
 		ValuedNodeSetList result = new ValuedNodeSetList();
@@ -196,7 +194,7 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 			cluster = null;
 			
 			/* Add the cluster if we haven't found it before */
-			if (!hasMergingMethod || !addedNodeSets.contains(frozenCluster)) {
+			if (!addedNodeSets.contains(frozenCluster)) {
 				result.add(frozenCluster);
 				addedNodeSets.add(frozenCluster);
 				it.processFoundCluster(frozenCluster);
