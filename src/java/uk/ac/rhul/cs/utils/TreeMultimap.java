@@ -1,6 +1,6 @@
 package uk.ac.rhul.cs.utils;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.TreeMap;
 
 /**
@@ -13,6 +13,6 @@ import java.util.TreeMap;
  */
 public class TreeMultimap<K, V> extends MultimapBase<K, V> {
 	protected void initializeStorage() {
-		data = new TreeMap<K, List<V>>();
+		data = new TreeMap<K, Collection<V>>();
 	}
 }

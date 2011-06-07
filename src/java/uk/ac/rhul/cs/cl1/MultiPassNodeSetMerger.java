@@ -339,6 +339,7 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 			} else {
 				// v1 and v2 are equal. This can happen if they were joined via two
 				// independent join paths. We remove v2 and keep v1
+				debug("  v1 and v2 are identical.");
 				for (int member: v2)
 					v1.setValue(member, v2.getValue(member) + v1.getValue(member));
 				nodesetsToPairs.removeAll(v2);
@@ -347,7 +348,6 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 			
 			debug("  Active nodesets: " + activeNodesets);
 			debug("  Queue is now: " + pairs);
-			
 			stepsTaken += 1;
 			if (stepsTaken > stepsTotal)
 				stepsTotal = stepsTaken;
@@ -360,6 +360,7 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 				ValuedNodeSetList tmpResult = new ValuedNodeSetList();
 				tmpResult.addAll(result);
 				tmpResult.addAll(activeNodesets);
+				debug("  Temporary result is: " + tmpResult);
 				try {
 					verifyResult(tmpResult, similarityFunc, -1);
 				} catch (RuntimeException ex) {

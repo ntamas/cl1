@@ -57,6 +57,7 @@ public class MultiPassNodeSetMergerTest {
 		
 		MultiPassNodeSetMerger merger = new MultiPassNodeSetMerger();
 		merger.setVerificationMode(true);
+		// merger.setDebugging(true);
 		
 		ValuedNodeSetList mergedNodeSets;
 		mergedNodeSets = merger.mergeOverlapping(nodeSets, similarityFunc, threshold);

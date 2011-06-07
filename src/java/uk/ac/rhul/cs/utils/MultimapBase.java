@@ -1,11 +1,10 @@
 package uk.ac.rhul.cs.utils;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Base implementation of a multimap.
@@ -20,7 +19,7 @@ public abstract class MultimapBase<K, V> implements Multimap<K, V> {
 	/**
 	 * Internal storage for the key-value pairs.
 	 */
-	protected Map<K, List<V>> data;
+	protected Map<K, Collection<V>> data;
 	
 	public MultimapBase() {
 		initializeStorage();
@@ -31,7 +30,7 @@ public abstract class MultimapBase<K, V> implements Multimap<K, V> {
 	}
 
 	public boolean containsKey(Object key) {
-		List<V> values = data.get(key);
+		Collection<V> values = data.get(key);
 		return values != null && values.size() > 0;
 	}
 
@@ -49,16 +48,16 @@ public abstract class MultimapBase<K, V> implements Multimap<K, V> {
 	protected abstract void initializeStorage();
 	
 	public boolean isEmpty() {
-		for (Map.Entry<K, List<V>> pair: data.entrySet())
+		for (Map.Entry<K, Collection<V>> pair: data.entrySet())
 			if (!pair.getValue().isEmpty())
 				return false;
 		return true;
 	}
 	
 	public boolean put(K key, V value) {
-		List<V> values = data.get(key);
+		Collection<V> values = data.get(key);
 		if (values == null) {
-			values = new ArrayList<V>();
+			values = new TreeSet<V>();
 			data.put(key, values);
 		}
 		values.add(value);
@@ -66,7 +65,7 @@ public abstract class MultimapBase<K, V> implements Multimap<K, V> {
 	}
 	
 	public boolean remove(Object key, Object value) {
-		List<V> values = data.get(key);
+		Collection<V> values = data.get(key);
 		if (values == null)
 			return false;
 		
@@ -78,7 +77,7 @@ public abstract class MultimapBase<K, V> implements Multimap<K, V> {
 	}
 	
 	public Collection<V> removeAll(Object key) {
-		List<V> values = data.remove(key);
+		Collection<V> values = data.remove(key);
 		if (values == null)
 			return Collections.emptyList();
 		return values;

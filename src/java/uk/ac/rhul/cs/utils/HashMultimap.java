@@ -1,7 +1,7 @@
 package uk.ac.rhul.cs.utils;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Implementation of a multimap backed by a {@link HashMap}.
@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class HashMultimap<K, V> extends MultimapBase<K, V> {
 	protected void initializeStorage() {
-		data = new HashMap<K, List<V>>();
+		data = new HashMap<K, Collection<V>>();
 	}
 
 }
