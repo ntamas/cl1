@@ -81,7 +81,10 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 				return 1;
 			if (this.similarity > other.similarity)
 				return -1;
-			return 0;
+			if (this.getLeft().equals(this.getRight()))
+				return 0;
+			
+			return System.identityHashCode(this.getLeft()) - System.identityHashCode(this.getRight());
 		}
 		
 		public String toString() {
@@ -137,8 +140,12 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 				if (similarity >= threshold) {
 					NodeSetPair pair = new NodeSetPair(v1, v2, similarity);
 					pairs.add(pair);
+					debug("  Adding " + pair + " to pairs of " + v1);
 					nodesetsToPairs.put(v1, pair);
+					debug("  Pairs of " + v1 + " are now " + nodesetsToPairs.get(v1));
+					debug("  Adding " + pair + " to pairs of " + v2);
 					nodesetsToPairs.put(v2, pair);
+					debug("  Pairs of " + v2 + " are now " + nodesetsToPairs.get(v2));
 				}
 			}
 			if (!nodesetsToPairs.containsKey(v1)) {
@@ -174,7 +181,7 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 		
 		// Stage 2: merge overlapping pairs one by one
 		if (taskMonitor != null) {
-			taskMonitor.setPercentCompleted(0);
+			taskMonitor.setPercentCompleted(-1);
 			taskMonitor.setStatus("Merging highly overlapping clusters...");
 		}
 		
@@ -240,6 +247,7 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 					nodesetsToPairs.put(unionNodeset, newPair);
 					nodesetsToPairs.put(v3, newPair);
 				}
+				debug("  v2: " + nodesetsToPairs.get(v1));
 				for (NodeSetPair oldPair: nodesetsToPairs.get(v2)) {
 					ValuedNodeSet v3 = oldPair.getOtherThan(v2);
 					if (unionNodeset == v3) {
@@ -348,12 +356,6 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 			
 			debug("  Active nodesets: " + activeNodesets);
 			debug("  Queue is now: " + pairs);
-			stepsTaken += 1;
-			if (stepsTaken > stepsTotal)
-				stepsTotal = stepsTaken;
-			if (taskMonitor != null) {
-				taskMonitor.setPercentCompleted((int)(100 * (((float)stepsTaken) / stepsTotal)));
-			}
 			
 			// Checkpoint
 			if (isVerificationMode()) {
@@ -377,6 +379,10 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 		
 		if (verificationMode) {
 			verifyResult(result, similarityFunc, threshold);
+		}
+		
+		if (taskMonitor != null) {
+			taskMonitor.setPercentCompleted(100);
 		}
 		
 		return result;

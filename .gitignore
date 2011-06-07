@@ -1,5 +1,6 @@
 .classpath
 .project
 build/
+lib/junit*.jar
 *.swp
 cluster_one*.jar
