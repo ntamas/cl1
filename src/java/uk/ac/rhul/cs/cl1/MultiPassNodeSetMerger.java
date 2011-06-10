@@ -137,7 +137,7 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 			for (j = i+1; j < n; j++) {
 				ValuedNodeSet v2 = nodeSets.get(j);
 				similarity = similarityFunc.getSimilarity(v1, v2);
-				if (similarity >= threshold) {
+				if (similarity > 0) {
 					NodeSetPair pair = new NodeSetPair(v1, v2, similarity);
 					pairs.add(pair);
 					debug("  Adding " + pair + " to pairs of " + v1);
@@ -192,6 +192,9 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 			NodeSetPair pair = pairs.poll();
 			ValuedNodeSet v1 = pair.getLeft();
 			ValuedNodeSet v2 = pair.getRight();
+			
+			if (pair.similarity < threshold)
+				break;
 			
 			debug("Merging pair: " + pair);
 			debug("  Active nodesets: " + activeNodesets);
@@ -294,7 +297,7 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 					similarity = similarityFunc.getSimilarity(v2, v3);
 					nodesetsToPairs.remove(v3, oldPair);
 					debug("  Similarity of {" + v2 + "} and {" + v3 + "} is " + similarity);
-					if (similarity < threshold)
+					if (similarity == 0)
 						continue;
 					
 					NodeSetPair newPair = new NodeSetPair(v2, v3, similarity);
@@ -327,7 +330,7 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 					similarity = similarityFunc.getSimilarity(v1, v3);
 					nodesetsToPairs.remove(v3, oldPair);
 					
-					if (similarity < threshold)
+					if (similarity == 0)
 						continue;
 					
 					NodeSetPair newPair = new NodeSetPair(v1, v3, similarity);
