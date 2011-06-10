@@ -95,6 +95,33 @@ public class NodeSet implements Iterable<Integer>, Intersectable<NodeSet>, Sized
 	}
 	
 	/**
+	 * Compares a nodeset with another (lexicographical order).
+	 */
+	public int compareTo(NodeSet other) {
+		if (this.members == null && other.members == null)
+			return 0;
+		if (this.members == null)
+			return -1;
+		if (other.members == null)
+			return 1;
+		
+		Iterator<Integer> it1 = this.members.iterator();
+		Iterator<Integer> it2 = other.members.iterator();
+		while (it1.hasNext() && it2.hasNext()) {
+			Integer i1 = it1.next(), i2 = it2.next();
+			if (i1 < i2)
+				return -1;
+			if (i1 > i2)
+				return 1;
+		}
+		if (it1.hasNext())
+			return 1;
+		if (it2.hasNext())
+			return -1;
+		return 0;
+	}
+	
+	/**
 	 * Checks whether a node is a member of the nodeset or not
 	 * @param    idx   index of the node being tested
 	 * @return   true if the node is a member of the set, false otherwise

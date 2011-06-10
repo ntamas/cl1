@@ -81,10 +81,11 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 				return 1;
 			if (this.similarity > other.similarity)
 				return -1;
-			if (this.getLeft().equals(this.getRight()))
-				return 0;
-			
-			return System.identityHashCode(this.getLeft()) - System.identityHashCode(this.getRight());
+			return this.getLeft().compareTo(this.getRight());
+		}
+		
+		public int hashCode() {
+			return super.hashCode() + (37 * new Double(similarity).hashCode());
 		}
 		
 		public String toString() {
@@ -142,10 +143,10 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 					pairs.add(pair);
 					debug("  Adding " + pair + " to pairs of " + v1);
 					nodesetsToPairs.put(v1, pair);
-					debug("  Pairs of " + v1 + " are now " + nodesetsToPairs.get(v1));
+					// debug("  Pairs of " + v1 + " are now " + nodesetsToPairs.get(v1));
 					debug("  Adding " + pair + " to pairs of " + v2);
 					nodesetsToPairs.put(v2, pair);
-					debug("  Pairs of " + v2 + " are now " + nodesetsToPairs.get(v2));
+					// debug("  Pairs of " + v2 + " are now " + nodesetsToPairs.get(v2));
 				}
 			}
 			if (!nodesetsToPairs.containsKey(v1)) {
@@ -197,7 +198,7 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 				break;
 			
 			debug("Merging pair: " + pair);
-			debug("  Active nodesets: " + activeNodesets);
+			// debug("  Active nodesets: " + activeNodesets);
 			
 			// If v1 was already merged into another nodeset, continue
 			if (!activeNodesets.contains(v1)) {
@@ -290,10 +291,14 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 				
 				// v1 is subset of v2; unionNodeSet is then equal to v2.
 				// Pairs pertaining to v2 will stay as they are.
-				// Pairs pertaining to v1 have to be updated
+				// Pairs pertaining to v1 have to be updated.
+				// Note that v2 will appear among the pairs related to v1.
 				Collection<NodeSetPair> v2Pairs = nodesetsToPairs.get(v2);
 				for (NodeSetPair oldPair: nodesetsToPairs.get(v1)) {
 					ValuedNodeSet v3 = oldPair.getOtherThan(v1);
+					if (v3 == v2)
+						continue;
+					
 					similarity = similarityFunc.getSimilarity(v2, v3);
 					nodesetsToPairs.remove(v3, oldPair);
 					debug("  Similarity of {" + v2 + "} and {" + v3 + "} is " + similarity);
@@ -324,9 +329,13 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 				// v2 is subset of v1; unionNodeSet is then equal to v1.
 				// Pairs pertaining to v1 will stay as they are.
 				// Pairs pertaining to v2 have to be updated
+				// Note that v1 will appear among the pairs related to v2.
 				Collection<NodeSetPair> v1Pairs = nodesetsToPairs.get(v1);
 				for (NodeSetPair oldPair: nodesetsToPairs.get(v2)) {
 					ValuedNodeSet v3 = oldPair.getOtherThan(v2);
+					if (v3 == v1)
+						continue;
+					
 					similarity = similarityFunc.getSimilarity(v1, v3);
 					nodesetsToPairs.remove(v3, oldPair);
 					
@@ -357,15 +366,14 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 				activeNodesets.remove(v2);
 			}
 			
-			debug("  Active nodesets: " + activeNodesets);
-			debug("  Queue is now: " + pairs);
+			// debug("  Active nodesets: " + activeNodesets);
+			// debug("  Queue is now: " + pairs);
 			
 			// Checkpoint
 			if (isVerificationMode()) {
 				ValuedNodeSetList tmpResult = new ValuedNodeSetList();
 				tmpResult.addAll(result);
 				tmpResult.addAll(activeNodesets);
-				debug("  Temporary result is: " + tmpResult);
 				try {
 					verifyResult(tmpResult, similarityFunc, -1);
 				} catch (RuntimeException ex) {
@@ -375,6 +383,7 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 				}
 			}
 			
+			stepsTaken++;
 		}
 		
 		// Add the nodesets that are still active
