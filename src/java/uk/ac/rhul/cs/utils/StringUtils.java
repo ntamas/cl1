@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 
 /**
@@ -142,6 +143,32 @@ public class StringUtils {
 	 */
 	public static String join(Iterator<?> it, char separator) {
 		return StringUtils.join(it, separator + "");
+	}
+	
+	/**
+	 * Joins the elements of the provided Collection into a single String containing the provided
+	 * elements
+	 * <p>
+	 * No delimiter is added before or after the list.
+	 * 
+	 * @param   coll       the collection of values to join together
+	 * @param   separator  the separator string to use
+	 */
+	public static String join(Collection<?> coll, String separator) {
+		return StringUtils.join(coll.iterator(), separator);
+	}
+	
+	/**
+	 * Joins the elements of the provided Collection into a single String containing the provided
+	 * elements
+	 * <p>
+	 * No delimiter is added before or after the list.
+	 * 
+	 * @param   coll       the collection of values to join together
+	 * @param   separator  the separator character to use
+	 */
+	public static String join(Collection<?> coll, char separator) {
+		return StringUtils.join(coll, separator + "");
 	}
 	
 	/**

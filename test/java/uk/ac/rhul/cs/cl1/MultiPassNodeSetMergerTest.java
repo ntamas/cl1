@@ -27,7 +27,7 @@ public class MultiPassNodeSetMergerTest {
 		double threshold = 0.3;
 		
 		MultiPassNodeSetMerger merger = new MultiPassNodeSetMerger();
-		merger.setVerificationMode(true);
+		merger.setVerificationMode(MultiPassNodeSetMerger.VerificationMode.VERIFY);
 		// merger.setDebugging(true);
 		
 		ValuedNodeSetList mergedNodeSets;
@@ -56,7 +56,7 @@ public class MultiPassNodeSetMergerTest {
 		double threshold = 0.3;
 		
 		MultiPassNodeSetMerger merger = new MultiPassNodeSetMerger();
-		merger.setVerificationMode(true);
+		merger.setVerificationMode(MultiPassNodeSetMerger.VerificationMode.VERIFY);
 		// merger.setDebugging(true);
 		
 		ValuedNodeSetList mergedNodeSets;
@@ -82,7 +82,7 @@ public class MultiPassNodeSetMergerTest {
 		double threshold = 0.8;
 		
 		MultiPassNodeSetMerger merger = new MultiPassNodeSetMerger();
-		merger.setVerificationMode(true);
+		merger.setVerificationMode(MultiPassNodeSetMerger.VerificationMode.VERIFY);
 		// merger.setDebugging(true);
 		
 		ValuedNodeSetList mergedNodeSets;
