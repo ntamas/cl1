@@ -145,8 +145,11 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 		);
 		
 		/* Minimum cluster density spinner */
+		Double minDensity = defaultParams.getMinDensity();
+		if (minDensity == null)
+			minDensity = 0.3;
 		minimumClusterDensitySpinner = addSpinner(Section.BASIC, "Minimum density:",
-			new SpinnerNumberModel(defaultParams.getMinDensity(), 0.0, 1.0, 0.05)
+			new SpinnerNumberModel(minDensity.doubleValue(), 0.0, 1.0, 0.05)
 		);
 		
 		/* Node penalty spinner */

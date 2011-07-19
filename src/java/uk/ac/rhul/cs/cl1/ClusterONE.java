@@ -120,7 +120,7 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 	 * Executes the algorithm on the graph set earlier by setGraph()
 	 */
 	public void run() throws ClusterONEException {
-		double minDensity = parameters.getMinDensity();
+		Double minDensity = parameters.getMinDensity();
 		AbstractNodeSetMerger merger;
 		
 		ValuedNodeSetList result = new ValuedNodeSetList();
@@ -135,6 +135,14 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 		} catch (InstantiationException ex) {
 			throw new ClusterONEException(ex.getMessage());
 		}	
+		
+		/* Set the minimum density automatically if needed */
+		if (minDensity == null) {
+			minDensity = ArrayUtils.getMedian(graph.getEdgeWeights());
+			if (minDensity == null)
+				minDensity = 1.0;
+			minDensity *= 2.0/3;
+		}
 		
 		/* Get the seed generator from the parameters */
 		SeedGenerator seedGenerator = parameters.getSeedGenerator();	

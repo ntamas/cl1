@@ -56,8 +56,7 @@ public class LineFit implements StraightLineFit {
 		
 		double[] xs = data.getX();
 		double[] ys = data.getY();
-		double sumsq_xs = 0.0;
-		double xx_bar = 0.0, yy_bar = 0.0, xy_bar = 0.0;
+		double xx_bar = 0.0, xy_bar = 0.0;
 		int n = xs.length;
 		
 		if (n == 0) {
@@ -69,7 +68,6 @@ public class LineFit implements StraightLineFit {
 		/* Calculate meanX and sumsq_xs */
 		for (double x: xs) {
 			meanX += x;
-			sumsq_xs += x*x;
 		}
 		meanX /= n;
 		
@@ -85,7 +83,6 @@ public class LineFit implements StraightLineFit {
 			double ydiff = ys[i] - meanY;
 			xx_bar += xdiff * xdiff;
 			xy_bar += xdiff * ydiff;
-			yy_bar += ydiff * ydiff;
 		}
 		
 		calculatedA = xy_bar / xx_bar;

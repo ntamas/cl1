@@ -72,8 +72,13 @@ public class CommandLineApplication {
 				params.setOverlapThreshold(Double.parseDouble(cmd.getOptionValue("max-overlap")));
 			if (cmd.hasOption("merge-method"))
 				params.setMergingMethodName(cmd.getOptionValue("merge-method").toString());
-			if (cmd.hasOption("min-density"))
-				params.setMinDensity(Double.parseDouble(cmd.getOptionValue("min-density")));
+			if (cmd.hasOption("min-density")) {
+				String value = cmd.getOptionValue("min-density");
+				if (value == null || value.equals("auto"))
+					params.setMinDensity(null);
+				else
+					params.setMinDensity(Double.parseDouble(value));
+			}
 			if (cmd.hasOption("min-size"))
 				params.setMinSize(Integer.parseInt(cmd.getOptionValue("min-size")));
 			if (cmd.hasOption("no-fluff"))

@@ -1,6 +1,7 @@
 package uk.ac.rhul.cs.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -10,6 +11,26 @@ import java.util.Comparator;
  * @author tamas
  */
 public class ArrayUtils {
+	/**
+	 * Returns the median of the elements in the given array.
+	 * 
+	 * @param   array      the array for which we need the median
+	 * @return  the median or null if the array is empty
+	 */
+	public static Double getMedian(double[] array) {
+		if (array.length == 0)
+			return null;
+		
+		double[] copy = array.clone();
+		int midpoint = copy.length / 2;
+		Arrays.sort(copy);
+		
+		if (copy.length % 2 == 0)
+			return (copy[midpoint-1] + copy[midpoint]) / 2;
+		
+		return copy[midpoint];
+	}
+	
 	/**
 	 * Gets the ranks of elements in the given array
 	 * 

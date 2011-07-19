@@ -19,8 +19,12 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	/** Minimum size of the clusters that will be returned */
 	protected int minSize = 3;
 	
-	/** Minimum density of the clusters that will be returned */
-	protected double minDensity = 0.3;
+	/** Minimum density of the clusters that will be returned
+	 * 
+	 * null means that the density will be set to half the median weight of
+	 * the network.
+	 */
+	protected Double minDensity = null;
 	
 	/**
 	 * Overlap threshold value.
@@ -118,7 +122,7 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	 * Returns the minimum density of clusters
 	 * @return the minimum density of clusters
 	 */
-	public double getMinDensity() {
+	public Double getMinDensity() {
 		return minDensity;
 	}
 
@@ -232,14 +236,20 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 
 	/**
 	 * Sets the minimum density of clusters that can be considered acceptable.
-	 * @param minDensity the minDensity to set
+	 * 
+	 * @param minDensity the mininum density. null means that the density will
+	 *                   be set to half the median edge weight of the network.
 	 */
-	public void setMinDensity(double minDensity) {
-		this.minDensity = Math.max(0, minDensity);
+	public void setMinDensity(Double minDensity) {
+		if (minDensity == null)
+			this.minDensity = null;
+		else
+			this.minDensity = Math.max(0, minDensity);
 	}
 
 	/**
-	 * Sets the minimum size of the clusters that will be returned
+	 * Sets the minimum size of the clusters that will be returned.
+	 * 
 	 * @param minSize the minimum size
 	 */
 	public void setMinSize(int minSize) {
