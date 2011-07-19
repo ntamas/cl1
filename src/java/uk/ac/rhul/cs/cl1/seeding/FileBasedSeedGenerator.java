@@ -118,13 +118,17 @@ public class FileBasedSeedGenerator extends SeedGenerator {
 		private void processLine() {
 			currentNodeSet = new MutableNodeSet(graph);
 			
-			if (line == null && generateUnusedNodesAsSeeds) {
-				/* No more lines in file, return the unused nodes */
-				Integer id = unusedNodes.pollFirst();
-				if (id == null)
+			if (line == null) { 
+				if (generateUnusedNodesAsSeeds) {
+					/* No more lines in file, return the unused nodes */
+					Integer id = unusedNodes.pollFirst();
+					if (id == null)
+						currentNodeSet = null;
+					else
+						currentNodeSet.add(id);
+				} else {
 					currentNodeSet = null;
-				else
-					currentNodeSet.add(id);
+				}
 				return;
 			}
 			
