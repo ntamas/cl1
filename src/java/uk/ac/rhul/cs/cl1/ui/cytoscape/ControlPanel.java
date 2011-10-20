@@ -164,6 +164,8 @@ public class ControlPanel extends JPanel implements PropertyChangeListener {
 	public String getWeightAttributeName() {
 		if (weightAttributeCombo.getSelectedIndex() == 0)
 			return null;
+		if (weightAttributeCombo.getSelectedItem() == null)
+			return null;
 		return weightAttributeCombo.getSelectedItem().toString();
 	}
 	

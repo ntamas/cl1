@@ -10,15 +10,21 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.TreeMap;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.JTextField;
+import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -30,6 +36,8 @@ import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
  * @author ntamas
  */
 public class ClusterONEAlgorithmParametersPanel extends JPanel {
+	private static final String AUTO = "Auto";
+	
 	/** Sections used in this panel */
 	public enum Section {
 		BASIC("Basic parameters", true),
@@ -93,6 +101,28 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	protected String[] similarityFunctions = {"Match coefficient",
 			"Simpson coefficient", "Jaccard similarity", "Dice similarity"};
 	
+	/** Internal class to provide a number formatter that does not freak out from strings */
+	private class LenientNumberFormatter extends JFormattedTextField.AbstractFormatter {
+		private DecimalFormat format = new DecimalFormat("0.##");
+		
+		public Object stringToValue(String text) throws ParseException {
+			try {
+				 return Double.parseDouble(text);
+			} catch (NumberFormatException ex) {
+				return text;
+			}
+		}
+
+		public String valueToString(Object value) throws ParseException {
+			try {
+				return format.format(value);
+			} catch (IllegalArgumentException ex) {
+				return value.toString();
+			}
+		}
+		
+	}
+	
 	/** Internal class to listen for change and action events from subcomponents */
 	private class PropertyChangeManager extends PropertyChangeSupport
 		implements ActionListener, ChangeListener {
@@ -145,11 +175,20 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 		);
 		
 		/* Minimum cluster density spinner */
-		Double minDensity = defaultParams.getMinDensity();
+		Object minDensity = defaultParams.getMinDensity();
 		if (minDensity == null)
-			minDensity = 0.3;
+			minDensity = AUTO;
 		minimumClusterDensitySpinner = addSpinner(Section.BASIC, "Minimum density:",
-			new SpinnerNumberModel(minDensity.doubleValue(), 0.0, 1.0, 0.05)
+			new ExtendedSpinnerNumberModel(minDensity, 0.0, 1.0, 0.05, AUTO)
+		);
+		((JSpinner.DefaultEditor)minimumClusterDensitySpinner.getEditor()).getTextField().setFormatterFactory(
+				new JFormattedTextField.AbstractFormatterFactory() {
+					private AbstractFormatter formatter = new LenientNumberFormatter();
+					
+					public AbstractFormatter getFormatter(JFormattedTextField tf) {
+						return formatter;
+					}
+				}
 		);
 		
 		/* Node penalty spinner */
@@ -183,9 +222,14 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	 */
 	public ClusterONEAlgorithmParameters getParameters() {
 		ClusterONEAlgorithmParameters result = new ClusterONEAlgorithmParameters();
+		Object minimumDensity = minimumClusterDensitySpinner.getValue();
 		
+		if (minimumDensity.equals(AUTO))
+			result.setMinDensity(null);
+		else
+			result.setMinDensity((Double)minimumDensity);
+			
 		result.setMinSize((Integer)minimumClusterSizeSpinner.getValue());
-		result.setMinDensity((Double)minimumClusterDensitySpinner.getValue());
 		result.setHaircutThreshold((Double)haircutThresholdSpinner.getValue());
 		result.setOverlapThreshold((Double)overlapThresholdSpinner.getValue());
 		result.setNodePenalty((Double)nodePenaltySpinner.getValue());
@@ -312,10 +356,14 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	 * @param caption    caption of the component in the left column
 	 * @param model      the model of the spinner value
 	 */
-	public JSpinner addSpinner(Section section, String caption, SpinnerNumberModel model) {
+	public JSpinner addSpinner(Section section, String caption, SpinnerModel model) {
 		JSpinner spinner = new JSpinner();
+		JSpinner.DefaultEditor editor;
+		
 		spinner.setModel(model);
-		((JSpinner.NumberEditor)spinner.getEditor()).getTextField().setColumns(5);
+		editor = (JSpinner.DefaultEditor)spinner.getEditor();
+		editor.getTextField().setColumns(5);
+		editor.getTextField().setHorizontalAlignment(JTextField.RIGHT);
 		this.addComponent(section, caption, spinner);
 		spinner.addChangeListener(changeManager);
 		return spinner;

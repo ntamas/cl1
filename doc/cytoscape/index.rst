@@ -180,6 +180,18 @@ Basic parameters
     too many clusters and they seem too sparse, or decrease it if you
     are not getting enough clusters.
 
+    Since version 0.93, ClusterONE also includes an automatic density
+    threshold selection method, which was tuned on various protein-protein
+    interaction datasets. When the "Auto" value is selected in the minimum
+    density field (this can be selected by trying to choose a density
+    threshold smaller than zero), ClusterONE will use a density threshold
+    of 0.3 for weighted networks and 0.5 for unweighted networks. If the
+    network is unweighted and the global clustering coefficient is smaller
+    than 0.1, ClusterONE will assume that the network was determined from
+    low-throughput experimental data (e.g., yeast-two-hybrid experiments)
+    and use a higher threshold of 0.6 to compensate for the presence of
+    many tree-like subgraphs in the input.
+
 **Edge weights**
     A numeric edge attribute to be used for the edge weights. *[unweighted]*
     means that each edge will have a weight equal to 1. If you don't see the
