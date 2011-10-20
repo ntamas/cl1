@@ -2,8 +2,8 @@ package uk.ac.rhul.cs.cl1;
 
 import java.io.Serializable;
 
-import uk.ac.rhul.cs.cl1.seeding.EveryNodeSeedGenerator;
 import uk.ac.rhul.cs.cl1.seeding.SeedGenerator;
+import uk.ac.rhul.cs.cl1.seeding.UnusedNodesSeedGenerator;
 
 /**
  * Stores the parameters of a ClusterONE algorithm instance.
@@ -21,8 +21,9 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	
 	/** Minimum density of the clusters that will be returned
 	 * 
-	 * null means that the density will be set to half the median weight of
-	 * the network.
+	 * null means that the density limit will be set based on whether the graph
+	 * is weighted or unweighted, and in case of undirected graphs, whether the
+	 * transitivity is above or below a certain empirical threshold.
 	 */
 	protected Double minDensity = null;
 	
@@ -84,7 +85,7 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	/**
 	 * The seed generation method.
 	 */
-	protected SeedGenerator seedGenerator = new EveryNodeSeedGenerator();
+	protected SeedGenerator seedGenerator = new UnusedNodesSeedGenerator();
 	
 	/**
 	 * Similarity function used by the complex merging methods.

@@ -106,7 +106,14 @@ Basic command line options
 -F, --output-format  specifies the format of the output file (``plain``, ``csv``
                      or ``genepro``).
 -h, --help           shows a general help message
--d, --min-density    sets the minimum density of predicted complexes
+-d, --min-density    sets the minimum density of predicted complexes. ``auto``
+                     means that the density threshold will be set automatically
+                     based on whether the graph is weighted or not, and if not,
+                     what its clustering coefficient is. Weighted graphs will
+                     have a default density threshold of 0.3, unweighted graphs
+                     will have a density threshold of 0.5, unless their
+                     global clustering coefficient is less than 0.1, in which
+                     case the density threshold is set to 0.6.
 -s, --min-size       sets the minimum size of the predicted complexes
 -v, --version        shows the version information
 

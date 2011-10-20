@@ -78,6 +78,41 @@ public class Graph implements Iterable<Edge> {
 	public boolean isDirected() { return directed; }
 
 	/**
+	 * Checks whether the graph is weighted
+	 * 
+	 * A graph is weighted if not all its weights are equal. Graphs with no
+	 * edges are considered unweighted.
+	 */
+	public boolean isWeighted() {
+		if (weights.size() == 0)
+			return false;
+		
+		double firstWeight = weights.get(0);
+		for (int i = 1; i < weights.size(); i++)
+			if (weights.get(i) != firstWeight)
+				return true;
+				
+		return false;
+	}
+	
+	/**
+	 * Returns whether the two given nodes are connected.
+	 * 
+	 * @param  source   the source node
+	 * @param  target   the target node
+	 */
+	public boolean areConnected(int source, int target) {
+		IntArray edges = outEdgeAdjacencyLists.get(source);
+		int i, n = edges.size();
+		for (i = 0; i < n; i++) {
+			int edge = edges.get(i);
+			if (edgesIn.get(edge) == target)
+				return true;
+		}
+		return false;
+	}
+	
+	/**
 	 * Creates a new unnamed node and returns its index
 	 */
 	public int createNode() {

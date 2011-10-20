@@ -16,6 +16,7 @@ import uk.ac.rhul.cs.cl1.seeding.SeedGenerator;
 import uk.ac.rhul.cs.cl1.seeding.SeedIterator;
 import uk.ac.rhul.cs.graph.Graph;
 import uk.ac.rhul.cs.graph.GraphAlgorithm;
+import uk.ac.rhul.cs.graph.TransitivityCalculator;
 import uk.ac.rhul.cs.utils.ArrayUtils;
 
 /**
@@ -34,7 +35,7 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 	public static final String applicationName = "ClusterONE";
 	
 	/** The version number of the application */
-	public static final String version = "0.92";
+	public static final String version = "0.93";
 
 	/** A thread pool used for asynchronous operations within ClusterONE */
 	private static Executor threadPool = null;
@@ -138,10 +139,15 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 		
 		/* Set the minimum density automatically if needed */
 		if (minDensity == null) {
-			minDensity = ArrayUtils.getMedian(graph.getEdgeWeights());
-			if (minDensity == null)
-				minDensity = 1.0;
-			minDensity *= 2.0/3;
+			if (graph.isWeighted())
+				minDensity = 0.3;
+			else {
+				TransitivityCalculator calc = new TransitivityCalculator(graph);
+				if (calc.getGlobalTransitivity() < 0.1)
+					minDensity = 0.6;
+				else
+					minDensity = 0.5;
+			}
 		}
 		
 		/* Get the seed generator from the parameters */

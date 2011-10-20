@@ -74,7 +74,7 @@ public class CommandLineApplication {
 				params.setMergingMethodName(cmd.getOptionValue("merge-method").toString());
 			if (cmd.hasOption("min-density")) {
 				String value = cmd.getOptionValue("min-density");
-				if (value == null || value.equals("auto"))
+				if (value == null || value.equalsIgnoreCase("auto"))
 					params.setMinDensity(null);
 				else
 					params.setMinDensity(Double.parseDouble(value));
@@ -204,7 +204,7 @@ public class CommandLineApplication {
 		
 		/* minimum density option */
 		options.addOption(OptionBuilder.withLongOpt("min-density")
-	                .withDescription("specifies the minimum density of clusters")
+	                .withDescription("specifies the minimum density of clusters (default: auto)")
 	                .withType(Float.class).hasArg().create("d"));
 		
 		/* maximum overlap option (advanced) */
