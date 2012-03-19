@@ -82,7 +82,7 @@ public class AboutDialog extends JDialog implements ActionListener {
         setContentPane(contentPane);
         pack();
         
-        setSize(400, 300);
+        setSize(420, 320);
 	}
 	
 	/**
