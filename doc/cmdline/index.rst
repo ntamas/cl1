@@ -310,11 +310,12 @@ If you use results calculated by ClusterONE in a publication,
 please cite the following reference:
 
 .. [1] Nepusz T, Yu H, Paccanaro A: Detecting overlapping protein complexes
-       from protein-protein interaction networks. In preparation.
+       from protein-protein interaction networks. Nature Methods,
+       Advance Online Publication, 2012. doi:10.1038/nmeth.1938
 
 Some other papers that might be of interest (and were referenced earlier
 in this help file):
 
 .. [2] Bader GD, Hogue CWV: An automated method for finding molecular complexes
-       in large protein interaction networks. BMC Bioinformatics 2003, 4:2.
+       in large protein interaction networks. BMC Bioinformatics 4:2, 2003.
        doi:10.1186/1471-2105-4-2

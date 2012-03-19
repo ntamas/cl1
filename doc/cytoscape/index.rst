@@ -47,8 +47,8 @@ menu called **ClusterONE** within the **Plugins** submenu), and if you
 haven't, check the **Show outdated plugins** checkbox in the **Manage plugins**
 dialog.
 
-If you managed to install Cluster ONE successfully, you should see a new menu
-item called **Cluster ONE** in the **Plugins** submenu. Now, do the following:
+If you managed to install ClusterONE successfully, you should see a new menu
+item called **ClusterONE** in the **Plugins** submenu. Now, do the following:
 
 - Load the network you wish to analyse into Cytoscape.
    
@@ -445,7 +445,8 @@ If you use results calculated by ClusterONE in a publication,
 please cite the following reference:
 
 .. [1] Nepusz T, Yu H, Paccanaro A: Detecting overlapping protein complexes
-       from protein-protein interaction networks. In preparation.
+       from protein-protein interaction networks. Nature Methods,
+       Advance Online Publication, 2012. doi:10.1038/nmeth.1938
 
 Some other papers that might be of interest (and were referenced earlier
 in this help file):

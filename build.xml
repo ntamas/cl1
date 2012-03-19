@@ -36,6 +36,7 @@
     <property name="build.doc" location="${build}/doc" />
     <property name="build.doc.cmdline" location="${build.doc}/cmdline" />
     <property name="build.doc.cytoscape" location="${build}/java/${package.name.slashed}/ui/cytoscape/help" />
+    <property name="build.doc.procope" location="${build.doc}/procope" />
     
     <!-- External dependencies -->
     <condition property="lib.cytoscape.path" value="${cytoscape.path}/cytoscape.jar">
@@ -329,7 +330,27 @@
             tofile="${build.doc.cytoscape}/cl1.hs" />
     </target>
 
-    <target name="doc" depends="doc_cmdline, doc_cytoscape" description="Builds the documentation" />
+    <!-- ProCope documentation -->
+    <target name="doc_procope" description="Builds the ProCope plugin documentation">
+		<mkdir dir="${build.doc.procope}" />
+		<mkdir dir="${build.doc.procope}/images" />
+		<copy file="${doc}/cmdline/description.rst" todir="${build.doc.procope}" />
+		<copy file="${doc}/procope/index.rst" todir="${build.doc.procope}" />
+		<exec executable="rst2html" dir="${build.doc.procope}">
+            <arg value="index.rst" />
+            <arg value="index.html" />
+		</exec>
+		<delete>
+			<fileset dir="${build.doc.procope}" includes="*.rst" />
+		</delete>
+        <copy todir="${build.doc.cmdline}/images">
+            <fileset dir="${doc}/images">
+                <include name="*.*" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="doc" depends="doc_cmdline, doc_cytoscape, doc_procope" description="Builds the documentation" />
 
     <!-- Main targets -->
     <target name="build" depends="compile, doc, jar" description="Builds the whole project" />
