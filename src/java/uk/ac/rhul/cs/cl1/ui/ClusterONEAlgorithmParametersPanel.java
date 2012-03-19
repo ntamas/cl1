@@ -217,6 +217,17 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	}
 
 	/**
+	 * Expands all the panels.
+	 */
+	public void expandAll() {
+		for (JPanel panel: subpanels.values()) {
+			if (panel instanceof CollapsiblePanel) {
+				((CollapsiblePanel)panel).setExpanded(true);
+			}
+		}
+	}
+	
+	/**
 	 * Returns a {@link ClusterONEAlgorithmParameters} object from the current state
 	 * of the panel
 	 */

@@ -55,6 +55,8 @@ public class ProcopePlugin implements Clusterer {
 	 */
 	protected ClusterONEAlgorithmParameters getAlgorithmParameters() {
 		ClusterONEAlgorithmParametersDialog dialog = new ClusterONEAlgorithmParametersDialog();
+		dialog.getParametersPanel().expandAll();
+		dialog.pack();
 		dialog.setLocationRelativeTo(null);
 		
 		if (!dialog.execute())

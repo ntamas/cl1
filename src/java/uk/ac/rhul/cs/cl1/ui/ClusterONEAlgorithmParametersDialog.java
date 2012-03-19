@@ -53,6 +53,10 @@ public class ClusterONEAlgorithmParametersDialog extends JDialog implements Acti
 		return paramsPanel.getParameters();
 	}
 	
+	public ClusterONEAlgorithmParametersPanel getParametersPanel() {
+		return paramsPanel;
+	}
+	
 	protected void initialize() {
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
