@@ -36,11 +36,15 @@
     <property name="build.doc" location="${build}/doc" />
     <property name="build.doc.cmdline" location="${build.doc}/cmdline" />
     <property name="build.doc.cytoscape" location="${build}/java/${package.name.slashed}/ui/cytoscape/help" />
+    <property name="build.doc.cytoscape3" location="${build}/java/${package.name.slashed}/ui/cytoscape3/help" />
     <property name="build.doc.procope" location="${build.doc}/procope" />
     
     <!-- External dependencies -->
     <condition property="lib.cytoscape.path" value="${cytoscape.path}/cytoscape.jar">
         <available file="${cytoscape.path}/cytoscape.jar" />
+    </condition>
+    <condition property="lib.cytoscape3.path" value="${cytoscape3.api.jar}">
+		<available file="${cytoscape3.api.jar}" />
     </condition>
     <condition property="lib.procope.path" value="${procope.path}/lib/procope_core-${procope.version}.jar">
         <available file="${procope.path}/lib/procope_core-${procope.version}.jar" />
@@ -64,6 +68,7 @@
         <pathelement location="lib/commons-cli-1.2.jar" />
         <pathelement location="lib/tablelayout.jar" />
         <pathelement location="${lib.cytoscape.path}" />
+        <pathelement location="${lib.cytoscape3.path}" />
         <pathelement location="${lib.procope.path}" />
         <pathelement location="${lib.jsr311.path}" />
         <pathelement location="${lib.jersey-core.path}" />
@@ -76,7 +81,7 @@
     </tstamp>
 
     <!-- Initializes the build tree, creates the necessary directories -->
-    <target name="-init" depends="-cytoscape_warning,-procope_warning,-web_warning"
+    <target name="-init" depends="-cytoscape_warning,-cytoscape3_warning,-procope_warning,-web_warning"
             description="Initializes the build process">
         <mkdir dir="${build}" />
         <mkdir dir="${build.java}" />
@@ -85,7 +90,11 @@
         <mkdir dir="${reports}" />
     </target>
     <target name="-cytoscape_warning" unless="lib.cytoscape.path">
-        <echo message="Cytoscape plugin will not be built: cytoscape.jar not found."
+        <echo message="Cytoscape 2.x plugin will not be built: cytoscape.jar not found."
+              level="warning" />
+    </target>
+    <target name="-cytoscape3_warning" unless="lib.cytoscape3.path">
+        <echo message="Cytoscape 3.x plugin will not be built: cytoscape.jar not found."
               level="warning" />
     </target>
     <target name="-procope_warning" unless="lib.procope.path">
@@ -105,7 +114,7 @@
 
     <!-- Compiles the Java source code -->
     <target name="compile_java"
-        depends="-init,compile_java_base,compile_java_cytoscape_plugin,compile_java_procope_plugin,compile_java_rest_api"
+        depends="-init,compile_java_base,compile_java_cytoscape_plugin,compile_java_cytoscape3_plugin,compile_java_procope_plugin,compile_java_rest_api"
         description="--> compile Java code">
     </target>
 
@@ -115,6 +124,7 @@
                debug="${debug}" deprecation="${deprecation}"
                optimize="${optimize}" includeAntRuntime="false">
             <exclude name="**/cytoscape/*" />
+            <exclude name="**/cytoscape3/*" />
             <exclude name="**/procope/*" />
             <exclude name="**/api/**/*" />
             <exclude name="**/CommitmentStatisticsCalculator.java" />
@@ -124,7 +134,7 @@
         </javac>
     </target>
 
-    <!-- Compiles the Cytoscape plugin -->
+    <!-- Compiles the Cytoscape 2.x plugin -->
     <target name="compile_java_cytoscape_plugin" if="lib.cytoscape.path"
             depends="compile_java_base">
         <javac srcdir="${src.java}" destdir="${build.java}" target="1.5"
@@ -142,6 +152,19 @@
             <replacefilter token="@package.name@" value="${package.name}" />
             <replacefilter token="@package.version@" value="${package.version}" />
         </replace>
+    </target>
+
+    <!-- Compiles the Cytoscape 3.x plugin -->
+    <target name="compile_java_cytoscape3_plugin" if="lib.cytoscape3.path"
+            depends="compile_java_base">
+        <javac srcdir="${src.java}" destdir="${build.java}" target="1.5"
+               debug="${debug}" deprecation="${deprecation}"
+               optimize="${optimize}" includeAntRuntime="false">
+            <include name="${package.name.slashed}/ui/cytoscape3/*.java" />
+            <classpath>
+                <path refid="classpath.base" />
+            </classpath>
+        </javac>
     </target>
 
     <!-- Compiles the Procope plugin -->
@@ -214,6 +237,10 @@
                 <attribute name="Main-Class" value="${package.name}.ui.cmdline.CommandLineApplication" />
                 <attribute name="Cytoscape-Plugin" value="${package.name}.ui.cytoscape.CytoscapePlugin" />
                 <attribute name="Class-Path" value="${lib.procope.path}" />
+				<attribute name="Cytoscape-App-Version" value="${package.version}" />
+				<attribute name="Cytoscape-App-Name" value="${ant.project.name}" />
+				<attribute name="Cytoscape-App" value="${package.name}.ui.cytoscape3.CytoscapeApp" />
+				<attribute name="Cytoscape-App-Works-With" value="3.0" />
             </manifest>
         </jar>
     </target>
@@ -307,9 +334,33 @@
     </target>
 
     <!-- Cytoscape documentation -->
-    <target name="doc_cytoscape" description="Builds the Cytoscape plugin documentation" if="cytoscape.path">
+    <target name="doc_cytoscape" description="Builds the Cytoscape 2.x plugin documentation" if="cytoscape.path">
         <mkdir dir="${build.doc.cytoscape}" />
         <mkdir dir="${build.doc.cytoscape}/images" />
+        <exec executable="rst2html">
+            <arg value="${doc}/cytoscape/index.rst" />
+            <arg value="${build.doc.cytoscape}/index.html" />
+        </exec>
+        <exec executable="python">
+            <arg value="${tools}/generate_javahelp.py" />
+            <arg value="${build.doc.cytoscape}/index.html" />
+        </exec>
+        <copy todir="${build.doc.cytoscape}/images">
+            <fileset dir="${doc}/images">
+                <include name="*.*" />
+            </fileset>
+            <fileset dir="${doc}/cytoscape/images">
+                <include name="*.*" />
+            </fileset>
+        </copy>
+        <copy file="${doc}/cytoscape/cl1.hs"
+            tofile="${build.doc.cytoscape}/cl1.hs" />
+    </target>
+
+    <!-- Cytoscape3 documentation -->
+    <target name="doc_cytoscape3" description="Builds the Cytoscape 3.x plugin documentation" if="cytoscape.path">
+        <mkdir dir="${build.doc.cytoscape3}" />
+        <mkdir dir="${build.doc.cytoscape3}/images" />
         <exec executable="rst2html">
             <arg value="${doc}/cytoscape/index.rst" />
             <arg value="${build.doc.cytoscape}/index.html" />
