@@ -92,15 +92,13 @@ dl.compact dt {
   width: 200px; float: left;
 }
 
+fieldset {
+  border: 0px;
+  float:left;
+}
 
 .contents {
   clear: both;
-}
-
-
-fieldset {
-  border: 0px;
-  float: left;
 }
 
 legend {

@@ -229,7 +229,7 @@ ClusterONEFrontend.prototype = {
     var settings = this.getDefaultAjaxOptions(this.resultUrl);
     settings.success = function(data, status, req) {
       this.removeMarkers(2);
-      this.addSuccessMarker("Results successfully retrieved. " + this.resultUrl, 2);
+      this.addSuccessMarker("Results successfully retrieved.", 2);
       this.setActiveStep(3);
       this.currentResults = ClusterONEResult.fromJSON(data);
       this.currentResults.render("#results");

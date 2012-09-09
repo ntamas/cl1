@@ -12,59 +12,15 @@
   <link type="text/css" rel="stylesheet" href="css/screen.css" />
   <link type="text/css" rel="stylesheet" href="css/buttons.css" />
   <link type="text/css" rel="stylesheet" href="css/tablesorter.css" />
-  <link type="text/css" rel="stylesheet" href="css/style.css" />
   <link type="image/x-icon" rel="shortcut icon" href="img/favicon.ico" />
 </head>
 <body>
 
-
-<div id="fixed"> 
- 
-<!-- top bar --> 
- 
-<hr class="mainbody"/> 
- 
-<div class="mainLinkLeft"> 
-<a href="http://www.rhul.ac.uk" id="logo"><img src="img/rhul.jpg" id="rhullogo" alt="Royal Holloway University of London" /></a> 
-<a href="http://www.rhul.ac.uk/computerscience">Department of Computer Science</a> 
-<!-- <a href="http://www.rhul.ac.uk/biologicalsciences">School of Biological Sciences</a> --> 
-</div> 
- 
- 
-<!-- <div class="middle">
-</div> --> 
- 
-<div class="mainLinkRight"> 
-<div class="greena"> 
-<a href="http://www.paccanarolab.org" >PaccanaroLab</a> 
-</div> 
-</div> 
- 
- 
-<div class="bbsrc"><a href="http://bbsrc.co.uk"><img src="img/bbsrc.jpg" id="bbsrc" alt="BBSRC logo"></a></div> 
- 
- 
-<hr class="mainbody"/> 
- 
-<!-- end of top bar --> 
-
 <h1>
-<div class="logo"><img src="img/cl1web_logo_64x64.png" width="64" height="64" alt="" /></div>
-ClusterONEWeb
-<div class="subtitle">A web server implementing <strong>ClusterONE</strong> (<em>Clustering with Overlapping Neighbourhood Expansion</em>)</div>
+<div class="logo"><img src="img/cl1_logo_64x64.png" width="64" height="64" alt="" /></div>
+ClusterONE
+<div class="subtitle">Clustering with Overlapping Neighbourhood Expansion</div>
 </h1>
-
-<div class="references">References</div>
-
-If you use this server, please consider citing at least one of these two publications:
-
-<ul>
-<li>T. Nepusz, H. Yu, and A. Paccanaro. <a href="http://www.nature.com/nmeth/journal/v9/n5/full/nmeth.1938.html">Detecting overlapping protein complexes in protein-protein interaction networks</a>, <em>Nature Methods</em>, <strong>9</strong>, pp. 471-472, 2012. (<a href="http://www.ncbi.nlm.nih.gov/pubmed/22426491">pubmed</a>)</li>
-<li>T. Nepusz, A. E. Romero, and A. Paccanaro. ClusterONEWeb, a web server for predicting protein complexes in PPI networks, <em>in preparation.</em></li>
-</ul>
-
-The source code of this server is free software released under the <a href="http://www.gnu.org/copyleft/gpl.html">GPL v3.0</a> and can be downloaded from <a href="https://github.com/ntamas/cl1">github</a>.
-
 
 <ul id="errors" class="message-container">
 </ul>
@@ -83,7 +39,7 @@ protein2 protein4 weight
 ...</pre>
       <p>Protein IDs must not contain spaces. The columns must be separated by whitespace characters.
       Weights may be omitted; edges not having an associated weight will be considered as having
-      unit weight.</p>   
+      unit weight.</p>  
       <div class="buttons">
         <button id="upload-button"><img src="img/upload.png" width="16" height="16" alt="" />Click here to start uploading</button>
       </div>
@@ -110,19 +66,14 @@ protein2 protein4 weight
           <input class="nonnegative_float required" id="node_penalty" name="node_penalty" value="2" />
         </div>
         <div>
+          <label for="haircut_threshold">Haircut threshold:</label>
+          <input class="number_01 required" id="haircut_threshold" name="haircut_threshold" value="0.2" />
+        </div>
+        <div>
           <label for="merging_method">Merging method:</label>
           <select name="merging_method" id="merging_method">
             <option value="match">Match coefficient</option>
             <option value="meet/min">Meet/min coefficient</option>
-          </select>
-        </div>
-        <div>
-          <label for="similarity">Similarity function:</label>
-          <select name="similarity" id="similarity">
-            <option value="match">Match coefficient</option>
-            <option value="jaccard">Jaccard similarity</option>
-            <option value="dice">Dice similarity</option>
-            <option value="simpson">Simpson coefficient</option>
           </select>
         </div>
         <div>
@@ -147,20 +98,18 @@ protein2 protein4 weight
   </li>
   <li>
     <div class="title">Examine the results</div>
-    <a name="topOfTable"></a>
     <div class="contents">
-      <p>Click on the table headers to sort the results.</p>      
+      <p>Click on the table headers to sort the results.</p>  
+      <div class="buttons">
+        <button id="download-button"><img src="img/download.png" width="16" height="16" alt="" />Download results</button>
+        <button id="print-button"><img src="img/print.png" width="16" height="16" alt="" />Print results</button>
+      </div>   
+      <div id="results">
+      </div>
       <div class="buttons">
         <button id="download-button"><img src="img/download.png" width="16" height="16" alt="" />Download results</button>
         <button id="print-button"><img src="img/print.png" width="16" height="16" alt="" />Print results</button>
       </div>
-      <div id="results">
-      </div>
-      <!-- <div class="buttons">
-        <button id="download-button"><img src="img/download.png" width="16" height="16" alt="" />Download results</button>
-        <button id="print-button"><img src="img/print.png" width="16" height="16" alt="" />Print results</button>
-      </div> -->
-      <p>Click <a href="#topOfTable">here</a> to go back to the top of the table</p>
     </div>
   </li>
 </ol>
@@ -177,6 +126,6 @@ protein2 protein4 weight
 var frontend = new ClusterONEFrontend();
 -->
 </script>
-</div>
+
 </body>
 </html> 
