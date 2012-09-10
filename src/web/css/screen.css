@@ -97,10 +97,20 @@ dl.compact dt {
   clear: both;
 }
 
+.tooltip{
+	margin:8px;
+	padding:8px;
+	border:1px solid blue;
+	background-color:#FFFF99;
+	position: absolute;
+	width:100px;
+	z-index: 2;
+}
 
 fieldset {
   border: 0px;
   float: left;
+  margin-right:5em;
 }
 
 legend {
@@ -208,6 +218,14 @@ input.number_01, input.positive_integer, input.nonnegative_float {
   border: 2px solid #0c0;
   background-color: #dfd;
 }
+
+.questionmark{
+  width:16px;
+  height:16px;
+  padding-top:2px;
+  margin-left:10px;
+}
+
 
 /* Results field */
 #results {
