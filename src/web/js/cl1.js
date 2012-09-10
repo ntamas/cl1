@@ -166,7 +166,9 @@ ClusterONEFrontend.prototype = {
   /** Event handler invoked when a button was clicked */
   onButtonClicked: function(buttonId, button) {
     if (buttonId == "start-button")
+    {
       return this.startAnalysis();
+    }
  
     if (buttonId == "print-button") {
       if (this.currentResults)
@@ -190,6 +192,8 @@ ClusterONEFrontend.prototype = {
   /** Event handler invoked when the dataset was uploaded */
   onFileUploaded: function(file, response) {
     this.removeMarkers(1);
+    this.removeMarkers(3);
+    this.setActiveStep(2);
     if (response.substr(0, 7) == "http://" ||
         response.substr(0, 8) == "https://") {
       /* Successful file upload, response contains the new URL */
@@ -266,14 +270,14 @@ ClusterONEFrontend.prototype = {
         } else {
           $this.show();
         }
-      }/* else {
+      } /*else {
         $contents = $(".contents", $this);
         if (effects && $contents.is(":visible")) {
           $contents.slideUp();
         } else {
           $contents.hide();
         }
-      }*/
+      } */
     });
     
     this.currentStep = activeStep;
@@ -336,7 +340,7 @@ ClusterONEFrontend.prototype = {
     
     this.addProgressMarker("Please wait, running calculations...", 2);
     $.ajax(settings);
-  } 
+  }
 };
 
 /***************************************************************************/
