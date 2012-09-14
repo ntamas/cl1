@@ -32,7 +32,7 @@ img {
 .toolTip { /* This is the hook that the jQuery script will use */
 	padding-right: 20px; /* This is need to make sure that the help icon is always visible */
 	cursor: help; 
-	background: transparent url(img/question.png) no-repeat right;
+	background: transparent url(../img/question.png) no-repeat right;
 	position: relative; /* This contains the .toolTipWrapper div that is absolutely positioned  */
 }
  
@@ -49,17 +49,17 @@ img {
 .toolTipTop { /* Top section of the tooltip */
 	width: 175px;
 	height: 30px;
-	background: transparent url(img/bubbleTop.gif) no-repeat;
+	background: transparent url(../img/bubbleTop.gif) no-repeat;
 }
  
 .toolTipMid { /* Middle section of the tooltip */
 	padding: 8px 15px;
-	background: #A1D40A url(img/bubbleMid.gif) repeat-x top;
+	background: #A1D40A url(../img/bubbleMid.gif) repeat-x top;
 }
 		
 .toolTipBtm { /* Bottom Section of the tooltip */
 	height: 13px;
-	background: transparent url(img/bubbleBtm.gif) no-repeat;
+	background: transparent url(../img/bubbleBtm.gif) no-repeat;
 }
 
 /*-----------------------------------------------------------------------------------------------*/
