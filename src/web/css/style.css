@@ -38,6 +38,7 @@ img {
  
 .toolTipWrapper { /* The wrapper holds its insides together */
 	width: 175px;
+	z-index:2;
 	position: absolute; /* Absolute will make the tooltip float above other content in the page */
 	top: 20px;
 	display: none; /* It has to be displayed none so that the jQuery fadein and fadeout functions will work */
