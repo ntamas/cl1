@@ -34,7 +34,6 @@ img {
 	cursor: help; 
 	background: transparent url(../img/question.png) no-repeat right;
 	position: relative; /* This contains the .toolTipWrapper div that is absolutely positioned  */
-	z-index:-1;
 }
  
 .toolTipWrapper { /* The wrapper holds its insides together */
