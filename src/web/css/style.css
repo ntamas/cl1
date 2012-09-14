@@ -25,16 +25,44 @@ img {
 	display:inline;
 }
 
-.tooltip {
-	position: absolute;
-	z-index: 3000;
-	border: 1px solid #111;
-	background-color: #eee;
-	padding: 5px;
-	opacity: 0.85;
+/*-----------------------------------------------------------------------------------------------*/
+/*                                            TOOLTIP                                            */
+/*-----------------------------------------------------------------------------------------------*/
+ 
+.toolTip { /* This is the hook that the jQuery script will use */
+	padding-right: 20px; /* This is need to make sure that the help icon is always visible */
+	cursor: help; 
+	position: relative; /* This contains the .toolTipWrapper div that is absolutely positioned  */
 }
-.tooltip h3, .tooltip div { margin: 0; }
+ 
+.toolTipWrapper { /* The wrapper holds its insides together */
+	width: 175px;
+	position: absolute; /* Absolute will make the tooltip float above other content in the page */
+	top: 20px;
+	display: none; /* It has to be displayed none so that the jQuery fadein and fadeout functions will work */
+	color: #FFF;
+	font-weight: bold;
+	font-size: 9pt; /* A font size is needed to maintain consistancy */
+}
+	
+.toolTipTop { /* Top section of the tooltip */
+	width: 175px;
+	height: 30px;
+	background: transparent url(img/bubbleTop.gif) no-repeat;
+}
+ 
+.toolTipMid { /* Middle section of the tooltip */
+	padding: 8px 15px;
+	background: #A1D40A url(img/bubbleMid.gif) repeat-x top;
+}
+		
+.toolTipBtm { /* Bottom Section of the tooltip */
+	height: 13px;
+	background: transparent url(img/bubbleBtm.gif) no-repeat;
+}
 
+/*-----------------------------------------------------------------------------------------------*/
+		
 #rhullogo {
 	width:201px;
 	height:56px; 
@@ -81,7 +109,6 @@ div.mainLinkLeft a{
 	margin-left: 2px;	
 	width: 210px;
 	height: 90px;
-	background: url(../img/bbsrc.jpg);
 	font-family:Verdana, Arial, Helvetica, sans-serif;
 	text-align:right;
 	background-color:#FFFFFF;

@@ -29,13 +29,6 @@ jQuery.validator.addMethod("number_01", function(value, element) {
 
 /***************************************************************************/
 
-// tooltip stuff
-$(function() {
-$('.normalTip *').tooltip();
-});
-
-/***************************************************************************/
-
 function ClusterONEFrontend() {
   this.datasetUrl = null;
   this.resultUrl = null;
