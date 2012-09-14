@@ -50,16 +50,19 @@ img {
 	width: 175px;
 	height: 30px;
 	background: transparent url(../img/bubbleTop.gif) no-repeat;
+        z-index:2;
 }
  
 .toolTipMid { /* Middle section of the tooltip */
 	padding: 8px 15px;
 	background: #A1D40A url(../img/bubbleMid.gif) repeat-x top;
+        z-index:2;
 }
 		
 .toolTipBtm { /* Bottom Section of the tooltip */
 	height: 13px;
 	background: transparent url(../img/bubbleBtm.gif) no-repeat;
+        z-index:2;
 }
 
 /*-----------------------------------------------------------------------------------------------*/
