@@ -78,6 +78,7 @@ address {
 
 dt {
   font-weight: bold;
+  clear: both;
 }
 
 dl {
