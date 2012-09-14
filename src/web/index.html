@@ -100,12 +100,12 @@ protein2 protein4 weight
         <div>
           <label for="min_size">Minimum cluster size:</label>
           <input class="positive_integer required" id="min_size" name="min_size" value="3" />
-<span class="toolTip" title="Clusters with less than this number of proteins will be not shown (default: 3)"><img class="questionmark" src="img/question.png" /></span>
+<span class="toolTip" title="Clusters with less than this number of proteins will be not shown (default: 3)">&nbsp;</span>
         </div>
         <div>
           <label for="min_density">Minimum cluster density:</label>
           <input class="number_01 required" id="min_density" name="min_density" value="0.35" />
-<span class="toolTip" title="Clusters with a density lower than this threshold (default: 0.35) will be not shown"><img class="questionmark" src="img/question.png" /></span>
+<span class="toolTip" title="Clusters with a density lower than this threshold (default: 0.35) will be not shown">&nbsp;</span>
         </div>
       </fieldset>
       <fieldset>
@@ -113,7 +113,7 @@ protein2 protein4 weight
         <div>
           <label for="node_penalty">Node penalty:</label>
           <input class="nonnegative_float required" id="node_penalty" name="node_penalty" value="2" />
-          <span class="toolTip" title="This is the parameter 'p' in the original algorithm. A higher number penalizes the clusters with more proteins (default: 2)"><img class="questionmark" src="img/question.png" /></span>  
+          <span class="toolTip" title="This is the parameter 'p' in the original algorithm. A higher number penalizes the clusters with more proteins (default: 2)">&nbsp;</span>  
         </div>
         <div>
           <label for="merging_method">Merging method:</label>
@@ -121,7 +121,7 @@ protein2 protein4 weight
             <option value="match">Match coefficient</option>
             <option value="meet/min">Meet/min coefficient</option>
           </select>
-          <span class="toolTip" title="Under which criterion two clusters should be merged (default: 'Match coefficient')"><img class="questionmark" src="img/question.png"/></span>
+          <span class="toolTip" title="Under which criterion two clusters should be merged (default: 'Match coefficient')">&nbsp;</span>
         </div>
         <div>
           <label for="similarity">Similarity function:</label>
@@ -131,12 +131,12 @@ protein2 protein4 weight
             <option value="dice">Dice similarity</option>
             <option value="simpson">Simpson coefficient</option>
           </select>
-          <span class="toolTip" title="Similarity function to compare two clusters and result, eventually, in the merge of them (default: 'Match coefficient')"><img class="questionmark" src="img/question.png"/></span>
+          <span class="toolTip" title="Similarity function to compare two clusters and result, eventually, in the merge of them (default: 'Match coefficient')">&nbsp;</span>
         </div>
         <div>
           <label for="overlap_threshold">Overlap threshold:</label>
           <input class="number_01 required" id="overlap_threshold" name="overlap_threshold" value="0.8" />
-          <span class="toolTip" title="Maximum similarity allowed between to clusters to be joined together (default: 0.8)"><img class="questionmark" src="img/question.png"/></span>
+          <span class="toolTip" title="Maximum similarity allowed between to clusters to be joined together (default: 0.8)">&nbsp;</span>
         </div>
         <div>
           <label for="seeding_method">Seeding method:</label>
@@ -145,7 +145,7 @@ protein2 protein4 weight
             <option value="every_node">From every node</option>
             <option value="every_edge">From every edge</option>
           </select>
-          <span class="toolTip" title="Method to start a new cluster (default: 'From unused nodes')"><img class="questionmark" src="img/question.png"/></span>
+          <span class="toolTip" title="Method to start a new cluster (default: 'From unused nodes')">&nbsp;</span>
         </div>
       </fieldset>
     </form>
