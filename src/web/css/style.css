@@ -4,7 +4,6 @@ body,td,th {
 
 body {
     margin: 15px 0px;
-    /*background:url(../images/background.jpg) top left repeat-x;*/
     text-align:center;
 }
 
@@ -82,7 +81,7 @@ div.mainLinkLeft a{
 	margin-left: 2px;	
 	width: 210px;
 	height: 90px;
-	background: url(../images/bbsrc.jpg);
+	background: url(../img/bbsrc.jpg);
 	font-family:Verdana, Arial, Helvetica, sans-serif;
 	text-align:right;
 	background-color:#FFFFFF;
