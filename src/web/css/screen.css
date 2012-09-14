@@ -93,6 +93,10 @@ dl.compact dt {
 }
 
 
+#start-button{
+  clear: both;
+}
+
 .contents {
   clear: both;
 }
