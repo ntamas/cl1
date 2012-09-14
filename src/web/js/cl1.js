@@ -199,8 +199,6 @@ ClusterONEFrontend.prototype = {
   /** Event handler invoked when the dataset was uploaded */
   onFileUploaded: function(file, response) {
     this.removeMarkers(1);
-    this.removeMarkers(3);
-    this.setActiveStep(2);
     if (response.substr(0, 7) == "http://" ||
         response.substr(0, 8) == "https://") {
       /* Successful file upload, response contains the new URL */
