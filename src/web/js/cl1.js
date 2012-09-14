@@ -418,8 +418,8 @@ ClusterONEResult.prototype = {
     ownerDocument = $target.get(0).ownerDocument || null;
     
     $properties = $("<dl></dl>", ownerDocument).addClass("compact");
-    $properties.append("<p><dt>Number of clusters:</dt>");
-    $properties.append("<dd>"+this.clusters.length+"</dd></p>");
+    $properties.append("<br /><dt>Number of clusters:</dt>");
+    $properties.append("<dd>"+this.clusters.length+"</dd>");
     $target.append($properties);
     
     var msg = "Please wait, creating table...";
