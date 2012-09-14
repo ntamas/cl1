@@ -92,11 +92,11 @@ dl.compact dt {
   width: 200px; float: left;
 }
 
-#print-button{
+#start-button{
   clear: both;
 }
 
-#start-button{
+.buttons{
   clear: both;
 }
 
