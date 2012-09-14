@@ -78,7 +78,6 @@ address {
 
 dt {
   font-weight: bold;
-  clear: both;
 }
 
 dl {
@@ -93,6 +92,9 @@ dl.compact dt {
   width: 200px; float: left;
 }
 
+#print-button{
+  clear: both;
+}
 
 #start-button{
   clear: both;
