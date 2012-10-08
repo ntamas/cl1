@@ -44,7 +44,7 @@ public class MannWhitneyTest implements SignificanceTest {
 	/**
 	 * The tie correction that was applied
 	 */
-	private int tieCorrection;
+	private double tieCorrection;
 	
 	/**
 	 * The alternative hypothesis
@@ -115,16 +115,21 @@ public class MannWhitneyTest implements SignificanceTest {
 		
 		/* Calculate tie correction value */
 		Arrays.sort(ranks);
-		tieCorrection = 0;
-		for (i = 0; i < n-1; i++) {
-			if (ranks[i] == ranks[i+1]) {
-				int nties = 1;
-				while (i < n-1 && ranks[i] == ranks[i+1]) {
-					nties++;
-					i++;
+		if (n < 2) {
+			tieCorrection = 1.0;
+		} else {
+			tieCorrection = 0;
+			for (i = 0; i < n-1; i++) {
+				if (ranks[i] == ranks[i+1]) {
+					int nties = 1;
+					while (i < n-1 && ranks[i] == ranks[i+1]) {
+						nties++;
+						i++;
+					}
+					tieCorrection += nties * (nties * nties - 1);
 				}
-				tieCorrection += nties * (nties * nties - 1);
 			}
+			tieCorrection = 1.0 - tieCorrection / n / (n * n - 1);
 		}
 		
 		this.alternative = alternative;
@@ -133,14 +138,14 @@ public class MannWhitneyTest implements SignificanceTest {
 	/**
 	 * Returns the tie correction that was applied to the p-value
 	 */
-	public int getCorrectionFactor() {
+	public double getCorrectionFactor() {
 		return tieCorrection;
 	}
 	
 	public double getSP() {
 		int n = nA + nB;
 		double z = U - nA*nB/2.0;
-		double sd = Math.sqrt((nA * nB / 12.0) * (n + 1) - tieCorrection / (n * (n-1.0)));
+		double sd = Math.sqrt((nA * nB / 12.0) * (n + 1) * tieCorrection);
 		double continuityCorrection = 0.0;
 		
 		switch (alternative) {
