@@ -36,7 +36,7 @@ public class EdgeListReader implements GraphReader {
 				continue;
 			
 			parts = line.split("\\s");
-			if (parts.length == 1)
+			if (parts.length <= 1)
 				continue;
 			
 			node1 = nodeGen.get(parts[0]);
