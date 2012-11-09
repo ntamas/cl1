@@ -9,7 +9,9 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
+import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ValuedNodeSet;
+import uk.ac.rhul.cs.cl1.ui.cytoscape3.CytoscapeApp;
 import uk.ac.rhul.cs.utils.Pair;
 
 import cytoscape.CyNetwork;
@@ -29,7 +31,7 @@ public class StartAction extends CytoscapeAction {
 	public StartAction() {
 		super("Start");
 		this.putValue(AbstractAction.MNEMONIC_KEY, KeyEvent.VK_S);
-		setPreferredMenu("Plugins.ClusterONE");
+		setPreferredMenu(CytoscapeApp.PREFERRED_MENU);
 	}
 	
 	@Override
@@ -44,7 +46,7 @@ public class StartAction extends CytoscapeAction {
 		
 		if (network == null || network.getNodeCount() == 0) {
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-					"You must select a non-empty network before starting ClusterONE",
+					"You must select a non-empty network before starting " + ClusterONE.applicationName,
 					"Error - no network selected",
 					JOptionPane.ERROR_MESSAGE);
 			return;

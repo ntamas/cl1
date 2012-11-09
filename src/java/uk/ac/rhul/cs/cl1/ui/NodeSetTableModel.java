@@ -1,6 +1,7 @@
 package uk.ac.rhul.cs.cl1.ui;
 
 import java.awt.Color;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -196,7 +197,8 @@ public class NodeSetTableModel extends AbstractTableModel {
 	 */
 	private Icon getProgressIcon() {
 		if (this.progressIcon == null) {
-			this.progressIcon = new ImageIcon(this.getClass().getResource("../resources/wait.jpg"));
+			URL url = this.getClass().getResource("../resources/wait.jpg");
+			this.progressIcon = (url != null) ? new ImageIcon(url) : new EmptyIcon(32, 32);
 		}
 		return this.progressIcon;
 	}

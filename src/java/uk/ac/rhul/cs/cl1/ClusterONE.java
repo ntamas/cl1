@@ -182,7 +182,7 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 				 * separate thread (such as MaximalCliqueSeedGenerator) and that
 				 * thread is interrupted for whatever reason.
 				 */
-				shouldStop = true;
+				halt();
 				return;
 			}
 			
