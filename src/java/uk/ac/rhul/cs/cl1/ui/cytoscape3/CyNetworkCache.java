@@ -78,7 +78,7 @@ public class CyNetworkCache implements NetworkAboutToBeDestroyedListener {
 			ObjectUtils.equals(weightAttr, attrNameAndGraph.getLeft()))
 			return attrNameAndGraph.getRight();
 		
-		Graph graph = new Graph();
+		Graph graph = new Graph(network);
 		UniqueIDGenerator<CyNode> nodeIdGen = new UniqueIDGenerator<CyNode>(graph);
 		Double weight;
 		

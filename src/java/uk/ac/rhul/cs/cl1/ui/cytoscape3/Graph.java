@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 
 /**
@@ -17,15 +18,31 @@ import org.cytoscape.model.CyNode;
  *
  */
 public class Graph extends uk.ac.rhul.cs.graph.Graph {
+	/** The CyNetwork from which this graph was created */
+	protected CyNetwork network;
+	
 	/** Mapping from integer node IDs to Cytoscape nodes */
 	protected List<CyNode> nodeMapping = new ArrayList<CyNode>();
 	
-	public Graph() {
+	public Graph(CyNetwork network) {
 		super();
+		this.setCyNetwork(network);
 	}
 
 	public Graph(boolean directed) {
 		super(directed);
+	}
+	
+	public List<CyNode> getNodeMapping() {
+		return nodeMapping;
+	}
+
+	public CyNetwork getCyNetwork() {
+		return network;
+	}
+	
+	public void setCyNetwork(CyNetwork network) {
+		this.network = network;
 	}
 	
 	/**
@@ -42,10 +59,12 @@ public class Graph extends uk.ac.rhul.cs.graph.Graph {
 		this.nodeMapping = nodeMapping;
 	}
 
-	public List<CyNode> getNodeMapping() {
-		return nodeMapping;
+	@Override
+	public String getNodeName(int index) {
+		CyNode node = nodeMapping.get(index);
+		return CyNodeUtil.getName(network, node, "");
 	}
-
+	
 	/**
 	 * Returns the corresponding node indices for a collection of Cytoscape nodes.
 	 * 

@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.lang.ref.WeakReference;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -12,6 +13,7 @@ import java.util.TreeSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JPopupMenu;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -22,8 +24,6 @@ import org.cytoscape.application.swing.CytoPanelName;
 import org.cytoscape.application.swing.CytoPanelState;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyRow;
-import org.cytoscape.model.CyTable;
 import org.cytoscape.view.model.CyNetworkView;
 
 import uk.ac.rhul.cs.cl1.ClusterONE;
@@ -146,14 +146,21 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		buttonPanel.add(closeButton);
 		this.add(buttonPanel, BorderLayout.SOUTH); */
 		
-//		this.addAction(new FindAction(this));
-//		this.addAction(new SaveClusteringAction(this));
+		this.addAction(new FindAction(this));
+		this.addAction(new SaveClusteringAction(this));
 		this.addAction(new CloseAction(this));
 	}
 
 	// --------------------------------------------------------------------
 	// Query methods
 	// --------------------------------------------------------------------
+	
+	/**
+	 * Returns the ClusterONE app in which this result viewer panel lives.
+	 */
+	public CytoscapeApp getCytoscapeApp() {
+		return app;
+	}
 	
 	/**
 	 * Retrieves the Cytoscape network associated to this panel
@@ -295,17 +302,17 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 	private void initializeClusterPopup() {
 		clusterPopup = new JPopupMenu();
 		
-//		copyToClipboardAction = new CopyClusterToClipboardAction(this);
-//		copyToClipboardAction.setEnabled(false);
-//		clusterPopup.add(copyToClipboardAction);
-//		
+		copyToClipboardAction = new CopyClusterToClipboardAction(this);
+		copyToClipboardAction.setEnabled(false);
+		clusterPopup.add(copyToClipboardAction);
+		
 //		extractClusterAction = new ExtractClusterAction(this);
 //		extractClusterAction.setEnabled(false);
 //		clusterPopup.add(extractClusterAction);
-//		
-//		saveClusterAction = new SaveClusterAction(this);
-//		saveClusterAction.setEnabled(false);
-//		clusterPopup.add(saveClusterAction);
+		
+		saveClusterAction = new SaveClusterAction(this);
+		saveClusterAction.setEnabled(false);
+		clusterPopup.add(saveClusterAction);
 		
 		removeClusterAction = new RemoveClusterFromResultAction(this);
 		removeClusterAction.setEnabled(false);
@@ -343,43 +350,29 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		CyNetwork network = this.getNetwork();
 		
 		if (network == null) {
-//			copyToClipboardAction.setEnabled(false);
+			copyToClipboardAction.setEnabled(false);
 //			extractClusterAction.setEnabled(false);
-//			saveClusterAction.setEnabled(false);
+			saveClusterAction.setEnabled(false);
 			return;
 		}
 		
 		List<CyNode> nodes = this.getSelectedCytoscapeNodeSet();
-		CyTable nodeTable = network.getDefaultNodeTable();
-		CyTable edgeTable = network.getDefaultEdgeTable();
 		
-		// Unselect all nodes
-		for (CyRow row: nodeTable.getMatchingRows(CyNetwork.SELECTED, true)) {
-			row.set(CyNetwork.SELECTED, false);
-		}
+		// Unselect all nodes and edges
+		CyNetworkUtil.unselectAllNodes(network);
+		CyNetworkUtil.unselectAllEdges(network);
 		
-		// Unselect all edges
-		for (CyRow row: edgeTable.getMatchingRows(CyNetwork.SELECTED, true)) {
-			row.set(CyNetwork.SELECTED, false);
-		}
-		
-		// Select the nodes of the cluster
-		for (CyNode node: nodes) {
-			CyRow row = network.getRow(node);
-			if (row != null) {
-				row.set(CyNetwork.SELECTED, true);
-			}
-		}
-		
-//		network.setSelectedEdgeState(network.getConnectingEdges(nodes), true);
+		// Select the nodes of the cluster and the connecting edges
+		CyNetworkUtil.setSelectedState(network, nodes, true);
+		CyNetworkUtil.setSelectedState(network, CyNetworkUtil.getConnectingEdges(network, nodes), true);
 		
 		// Redraw the network
 		getNetworkView().updateView();
 		
 		boolean enabled = nodes.size() > 0;
 //		extractClusterAction.setEnabled(enabled);
-//		copyToClipboardAction.setEnabled(enabled);
-//		saveClusterAction.setEnabled(enabled);
+		copyToClipboardAction.setEnabled(enabled);
+		saveClusterAction.setEnabled(enabled);
 		removeClusterAction.setEnabled(enabled);
 		// saveClusterAsCyGroupAction.setEnabled(enabled);
 	}
@@ -398,11 +391,13 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		public CloseAction(CytoscapeResultViewerPanel panel) {
 			super("Close");
 			this.panel = panel;
-//			this.putValue(AbstractAction.SMALL_ICON,
-//					new ImageIcon(this.getClass().getResource("../../resources/close.png"))
-//			);
 			this.putValue(AbstractAction.SHORT_DESCRIPTION,
-				"Close this result panel");
+					"Close this result panel");
+			
+			URL url = this.getClass().getResource("../../resources/close.png");
+			if (url != null) {
+				this.putValue(AbstractAction.SMALL_ICON, new ImageIcon(url));
+			}
 		}
 		
 		public void actionPerformed(ActionEvent event) {

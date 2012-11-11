@@ -6,8 +6,6 @@ import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 
-import uk.ac.rhul.cs.cl1.ui.AboutDialog;
-
 /**
  * An action that shows the ClusterONE About dialog.
  * 
@@ -38,9 +36,7 @@ public class AboutAction extends AbstractClusterONEAction {
 	// --------------------------------------------------------------------
 	
 	public void actionPerformed(ActionEvent event) {
-		JFrame parent = app.getCySwingApplication().getJFrame();
-		AboutDialog dlg = new AboutDialog(parent);
-		dlg.setLocationRelativeTo(parent);
+		AboutDialog dlg = new AboutDialog(app);
 		dlg.setVisible(true);
 	}
 

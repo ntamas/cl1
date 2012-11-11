@@ -109,6 +109,13 @@ public class CytoscapeApp extends AbstractCySwingApp {
 		return app;
 	}
 	
+	/**
+	 * Returns the Cytoscape service with the given interface.
+	 */
+	public <S> S getService(Class<S> cls) {
+		return adapter.getCyServiceRegistrar().getService(cls);
+	}
+	
 	// --------------------------------------------------------------------
 	// Manipulation methods
 	// --------------------------------------------------------------------

@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -14,6 +15,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
@@ -46,7 +48,7 @@ public class ControlPanel extends JPanel implements CytoPanelComponent, Property
 	protected ClusterONEAlgorithmParametersPanel algorithmParametersPanel;
 	
 	/** Selection info panel embedded inside the control panel */
-	// protected SelectionPropertiesPanel selectionInfoPanel;
+//	protected SelectionPropertiesPanel selectionInfoPanel;
 	
 	/** Combobox for selecting the appropriate weight attribute */
 	protected JComboBox weightAttributeCombo;
@@ -78,6 +80,8 @@ public class ControlPanel extends JPanel implements CytoPanelComponent, Property
 	}
 	
 	protected JPanel constructAlgorithmParametersPanel() {
+		URL url = this.getClass().getResource("../../resources/refresh.png");
+		
 		/* Algorithm parameters panel */
 		algorithmParametersPanel = new ClusterONEAlgorithmParametersPanel();
 		
@@ -86,10 +90,7 @@ public class ControlPanel extends JPanel implements CytoPanelComponent, Property
 		weightPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		weightAttributeCombo = new JComboBox();
 		updateWeightAttributeCombo();
-		weightAttributeRefreshButton = new JButton(
-//				new ImageIcon(this.getClass().getResource("../../resources/refresh.png"))
-				new EmptyIcon() // TODO fix this
-		);
+		weightAttributeRefreshButton = new JButton(url == null ? new EmptyIcon() : new ImageIcon(url));
 		weightAttributeRefreshButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				updateWeightAttributeCombo();
@@ -116,12 +117,10 @@ public class ControlPanel extends JPanel implements CytoPanelComponent, Property
 		return algorithmParametersPanel;
 	}
 	
-	/*
-	protected JPanel constructSelectionInfoPanel() {
-		selectionInfoPanel = new SelectionPropertiesPanel(this);
-		return new CollapsiblePanel(selectionInfoPanel, "Selection info");
-	}
-	*/
+//	protected JPanel constructSelectionInfoPanel() {
+//		selectionInfoPanel = new SelectionPropertiesPanel(this);
+//		return new CollapsiblePanel(selectionInfoPanel, "Selection info");
+//	}
 	
 	protected JPanel constructButtonPanel() {
 		/* Button panel */
