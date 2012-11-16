@@ -5,7 +5,6 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 
-import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.events.SetCurrentNetworkEvent;
 import org.cytoscape.application.events.SetCurrentNetworkListener;
 import org.cytoscape.view.model.CyNetworkView;
@@ -29,7 +28,7 @@ public class StartAction extends AbstractClusterONEAction implements ResultListe
 	/**
 	 * Constructs the action
 	 */
-	public StartAction(CytoscapeApp app) {
+	public StartAction(ClusterONECytoscapeApp app) {
 		super(app, "Start");
 		installInMenu();
 		this.putValue(AbstractAction.MNEMONIC_KEY, KeyEvent.VK_S);
@@ -49,8 +48,7 @@ public class StartAction extends AbstractClusterONEAction implements ResultListe
 	// --------------------------------------------------------------------
 
 	public void actionPerformed(ActionEvent event) {
-		CyApplicationManager appMgr = app.getCySwingAppAdapter().getCyApplicationManager();
-		CyNetworkView networkView = appMgr.getCurrentNetworkView();
+		CyNetworkView networkView = app.getCurrentNetworkView();
 		
 		if (networkView == null || networkView.getModel() == null ||
 				networkView.getModel().getNodeCount() == 0) {

@@ -11,7 +11,6 @@ import javax.swing.JOptionPane;
 
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ValuedNodeSet;
-import uk.ac.rhul.cs.cl1.ui.cytoscape3.CytoscapeApp;
 import uk.ac.rhul.cs.utils.Pair;
 
 import cytoscape.CyNetwork;
@@ -31,7 +30,7 @@ public class StartAction extends CytoscapeAction {
 	public StartAction() {
 		super("Start");
 		this.putValue(AbstractAction.MNEMONIC_KEY, KeyEvent.VK_S);
-		setPreferredMenu(CytoscapeApp.PREFERRED_MENU);
+		setPreferredMenu("Plugins.ClusterONE");
 	}
 	
 	@Override

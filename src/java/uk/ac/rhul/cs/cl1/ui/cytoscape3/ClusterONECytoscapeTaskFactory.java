@@ -14,7 +14,7 @@ import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
  */
 public class ClusterONECytoscapeTaskFactory extends AbstractNetworkViewTaskFactory {
 
-	private final CytoscapeApp app;
+	private final ClusterONECytoscapeApp app;
 	
 	/**
 	 * The parameters of the ClusterONE algorithm.
@@ -36,7 +36,7 @@ public class ClusterONECytoscapeTaskFactory extends AbstractNetworkViewTaskFacto
 	// Constructors
 	// --------------------------------------------------------------------
 
-	public ClusterONECytoscapeTaskFactory(CytoscapeApp app) {
+	public ClusterONECytoscapeTaskFactory(ClusterONECytoscapeApp app) {
 		this.app = app;
 	}
 	

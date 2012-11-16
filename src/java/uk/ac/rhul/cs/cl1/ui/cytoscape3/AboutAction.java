@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.JFrame;
 
 /**
  * An action that shows the ClusterONE About dialog.
@@ -17,7 +16,7 @@ public class AboutAction extends AbstractClusterONEAction {
 	// Constructors
 	// --------------------------------------------------------------------
 
-	public AboutAction(CytoscapeApp app) {
+	public AboutAction(ClusterONECytoscapeApp app) {
 		super(app, "About...");
 		installInMenu();
 		this.putValue(AbstractAction.MNEMONIC_KEY, KeyEvent.VK_A);

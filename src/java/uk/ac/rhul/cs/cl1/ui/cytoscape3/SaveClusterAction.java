@@ -23,7 +23,7 @@ import uk.ac.rhul.cs.cl1.io.ClusteringWriterFactory;
  * 
  * @author ntamas
  */
-public class SaveClusterAction extends AbstractClusterONEAction {
+public class SaveClusterAction extends AbstractAction {
 	/**
 	 * Result viewer panel associated to the action
 	 */
@@ -33,7 +33,7 @@ public class SaveClusterAction extends AbstractClusterONEAction {
 	 * Constructor
 	 */
 	public SaveClusterAction(CytoscapeResultViewerPanel panel) {
-		super(panel.getCytoscapeApp(), "Save selected cluster(s)...");
+		super("Save selected cluster(s)...");
 		this.resultViewer = panel;
 		this.putValue(AbstractAction.MNEMONIC_KEY, KeyEvent.VK_S);
 	}
@@ -62,6 +62,7 @@ public class SaveClusterAction extends AbstractClusterONEAction {
 					formats[i].getName(), formats[i].getExtension());
 		}
 		
+		ClusterONECytoscapeApp app = resultViewer.getCytoscapeApp();
 		FileUtil fileUtil = app.getService(FileUtil.class);
 		if (fileUtil == null)
 			return;

@@ -31,13 +31,13 @@ public class CyNetworkCache implements NetworkAboutToBeDestroyedListener {
 		new WeakHashMap<CyNetwork, Pair<String, Graph> >();
 	
 	/** The ClusterONE plugin app within Cytoscape that owns this cache */
-	private CytoscapeApp app;
+	private ClusterONECytoscapeApp app;
 	
 	// --------------------------------------------------------------------
 	// Constructors
 	// --------------------------------------------------------------------
 
-	public CyNetworkCache(CytoscapeApp app) {
+	public CyNetworkCache(ClusterONECytoscapeApp app) {
 		this.app = app;
 		
 		app.registerService(this, NetworkAboutToBeDestroyedListener.class);

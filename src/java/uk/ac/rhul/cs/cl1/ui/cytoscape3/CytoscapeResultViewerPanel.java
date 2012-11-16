@@ -45,7 +45,7 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 	/**
 	 * The ClusterONE Cytoscape application in which this panel lives.
 	 */
-	private CytoscapeApp app = null;
+	private ClusterONECytoscapeApp app = null;
 	
 	/**
 	 * Serial number of this result viewer panel.
@@ -115,7 +115,7 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 	 * @param app           reference to the global CytoscapeApp object
 	 * @param networkView   a network view that will be used to show the clusters
 	 */
-	public CytoscapeResultViewerPanel(CytoscapeApp app, CyNetworkView networkView) {
+	public CytoscapeResultViewerPanel(ClusterONECytoscapeApp app, CyNetworkView networkView) {
 		super();
 		this.app = app;
 		
@@ -158,7 +158,7 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 	/**
 	 * Returns the ClusterONE app in which this result viewer panel lives.
 	 */
-	public CytoscapeApp getCytoscapeApp() {
+	public ClusterONECytoscapeApp getCytoscapeApp() {
 		return app;
 	}
 	

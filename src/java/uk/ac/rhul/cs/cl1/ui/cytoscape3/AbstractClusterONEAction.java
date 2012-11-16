@@ -12,13 +12,13 @@ public abstract class AbstractClusterONEAction extends AbstractCyAction {
 	/**
 	 * The ClusterONE Cytoscape application.
 	 */
-	protected final CytoscapeApp app;
+	protected final ClusterONECytoscapeApp app;
 	
 	// --------------------------------------------------------------------
 	// Constructors
 	// --------------------------------------------------------------------
 	
-	public AbstractClusterONEAction(CytoscapeApp app, String title) {
+	public AbstractClusterONEAction(ClusterONECytoscapeApp app, String title) {
 		super(title);
 		this.app = app;
 	}
@@ -39,7 +39,7 @@ public abstract class AbstractClusterONEAction extends AbstractCyAction {
 	 * Installs the action in the Apps menu.
 	 */
 	public void installInMenu() {
-		setPreferredMenu(CytoscapeApp.PREFERRED_MENU);
+		setPreferredMenu(ClusterONECytoscapeApp.PREFERRED_MENU);
 	}
 	
 	// --------------------------------------------------------------------

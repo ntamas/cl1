@@ -30,18 +30,18 @@ public class HelpAction extends AbstractClusterONEAction {
 	/**
 	 * Constructs the action
 	 */
-	public HelpAction(CytoscapeApp app, String helpID, String label) {
+	public HelpAction(ClusterONECytoscapeApp app, String helpID, String label) {
 		super(app, label);
 		installInMenu();
 		this.putValue(AbstractAction.MNEMONIC_KEY, KeyEvent.VK_H);
 		this.helpID = helpID;
 	}
 	
-	public HelpAction(CytoscapeApp app, String helpID) {
+	public HelpAction(ClusterONECytoscapeApp app, String helpID) {
 		this(app, helpID, "Help...");
 	}
 	
-	public HelpAction(CytoscapeApp app) {
+	public HelpAction(ClusterONECytoscapeApp app) {
 		this(app, "introduction");
 	}
 	

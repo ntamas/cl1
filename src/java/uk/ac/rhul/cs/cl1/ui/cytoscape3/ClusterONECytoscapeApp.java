@@ -1,11 +1,8 @@
 package uk.ac.rhul.cs.cl1.ui.cytoscape3;
 
-import java.util.Properties;
-
 import javax.swing.JOptionPane;
 
-import org.cytoscape.app.swing.AbstractCySwingApp;
-import org.cytoscape.app.swing.CySwingAppAdapter;
+import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.CyNetworkView;
@@ -14,15 +11,15 @@ import org.cytoscape.work.swing.DialogTaskManager;
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
 
-public class CytoscapeApp extends AbstractCySwingApp {
+public class ClusterONECytoscapeApp {
 	
 	/**
-	 * The application adapter.
+	 * The application activator.
 	 */
-	private CySwingAppAdapter adapter;
+	private CytoscapeAppActivator activator;
 	
 	/**
-	 * The Swing application handle.
+	 * The Cytoscape desktop handle.
 	 */
 	private CySwingApplication app;
 	
@@ -49,17 +46,14 @@ public class CytoscapeApp extends AbstractCySwingApp {
 	// Constructors
 	// --------------------------------------------------------------------
 
-	public CytoscapeApp(CySwingAppAdapter adapter) {
-		super(adapter);
-		initialize(adapter);
+	public ClusterONECytoscapeApp(CytoscapeAppActivator activator) {
+		this.activator = activator;
+		initialize();
 	}
 	
-	private void initialize(CySwingAppAdapter adapter) {
-		// Store the adapter
-		this.adapter = adapter;
-		
+	private void initialize() {
 		// Get the application handle
-		this.app = adapter.getCySwingApplication();
+		this.app = activator.getService(CySwingApplication.class);
 		
 		// Create a new network cache
 		networkCache = new CyNetworkCache(this);
@@ -92,14 +86,14 @@ public class CytoscapeApp extends AbstractCySwingApp {
 	 * Returns the currently selected network.
 	 */
 	public CyNetwork getCurrentNetwork() {
-		return adapter.getCyApplicationManager().getCurrentNetwork();
+		return activator.getService(CyApplicationManager.class).getCurrentNetwork();
 	}
 	
 	/**
-	 * Returns the CySwingAppAdapter associated to the ClusterONE plugin.
+	 * Returns the currently selected network view.
 	 */
-	public CySwingAppAdapter getCySwingAppAdapter() {
-		return adapter;
+	public CyNetworkView getCurrentNetworkView() {
+		return activator.getService(CyApplicationManager.class).getCurrentNetworkView();
 	}
 	
 	/**
@@ -113,7 +107,7 @@ public class CytoscapeApp extends AbstractCySwingApp {
 	 * Returns the Cytoscape service with the given interface.
 	 */
 	public <S> S getService(Class<S> cls) {
-		return adapter.getCyServiceRegistrar().getService(cls);
+		return activator.getService(cls);
 	}
 	
 	// --------------------------------------------------------------------
@@ -147,19 +141,8 @@ public class CytoscapeApp extends AbstractCySwingApp {
 	 * @param  cls         the class of the object
 	 * @param  properties  additional properties to use for registering
 	 */
-	public void registerService(Object object, Class<?> cls) {
-		registerService(object, cls, new Properties());
-	}
-	
-	/**
-	 * Registers an object as a service in the Cytoscape Swing application.
-	 * 
-	 * @param  object      the object to register
-	 * @param  cls         the class of the object
-	 * @param  properties  additional properties to use for registering
-	 */
-	public void registerService(Object object, Class<?> cls, Properties properties) {
-		adapter.getCyServiceRegistrar().registerService(object, cls, properties);
+	public <S> void registerService(S object, Class<S> cls) {
+		activator.registerService(object, cls);
 	}
 	
 	/**
@@ -168,8 +151,8 @@ public class CytoscapeApp extends AbstractCySwingApp {
 	 * @param  object      the object to register
 	 * @param  cls         the class of the object
 	 */
-	public void unregisterService(Object object, Class<?> cls) {
-		adapter.getCyServiceRegistrar().unregisterService(object, cls);
+	public <S> void unregisterService(S object, Class<S> cls) {
+		activator.unregisterService(object, cls);
 	}
 	
 	/**
@@ -196,7 +179,7 @@ public class CytoscapeApp extends AbstractCySwingApp {
 		taskFactory.setWeightAttr(weightAttr);
 		taskFactory.setResultListener(listener);
 		
-		DialogTaskManager taskManager = adapter.getCyServiceRegistrar().getService(DialogTaskManager.class);
+		DialogTaskManager taskManager = activator.getService(DialogTaskManager.class);
 		taskManager.execute(taskFactory.createTaskIterator(networkView));
 	}
 	

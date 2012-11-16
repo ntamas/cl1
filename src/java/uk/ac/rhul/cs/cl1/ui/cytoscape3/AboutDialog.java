@@ -6,11 +6,11 @@ package uk.ac.rhul.cs.cl1.ui.cytoscape3;
  * @author Tamas Nepusz <tamas@cs.rhul.ac.uk>
  */
 public class AboutDialog extends uk.ac.rhul.cs.cl1.ui.AboutDialog {
-	public AboutDialog(CytoscapeApp app, boolean modal) {
+	public AboutDialog(ClusterONECytoscapeApp app, boolean modal) {
 		super(app.getCySwingApplication().getJFrame(), modal);
 	}
 
-	public AboutDialog(CytoscapeApp app) {
+	public AboutDialog(ClusterONECytoscapeApp app) {
 		super(app.getCySwingApplication().getJFrame());
 	}
 }

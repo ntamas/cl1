@@ -57,9 +57,9 @@ public class ControlPanel extends JPanel implements CytoPanelComponent, Property
 	protected JButton weightAttributeRefreshButton;
 	
 	/** The ClusterONE Cytoscape app in which this control panel lives */
-	protected CytoscapeApp app;
+	protected ClusterONECytoscapeApp app;
 	
-	public ControlPanel(CytoscapeApp app) {
+	public ControlPanel(ClusterONECytoscapeApp app) {
 		super();
 		this.app = app;
 		

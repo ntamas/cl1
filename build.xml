@@ -20,9 +20,6 @@
     <property name="reports" location="reports" />
     <property name="tools" location="tools" />
 
-    <!-- Access to environment -->
-    <property environment="os" />
-
     <!-- DON'T CHANGE ANYTHING BELOW THIS LINE
     UNLESS YOU KNOW WHAT YOU'RE DOING -->
     <property name="src.java" location="${src}/java" />
@@ -37,8 +34,13 @@
     <property name="build.doc.cmdline" location="${build.doc}/cmdline" />
     <property name="build.doc.cytoscape" location="${build}/java/${package.name.slashed}/ui/cytoscape/help" />
     <property name="build.doc.cytoscape3" location="${build}/java/${package.name.slashed}/ui/cytoscape3/help" />
-    <property name="build.doc.procope" location="${build.doc}/procope" />
+	<property name="build.doc.procope" location="${build.doc}/procope" />
+
+	<property name="tool.bnd.path" location="${lib}/bnd-2.0.0.jar" />
     
+    <!-- Access to environment -->
+    <property environment="os" />
+
     <!-- External dependencies -->
     <condition property="lib.cytoscape.path" value="${cytoscape.path}/cytoscape.jar">
         <available file="${cytoscape.path}/cytoscape.jar" />
@@ -60,7 +62,10 @@
     </condition>
     <condition property="lib.jersey-multipart.path" value="${jersey.path}/contribs/jersey-multipart-${jersey.version}.jar">
         <available file="${jersey.path}/contribs/jersey-multipart-${jersey.version}.jar" />
-    </condition>
+	</condition>
+	<condition property="lib.osgi-core.path" value="${osgi.core.jar}">
+		<available file="${osgi.core.jar}" />
+	</condition>
 
     <!-- Set up the default classpath -->
     <path id="classpath.base">
@@ -73,7 +78,8 @@
         <pathelement location="${lib.jsr311.path}" />
         <pathelement location="${lib.jersey-core.path}" />
         <pathelement location="${lib.jersey-json.path}" />
-        <pathelement location="${lib.jersey-multipart.path}" />
+		<pathelement location="${lib.jersey-multipart.path}" />
+		<pathelement location="${lib.osgi-core.path}" />
     </path>
 
     <tstamp>
@@ -194,6 +200,7 @@
         </javac>
         <copy file="${etc}/web/web.xml.in" tofile="${build.webinf}/web.xml" />
         <replace file="${build.webinf}/web.xml">
+			<replacefilter token="@ant.project.name@" value="${ant.project.name}" />
             <replacefilter token="@package.name@" value="${package.name}" />
             <replacefilter token="@package.version@" value="${package.version}" />
         </replace>
@@ -222,9 +229,25 @@
             <fileset file="${doc}/images/logo.png" />
         </copy>
     </target>
-
+ 
     <!-- Creates the JAR file -->
-    <target name="jar" depends="compile,doc,-copy_resources" description="Creates the JAR file">
+	<target name="jar" depends="compile,doc,-copy_resources" description="Creates the JAR file">
+		<taskdef resource="aQute/bnd/ant/taskdef.properties" classpath="${tool.bnd.path}" />
+        <copy file="${etc}/cl1.bnd.in"
+			tofile="${build}/cluster_one-${package.version}.bnd" />
+		<replace file="${build}/cluster_one-${package.version}.bnd">
+            <replacefilter token="@package.name@" value="${package.name}" />
+            <replacefilter token="@package.version@" value="${package.version}" />
+        </replace>
+		<bnd
+			classpath="${build.java}:${lib}/tclib.jar:${lib}/commons-cli-1.2.jar:${lib}/tablelayout.jar"
+			sourcepath="${src.java}" eclipse="false"
+			files="${build}/cluster_one-${package.version}.bnd"
+			output="cluster_one-${package.version}.jar" />
+
+		<!-- Old version that builds the JAR using Ant's built-in JAR task.
+			 This is not suitable for OSGi bundles -->
+		<!--
         <jar destfile="cluster_one-${package.version}.jar" basedir="${build.java}"
              excludes="**/api/**/*.class">
             <zipfileset src="lib/tclib.jar" includes="**/*.class" />
@@ -236,13 +259,20 @@
                 <attribute name="Implementation-Version" value="${package.version}" />
                 <attribute name="Main-Class" value="${package.name}.ui.cmdline.CommandLineApplication" />
                 <attribute name="Cytoscape-Plugin" value="${package.name}.ui.cytoscape.CytoscapePlugin" />
-                <attribute name="Class-Path" value="${lib.procope.path}" />
 				<attribute name="Cytoscape-App-Version" value="${package.version}" />
 				<attribute name="Cytoscape-App-Name" value="${ant.project.name}" />
-				<attribute name="Cytoscape-App" value="${package.name}.ui.cytoscape3.CytoscapeApp" />
 				<attribute name="Cytoscape-App-Works-With" value="3.0" />
+
+				<attribute name="Bundle-ManifestVersion" value="2" />
+				<attribute name="Bundle-Name" value="ClusterONE plugin for Cytoscape 3" />
+				<attribute name="Bundle-SymbolicName" value="${package.name}.ui.cytoscape3" />
+				<attribute name="Bundle-Version" value="${package.version}" />
+				<attribute name="Bundle-Activator" value="${package.name}.ui.cytoscape3.CytoscapeAppActivator" />
+				<attribute name="Import-Package"
+					value="javax.help,javax.swing,javax.swing.event,org.cytoscape.application;version=&quot;[3.0,4)&quot;,org.cytoscape.application.swing;version=&quot;[3.0,4)&quot;,org.cytoscape.service.util;version=&quot;[3.0,4)&quot;,org.cytoscape.model;version=&quot;[3.0,4)&quot;,org.cytoscape.task;version=&quot;[3.0,4)&quot;,org.cytoscape.view.model;version=&quot;[3.0,4)&quot;,org.cytoscape.work;version=&quot;[3.0,4)&quot;" />
             </manifest>
-        </jar>
+		</jar>
+		-->
     </target>
     
     <!-- Creates the WAR file -->
