@@ -31,7 +31,7 @@ public class CyNetworkUtil {
 	 * Returns the set of edges connecting a given set of nodes.
 	 */
 	public static Collection<CyEdge> getConnectingEdges(CyNetwork network,
-			Collection<CyNode> nodes) {
+			Collection<? extends CyNode> nodes) {
 		HashSet<CyNode> nodeSet = new HashSet<CyNode>(nodes);
 		HashSet<CyEdge> resultSet = new HashSet<CyEdge>();
 		for (CyNode node: nodes) {

@@ -7,6 +7,7 @@ import java.awt.event.MouseEvent;
 import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -306,9 +307,9 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		copyToClipboardAction.setEnabled(false);
 		clusterPopup.add(copyToClipboardAction);
 		
-//		extractClusterAction = new ExtractClusterAction(this);
-//		extractClusterAction.setEnabled(false);
-//		clusterPopup.add(extractClusterAction);
+		extractClusterAction = new ExtractClusterAction(this);
+		extractClusterAction.setEnabled(false);
+		clusterPopup.add(extractClusterAction);
 		
 		saveClusterAction = new SaveClusterAction(this);
 		saveClusterAction.setEnabled(false);
@@ -327,6 +328,34 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		*/
 	}
 
+	/**
+	 * Selects the given set of nodes in the associated network and redraws its view.
+	 */
+	public void selectNodes(Collection<? extends CyNode> nodes) {
+		selectNodes(nodes, true);
+	}
+	
+	/**
+	 * Selects the given set of nodes in the associated network and optionally
+	 * redraws its view.
+	 */
+	public void selectNodes(Collection<? extends CyNode> nodes, boolean redraw) {
+		CyNetwork network = this.getNetwork();
+		if (network == null)
+			return;
+		
+		// Unselect all nodes and edges
+		CyNetworkUtil.unselectAllNodes(network);
+		CyNetworkUtil.unselectAllEdges(network);
+		
+		// Select the nodes of the cluster and the connecting edges
+		CyNetworkUtil.setSelectedState(network, nodes, true);
+		CyNetworkUtil.setSelectedState(network, CyNetworkUtil.getConnectingEdges(network, nodes), true);
+		
+		// Redraw the network
+		getNetworkView().updateView();
+	}
+	
 	/**
 	 * Sets the mapping from integer node IDs to real Cytoscape {@link Node} objects
 	 */
@@ -351,26 +380,16 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		
 		if (network == null) {
 			copyToClipboardAction.setEnabled(false);
-//			extractClusterAction.setEnabled(false);
+			extractClusterAction.setEnabled(false);
 			saveClusterAction.setEnabled(false);
 			return;
 		}
 		
 		List<CyNode> nodes = this.getSelectedCytoscapeNodeSet();
-		
-		// Unselect all nodes and edges
-		CyNetworkUtil.unselectAllNodes(network);
-		CyNetworkUtil.unselectAllEdges(network);
-		
-		// Select the nodes of the cluster and the connecting edges
-		CyNetworkUtil.setSelectedState(network, nodes, true);
-		CyNetworkUtil.setSelectedState(network, CyNetworkUtil.getConnectingEdges(network, nodes), true);
-		
-		// Redraw the network
-		getNetworkView().updateView();
+		selectNodes(nodes);
 		
 		boolean enabled = nodes.size() > 0;
-//		extractClusterAction.setEnabled(enabled);
+		extractClusterAction.setEnabled(enabled);
 		copyToClipboardAction.setEnabled(enabled);
 		saveClusterAction.setEnabled(enabled);
 		removeClusterAction.setEnabled(enabled);
