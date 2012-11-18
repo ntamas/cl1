@@ -29,6 +29,7 @@ import org.cytoscape.view.model.CyNetworkView;
 
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.NodeSet;
+import uk.ac.rhul.cs.cl1.ui.EmptyIcon;
 import uk.ac.rhul.cs.cl1.ui.NodeSetTableModel;
 import uk.ac.rhul.cs.cl1.ui.PopupMenuTrigger;
 import uk.ac.rhul.cs.cl1.ui.RemoveClusterFromResultAction;
@@ -269,6 +270,22 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 	}
 	
 	/**
+	 * @inheritDoc
+	 */
+	@Override
+	protected Icon constructProgressIcon() {
+		URL url = app.getResource(app.getResourcePathName() + "/wait.jpg");
+		return (url != null) ? new ImageIcon(url) : new EmptyIcon(32, 32);
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	protected AbstractAction constructShowDetailedResultsAction() {
+		return new ShowDetailedResultsAction(this);
+	};
+	
+	/**
 	 * Converts an integer iterable yielding node IDs to a list of Cytoscape nodes
 	 * 
 	 * As {@link NodeSet}s are iterable, this method works with {@link NodeSet}s directly.
@@ -404,6 +421,7 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 	// --------------------------------------------------------------------
 	// CloseAction class
 	// --------------------------------------------------------------------
+	
 	class CloseAction extends AbstractAction {
 		CytoscapeResultViewerPanel panel;
 		
@@ -413,7 +431,7 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 			this.putValue(AbstractAction.SHORT_DESCRIPTION,
 					"Close this result panel");
 			
-			URL url = this.getClass().getResource("../../resources/close.png");
+			URL url = app.getResource(app.getResourcePathName() + "/close.png");
 			if (url != null) {
 				this.putValue(AbstractAction.SMALL_ICON, new ImageIcon(url));
 			}

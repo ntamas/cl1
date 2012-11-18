@@ -1,5 +1,9 @@
 package uk.ac.rhul.cs.cl1.ui.cytoscape3;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+
 import javax.swing.JOptionPane;
 
 import org.cytoscape.application.CyApplicationManager;
@@ -32,6 +36,11 @@ public class ClusterONECytoscapeApp {
 	 * Local cache for converted ClusterONE representations of Cytoscape networks
 	 */
 	private CyNetworkCache networkCache;
+	
+	/**
+	 * Variable storing the name of the resource path wthin the bundle.
+	 */
+	private String resourcePathName;
 	
 	// --------------------------------------------------------------------
 	// Static
@@ -101,6 +110,36 @@ public class ClusterONECytoscapeApp {
 	 */
 	public CySwingApplication getCySwingApplication() {
 		return app;
+	}
+	
+	/**
+	 * Returns URL of the resource with the given name from the plugin bundle.
+	 */
+	public URL getResource(String name) {
+		return activator.getResource(name);
+	}
+	
+	/**
+	 * Returns an input stream pointing to the resource with the given name from
+	 * the plugin bundle.
+	 * 
+	 * @throws IOException 
+	 */
+	public InputStream getResourceAsStream(String name) throws IOException {
+		return activator.getResourceAsStream(name);
+	}
+	
+	/**
+	 * Returns the name of the path containing the resources of the bundle.
+	 */
+	public String getResourcePathName() {
+		if (resourcePathName == null) {
+			String packageName = this.getClass().getPackage().getName().replace('.', '/');
+			packageName = packageName.substring(0, packageName.lastIndexOf('/'));
+			packageName = packageName.substring(0, packageName.lastIndexOf('/'));
+			resourcePathName = packageName + "/resources";
+		}
+		return resourcePathName;
 	}
 	
 	/**

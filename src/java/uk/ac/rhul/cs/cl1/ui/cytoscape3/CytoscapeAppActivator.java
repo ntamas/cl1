@@ -1,5 +1,8 @@
 package uk.ac.rhul.cs.cl1.ui.cytoscape3;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Properties;
 
 import org.cytoscape.service.util.AbstractCyActivator;
@@ -41,6 +44,27 @@ public class CytoscapeAppActivator extends AbstractCyActivator {
 	// Query methods
 	// --------------------------------------------------------------------
 
+	/**
+	 * Returns URL of the resource with the given name from the plugin bundle.
+	 */
+	public URL getResource(String name) {
+		return bundleContext.getBundle().getEntry(name);
+	}
+	
+	/**
+	 * Returns an input stream pointing to the resource with the given name from
+	 * the plugin bundle.
+	 * 
+	 * @throws IOException 
+	 */
+	public InputStream getResourceAsStream(String name) throws IOException {
+		URL resource = getResource(name);
+		if (resource == null)
+			return null;
+		
+		return resource.openStream();
+	}
+	
 	/**
 	 * Returns the service registered with the givan class.
 	 */

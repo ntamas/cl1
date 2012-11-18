@@ -196,10 +196,6 @@ public class NodeSetTableModel extends AbstractTableModel {
 	 * Returns an icon showing a progress indicator
 	 */
 	private Icon getProgressIcon() {
-		if (this.progressIcon == null) {
-			URL url = this.getClass().getResource("../resources/wait.jpg");
-			this.progressIcon = (url != null) ? new ImageIcon(url) : new EmptyIcon(32, 32);
-		}
 		return this.progressIcon;
 	}
 
@@ -247,6 +243,13 @@ public class NodeSetTableModel extends AbstractTableModel {
 		currentHeaders = detailedMode ? detailedHeaders : simpleHeaders;
 		currentClasses = detailedMode ? detailedClasses : simpleClasses;
 		this.fireTableStructureChanged();
+	}
+	
+	/**
+	 * Sets the icon that shows a progress indicator.
+	 */
+	public void setProgressIcon(Icon value) {
+		this.progressIcon = value;
 	}
 	
 	private void updateNodeSetDetails() {

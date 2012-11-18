@@ -17,9 +17,9 @@ public class ShowDetailedResultsAction extends AbstractAction {
 	 */
 	public ShowDetailedResultsAction(ResultViewerPanel panel) {
 		super();
-		
-		URL iconUrl = this.getClass().getResource("../resources/details.png");
 		this.resultViewer = panel;
+		
+		URL iconUrl = getIconURL();
 		if (iconUrl != null) {
 			this.putValue(AbstractAction.SMALL_ICON, new ImageIcon(iconUrl));
 		}
@@ -33,5 +33,9 @@ public class ShowDetailedResultsAction extends AbstractAction {
 			model.setDetailedMode(false);
 		else
 			model.setDetailedMode(true);
+	}
+	
+	protected URL getIconURL() {
+		return this.getClass().getResource("../resources/details.png");
 	}
 }

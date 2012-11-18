@@ -1,6 +1,7 @@
 package uk.ac.rhul.cs.cl1.ui.cytoscape3;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -9,6 +10,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import javax.swing.BorderFactory;
@@ -33,6 +35,7 @@ import org.cytoscape.model.CyTable;
 
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
+import uk.ac.rhul.cs.cl1.ui.CollapsiblePanel;
 import uk.ac.rhul.cs.cl1.ui.ClusterONEAlgorithmParametersPanel;
 import uk.ac.rhul.cs.cl1.ui.ClusterONEAlgorithmParametersPanel.Section;
 import uk.ac.rhul.cs.cl1.ui.EmptyIcon;
@@ -77,10 +80,12 @@ public class ControlPanel extends JPanel implements CytoPanelComponent, Property
 		this.add(constructButtonPanel());
 		
 		this.add(Box.createVerticalGlue());
+		
+		updateCollapsiblePanelIcons();
 	}
 	
 	protected JPanel constructAlgorithmParametersPanel() {
-		URL url = this.getClass().getResource("../../resources/refresh.png");
+		URL url = app.getResource(app.getResourcePathName() + "/refresh.png");
 		
 		/* Algorithm parameters panel */
 		algorithmParametersPanel = new ClusterONEAlgorithmParametersPanel();
@@ -265,6 +270,32 @@ public class ControlPanel extends JPanel implements CytoPanelComponent, Property
 	public void deactivate() {
 		app.unregisterService(this, CytoPanelComponent.class);
 		app.unregisterService(this, SetCurrentNetworkListener.class);
+	}
+	
+	/**
+	 * Updates the icons of the collapsible panels in the control panel.
+	 */
+	private void updateCollapsiblePanelIcons() {
+		ArrayList<Component> components = new ArrayList<Component>();
+		components.add(this);
+		
+		URL url = app.getResource(app.getResourcePathName() + "/plus.gif");
+		Icon collapsedIcon = url != null ? new ImageIcon(url) : null;
+		
+		url = app.getResource(app.getResourcePathName() + "/minus.gif");
+		Icon expandedIcon = url != null ? new ImageIcon(url) : null;
+		
+		while (!components.isEmpty()) {
+			Component component = components.remove(components.size() - 1);
+			if (component instanceof CollapsiblePanel) {
+				((CollapsiblePanel)component).setCollapsedIcon(collapsedIcon);
+				((CollapsiblePanel)component).setExpandedIcon(expandedIcon);
+			}
+			if (component instanceof Container) {
+				Container container = (Container)component;
+				components.addAll(Arrays.asList(container.getComponents()));
+			}
+		}
 	}
 	
 	// --------------------------------------------------------------------

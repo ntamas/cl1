@@ -49,7 +49,7 @@ public class HelpAction extends AbstractClusterONEAction {
 		if (csh != null)
 			return;
 		
-		URL hsURL = getClass().getResource("help/cl1.hs");
+		URL hsURL = app.getResource(getClass().getPackage().getName().replace(".", "/") + "/help/cl1.hs");
 		
 		try {
 			if (helpSet == null)

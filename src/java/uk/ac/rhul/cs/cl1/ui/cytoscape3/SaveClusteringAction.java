@@ -23,11 +23,10 @@ public class SaveClusteringAction extends SaveClusterAction {
 		this.putValue(AbstractAction.SHORT_DESCRIPTION,
 				"Save the clustering to a file");
 		
-		URL url = this.getClass().getResource("../../resources/save.png");
+		ClusterONECytoscapeApp app = resultViewer.getCytoscapeApp();
+		URL url = app.getResource(app.getResourcePathName() + "/save.png");
 		if (url != null) {
-			this.putValue(AbstractAction.SMALL_ICON,
-					new ImageIcon()
-			);
+			this.putValue(AbstractAction.SMALL_ICON, new ImageIcon(url));
 		}
 	}
 

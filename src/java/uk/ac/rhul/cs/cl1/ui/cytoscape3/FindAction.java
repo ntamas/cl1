@@ -36,7 +36,8 @@ public class FindAction extends AbstractAction {
 		this.putValue(AbstractAction.SHORT_DESCRIPTION,
 				"Select all the clusters corresponding to the selected nodes in the result panel");
 		
-		URL url = this.getClass().getResource("../../resources/find.png");
+		ClusterONECytoscapeApp app = resultViewer.getCytoscapeApp();
+		URL url = app.getResource(app.getResourcePathName() + "/find.png");
 		if (url != null) {
 			this.putValue(AbstractAction.SMALL_ICON, new ImageIcon(url));
 		}
