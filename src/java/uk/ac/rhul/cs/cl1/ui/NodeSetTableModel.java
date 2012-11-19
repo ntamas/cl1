@@ -1,7 +1,6 @@
 package uk.ac.rhul.cs.cl1.ui;
 
 import java.awt.Color;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,8 +13,6 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.table.AbstractTableModel;
 
-import com.sosnoski.util.hashmap.ObjectIntHashMap;
-
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.CohesivenessFunction;
 import uk.ac.rhul.cs.cl1.NodeSet;
@@ -24,6 +21,8 @@ import uk.ac.rhul.cs.cl1.ValuedNodeSet;
 import uk.ac.rhul.cs.graph.FruchtermanReingoldLayoutAlgorithm;
 import uk.ac.rhul.cs.graph.Graph;
 import uk.ac.rhul.cs.graph.GraphLayoutAlgorithm;
+
+import com.sosnoski.util.hashmap.ObjectIntHashMap;
 
 /**
  * Table model that can be used to show a list of {@link NodeSet} objects

@@ -3,17 +3,28 @@ package uk.ac.rhul.cs.cl1.ui.cytoscape3;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
 import org.cytoscape.application.CyApplicationManager;
+import org.cytoscape.application.swing.AbstractCyAction;
+import org.cytoscape.application.swing.CyNodeViewContextMenuFactory;
 import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.swing.DialogTaskManager;
 
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
+import uk.ac.rhul.cs.cl1.CohesivenessFunction;
+import uk.ac.rhul.cs.cl1.MutableNodeSet;
+import uk.ac.rhul.cs.cl1.QualityFunction;
 
 public class ClusterONECytoscapeApp {
 	
@@ -33,6 +44,11 @@ public class ClusterONECytoscapeApp {
 	private ControlPanel controlPanel;
 	
 	/**
+	 * The "Grow cluster from selected nodes" action of the application.
+	 */
+	private GrowClusterAction growClusterAction;
+	
+	/**
 	 * Local cache for converted ClusterONE representations of Cytoscape networks
 	 */
 	private CyNetworkCache networkCache;
@@ -42,10 +58,34 @@ public class ClusterONECytoscapeApp {
 	 */
 	private String resourcePathName;
 	
+	/**
+	 * Manager for the visual styles used by the application.
+	 */
+	private VisualStyleManager visualStyleManager;
+	
 	// --------------------------------------------------------------------
 	// Static
 	// --------------------------------------------------------------------
 
+	/**
+	 * Attribute name used by ClusterONE to store status information for each node.
+	 * 
+	 * A node can have one and only one of the following status values:
+	 * 
+	 * <ul>
+	 * <li>0 = the node is an outlier (it is not included in any cluster)</li>
+	 * <li>1 = the node is included in only a single cluster</li>
+	 * <li>2 = the node is an overlap (it is included in more than one cluster)</li>
+	 * </ul>
+	 */
+	public static final String ATTRIBUTE_STATUS = "cl1.Status";
+	
+	/**
+	 * Attribute name used by ClusterONE to store affinities of vertices to a
+	 * given cluster.
+	 */
+	public static final String ATTRIBUTE_AFFINITY = "cl1.Affinity";
+	
 	/**
 	 * The name of the menu in which the app lives.
 	 */
@@ -67,13 +107,24 @@ public class ClusterONECytoscapeApp {
 		// Create a new network cache
 		networkCache = new CyNetworkCache(this);
 		
+		// Create the visual style manager
+		visualStyleManager = new VisualStyleManager(this);
+		
 		// Create the control panel
 		controlPanel = new ControlPanel(this);
 		
+		// Create the global actions
+		growClusterAction = new GrowClusterAction(this);
+		
 		// Add the actions of the plugin
 		app.addAction(new ShowControlPanelAction(controlPanel));
-		app.addAction(new HelpAction(this));
+		app.addAction(growClusterAction);
+		app.addAction(new AffinityColouringAction(this));
+		app.addAction(new HelpAction(this, "introduction"));
 		app.addAction(new AboutAction(this));
+		
+		// Register the node-specific context menu
+		registerService(new NodeContextMenuFactory(this), CyNodeViewContextMenuFactory.class);
 	}
 	
 	// --------------------------------------------------------------------
@@ -92,17 +143,24 @@ public class ClusterONECytoscapeApp {
 	// --------------------------------------------------------------------
 	
 	/**
+	 * Returns the application manager from Cytoscape.
+	 */
+	public CyApplicationManager getApplicationManager() {
+		return activator.getService(CyApplicationManager.class);
+	}
+	
+	/**
 	 * Returns the currently selected network.
 	 */
 	public CyNetwork getCurrentNetwork() {
-		return activator.getService(CyApplicationManager.class).getCurrentNetwork();
+		return getApplicationManager().getCurrentNetwork();
 	}
 	
 	/**
 	 * Returns the currently selected network view.
 	 */
 	public CyNetworkView getCurrentNetworkView() {
-		return activator.getService(CyApplicationManager.class).getCurrentNetworkView();
+		return getApplicationManager().getCurrentNetworkView();
 	}
 	
 	/**
@@ -110,6 +168,20 @@ public class ClusterONECytoscapeApp {
 	 */
 	public CySwingApplication getCySwingApplication() {
 		return app;
+	}
+	
+	/**
+	 * Returns the action that grows a cluster from the selected nodes of the current view.
+	 */
+	public AbstractCyAction getGrowClusterAction() {
+		return growClusterAction;
+	}
+	
+	/**
+	 * Returns the app-wide network view manager from Cytoscape.
+	 */
+	public CyNetworkViewManager getNetworkViewManager() {
+		return activator.getService(CyNetworkViewManager.class);
 	}
 	
 	/**
@@ -147,6 +219,20 @@ public class ClusterONECytoscapeApp {
 	 */
 	public <S> S getService(Class<S> cls) {
 		return activator.getService(cls);
+	}
+	
+	/**
+	 * Returns the Cytoscape service with the given interface.
+	 */
+	public <S> S getService(Class<S> cls, String properties) {
+		return activator.getService(cls, properties);
+	}
+	
+	/**
+	 * Returns the visual style manager of the app.
+	 */
+	public VisualStyleManager getVisualStyleManager() {
+		return visualStyleManager;
 	}
 	
 	// --------------------------------------------------------------------
@@ -220,6 +306,62 @@ public class ClusterONECytoscapeApp {
 		
 		DialogTaskManager taskManager = activator.getService(DialogTaskManager.class);
 		taskManager.execute(taskFactory.createTaskIterator(networkView));
+	}
+	
+	/**
+	 * Sets the ClusterONE specific node affinity attributes on a CyNetwork that
+	 * will be used by VizMapper later.
+	 * 
+	 * @param network  the Cytoscape network to manipulate
+	 * @param graph    the ClusterONE graph representation of that network
+	 * @param nodes    the list of the selected node indices
+	 */
+	public void setAffinityAttributes(CyNetwork network, Graph graph, List<Integer> nodes) {
+		CyTable nodeTable = network.getDefaultNodeTable();
+		
+		CyColumn affinityColumn = nodeTable.getColumn(ClusterONECytoscapeApp.ATTRIBUTE_AFFINITY);
+		if (affinityColumn != null && affinityColumn.getType() != Double.class) {
+			int response = JOptionPane.showConfirmDialog(app.getJFrame(),
+					"A node attribute named "+ATTRIBUTE_STATUS+" already exists and "+
+					"it is not a string attribute.\nDo you want to remove the existing "+
+					"attribute and re-register it as a string attribute?",
+					"Attribute type mismatch",
+					JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+			if (response == JOptionPane.NO_OPTION)
+				return;
+			
+			nodeTable.deleteColumn(ClusterONECytoscapeApp.ATTRIBUTE_AFFINITY);
+			affinityColumn = null;
+		}
+		
+		if (affinityColumn == null) {
+			nodeTable.createColumn(ClusterONECytoscapeApp.ATTRIBUTE_AFFINITY, Double.class, false, 0.0);
+		}
+		
+		int i = 0;
+		MutableNodeSet nodeSet = new MutableNodeSet(graph, nodes);
+		QualityFunction func = new CohesivenessFunction(); // TODO: fix it, it should not be hardwired
+		double currentQuality = func.calculate(nodeSet);
+		double affinity;
+		
+		for (CyNode node: graph.getNodeMapping()) {
+			if (nodeSet.contains(i))
+				/* multiplying by -1 here: we want internal nodes to have a positive
+				 * affinity if they "should" belong to the cluster
+				 */
+				affinity = - (func.getRemovalAffinity(nodeSet, i) - currentQuality);
+			else
+				affinity = func.getAdditionAffinity(nodeSet, i) - currentQuality;
+			
+			if (Double.isNaN(affinity))
+				affinity = 0.0;
+
+			CyRow row = network.getRow(node);
+			if (row != null) {
+				row.set(ClusterONECytoscapeApp.ATTRIBUTE_AFFINITY, affinity);
+			}
+			i++;
+		}
 	}
 	
 	/**

@@ -38,11 +38,11 @@ public class CloseControlPanelAction extends AbstractCyAction {
 	// --------------------------------------------------------------------
 
 	public void actionPerformed(ActionEvent event) {
-		panel.deactivate();
-		
 		/* Disable actions depending on the control panel */
 //		GrowClusterAction.getGlobalInstance().setEnabled(false);
 //		AffinityColouringAction.getGlobalInstance().setEnabled(false);
+		
+		panel.deactivate();
 	}
 	
 	// --------------------------------------------------------------------

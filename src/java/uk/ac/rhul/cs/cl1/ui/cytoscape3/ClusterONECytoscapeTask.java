@@ -2,14 +2,21 @@ package uk.ac.rhul.cs.cl1.ui.cytoscape3;
 
 import java.util.List;
 
+import org.cytoscape.model.CyColumn;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEException;
+import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.cl1.ValuedNodeSetList;
+
+import com.sosnoski.util.hashmap.ObjectIntHashMap;
 
 /**
  * Wrapper object for {@link ClusterONE} that makes it compatible with
@@ -122,6 +129,65 @@ public class ClusterONECytoscapeTask extends ClusterONE implements Task {
 		 * The mapping of graph node indices back to their corresponding CyNodes.
 		 */
 		public List<CyNode> nodeMapping;
+		
+		/**
+		 * Sets some ClusterONE specific node status attributes on a CyNetwork that
+		 * will be used by VizMapper later.
+		 */
+		public void setStatusAttributes() {
+			if (networkView == null || networkView.getModel() == null)
+				return;
+			
+			ObjectIntHashMap occurrences = new ObjectIntHashMap();
+			for (NodeSet nodeSet: clusters) {
+				for (Integer nodeIdx: nodeSet) {
+					int value = occurrences.get(nodeIdx);
+					if (value == ObjectIntHashMap.DEFAULT_NOT_FOUND)
+						value = 0;
+					occurrences.add(nodeIdx, value+1);
+				}
+			}
+			
+			CyNetwork network = networkView.getModel();
+			CyTable nodeTable = network.getDefaultNodeTable();
+			final String[] values = {"Outlier", "Cluster", "Overlap"};
+			
+			CyColumn statusColumn = nodeTable.getColumn(ClusterONECytoscapeApp.ATTRIBUTE_STATUS);
+			if (statusColumn != null && statusColumn.getType() != String.class) {
+				// TODO
+				/*
+				int response = app.showConfirmDialog(Cytoscape.getDesktop(),
+						"A node attribute named "+ATTRIBUTE_STATUS+" already exists and "+
+						"it is not a string attribute.\nDo you want to remove the existing "+
+						"attribute and re-register it as a string attribute?",
+						"Attribute type mismatch",
+						JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+				if (response == JOptionPane.NO_OPTION)
+					return;
+				*/
+				nodeTable.deleteColumn(ClusterONECytoscapeApp.ATTRIBUTE_STATUS);
+				statusColumn = null;
+			}
+			
+			if (statusColumn == null) {
+				nodeTable.createColumn(ClusterONECytoscapeApp.ATTRIBUTE_STATUS, String.class, false);
+			}
+			
+			int i = 0;
+			for (CyNode node: nodeMapping) {
+				int index = occurrences.get(i);
+				if (index == ObjectIntHashMap.DEFAULT_NOT_FOUND)
+					index = 0;
+				if (index > 2)
+					index = 2;
+				
+				CyRow row = network.getRow(node);
+				if (row != null) {
+					row.set(ClusterONECytoscapeApp.ATTRIBUTE_STATUS, values[index]);
+				}
+				i++;
+			}
+		}
 	}
 	
 	// --------------------------------------------------------------------

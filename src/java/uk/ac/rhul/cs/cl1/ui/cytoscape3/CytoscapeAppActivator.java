@@ -66,10 +66,17 @@ public class CytoscapeAppActivator extends AbstractCyActivator {
 	}
 	
 	/**
-	 * Returns the service registered with the givan class.
+	 * Returns the service registered with the given class.
 	 */
 	public <S> S getService(Class<S> cls) {
 		return this.getService(bundleContext, cls);
+	}
+	
+	/**
+	 * Returns the service registered with the given class.
+	 */
+	public <S> S getService(Class<S> cls, String properties) {
+		return this.getService(bundleContext, cls, properties);
 	}
 	
 	// --------------------------------------------------------------------

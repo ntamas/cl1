@@ -1,30 +1,30 @@
 package uk.ac.rhul.cs.cl1.ui.cytoscape3;
 
-import org.cytoscape.application.swing.AbstractCyAction;
+import javax.swing.JMenu;
+
+import org.cytoscape.application.swing.CyMenuItem;
+import org.cytoscape.application.swing.CyNodeViewContextMenuFactory;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
+
+import uk.ac.rhul.cs.cl1.ClusterONE;
 
 /**
- * Abstract action superclass for ClusterONE-related actions.
+ * Menu factory that creates the ClusterONE-specific menu item for a
+ * Cytoscape node view.
+ * 
  * @author ntamas
- *
  */
-public abstract class AbstractClusterONEAction extends AbstractCyAction {
+public class NodeContextMenuFactory implements CyNodeViewContextMenuFactory {
 
-	/**
-	 * The ClusterONE Cytoscape application.
-	 */
-	protected final ClusterONECytoscapeApp app;
+	private ClusterONECytoscapeApp app;
 	
 	// --------------------------------------------------------------------
 	// Constructors
 	// --------------------------------------------------------------------
-	
-	public AbstractClusterONEAction(ClusterONECytoscapeApp app, String title) {
-		super(title);
-		this.app = app;
-	}
-	
-	public AbstractClusterONEAction(ClusterONECytoscapeApp app, String title, String enableFor) {
-		super(title, app.getApplicationManager(), enableFor, app.getNetworkViewManager());
+
+	public NodeContextMenuFactory(ClusterONECytoscapeApp app) {
 		this.app = app;
 	}
 	
@@ -40,11 +40,15 @@ public abstract class AbstractClusterONEAction extends AbstractCyAction {
 	// Manipulation methods
 	// --------------------------------------------------------------------
 
-	/**
-	 * Installs the action in the Apps menu.
-	 */
-	public void installInMenu() {
-		setPreferredMenu(ClusterONECytoscapeApp.PREFERRED_MENU);
+	public CyMenuItem createMenuItem(CyNetworkView networkView,
+			View<CyNode> nodeView) {
+		JMenu menu = new JMenu(ClusterONE.applicationName);
+		menu.add(new GrowClusterAction(app, nodeView.getModel()));
+		menu.add(app.getGrowClusterAction());
+		
+		app.getGrowClusterAction().updateEnableState();
+		
+		return new CyMenuItem(menu, 1);
 	}
 	
 	// --------------------------------------------------------------------

@@ -5,21 +5,21 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 
-import org.cytoscape.application.events.SetCurrentNetworkEvent;
-import org.cytoscape.application.events.SetCurrentNetworkListener;
+import org.cytoscape.application.swing.ActionEnableSupport;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ui.cytoscape3.ClusterONECytoscapeTask.Result;
 import uk.ac.rhul.cs.cl1.ui.cytoscape3.ClusterONECytoscapeTask.ResultListener;
 
 /**
- * An action that starts ClusterONE by showing it on the Cytoscape control panel.
+ * An action that starts the ClusterONE algorithm.
  * 
  * @author tamas
  */
-public class StartAction extends AbstractClusterONEAction implements ResultListener,
-	SetCurrentNetworkListener {
+public class StartAction extends AbstractClusterONEAction
+implements ResultListener {
 
 	// --------------------------------------------------------------------
 	// Constructors
@@ -29,10 +29,9 @@ public class StartAction extends AbstractClusterONEAction implements ResultListe
 	 * Constructs the action
 	 */
 	public StartAction(ClusterONECytoscapeApp app) {
-		super(app, "Start");
+		super(app, "Start", ActionEnableSupport.ENABLE_FOR_NETWORK_AND_VIEW);
 		installInMenu();
 		this.putValue(AbstractAction.MNEMONIC_KEY, KeyEvent.VK_S);
-		this.setEnabled(app.getCurrentNetwork() != null);
 	}
 	
 	// --------------------------------------------------------------------
@@ -59,8 +58,11 @@ public class StartAction extends AbstractClusterONEAction implements ResultListe
 		
 		/* Get a handle to the control panel */
 		ControlPanel panel = app.getControlPanel();
-		if (panel == null)
+		if (panel == null) {
+			app.showErrorMessage("You must open the Control Panel before starting " +
+					ClusterONE.applicationName);
 			return;
+		}
 		
 		/* Run the algorithm */
 		app.runAlgorithm(networkView, panel.getParameters(), panel.getWeightAttributeName(), this);
@@ -70,33 +72,34 @@ public class StartAction extends AbstractClusterONEAction implements ResultListe
 		if (result == null || result.clusters == null)
 			return;
 		
-		// TODO: set the attributes for the visual style
+		/* Set the status attributes of the graph */
+		result.setStatusAttributes();
 		
 		/* Ensure that the ClusterONE visual styles are registered */
-//		VisualStyleManager.ensureVizMapperStylesRegistered(false);
+		VisualStyleManager vsm = app.getVisualStyleManager();
+		vsm.ensureVizMapperStylesRegistered();
 		
 		/* Set one of the ClusterONE visual styles */
-//		Cytoscape.getVisualMappingManager().setVisualStyle(VisualStyleManager.VISUAL_STYLE_BY_STATUS);
-//		Cytoscape.getVisualMappingManager().applyAppearances();
-//		networkView.redrawGraph(false, true);
+		app.getService(VisualMappingManager.class).setCurrentVisualStyle(
+				vsm.getColorNodesByStatusVisualStyle());
 		
-		/* Add the results panel */
-		CytoscapeResultViewerPanel resultsPanel = new CytoscapeResultViewerPanel(app,
-				task.getNetworkView());
-		resultsPanel.setResult(result);
-		resultsPanel.addToCytoscapeResultPanel();
+		if (task.getNetworkView() != null) {
+			task.getNetworkView().updateView();
+			
+			/* Add the results panel */
+			CytoscapeResultViewerPanel resultsPanel = new CytoscapeResultViewerPanel(app,
+					task.getNetworkView());
+			resultsPanel.setResult(result);
+			resultsPanel.addToCytoscapeResultPanel();
+		}
 	}
 
-	// --------------------------------------------------------------------
-	// Event handlers
-	// --------------------------------------------------------------------
-
-	public void handleEvent(SetCurrentNetworkEvent event) {
-		this.setEnabled(event.getNetwork() != null);
-	}
-	
 	// --------------------------------------------------------------------
 	// Private methods
 	// --------------------------------------------------------------------
 
+	protected void updateEnabledState() {
+		this.setEnabled(app.getCurrentNetwork() != null && app.getControlPanel() != null);
+	}
+	
 }

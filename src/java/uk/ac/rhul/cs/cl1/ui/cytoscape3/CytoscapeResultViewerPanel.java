@@ -34,6 +34,7 @@ import uk.ac.rhul.cs.cl1.ui.NodeSetTableModel;
 import uk.ac.rhul.cs.cl1.ui.PopupMenuTrigger;
 import uk.ac.rhul.cs.cl1.ui.RemoveClusterFromResultAction;
 import uk.ac.rhul.cs.cl1.ui.ResultViewerPanel;
+import uk.ac.rhul.cs.cl1.ui.ShowDetailedResultsAction;
 import uk.ac.rhul.cs.cl1.ui.cytoscape3.ClusterONECytoscapeTask.Result;
 
 /**
@@ -102,6 +103,11 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 	 */
 	protected AbstractAction saveClusterAsCyGroupAction;
 	
+	/**
+	 * The "Show detailed results" action
+	 */
+	protected ShowDetailedResultsAction showDetailedResultsAction;
+	
 	// --------------------------------------------------------------------
 	// Constructor
 	// --------------------------------------------------------------------
@@ -151,6 +157,10 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		this.addAction(new FindAction(this));
 		this.addAction(new SaveClusteringAction(this));
 		this.addAction(new CloseAction(this));
+		
+		/* Fix the icon of the "Show detailed results" action */
+		showDetailedResultsAction.setIconURL(
+				app.getResource(app.getResourcePathName() + "/details.png"));
 	}
 
 	// --------------------------------------------------------------------
@@ -281,8 +291,10 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 	/**
 	 * @inheritDoc
 	 */
-	protected AbstractAction constructShowDetailedResultsAction() {
-		return new ShowDetailedResultsAction(this);
+	@Override
+	protected ShowDetailedResultsAction constructShowDetailedResultsAction() {
+		showDetailedResultsAction = super.constructShowDetailedResultsAction();
+		return showDetailedResultsAction;
 	};
 	
 	/**

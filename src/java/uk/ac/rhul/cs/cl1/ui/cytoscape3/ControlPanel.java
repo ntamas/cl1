@@ -32,6 +32,10 @@ import org.cytoscape.application.swing.CytoPanelState;
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.model.events.NetworkAddedEvent;
+import org.cytoscape.model.events.NetworkAddedListener;
+import org.cytoscape.model.events.NetworkDestroyedEvent;
+import org.cytoscape.model.events.NetworkDestroyedListener;
 
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
@@ -46,7 +50,7 @@ import uk.ac.rhul.cs.cl1.ui.EmptyIcon;
  * @author tamas
  */
 public class ControlPanel extends JPanel implements CytoPanelComponent, PropertyChangeListener,
-	SetCurrentNetworkListener {
+	SetCurrentNetworkListener, NetworkAddedListener, NetworkDestroyedListener {
 	/** Algorithm parameters panel embedded inside the control panel */
 	protected ClusterONEAlgorithmParametersPanel algorithmParametersPanel;
 	
@@ -247,6 +251,8 @@ public class ControlPanel extends JPanel implements CytoPanelComponent, Property
 	 */
 	public void activate() {
 		app.registerService(this, CytoPanelComponent.class);
+		app.registerService(this, NetworkAddedListener.class);
+		app.registerService(this, NetworkDestroyedListener.class);
 		app.registerService(this, SetCurrentNetworkListener.class);
 		
 		CytoPanel cytoPanel = app.getCySwingApplication().getCytoPanel(getCytoPanelName());
@@ -269,6 +275,8 @@ public class ControlPanel extends JPanel implements CytoPanelComponent, Property
 	 */
 	public void deactivate() {
 		app.unregisterService(this, CytoPanelComponent.class);
+		app.unregisterService(this, NetworkAddedListener.class);
+		app.unregisterService(this, NetworkDestroyedListener.class);
 		app.unregisterService(this, SetCurrentNetworkListener.class);
 	}
 	
@@ -301,6 +309,20 @@ public class ControlPanel extends JPanel implements CytoPanelComponent, Property
 	// --------------------------------------------------------------------
 	// SetCurrentNetworkListener implementation
 	// --------------------------------------------------------------------
+	
+	/**
+	 * Called when a new network is added in the application.
+	 */
+	public void handleEvent(NetworkAddedEvent event) {
+		updateWeightAttributeCombo();
+	}
+	
+	/**
+	 * Called when a network is destroyed in the application.
+	 */
+	public void handleEvent(NetworkDestroyedEvent event) {
+		updateWeightAttributeCombo();
+	}
 	
 	/**
 	 * Called when the current network changes in the application.

@@ -8,7 +8,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -33,7 +32,6 @@ import javax.swing.table.TableRowSorter;
 
 import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.cl1.ValuedNodeSet;
-import uk.ac.rhul.cs.cl1.ui.NodeSetTableModel;
 import uk.ac.rhul.cs.utils.StringUtils;
 
 /**
@@ -146,7 +144,7 @@ public class ResultViewerPanel extends JPanel implements TableModelListener {
 	/**
 	 * Constructs the Show Detailed Results action in the top toolbar.
 	 */
-	protected AbstractAction constructShowDetailedResultsAction() {
+	protected ShowDetailedResultsAction constructShowDetailedResultsAction() {
 		return new ShowDetailedResultsAction(this);
 	};
 	

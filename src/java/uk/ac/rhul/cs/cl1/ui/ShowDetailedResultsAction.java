@@ -19,10 +19,7 @@ public class ShowDetailedResultsAction extends AbstractAction {
 		super();
 		this.resultViewer = panel;
 		
-		URL iconUrl = getIconURL();
-		if (iconUrl != null) {
-			this.putValue(AbstractAction.SMALL_ICON, new ImageIcon(iconUrl));
-		}
+		setIconURL(getDefaultIconURL());
 		this.putValue(AbstractAction.SHORT_DESCRIPTION,
 				"Shows or hides the details of each cluster");
 	}
@@ -35,7 +32,15 @@ public class ShowDetailedResultsAction extends AbstractAction {
 			model.setDetailedMode(true);
 	}
 	
-	protected URL getIconURL() {
+	protected URL getDefaultIconURL() {
 		return this.getClass().getResource("../resources/details.png");
+	}
+	
+	public void setIconURL(URL url) {
+		if (url != null) {
+			this.putValue(AbstractAction.SMALL_ICON, new ImageIcon(url));
+		} else {
+			this.putValue(AbstractAction.SMALL_ICON, null);
+		}
 	}
 }
