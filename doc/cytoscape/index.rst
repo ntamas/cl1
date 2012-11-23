@@ -56,7 +56,10 @@ item called **ClusterONE** in the **Plugins** submenu. Now, do the following:
   a new panel called **ClusterONE** to the control panels on the left.
 
 - If your network is weighted, select the name of the weight attribute on the
-  ClusterONE control panel next to **Edge weights**.
+  ClusterONE control panel next to **Edge weights**. If you do not see the
+  desired attribute name, click on the **Refresh** button (|refresh|) next to
+  the combo box.  If you still do not see it, make sure that the attribute is
+  registered in Cytoscape as a numeric attribute and not a string.
 
 - Click on the **Start** button at the bottom of the panel. ClusterONE should
   detect the densely connected regions of your network and list them in a
