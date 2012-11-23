@@ -55,7 +55,7 @@ public class ControlPanel extends JPanel implements CytoPanelComponent, Property
 	protected ClusterONEAlgorithmParametersPanel algorithmParametersPanel;
 	
 	/** Selection info panel embedded inside the control panel */
-//	protected SelectionPropertiesPanel selectionInfoPanel;
+	protected SelectionPropertiesPanel selectionInfoPanel;
 	
 	/** Combobox for selecting the appropriate weight attribute */
 	protected JComboBox weightAttributeCombo;
@@ -80,7 +80,7 @@ public class ControlPanel extends JPanel implements CytoPanelComponent, Property
 		algorithmParametersPanel.setMaximumSize(d);
 		
 		this.add(algorithmParametersPanel);
-//		this.add(constructSelectionInfoPanel());
+		this.add(constructSelectionInfoPanel());
 		this.add(constructButtonPanel());
 		
 		this.add(Box.createVerticalGlue());
@@ -126,10 +126,10 @@ public class ControlPanel extends JPanel implements CytoPanelComponent, Property
 		return algorithmParametersPanel;
 	}
 	
-//	protected JPanel constructSelectionInfoPanel() {
-//		selectionInfoPanel = new SelectionPropertiesPanel(this);
-//		return new CollapsiblePanel(selectionInfoPanel, "Selection info");
-//	}
+	protected JPanel constructSelectionInfoPanel() {
+		selectionInfoPanel = new SelectionPropertiesPanel(this);
+		return new CollapsiblePanel(selectionInfoPanel, "Selection info");
+	}
 	
 	protected JPanel constructButtonPanel() {
 		/* Button panel */
@@ -239,10 +239,10 @@ public class ControlPanel extends JPanel implements CytoPanelComponent, Property
 	 */
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getSource() == algorithmParametersPanel) {
-//			selectionInfoPanel.setQualityFunction(
-//				getParameters().getQualityFunction()
-//			);
-//			selectionInfoPanel.updateNodeSetFromSelection();
+			selectionInfoPanel.setQualityFunction(
+				getParameters().getQualityFunction()
+			);
+			selectionInfoPanel.updateNodeSetFromSelection();
 		}
 	}
 
