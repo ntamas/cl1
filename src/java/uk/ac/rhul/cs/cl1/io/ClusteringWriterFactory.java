@@ -11,16 +11,18 @@ import uk.ac.rhul.cs.utils.StringUtils;
  */
 public class ClusteringWriterFactory {
 	public enum Format {
-		PLAIN("Cluster list", "txt"),
-		CSV("CSV-formatted detailed cluster list", "csv"),
-		GENEPRO("GenePro formatted cluster list", "tab");
+		PLAIN("Cluster list", "txt", "text/plain"),
+		CSV("CSV-formatted detailed cluster list", "csv", "text/csv"),
+		GENEPRO("GenePro formatted cluster list", "tab", "text/tab-separated-values");
 		
 		private String extension;
 		private String name;
+		private String mimeType;
 
-		Format(String name, String extension) {
+		Format(String name, String extension, String mimeType) {
 			this.name = name;
 			this.extension = extension;
+			this.mimeType = mimeType;
 		}
 		
 		public static Format forFile(File file) {
@@ -36,6 +38,10 @@ public class ClusteringWriterFactory {
 		
 		public String getExtension() {
 			return extension;
+		}
+		
+		public String getMimeType() {
+			return mimeType;
 		}
 		
 		public String getName() {

@@ -13,8 +13,6 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.table.AbstractTableModel;
 
-import com.sosnoski.util.hashmap.ObjectIntHashMap;
-
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.CohesivenessFunction;
 import uk.ac.rhul.cs.cl1.NodeSet;
@@ -23,6 +21,8 @@ import uk.ac.rhul.cs.cl1.ValuedNodeSet;
 import uk.ac.rhul.cs.graph.FruchtermanReingoldLayoutAlgorithm;
 import uk.ac.rhul.cs.graph.Graph;
 import uk.ac.rhul.cs.graph.GraphLayoutAlgorithm;
+
+import com.sosnoski.util.hashmap.ObjectIntHashMap;
 
 /**
  * Table model that can be used to show a list of {@link NodeSet} objects
@@ -195,9 +195,6 @@ public class NodeSetTableModel extends AbstractTableModel {
 	 * Returns an icon showing a progress indicator
 	 */
 	private Icon getProgressIcon() {
-		if (this.progressIcon == null) {
-			this.progressIcon = new ImageIcon(this.getClass().getResource("../resources/wait.jpg"));
-		}
 		return this.progressIcon;
 	}
 
@@ -245,6 +242,13 @@ public class NodeSetTableModel extends AbstractTableModel {
 		currentHeaders = detailedMode ? detailedHeaders : simpleHeaders;
 		currentClasses = detailedMode ? detailedClasses : simpleClasses;
 		this.fireTableStructureChanged();
+	}
+	
+	/**
+	 * Sets the icon that shows a progress indicator.
+	 */
+	public void setProgressIcon(Icon value) {
+		this.progressIcon = value;
 	}
 	
 	private void updateNodeSetDetails() {

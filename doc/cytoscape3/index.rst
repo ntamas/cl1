@@ -1,8 +1,8 @@
 .. -*- coding: utf-8 -*-
 
-===========================
-ClusterONE Cytoscape plugin
-===========================
+================================
+ClusterONE Cytoscape application
+================================
 
 :Author: Tamás Nepusz, Haiyuan Yu, Alberto Paccanaro
 :Contact: tamas@cs.rhul.ac.uk
@@ -16,7 +16,7 @@ Introduction
    :alt: ClusterONE logo
    :align: center
 
-This is the documentation of the ClusterONE Cytoscape plugin,
+This is the documentation of the ClusterONE Cytoscape application,
 created by Tamás Nepusz, Haiyuan Yu and Alberto Paccanaro.
 
 If you use results calculated by ClusterONE in a publication,
@@ -30,29 +30,27 @@ The one-minute guide to using ClusterONE
 ========================================
 
 ClusterONE is distributed in a Java archive file (JAR), which contains both
-the command line application and the Cytoscape plugin. In this document, we
+the command line application and the Cytoscape application. In this document, we
 are assuming that you want to use ClusterONE from the Cytoscape graphical
 user interface. If you are interested in the command line interface, please
 refer to the documentation distributed with the command line interface itself.
 
-ClusterONE can be installed from the Cytoscape plugin manager. Launch
-Cytoscape if you have not done so, click on the **Manage plugins** item of the
-**Plugins** menu, select the **Analysis** subgroup within the **Available for
-install** category, select the line starting with **ClusterONE** and click on
-the **Install** button. Cytoscape should download and install the selected
-version of ClusterONE for you. If you see more than one version of Cluster
-ONE, make sure you install the most recent one. If you don't see any Cluster
-ONE version, first check whether you have installed it already (look for a
-menu called **ClusterONE** within the **Plugins** submenu), and if you
-haven't, check the **Show outdated plugins** checkbox in the **Manage plugins**
-dialog.
+ClusterONE can be installed from the Cytoscape app manager. Launch
+Cytoscape if you have not done so, click on the **App Manager** item of the
+**Apps** menu, enter **ClusterONE** into the **Search** text box, select the
+ClusterONE app from the list in the middle, and click on the **Install** button.
+Cytoscape should download and install the selected version of ClusterONE for
+you. If you see more than one version of Cluster ONE, make sure you install the
+most recent one. If you don't see any Cluster ONE version, first check whether
+you have installed it already (look for a menu called **ClusterONE** within the
+**Apps** submenu).
 
 If you managed to install ClusterONE successfully, you should see a new menu
-item called **ClusterONE** in the **Plugins** submenu. Now, do the following:
+item called **ClusterONE** in the **Apps** submenu. Now, do the following:
 
 - Load the network you wish to analyse into Cytoscape.
    
-- Click on **Plugins/ClusterONE/Start** to start ClusterONE. This will add
+- Click on **Apps/ClusterONE/Start** to start ClusterONE. This will add
   a new panel called **ClusterONE** to the control panels on the left.
 
 - If your network is weighted, select the name of the weight attribute on the
@@ -83,7 +81,7 @@ Description of the algorithm
 The ClusterONE menu
 ===================
 
-ClusterONE installs itself into the Plugins menu of Cytoscape under
+ClusterONE installs itself into the Apps menu of Cytoscape under
 a submenu named **ClusterONE**. This submenu has the following items:
 
 **Start**
@@ -95,12 +93,9 @@ a submenu named **ClusterONE**. This submenu has the following items:
     starting from the selected nodes which will be treated as a single seed set.
     For more details about the growth process, please refer to the
     `description of the algorithm`. The resulting cluster will be selected
-    after the growth process is finished. Since the original selection will
-    be lost, you might consider using the **NamedSelection** Cytoscape
-    plugin (available from Plugins -> Manage plugins) to remember the
-    original selection.
+    after the growth process is finished.
 
-    This menu item remains disabled until you start the ClusterONE plugin
+    This menu item remains disabled until you start the ClusterONE app
     using the corresponding menu item.
 
 **Color nodes by affinity**
@@ -119,7 +114,7 @@ a submenu named **ClusterONE**. This submenu has the following items:
     is selected automatically when you click on this menu item, but you can
     always return to your original style in the VizMapper panel of Cytoscape.
 
-    This menu item remains disabled until you start the ClusterONE plugin
+    This menu item remains disabled until you start the ClusterONE app
     using the corresponding menu item.
 
 **Help**
@@ -397,9 +392,8 @@ Toolbar
     main Cytoscape panel.
 
 |save| **Save clustering**
-    Saves the clustering to disk in a file. You can choose between a simple
-    line oriented format where each row corresponds to a single cluster, and
-    the format used by the GenePro plugin.
+    Saves the clustering to disk in a file. You can choose from several
+    clustering formats.
 
 |close| **Close result**
     Closes the result set (i.e. removes its tab from the Results panel of

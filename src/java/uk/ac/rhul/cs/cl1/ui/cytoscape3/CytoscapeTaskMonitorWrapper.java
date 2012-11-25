@@ -1,6 +1,6 @@
-package uk.ac.rhul.cs.cl1.ui.cytoscape;
+package uk.ac.rhul.cs.cl1.ui.cytoscape3;
 
-import cytoscape.task.TaskMonitor;
+import org.cytoscape.work.TaskMonitor;
 
 /**
  * Compatibility wrapper class between Cytoscape's TaskMonitor
@@ -16,29 +16,29 @@ public class CytoscapeTaskMonitorWrapper implements uk.ac.rhul.cs.cl1.TaskMonito
 	 */
 	protected TaskMonitor cytoscapeTaskMonitor;
 
-	public CytoscapeTaskMonitorWrapper(cytoscape.task.TaskMonitor cytoscapeTaskMonitor) {
+	public CytoscapeTaskMonitorWrapper(org.cytoscape.work.TaskMonitor cytoscapeTaskMonitor) {
 		this.cytoscapeTaskMonitor = cytoscapeTaskMonitor;
 	}
 	
 	public void setEstimatedTimeRemaining(long time) {
-		this.cytoscapeTaskMonitor.setEstimatedTimeRemaining(time);
+		// NOP. Not supported by Cytoscape 3.
 	}
 
 	public void setException(Throwable t, String userErrorMessage) {
-		this.cytoscapeTaskMonitor.setException(t, userErrorMessage);
+		// NOP. Not supported by Cytoscape 3.
 	}
 
 	public void setException(Throwable t, String userErrorMessage,
 			String recoveryTip) {
-		this.cytoscapeTaskMonitor.setException(t, userErrorMessage, recoveryTip);
+		// NOP. Not supported by Cytoscape 3.
 	}
 
 	public void setPercentCompleted(int percent)
 			throws IllegalArgumentException {
-		this.cytoscapeTaskMonitor.setPercentCompleted(percent);
+		this.cytoscapeTaskMonitor.setProgress(percent / 100.0);
 	}
 
 	public void setStatus(String message) {
-		this.cytoscapeTaskMonitor.setStatus(message);
+		this.cytoscapeTaskMonitor.setStatusMessage(message);
 	}
 }

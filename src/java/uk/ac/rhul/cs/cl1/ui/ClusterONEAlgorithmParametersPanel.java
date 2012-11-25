@@ -294,7 +294,6 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 		
 		CollapsiblePanel newPanel = constructNewSubpanel(section.getTitle());
 		newPanel.setExpanded(section.isExpanded());
-		
 		double sizes[][] = {
 				{TableLayout.PREFERRED, 10, TableLayout.PREFERRED},
 				{TableLayout.PREFERRED}
@@ -314,7 +313,6 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	 */
 	protected CollapsiblePanel constructNewSubpanel(String title) {
 		CollapsiblePanel newPanel = new CollapsiblePanel(title);
-		// newPanel.setBorder(BorderFactory.createEtchedBorder());
 		return newPanel;
 	}
 	

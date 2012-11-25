@@ -1,0 +1,32 @@
+packageName=@package.name@
+projectName=@ant.project.name@
+version=@package.version@
+
+Extension-Name: ${packageName}
+Implementation-Version: ${version}
+Main-Class: ${packageName}.ui.cmdline.CommandLineApplication
+Cytoscape-Plugin: ${packageName}.ui.cytoscape.CytoscapePlugin
+
+Cytoscape-App-Version: ${version}
+Cytoscape-App-Name: ${projectName}
+Cytoscape-App-Works-With: 3.0
+
+Bundle-Copyright: Copyright (C) Tamas Nepusz (2010-2012). All Rights Reserved.
+Bundle-License:   http://www.opensource.org/licenses/GPL-3.0; \
+                  description="GNU General Public License 3.0"; \
+				  link=http://www.gnu.org/licenses/gpl-3.0-standalone.html
+Bundle-DocURL:    http://paccanarolab.org/cluster-one
+Bundle-Name: ${projectName}
+Bundle-Description: ${projectName} plugin for Cytoscape 3
+Bundle-SymbolicName: ${packageName}.ui.cytoscape3
+Bundle-Version: ${version}
+Bundle-Activator: ${packageName}.ui.cytoscape3.CytoscapeAppActivator
+Bundle-Developers: ntamas@gmail.com
+Bundle-SCM: git@github.com:ntamas/cl1.git
+
+Private-Package: *, !${packageName}.api
+Import-Package: !cytoscape.*, !ding.*, !giny.*, !procope.*, *
+
+-sources: false
+-digests: MD5, SHA-1
+
