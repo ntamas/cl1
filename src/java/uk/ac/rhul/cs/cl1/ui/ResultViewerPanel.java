@@ -4,12 +4,15 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -29,7 +32,6 @@ import javax.swing.table.TableRowSorter;
 
 import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.cl1.ValuedNodeSet;
-import uk.ac.rhul.cs.cl1.ui.NodeSetTableModel;
 import uk.ac.rhul.cs.utils.StringUtils;
 
 /**
@@ -111,7 +113,7 @@ public class ResultViewerPanel extends JPanel implements TableModelListener {
 		topToolBar = new JToolBar();
 		topToolBar.add(countLabel);
 		topToolBar.add(Box.createHorizontalGlue());
-		topToolBar.add(new JToggleButton(new ShowDetailedResultsAction(this)));
+		topToolBar.add(new JToggleButton(constructShowDetailedResultsAction()));
 		topToolBar.setFloatable(false);
 		topToolBar.setRollover(false);
 		topToolBar.setBorderPainted(false);
@@ -129,6 +131,22 @@ public class ResultViewerPanel extends JPanel implements TableModelListener {
 		button.setRolloverEnabled(true);
 		return button;
 	}
+	
+	/**
+	 * Constructs the progress icon that will be shown in the result viewer for
+	 * clusters whose layout is being generated.
+	 */
+	protected Icon constructProgressIcon() {
+		URL url = this.getClass().getResource("../resources/wait.jpg");
+		return (url != null) ? new ImageIcon(url) : new EmptyIcon(32, 32);
+	}
+	
+	/**
+	 * Constructs the Show Detailed Results action in the top toolbar.
+	 */
+	protected ShowDetailedResultsAction constructShowDetailedResultsAction() {
+		return new ShowDetailedResultsAction(this);
+	};
 	
 	/**
 	 * Retrieves all {@link NodeSet} instances in this result viewer.
@@ -223,6 +241,7 @@ public class ResultViewerPanel extends JPanel implements TableModelListener {
 		 * the model is updated (i.e. when switching detailed mode on/off)
 		 */
 		NodeSetTableModel model = new NodeSetTableModel(set);
+		model.setProgressIcon(constructProgressIcon());
 		model.addTableModelListener(this);
 		table.setModel(model);
 		tableChanged(null);

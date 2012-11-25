@@ -21,9 +21,9 @@ public class MannWhitneyTestTest {
 	public void testGetCorrectionFactor() {
 		MannWhitneyTest test;
 		test = new MannWhitneyTest(xA, xB);
-		assertEquals(180, test.getCorrectionFactor());
+		assertEquals(180, test.getCorrectionFactor(), 1e-15);
 		test = new MannWhitneyTest(xC, xD);
-		assertEquals(0, test.getCorrectionFactor());
+		assertEquals(0, test.getCorrectionFactor(), 1e-15);
 		
 	}
 	@Test

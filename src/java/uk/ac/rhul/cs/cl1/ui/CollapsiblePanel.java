@@ -8,6 +8,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URL;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -39,12 +40,12 @@ public class CollapsiblePanel extends JPanel {
 	/**
 	 * Icon to be used in the collapsed state of the panel
 	 */
-	private static ImageIcon collapsedIcon = loadIcon("plus.gif");
+	private Icon collapsedIcon = loadIcon("plus.gif");
 		
 	/**
 	 * Icon to be used in the expanded state of the panel
 	 */
-	private static ImageIcon expandedIcon = loadIcon("minus.gif");
+	private Icon expandedIcon = loadIcon("minus.gif");
 	
 	/**
 	 * Constructs a new collapsible panel with an empty title and a
@@ -147,6 +148,20 @@ public class CollapsiblePanel extends JPanel {
 	}
 	
 	/**
+	 * Returns the icon shown on the panel when it is collapsed.
+	 */
+	public Icon getCollapsedIcon() {
+		return collapsedIcon;
+	}
+	
+	/**
+	 * Returns the icon shown on the panel when it is expanded.
+	 */
+	public Icon getExpandedIcon() {
+		return expandedIcon;
+	}
+	
+	/**
 	 * Returns the component wrapped by this panel
 	 */
 	public JComponent getWrappedComponent() {
@@ -156,7 +171,7 @@ public class CollapsiblePanel extends JPanel {
 	/**
 	 * Loads an icon from the resources corresponding to the panel
 	 */
-	private static ImageIcon loadIcon(String name) {
+	protected ImageIcon loadIcon(String name) {
 		URL url;
 		
 		url = CollapsiblePanel.class.getResource("resources/"+name);
@@ -189,6 +204,22 @@ public class CollapsiblePanel extends JPanel {
 	}
 	
 	/**
+	 * Sets the icon shown when the panel is collapsed.
+	 */
+	public void setCollapsedIcon(Icon icon) {
+		this.collapsedIcon = icon;
+		refreshIcon();
+	}
+	
+	/**
+	 * Sets the icon shown when the panel is expanded.
+	 */
+	public void setExpandedIcon(Icon icon) {
+		this.expandedIcon = icon;
+		refreshIcon();
+	}
+	
+	/**
 	 * Sets the layout of the internally wrapped component
 	 */
 	public void setLayout(LayoutManager mgr) {
@@ -216,6 +247,13 @@ public class CollapsiblePanel extends JPanel {
 	public void setExpanded(boolean expanded) {
 		if (component != null)
 			component.setVisible(expanded);
-		headerLabel.setIcon(expanded ? expandedIcon : collapsedIcon);
+		refreshIcon();
+	}
+	
+	/**
+	 * Refreshes the icon on the panel.
+	 */
+	private void refreshIcon() {
+		headerLabel.setIcon(isExpanded() ? expandedIcon : collapsedIcon);
 	}
 }

@@ -9,6 +9,7 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
+import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ValuedNodeSet;
 import uk.ac.rhul.cs.utils.Pair;
 
@@ -44,7 +45,7 @@ public class StartAction extends CytoscapeAction {
 		
 		if (network == null || network.getNodeCount() == 0) {
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-					"You must select a non-empty network before starting ClusterONE",
+					"You must select a non-empty network before starting " + ClusterONE.applicationName,
 					"Error - no network selected",
 					JOptionPane.ERROR_MESSAGE);
 			return;

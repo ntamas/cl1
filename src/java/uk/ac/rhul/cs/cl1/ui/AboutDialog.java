@@ -6,6 +6,7 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 import javax.swing.BorderFactory;
@@ -27,6 +28,11 @@ import uk.ac.rhul.cs.utils.StringUtils;
  */
 public class AboutDialog extends JDialog implements ActionListener {
 	/**
+	 * Stores whether the contents of the dialog box have been constructed or not.
+	 */
+	private boolean constructed = false;
+	
+	/**
 	 * Constructs an about dialog with the given owner and modality.
 	 * 
 	 * @param owner   the owner of the dialog box
@@ -34,6 +40,25 @@ public class AboutDialog extends JDialog implements ActionListener {
 	 */
 	public AboutDialog(Frame owner, boolean modal) {
 		super(owner, "About ClusterONE", modal);
+	}
+	
+	/**
+	 * Constructs an about dialog with the given owner.
+	 * 
+	 * @param owner   the owner of the dialog box
+	 */
+	public AboutDialog(Frame owner) {
+		this(owner, true);
+	}
+
+	public void actionPerformed(ActionEvent arg0) {
+		dispose();
+	}
+	
+	/**
+	 * Constructs the dialog contents.
+	 */
+	protected void construct() {
 		setResizable(false);
 		
         JPanel contentPane = new JPanel();
@@ -43,7 +68,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 		editorPane.setEditorKit(new HTMLEditorKit());
 		editorPane.setBackground(contentPane.getBackground());
         
-		URL logoURL = this.getClass().getResource("../resources/logo.png");
+		URL logoURL = getLogoResourceURL();
 		String logoCode = "";
 		if (logoURL != null) {
 			logoCode = "<center><img src=\""+logoURL+"\" /></center>";
@@ -51,9 +76,12 @@ public class AboutDialog extends JDialog implements ActionListener {
         
         String textTemplate = null;
         try {
-        	textTemplate = StringUtils.readInputStream(
-        		this.getClass().getResourceAsStream("../resources/about_dialog.txt")
-        	);
+        	InputStream stream = getAboutTextResourceAsStream();
+        	if (stream != null) {
+	        	textTemplate = StringUtils.readInputStream(stream);
+        	} else {
+        		textTemplate = "";
+        	}
         } catch (IOException ex) {
         	textTemplate = "";
         }
@@ -83,18 +111,30 @@ public class AboutDialog extends JDialog implements ActionListener {
         pack();
         
         setSize(420, 320);
+        
+        constructed = true;
 	}
 	
 	/**
-	 * Constructs an about dialog with the given owner.
-	 * 
-	 * @param owner   the owner of the dialog box
+	 * Returns the text of the About box as a resource stream.
 	 */
-	public AboutDialog(Frame owner) {
-		this(owner, true);
+	protected InputStream getAboutTextResourceAsStream() throws IOException {
+		return this.getClass().getResourceAsStream("../resources/about_dialog.txt");
 	}
-
-	public void actionPerformed(ActionEvent arg0) {
-		dispose();
+	
+	/**
+	 * Returns the URL of the resource containing the ClusterONE logo.
+	 */
+	protected URL getLogoResourceURL() {
+		return this.getClass().getResource("../resources/logo.png");
 	}
+	
+	@Override
+	public void setVisible(boolean visible) {
+		if (visible && !constructed)
+			construct();
+		
+		super.setVisible(visible);
+	}
+	
 }
