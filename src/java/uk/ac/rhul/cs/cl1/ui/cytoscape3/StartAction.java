@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
 
 import org.cytoscape.application.swing.ActionEnableSupport;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 
@@ -29,7 +30,7 @@ implements ResultListener {
 	 * Constructs the action
 	 */
 	public StartAction(ClusterONECytoscapeApp app) {
-		super(app, "Start", ActionEnableSupport.ENABLE_FOR_NETWORK_AND_VIEW);
+		super(app, "Start", ActionEnableSupport.ENABLE_FOR_NETWORK);
 		installInMenu();
 		this.putValue(AbstractAction.MNEMONIC_KEY, KeyEvent.VK_S);
 	}
@@ -47,10 +48,10 @@ implements ResultListener {
 	// --------------------------------------------------------------------
 
 	public void actionPerformed(ActionEvent event) {
+		CyNetwork network = app.getCurrentNetwork();
 		CyNetworkView networkView = app.getCurrentNetworkView();
 		
-		if (networkView == null || networkView.getModel() == null ||
-				networkView.getModel().getNodeCount() == 0) {
+		if (network == null || network.getNodeCount() == 0) {
 			app.showErrorMessage("You must select a non-empty network before starting " +
 					ClusterONE.applicationName);
 			return;
@@ -65,7 +66,11 @@ implements ResultListener {
 		}
 		
 		/* Run the algorithm */
-		app.runAlgorithm(networkView, panel.getParameters(), panel.getWeightAttributeName(), this);
+		if (networkView != null) {
+			app.runAlgorithm(networkView, panel.getParameters(), panel.getWeightAttributeName(), this);
+		} else {
+			app.runAlgorithm(network, panel.getParameters(), panel.getWeightAttributeName(), this);
+		}
 	}
 	
 	public void resultsCalculated(ClusterONECytoscapeTask task, Result result) {
@@ -83,15 +88,17 @@ implements ResultListener {
 		app.getService(VisualMappingManager.class).setCurrentVisualStyle(
 				vsm.getColorNodesByStatusVisualStyle());
 		
+		/* Add the results panel */
+		CytoscapeResultViewerPanel resultsPanel;
 		if (task.getNetworkView() != null) {
 			task.getNetworkView().updateView();
-			
-			/* Add the results panel */
-			CytoscapeResultViewerPanel resultsPanel = new CytoscapeResultViewerPanel(app,
-					task.getNetworkView());
-			resultsPanel.setResult(result);
-			resultsPanel.addToCytoscapeResultPanel();
+			resultsPanel = new CytoscapeResultViewerPanel(app, task.getNetworkView());
+		} else {
+			resultsPanel = new CytoscapeResultViewerPanel(app, task.getNetwork());
 		}
+		
+		resultsPanel.setResult(result);
+		resultsPanel.addToCytoscapeResultPanel();
 	}
 
 	// --------------------------------------------------------------------

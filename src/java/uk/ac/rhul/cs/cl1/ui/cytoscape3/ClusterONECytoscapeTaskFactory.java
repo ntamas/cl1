@@ -1,6 +1,7 @@
 package uk.ac.rhul.cs.cl1.ui.cytoscape3;
 
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.task.AbstractNetworkTaskFactory;
 import org.cytoscape.task.AbstractNetworkViewTaskFactory;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskIterator;
@@ -8,12 +9,13 @@ import org.cytoscape.work.TaskIterator;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
 
 /**
- * Task factory that creates a TaskIterator yielding a single ClusterONECytoscapeTask.
+ * Class containing task factories that create TaskIterators yielding
+ * ClusterONECytoscapeTasks from CyNetworks or CyNetworkViews.
  * 
  * @author ntamas
  */
-public class ClusterONECytoscapeTaskFactory extends AbstractNetworkViewTaskFactory {
-
+public class ClusterONECytoscapeTaskFactory {
+	
 	private final ClusterONECytoscapeApp app;
 	
 	/**
@@ -72,19 +74,57 @@ public class ClusterONECytoscapeTaskFactory extends AbstractNetworkViewTaskFacto
 	// Manipulation methods
 	// --------------------------------------------------------------------
 
+	public TaskIterator createTaskIterator(CyNetwork network) {
+		return new ForNetwork().createTaskIterator(network);
+	}
+	
 	public TaskIterator createTaskIterator(CyNetworkView networkView) {
-		CyNetwork network = networkView.getModel();
-		ClusterONECytoscapeTask task = new ClusterONECytoscapeTask();
-		Graph graph = app.convertCyNetworkToGraph(network, weightAttr);
-		task.setGraph(graph);
-		task.setParameters(parameters);
-		task.setNetworkView(networkView);
-		task.setResultListener(resultListener);
-		return new TaskIterator(task);
+		return new ForNetworkView().createTaskIterator(networkView);
 	}
 	
 	// --------------------------------------------------------------------
 	// Private methods
 	// --------------------------------------------------------------------
+	
+	// --------------------------------------------------------------------
+	// ForNetworkView class
+	// --------------------------------------------------------------------
+	
+	/**
+	 * Task factory that creates a TaskIterator yielding a single ClusterONECytoscapeTask
+	 * from a CyNetworkView.
+	 * 
+	 * @author ntamas
+	 */
+	class ForNetworkView extends AbstractNetworkViewTaskFactory {
+		public TaskIterator createTaskIterator(CyNetworkView networkView) {
+			CyNetwork network = networkView.getModel();
+			ClusterONECytoscapeTask task = new ClusterONECytoscapeTask();
+			Graph graph = app.convertCyNetworkToGraph(network, weightAttr);
+			task.setGraph(graph);
+			task.setParameters(parameters);
+			task.setNetworkView(networkView);
+			task.setResultListener(resultListener);
+			return new TaskIterator(task);
+		}
+	}
+
+	/**
+	 * Task factory that creates a TaskIterator yielding a single ClusterONECytoscapeTask
+	 * from a CyNetwork.
+	 * 
+	 * @author ntamas
+	 */
+	class ForNetwork extends AbstractNetworkTaskFactory {
+		public TaskIterator createTaskIterator(CyNetwork network) {
+			ClusterONECytoscapeTask task = new ClusterONECytoscapeTask();
+			Graph graph = app.convertCyNetworkToGraph(network, weightAttr);
+			task.setGraph(graph);
+			task.setNetwork(network);
+			task.setParameters(parameters);
+			task.setResultListener(resultListener);
+			return new TaskIterator(task);
+		}
+	}
 
 }

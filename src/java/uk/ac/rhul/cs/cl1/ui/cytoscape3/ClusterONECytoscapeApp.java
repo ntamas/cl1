@@ -289,6 +289,32 @@ public class ClusterONECytoscapeApp {
 	 * @param weightAttr     edge attribute holding edge weights
 	 * @param listener       the listener to notify when the results are ready
 	 */
+	public void runAlgorithm(CyNetwork network, ClusterONEAlgorithmParameters parameters,
+			String weightAttr, ClusterONECytoscapeTask.ResultListener listener) {
+		networkCache.invalidate(network);
+		if (network == null || network.getEdgeCount() == 0) {
+			showErrorMessage("The selected network contains no edges");
+			return;
+		}
+		
+		ClusterONECytoscapeTaskFactory taskFactory = new ClusterONECytoscapeTaskFactory(this);
+		taskFactory.setParameters(parameters);
+		taskFactory.setWeightAttr(weightAttr);
+		taskFactory.setResultListener(listener);
+		
+		DialogTaskManager taskManager = activator.getService(DialogTaskManager.class);
+		taskManager.execute(taskFactory.createTaskIterator(network));
+	}
+	
+	/**
+	 * Runs ClusterONE with the given parameters on the given Cytoscape network view
+	 * asynchronously in a background thread.
+	 * 
+	 * @param network        the network view we are running the algorithm on
+	 * @param parameters     the algorithm parameters of ClusterONE
+	 * @param weightAttr     edge attribute holding edge weights
+	 * @param listener       the listener to notify when the results are ready
+	 */
 	public void runAlgorithm(CyNetworkView networkView, ClusterONEAlgorithmParameters parameters,
 			String weightAttr, ClusterONECytoscapeTask.ResultListener listener) {
 		CyNetwork network = networkView.getModel();

@@ -27,8 +27,14 @@ import com.sosnoski.util.hashmap.ObjectIntHashMap;
 public class ClusterONECytoscapeTask extends ClusterONE implements Task {
 
 	/**
+	 * The network on which the algorithm is run.
+	 */
+	private CyNetwork network;
+	
+	/**
 	 * The network view that will show the results when the algorithm has
-	 * finished.
+	 * finished. May be null if the algorithm is run on a network without a
+	 * view.
 	 */
 	private CyNetworkView networkView;
 	
@@ -47,6 +53,13 @@ public class ClusterONECytoscapeTask extends ClusterONE implements Task {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Gets the network on which the algorithm is run.
+	 */
+	public CyNetwork getNetwork() {
+		return this.network;
+	}
+	
+	/**
 	 * Gets the network view that will show the results when the algorithm has
 	 * finished.
 	 */
@@ -55,11 +68,24 @@ public class ClusterONECytoscapeTask extends ClusterONE implements Task {
 	}
 	
 	/**
+	 * Sets the network on which the algorithm is run. It will clear the associated
+	 * network view unless it is associated to the same network.
+	 */
+	public void setNetwork(CyNetwork network) {
+		this.network = network;
+		if (this.networkView != null && this.networkView.getModel() != network) {
+			this.networkView = null;
+		}
+	}
+	
+	/**
 	 * Sets the network view that will show the results when the algorithm has
-	 * finished.
+	 * finished. It will also call <code>setNetwork()</code> to set the associated
+	 * network to the network that is shown in the view.
 	 */
 	public void setNetworkView(CyNetworkView networkView) {
 		this.networkView = networkView;
+		this.setNetwork(networkView != null ? networkView.getModel() : null);
 	}
 	
 	/**
@@ -148,7 +174,6 @@ public class ClusterONECytoscapeTask extends ClusterONE implements Task {
 				}
 			}
 			
-			CyNetwork network = networkView.getModel();
 			CyTable nodeTable = network.getDefaultNodeTable();
 			final String[] values = {"Outlier", "Cluster", "Overlap"};
 			

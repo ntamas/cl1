@@ -26,6 +26,10 @@ import org.cytoscape.application.swing.CytoPanelState;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedEvent;
+import org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedListener;
+import org.cytoscape.view.model.events.NetworkViewAddedEvent;
+import org.cytoscape.view.model.events.NetworkViewAddedListener;
 
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.NodeSet;
@@ -44,7 +48,8 @@ import uk.ac.rhul.cs.cl1.ui.cytoscape3.ClusterONECytoscapeTask.Result;
  * @author tamas
  */
 public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
-	CytoPanelComponent, ListSelectionListener {
+	CytoPanelComponent, ListSelectionListener,
+	NetworkViewAddedListener, NetworkViewAboutToBeDestroyedListener {
 	/**
 	 * The ClusterONE Cytoscape application in which this panel lives.
 	 */
@@ -114,23 +119,21 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 
 	/**
 	 * Creates a result viewer panel associated to the given {@link CyNetwork}
-	 * and {@link CyNetworkView}
 	 * 
 	 * It will be assumed that the results shown in this panel were generated
-	 * from the given network, and the given view will be used to update the
-	 * selection based on the current nodeset in the table.
+	 * from the given network, and that there is no network view to adjust when
+	 * a cluster is selected in the table.
 	 * 
-	 * @param app           reference to the global CytoscapeApp object
-	 * @param networkView   a network view that will be used to show the clusters
+	 * @param app       reference to the global CytoscapeApp object
+	 * @param network   the network from which the clusters were generated
 	 */
-	public CytoscapeResultViewerPanel(ClusterONECytoscapeApp app, CyNetworkView networkView) {
+	public CytoscapeResultViewerPanel(ClusterONECytoscapeApp app, CyNetwork network) {
 		super();
+		
 		this.app = app;
+		this.networkRef = new WeakReference<CyNetwork>(network);
 		
 		initializeClusterPopup();
-		
-		this.networkRef = new WeakReference<CyNetwork>(networkView.getModel());
-		this.networkViewRef = new WeakReference<CyNetworkView>(networkView);
 		
 		/* Listen to table selection changes */
 		this.table.getSelectionModel().addListSelectionListener(this);
@@ -143,6 +146,10 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 				}
 			}
 		});
+		
+		/* Listen for network view events */
+		app.registerService(this, NetworkViewAddedListener.class);
+		app.registerService(this, NetworkViewAboutToBeDestroyedListener.class);
 		
 		/* Add popup menu to the cluster selection table */
 		this.table.addMouseListener(new PopupMenuTrigger(clusterPopup));
@@ -161,6 +168,22 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		/* Fix the icon of the "Show detailed results" action */
 		showDetailedResultsAction.setIconURL(
 				app.getResource(app.getResourcePathName() + "/details.png"));
+	}
+
+	/**
+	 * Creates a result viewer panel associated to the given {@link CyNetworkView}
+	 * and its {@link CyNetwork}
+	 * 
+	 * It will be assumed that the results shown in this panel were generated
+	 * from the given network, and the given view will be used to update the
+	 * selection based on the current nodeset in the table.
+	 * 
+	 * @param app           reference to the global CytoscapeApp object
+	 * @param networkView   a network view that will be used to show the clusters
+	 */
+	public CytoscapeResultViewerPanel(ClusterONECytoscapeApp app, CyNetworkView networkView) {
+		this(app, networkView.getModel());
+		this.setNetworkView(networkView);
 	}
 
 	// --------------------------------------------------------------------
@@ -252,6 +275,18 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		return result;
 	}
 
+	protected void setNetworkView(CyNetworkView networkView) {
+		if (networkView == null) {
+			this.networkViewRef = null;
+			return;
+		}
+		
+		if (networkView.getModel() != getNetwork()) {
+			throw new RuntimeException("network view is associated to a different network");
+		}
+		this.networkViewRef = new WeakReference<CyNetworkView>(networkView);
+	}
+	
 	// --------------------------------------------------------------------
 	// Manipulation methods
 	// --------------------------------------------------------------------
@@ -382,7 +417,10 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		CyNetworkUtil.setSelectedState(network, CyNetworkUtil.getConnectingEdges(network, nodes), true);
 		
 		// Redraw the network
-		getNetworkView().updateView();
+		CyNetworkView networkView = this.getNetworkView();
+		if (networkView != null) {
+			networkView.updateView();
+		}
 	}
 	
 	/**
@@ -472,5 +510,34 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 
 	public String getTitle() {
 		return ClusterONE.applicationName + " result " + serialNumber;
+	}
+
+	// --------------------------------------------------------------------
+	// NetworkViewAboutToBeDestroyedListener implementation
+	// --------------------------------------------------------------------
+	
+	public void handleEvent(NetworkViewAboutToBeDestroyedEvent event) {
+		if (this.getNetworkView() != event.getNetworkView())
+			return;
+		
+		// Detach ourselves from the network view
+		this.setNetworkView(null);
+	}
+
+	// --------------------------------------------------------------------
+	// NetworkViewAddedListener implementation
+	// --------------------------------------------------------------------
+	
+	public void handleEvent(NetworkViewAddedEvent event) {
+		if (this.getNetworkView() != null)
+			return;
+		
+		// Attach ourselves to the network view if it corresponds to our
+		// network
+		CyNetworkView newNetworkView = event.getNetworkView();
+		if (this.getNetwork() != null && newNetworkView != null &&
+				newNetworkView.getModel() == this.getNetwork()) {
+			this.setNetworkView(newNetworkView);
+		}
 	}
 }

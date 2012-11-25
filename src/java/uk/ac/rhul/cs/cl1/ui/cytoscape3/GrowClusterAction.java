@@ -145,7 +145,7 @@ public class GrowClusterAction extends AbstractClusterONEAction
 		}
 		
 		CyNetworkView networkView = task.getNetworkView();
-		CyNetwork network = networkView != null ? networkView.getModel() : null;
+		CyNetwork network = task.getNetwork();
 		
 		if (network != null) {
 			CyNetworkUtil.unselectAllNodes(network);
