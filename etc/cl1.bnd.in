@@ -7,10 +7,6 @@ Implementation-Version: ${version}
 Main-Class: ${packageName}.ui.cmdline.CommandLineApplication
 Cytoscape-Plugin: ${packageName}.ui.cytoscape.CytoscapePlugin
 
-Cytoscape-App-Version: ${version}
-Cytoscape-App-Name: ${projectName}
-Cytoscape-App-Works-With: 3.0
-
 Bundle-Copyright: Copyright (C) Tamas Nepusz (2010-2012). All Rights Reserved.
 Bundle-License:   http://www.opensource.org/licenses/GPL-3.0; \
                   description="GNU General Public License 3.0"; \
@@ -25,7 +21,8 @@ Bundle-Developers: ntamas@gmail.com
 Bundle-SCM: git@github.com:ntamas/cl1.git
 
 Private-Package: *, !${packageName}.api
-Import-Package: !cytoscape.*, !ding.*, !giny.*, !procope.*, *
+Import-Package: !cytoscape.*, !ding.*, !giny.*, !procope.*, \
+    org.cytoscape.application;version="[3.0,4)", *
 
 -sources: false
 -digests: MD5, SHA-1

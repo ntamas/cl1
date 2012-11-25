@@ -236,6 +236,7 @@
         <copy file="${etc}/cl1.bnd.in"
 			tofile="${build}/cluster_one-${package.version}.bnd" />
 		<replace file="${build}/cluster_one-${package.version}.bnd">
+            <replacefilter token="@ant.project.name@" value="${ant.project.name}" />
             <replacefilter token="@package.name@" value="${package.name}" />
             <replacefilter token="@package.version@" value="${package.version}" />
         </replace>
