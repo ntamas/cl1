@@ -6,6 +6,7 @@ Extension-Name: ${packageName}
 Implementation-Version: ${version}
 Main-Class: ${packageName}.ui.cmdline.CommandLineApplication
 Cytoscape-Plugin: ${packageName}.ui.cytoscape.CytoscapePlugin
+Cytoscape-API-Compatibility: 3.0
 
 Bundle-Copyright: Copyright (C) Tamas Nepusz (2010-2012). All Rights Reserved.
 Bundle-License:   http://www.opensource.org/licenses/GPL-3.0; \

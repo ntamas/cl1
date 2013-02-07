@@ -95,6 +95,23 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 	}
 	
 	/**
+	 * @return whether it is allowed to remove seed nodes during contraction
+	 */
+	public boolean isKeepInitialSeeds() {
+		return keepInitialSeeds;
+	}
+	
+	/**
+	 * Sets whether it is allowed to remove seed nodes during contraction
+	 * 
+	 * @param keepInitialSeeds  true if seed nodes are always kept within the cluster,
+	 *                          false otherwise
+	 */
+	public void setKeepInitialSeeds(boolean keepInitialSeeds) {
+		this.keepInitialSeeds = keepInitialSeeds;
+	}
+	
+	/**
 	 * Returns the minimum density that must be maintained while growing the cluster
 	 * @return the minimum density
 	 */

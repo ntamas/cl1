@@ -62,6 +62,8 @@ public class CommandLineApplication {
 				debugMode = true;
 			if (cmd.hasOption("fluff"))
 				params.setFluffClusters(true);
+			if (cmd.hasOption("keep-initial-seeds"))
+				params.setKeepInitialSeeds(true);
 			if (cmd.hasOption("haircut"))
 				params.setHaircutThreshold(Double.parseDouble(cmd.getOptionValue("haircut")));
 			if (cmd.hasOption("k-core"))
@@ -83,6 +85,8 @@ public class CommandLineApplication {
 				params.setMinSize(Integer.parseInt(cmd.getOptionValue("min-size")));
 			if (cmd.hasOption("no-fluff"))
 				params.setFluffClusters(false);
+			if (cmd.hasOption("no-keep-initial-seeds"))
+				params.setKeepInitialSeeds(false);
 			if (cmd.hasOption("no-merge"))
 				params.setMergingMethodName("none");
 			if (cmd.hasOption("output-format"))
@@ -227,9 +231,8 @@ public class CommandLineApplication {
 		             .withDescription("specifies the minimum k-core index of clusters")
 		             .withType(Integer.class).hasArg().create());
 		
-		OptionGroup fluffGroup = new OptionGroup();
-		
 		/* fluffing option (advanced) */
+		OptionGroup fluffGroup = new OptionGroup();
 		fluffGroup.addOption(OptionBuilder.withLongOpt("fluff")
 				  .withDescription("fluffs the clusters")
 				  .withType(Boolean.class).create());
@@ -237,6 +240,16 @@ public class CommandLineApplication {
 				  .withDescription("don't fluff the clusters (default)")
 				  .withType(Boolean.class).create());
 		options.addOptionGroup(fluffGroup);
+		
+		/* keep initial seeds option (advanced) */
+		OptionGroup keepInitialSeedsGroup = new OptionGroup();
+		keepInitialSeedsGroup.addOption(OptionBuilder.withLongOpt("keep-initial-seeds")
+				  .withDescription("always keep the initial seed nodes in the cluster")
+				  .withType(Boolean.class).create());
+		keepInitialSeedsGroup.addOption(OptionBuilder.withLongOpt("no-keep-initial-seeds")
+				  .withDescription("allow the initial seed nodes to leave the cluster if needed (default)")
+				  .withType(Boolean.class).create());
+		options.addOptionGroup(keepInitialSeedsGroup);
 		
 		/* merging method option (advanced) */
 		options.addOption(OptionBuilder.withLongOpt("merge-method")

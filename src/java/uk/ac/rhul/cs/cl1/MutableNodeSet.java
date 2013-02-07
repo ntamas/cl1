@@ -174,11 +174,7 @@ public class MutableNodeSet extends NodeSet {
 	 * Freezes the nodeset (i.e. converts it to a non-mutable NodeSet)
 	 */
 	public NodeSet freeze() {
-		NodeSet result = new NodeSet(this.graph);
-		result.members = this.members;
-		result.totalInternalEdgeWeight = this.totalInternalEdgeWeight;
-		result.totalBoundaryEdgeWeight = this.totalBoundaryEdgeWeight;
-		return result;
+		return new NodeSet(this.graph, this.members);
 	}
 	
 	/**

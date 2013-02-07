@@ -72,6 +72,12 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	protected boolean fluffClusters = false;
 	
 	/**
+	 * Whether to keep the initial seed nodes of a cluster within the cluster even
+	 * if their removal would increase the value of the goal function.
+	 */
+	protected boolean keepInitialSeeds = false;
+	
+	/**
 	 * Complex merging method.
 	 * 
 	 * Possible values:
@@ -200,6 +206,17 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	}
 	
 	/**
+	 * Returns whether the initial seed nodes of a cluster are always kept within the
+	 * cluster.
+	 * 
+	 * @return whether the initial seed nodes of a cluster are always kept within the
+	 * cluster.
+	 */
+	public boolean isKeepInitialSeeds() {
+		return keepInitialSeeds;
+	}
+	
+	/**
 	 * Sets the k-core threshold.
 	 * 
 	 * @param  kCoreThreshold  the new k-core threshold
@@ -215,6 +232,16 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	 */
 	public void setFluffClusters(boolean fluffClusters) {
 		this.fluffClusters = fluffClusters;
+	}
+	
+	/**
+	 * Sets whether the initial seed nodes are always kept within the cluster or not.
+	 * 
+	 * @param  keepInitialSeeds  whether the seed nodes are always kept within
+	 *                           the cluster or not.
+	 */
+	public void setKeepInitialSeeds(boolean keepInitialSeeds) {
+		this.keepInitialSeeds = keepInitialSeeds;
 	}
 	
 	/**

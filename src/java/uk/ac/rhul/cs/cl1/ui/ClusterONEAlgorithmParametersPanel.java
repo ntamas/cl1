@@ -16,6 +16,7 @@ import java.util.TreeMap;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -90,6 +91,9 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 	
 	/** Combobox for selecting the similarity function */
 	protected JComboBox similarityCombo;
+	
+	/** Checkbox for storing whether the user wants to keep seed nodes in the cluster */
+	protected JCheckBox keepInitialSeedsCheckBox;
 	
 	/** Merging methods */
 	protected String[] mergingMethods = {"Single-pass", "Multi-pass"};
@@ -214,6 +218,9 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 		
 		/* Seed selection method */
 		seedMethodCombo = addComboBox(Section.ADVANCED, "Seeding method:", seedMethods);
+		
+		/* Keep initial seed nodes */
+		keepInitialSeedsCheckBox = addCheckBox(Section.ADVANCED, "Keep initial seeds:");
 	}
 
 	/**
@@ -244,6 +251,7 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 		result.setHaircutThreshold((Double)haircutThresholdSpinner.getValue());
 		result.setOverlapThreshold((Double)overlapThresholdSpinner.getValue());
 		result.setNodePenalty((Double)nodePenaltySpinner.getValue());
+		result.setKeepInitialSeeds(keepInitialSeedsCheckBox.isSelected());
 		
 		try {
 			if (seedMethodCombo.getSelectedIndex() == 0)
@@ -335,6 +343,22 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 		layout.insertRow(numRows, TableLayout.PREFERRED);
 		subpanel.add(label, "0, "+numRows+", r, c");
 		subpanel.add(component, "2, "+numRows+", l, c");
+	}
+	
+	/**
+	 * Adds a checkbox to the parameters panel.
+	 * 
+	 * This method will also register the panel to listen for changes of the
+	 * state of the checkbox and fire a {@link PropertyChangeEvent} if needed.
+	 * 
+	 * @param section    the section to add the component to
+	 * @param caption    caption of the component in the left column
+	 */
+	public JCheckBox addCheckBox(Section section, String caption) {
+		JCheckBox checkBox = new JCheckBox();
+		this.addComponent(section, caption, checkBox);
+		checkBox.addActionListener(changeManager);
+		return checkBox;
 	}
 	
 	/**
