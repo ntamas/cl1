@@ -3,24 +3,68 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
   <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-  <title>ClusterONE</title>
+  <title>ClusterONEWeb</title>
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
   <script type="text/javascript" src="js/jquery.tablesorter.min.js"></script>
   <script type="text/javascript" src="js/jquery.validate.pack.js"></script>
   <script type="text/javascript" src="js/ajaxupload.js"></script>
+  <script type="text/javascript" src="js/tooltip.js"></script> 
   <script type="text/javascript" src="js/cl1.js"></script>
   <link type="text/css" rel="stylesheet" href="css/screen.css" />
   <link type="text/css" rel="stylesheet" href="css/buttons.css" />
   <link type="text/css" rel="stylesheet" href="css/tablesorter.css" />
+  <link type="text/css" rel="stylesheet" href="css/style.css" />
   <link type="image/x-icon" rel="shortcut icon" href="img/favicon.ico" />
 </head>
 <body>
 
+<div id="fixed"> 
+ 
+<!-- top bar --> 
+ 
+<hr class="mainbody"/> 
+ 
+<div class="mainLinkLeft"> 
+<a href="http://www.rhul.ac.uk" id="logo"><img src="img/rhul.jpg" id="rhullogo" alt="Royal Holloway University of London" /></a> 
+<a href="http://www.rhul.ac.uk/computerscience">Department of Computer Science</a> 
+<!-- <a href="http://www.rhul.ac.uk/biologicalsciences">School of Biological Sciences</a> --> 
+</div> 
+ 
+ 
+<!-- <div class="middle">
+</div> --> 
+ 
+<div class="mainLinkRight"> 
+<div class="greena"> 
+<a href="http://www.paccanarolab.org" >PaccanaroLab</a> 
+</div> 
+</div> 
+ 
+ 
+<div class="bbsrc"><a href="http://bbsrc.co.uk"><img src="img/bbsrc.jpg" id="bbsrc" alt="BBSRC logo"></a></div> 
+ 
+ 
+<hr class="mainbody"/> 
+ 
+<!-- end of top bar --> 
+
 <h1>
-<div class="logo"><img src="img/cl1_logo_64x64.png" width="64" height="64" alt="" /></div>
-ClusterONE
-<div class="subtitle">Clustering with Overlapping Neighbourhood Expansion</div>
+<div class="logo"><img src="img/cl1web_logo_64x64.png" width="64" height="64" alt="" /></div>
+ClusterONEWeb
+<div class="subtitle">A web server implementing <strong>ClusterONE</strong> (<em>Clustering with Overlapping Neighbourhood Expansion</em>)</div>
 </h1>
+
+<div class="references">References</div>
+
+If you use this server, please consider citing at least one of these two publications:
+
+<ul>
+<li>T. Nepusz, H. Yu, and A. Paccanaro. <a href="http://www.nature.com/nmeth/journal/v9/n5/full/nmeth.1938.html">Detecting overlapping protein complexes in protein-protein interaction networks</a>, <em>Nature Methods</em>, <strong>9</strong>, pp. 471-472, 2012. (<a href="http://www.ncbi.nlm.nih.gov/pubmed/22426491">PubMed</a>)</li>
+<li>T. Nepusz, A. E. Romero, and A. Paccanaro. ClusterONEWeb, a web server for predicting protein complexes in PPI networks, <em>in preparation.</em></li>
+</ul>
+
+The source code of this server is free software released under the <a href="http://www.gnu.org/copyleft/gpl.html">GPL v3.0</a> and can be downloaded from <a href="https://github.com/ntamas/cl1">GitHub</a>.
+
 
 <ul id="errors" class="message-container">
 </ul>
@@ -47,16 +91,21 @@ protein2 protein4 weight
   </li>
   <li>
     <div class="title">Set the algorithm parameters</div>
+    <div class="contents">
     <form id="algorithm_parameters" action="">
+      <p>Place the mouse over the question marks to get help on each parameter. The default parameters are recomended for a quick start.</p>
+
       <fieldset>
         <legend>Basic parameters</legend>
         <div>
           <label for="min_size">Minimum cluster size:</label>
           <input class="positive_integer required" id="min_size" name="min_size" value="3" />
+<span class="toolTip" title="Clusters with less than this number of proteins will be not shown (default: 3)">&nbsp;</span>
         </div>
         <div>
           <label for="min_density">Minimum cluster density:</label>
           <input class="number_01 required" id="min_density" name="min_density" value="0.35" />
+<span class="toolTip" title="Clusters with a density lower than this threshold (default: 0.35) will be not shown">&nbsp;</span>
         </div>
       </fieldset>
       <fieldset>
@@ -64,10 +113,7 @@ protein2 protein4 weight
         <div>
           <label for="node_penalty">Node penalty:</label>
           <input class="nonnegative_float required" id="node_penalty" name="node_penalty" value="2" />
-        </div>
-        <div>
-          <label for="haircut_threshold">Haircut threshold:</label>
-          <input class="number_01 required" id="haircut_threshold" name="haircut_threshold" value="0.2" />
+          <span class="toolTip" title="This is the parameter 'p' in the original algorithm. A higher number penalizes the clusters with more proteins (default: 2)">&nbsp;</span>  
         </div>
         <div>
           <label for="merging_method">Merging method:</label>
@@ -75,6 +121,7 @@ protein2 protein4 weight
             <option value="match">Match coefficient</option>
             <option value="meet/min">Meet/min coefficient</option>
           </select>
+          <span class="toolTip" title="Under which criterion two clusters should be merged (default: 'Match coefficient')">&nbsp;</span>
         </div>
         <div>
           <label for="similarity">Similarity function:</label>
@@ -84,10 +131,12 @@ protein2 protein4 weight
             <option value="dice">Dice similarity</option>
             <option value="simpson">Simpson coefficient</option>
           </select>
+          <span class="toolTip" title="Similarity function to compare two clusters and result, eventually, in the merge of them (default: 'Match coefficient')">&nbsp;</span>
         </div>
         <div>
           <label for="overlap_threshold">Overlap threshold:</label>
           <input class="number_01 required" id="overlap_threshold" name="overlap_threshold" value="0.8" />
+          <span class="toolTip" title="Maximum similarity allowed between to clusters to be joined together (default: 0.8)">&nbsp;</span>
         </div>
         <div>
           <label for="seeding_method">Seeding method:</label>
@@ -96,10 +145,10 @@ protein2 protein4 weight
             <option value="every_node">From every node</option>
             <option value="every_edge">From every edge</option>
           </select>
+          <span class="toolTip" title="Method to start a new cluster (default: 'From unused nodes')">&nbsp;</span>
         </div>
       </fieldset>
     </form>
-    <div class="contents">
       <div class="buttons">
         <button id="start-button"><img src="img/start.png" width="16" height="16" alt="" />Start the analysis</button>
       </div>
@@ -107,14 +156,20 @@ protein2 protein4 weight
   </li>
   <li>
     <div class="title">Examine the results</div>
+    <a name="topOfTable"></a>
     <div class="contents">
       <p>Click on the table headers to sort the results.</p>      
-      <div id="results">
-      </div>
       <div class="buttons">
         <button id="download-button"><img src="img/download.png" width="16" height="16" alt="" />Download results</button>
         <button id="print-button"><img src="img/print.png" width="16" height="16" alt="" />Print results</button>
       </div>
+      <div id="results">
+      </div>
+      <!-- <div class="buttons">
+        <button id="download-button"><img src="img/download.png" width="16" height="16" alt="" />Download results</button>
+        <button id="print-button"><img src="img/print.png" width="16" height="16" alt="" />Print results</button>
+      </div> -->
+      <p>Click <a href="#topOfTable">here</a> to go back to the top of the table</p>
     </div>
   </li>
 </ol>
@@ -131,6 +186,6 @@ protein2 protein4 weight
 var frontend = new ClusterONEFrontend();
 -->
 </script>
-
+</div>
 </body>
 </html> 
