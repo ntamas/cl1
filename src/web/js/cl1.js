@@ -166,7 +166,9 @@ ClusterONEFrontend.prototype = {
   /** Event handler invoked when a button was clicked */
   onButtonClicked: function(buttonId, button) {
     if (buttonId == "start-button")
+    {
       return this.startAnalysis();
+    }
  
     if (buttonId == "print-button") {
       if (this.currentResults)
@@ -229,7 +231,7 @@ ClusterONEFrontend.prototype = {
     var settings = this.getDefaultAjaxOptions(this.resultUrl);
     settings.success = function(data, status, req) {
       this.removeMarkers(2);
-      this.addSuccessMarker("Results successfully retrieved.", 2);
+      this.addSuccessMarker("Results successfully retrieved. " + this.resultUrl, 2);
       this.setActiveStep(3);
       this.currentResults = ClusterONEResult.fromJSON(data);
       this.currentResults.render("#results");
@@ -266,14 +268,14 @@ ClusterONEFrontend.prototype = {
         } else {
           $this.show();
         }
-      }/* else {
+      } /*else {
         $contents = $(".contents", $this);
         if (effects && $contents.is(":visible")) {
           $contents.slideUp();
         } else {
           $contents.hide();
         }
-      }*/
+      } */
     });
     
     this.currentStep = activeStep;
@@ -336,7 +338,7 @@ ClusterONEFrontend.prototype = {
     
     this.addProgressMarker("Please wait, running calculations...", 2);
     $.ajax(settings);
-  } 
+  }
 };
 
 /***************************************************************************/
@@ -409,7 +411,7 @@ ClusterONEResult.prototype = {
     ownerDocument = $target.get(0).ownerDocument || null;
     
     $properties = $("<dl></dl>", ownerDocument).addClass("compact");
-    $properties.append("<dt>Number of clusters:</dt>");
+    $properties.append("<br /><br /><dt>Number of clusters:</dt>");
     $properties.append("<dd>"+this.clusters.length+"</dd>");
     $target.append($properties);
     

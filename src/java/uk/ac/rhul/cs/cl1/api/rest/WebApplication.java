@@ -53,7 +53,7 @@ public class WebApplication {
 		cleanupTask = new TimerTask() {
 			public void run() {
 				Calendar cal = Calendar.getInstance();
-				cal.add(Calendar.DATE, -1);
+				cal.add(Calendar.DATE, -7);
 				Date date = cal.getTime();
 				try {
 					datasetStore.removeOlderThan(date);
