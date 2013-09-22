@@ -1,6 +1,11 @@
 .classpath
 .project
 build/
+doc/cmdline/*.html
+doc/cytoscape/*.html
+doc/cytoscape3/*.html
+doc/procope/*.html
+etc/logo/png
 lib/junit*.jar
 *.swp
 cluster_one*.jar
