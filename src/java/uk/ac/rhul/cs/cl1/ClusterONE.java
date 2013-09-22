@@ -35,7 +35,7 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 	public static final String applicationName = "ClusterONE";
 	
 	/** The version number of the application */
-	public static final String version = "1.0";
+	public static final String version = "1.1";
 
 	/** A thread pool used for asynchronous operations within ClusterONE */
 	private static Executor threadPool = null;
