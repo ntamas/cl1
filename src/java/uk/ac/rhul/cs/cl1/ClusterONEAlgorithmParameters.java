@@ -55,7 +55,7 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	/**
 	 * Node penalty.
 	 * 
-	 * When nonzero, each node is assumed to have an extra external weight equal
+	 * When nonzero, each node is assumed to have an extra boundary weight equal
 	 * to this amount, no matter what the other internal nodes are. This can
 	 * be used to account for noise in the initial data; see {@link CohesivenessFunction}
 	 * for more details.

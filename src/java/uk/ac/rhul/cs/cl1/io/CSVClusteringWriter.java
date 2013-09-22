@@ -14,7 +14,7 @@ import uk.ac.rhul.cs.utils.StringUtils;
  * Writes a clustering to a stream in CSV format.
  * 
  * The table will contain some basic statistics about the clusters such as
- * their size, density, internal and external weight etc.
+ * their size, density, internal and boundary weight etc.
  * 
  * @author ntamas
  */
@@ -59,7 +59,7 @@ public class CSVClusteringWriter extends AbstractClusteringWriter {
 		PrintWriter wr = new PrintWriter(stream);
 		String[] parts = {
 				"Cluster", "Size", "Density", "Internal weight",
-				"External weight", "Quality", "P-value", "Members"
+				"Boundary weight", "Quality", "P-value", "Members"
 		};
 		
 		int clusterIndex = 0;
