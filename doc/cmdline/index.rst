@@ -60,12 +60,12 @@ When you are not using the standard input for supplying the input dataset, you
 can use it to detect a protein complex around a pre-defined set of seed nodes
 by setting the seeding method to ``stdin``::
 
-    $ java -jar cluster_one.jar input_data.txt -S stdin
+    $ java -jar cluster_one.jar input_data.txt --seed-method stdin
 
 Alternatively, you can specify a single seed on the command line using the
 ``single`` seeding method::
 
-    $ java -jar cluster_one.jar input_data.txt -S 'single(node1,node2,node3)'
+    $ java -jar cluster_one.jar input_data.txt --seed-method 'single(node1,node2,node3)'
 
 Note that it is usually necessary to enclose arguments containing parentheses
 in single quotes if your shell would otherwise try to interpret the parentheses
