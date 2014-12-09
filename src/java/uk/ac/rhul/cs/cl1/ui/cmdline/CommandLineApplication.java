@@ -14,9 +14,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 
-import uk.ac.rhul.cs.cl1.ClusterONE;
-import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
-import uk.ac.rhul.cs.cl1.ClusterONEException;
+import uk.ac.rhul.cs.cl1.*;
 import uk.ac.rhul.cs.cl1.io.ClusteringWriter;
 import uk.ac.rhul.cs.cl1.io.CSVClusteringWriter;
 import uk.ac.rhul.cs.cl1.io.ClusteringWriterFactory;
@@ -33,6 +31,12 @@ public class CommandLineApplication {
 	
 	/// Whether we are running in debug mode
 	protected boolean debugMode = false;
+
+	/// Whether we are running in profiling mode
+	protected boolean profilingMode = false;
+
+	/// Task monitor that shows the progress of the algorithm on the console
+	protected TaskMonitor taskMonitor = new ConsoleTaskMonitor();
 
 	/// Constructor of the command line entry point to ClusterONE
 	public CommandLineApplication() {
@@ -60,6 +64,8 @@ public class CommandLineApplication {
 			
 			if (cmd.hasOption("debug"))
 				debugMode = true;
+			if (cmd.hasOption("profile"))
+				profilingMode = true;
 			if (cmd.hasOption("fluff"))
 				params.setFluffClusters(true);
 			if (cmd.hasOption("keep-initial-seeds"))
@@ -144,9 +150,16 @@ public class CommandLineApplication {
 					params.getQualityFunction()
 			);
 		}
-		
+
+		// Wait for an Enter key if we are in profiling mode; this gives us
+		// time to launch an external profiler such as JVisualVM
+		if (profilingMode) {
+			waitWithMessage("Press Enter to start reading the input file...");
+		}
+
 		// Read the input file
 		Graph graph = null;
+		long startTime = System.currentTimeMillis();
 		try {
 			graph = loadGraph(cmd.getArgs()[0], inputFormat);
 		} catch (IOException ex) {
@@ -154,11 +167,14 @@ public class CommandLineApplication {
 			return 1;
 		}
 		System.err.println("Loaded graph with "+graph.getNodeCount()+" nodes and "+graph.getEdgeCount()+" edges");
+		if (profilingMode) {
+			System.err.println("Loading took " + (System.currentTimeMillis() - startTime) + " ms");
+		}
 		
 		// Start the algorithm
 		ClusterONE algorithm = new ClusterONE(params);
 		algorithm.setDebugMode(debugMode);
-		algorithm.setTaskMonitor(new ConsoleTaskMonitor());
+		algorithm.setTaskMonitor(taskMonitor);
 		try {
 			algorithm.runOnGraph(graph);
 		} catch (ClusterONEException ex) {
@@ -275,6 +291,10 @@ public class CommandLineApplication {
 		options.addOption(OptionBuilder.withLongOpt("debug")
 				.withDescription("turns on the debug mode").withType(Boolean.class).create());
 		
+		/* profiling mode option (advanced) */
+		options.addOption(OptionBuilder.withLongOpt("profile")
+				.withDescription("turns on the profiling mode").withType(Boolean.class).create());
+		
 		/* skip the merging phase (useful for debugging only) */
 		options.addOption(OptionBuilder.withLongOpt("no-merge")
 				.withDescription("don't merge highly overlapping clusters")
@@ -320,10 +340,28 @@ public class CommandLineApplication {
 			stream = System.in;
 		else
 			stream = new FileInputStream(filename);
-		
+
+		if (reader instanceof TaskMonitorSupport) {
+			((TaskMonitorSupport)reader).setTaskMonitor(taskMonitor);
+		}
+
 		return reader.readGraph(new InputStreamReader(stream, "utf-8"));
 	}
-	
+
+	/**
+	 * Prints a message and waits for the Enter key to be pressed.
+	 *
+	 * @param message  the message to print
+	 */
+	public void waitWithMessage(String message) {
+		System.out.println("Press Enter to start reading the input file...");
+		try {
+			System.in.read();
+		} catch (IOException ex) {
+			System.err.println("IOException while waiting for the Enter key.");
+		}
+	}
+
 	/**
 	 * Starts the command line version of ClusterONE
 	 * 

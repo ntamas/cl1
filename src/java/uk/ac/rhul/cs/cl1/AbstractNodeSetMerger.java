@@ -5,7 +5,7 @@ package uk.ac.rhul.cs.cl1;
  * 
  * @author tamas
  */
-public abstract class AbstractNodeSetMerger implements NodeSetMerger {
+public abstract class AbstractNodeSetMerger implements NodeSetMerger, TaskMonitorSupport {
 	/**
 	 * The task monitor this node set merger will report its progress to.
 	 */

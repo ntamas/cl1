@@ -1,11 +1,8 @@
 package uk.ac.rhul.cs.utils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
+import com.sosnoski.util.hashmap.ObjectIntHashMap;
 import uk.ac.rhul.cs.graph.Graph;
 
 /**
@@ -21,7 +18,7 @@ public class UniqueIDGenerator<K> {
 	/**
 	 * Internal storage for name-ID assignments
 	 */
-	protected Map<K, Integer> map = new HashMap<K, Integer>();
+	protected ObjectIntHashMap map = new ObjectIntHashMap();
 	
 	/**
 	 * The graph this generator is associated with
@@ -45,10 +42,10 @@ public class UniqueIDGenerator<K> {
 	 * @return    the corresponding ID
 	 */
 	public int get(K name) {
-		Integer result = map.get(name);
-		if (result == null) {
+		int result = map.get(name);
+		if (result == ObjectIntHashMap.DEFAULT_NOT_FOUND) {
 			result = graph.createNode(name.toString());
-			map.put(name, result);
+			map.add(name, result);
 		}
 		return result;
 	}
@@ -56,16 +53,17 @@ public class UniqueIDGenerator<K> {
 	/**
 	 * Returns the ID for the given node name (strict variant)
 	 * 
-	 * This one differs from {@link get(K)} by requiring that the given
+	 * This one differs from {@link #get(K)} by requiring that the given
 	 * name already has an associated ID.
 	 * 
 	 * @throw  IllegalStateException   if the given key does not have
 	 *                                 an associated ID
 	 */
 	public int getStrict(K name) {
-		Integer result = map.get(name);
-		if (result == null)
-			throw new IllegalStateException("key not found: "+name.toString());
+		int result = map.get(name);
+		if (result == ObjectIntHashMap.DEFAULT_NOT_FOUND) {
+			throw new IllegalStateException("key not found: " + name.toString());
+		}
 		return result;
 	}
 	
@@ -76,7 +74,13 @@ public class UniqueIDGenerator<K> {
 	 *           state of the ID generator
 	 */
 	public Map<K, Integer> toMap() {
-		Map<K, Integer> result = new TreeMap<K, Integer>(map);
+		Map<K, Integer> result = new TreeMap<K, Integer>();
+		Iterator<?> it = map.iterator();
+		while (it.hasNext())
+		{
+			K key = (K)it.next();
+			result.put(key, map.get(key));
+		}
 		return result;
 	}
 	
@@ -88,10 +92,13 @@ public class UniqueIDGenerator<K> {
 	 */
 	public Map<Integer, K> getReversedMap() {
 		Map<Integer, K> result = new TreeMap<Integer, K>();
-		
-		for (Map.Entry<K, Integer> entry: map.entrySet()) {
-			result.put(entry.getValue(), entry.getKey());
+		Iterator<?> it = map.iterator();
+		while (it.hasNext())
+		{
+			K key = (K)it.next();
+			result.put(map.get(key), key);
 		}
+
 		return result;
 	}
 	
@@ -103,11 +110,17 @@ public class UniqueIDGenerator<K> {
 	 */
 	public List<K> getReversedList() {
 		List<K> result = new ArrayList<K>(map.size());
-		for (int i = 0; i < map.size(); i++)
+		for (int i = 0; i < map.size(); i++) {
 			result.add(null);
-		for (Map.Entry<K, Integer> entry: map.entrySet()) {
-			result.set(entry.getValue(), entry.getKey());
 		}
+
+		Iterator<?> it = map.iterator();
+		while (it.hasNext())
+		{
+			K key = (K)it.next();
+			result.set(map.get(key), key);
+		}
+
 		return result;
 	}
 }

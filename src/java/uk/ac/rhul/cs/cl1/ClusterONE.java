@@ -30,7 +30,7 @@ import uk.ac.rhul.cs.utils.ArrayUtils;
  * 
  * @author Tamas Nepusz <tamas@cs.rhul.ac.uk>
  */
-public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
+public class ClusterONE extends GraphAlgorithm implements Callable<Void>, TaskMonitorSupport {
 	/** The name of the application that will appear on the user interface */
 	public static final String applicationName = "ClusterONE";
 	
@@ -250,6 +250,7 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void> {
 
 	/**
 	 * Sets the task monitor where the algorithm will report its progress
+	 *
 	 * @param monitor    the task monitor to use
 	 */
 	public void setTaskMonitor(TaskMonitor monitor) {
