@@ -93,9 +93,6 @@ public class EdgeListReader implements GraphReader, TaskMonitorSupport {
 		return result;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
 	public void setTaskMonitor(TaskMonitor taskMonitor) {
 		this.taskMonitor = taskMonitor;
 	}
