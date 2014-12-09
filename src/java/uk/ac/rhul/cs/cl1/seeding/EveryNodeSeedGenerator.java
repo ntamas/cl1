@@ -18,11 +18,14 @@ public class EveryNodeSeedGenerator extends SeedGenerator {
 		private int i;
 		/** Maximum node count */
 		private int n;
-		
+		/** A mutable node set that contains no nodes */
+		MutableNodeSet emptyNodeSet;
+
 		/** Constructs the iterator */
 		IteratorImpl() {
 			n = graph.getNodeCount();
 			i = 0;
+			emptyNodeSet = new MutableNodeSet(graph);
 		}
 		
 		/**
@@ -38,7 +41,7 @@ public class EveryNodeSeedGenerator extends SeedGenerator {
 		}
 
 		public MutableNodeSet next() {
-			MutableNodeSet result = new MutableNodeSet(graph);
+			MutableNodeSet result = emptyNodeSet.clone();
 			result.add(i);
 			i++;
 			return result;

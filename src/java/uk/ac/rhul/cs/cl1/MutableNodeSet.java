@@ -78,7 +78,27 @@ public class MutableNodeSet extends NodeSet {
 		this(graph);
 		this.setMembers(members);
 	}
-	
+
+	/**
+	 * Constructs a new mutable nodeset by cloning an existing one.
+	 *
+	 * @param  nodeSet  the nodeset to clone
+	 */
+	private MutableNodeSet(MutableNodeSet nodeSet) {
+		super(nodeSet.graph);
+
+		this.members = new TreeSet<Integer>(nodeSet.members);
+		for (int member: members) {
+			this.memberHashSet.add(member);
+		}
+
+		totalInternalEdgeWeight = nodeSet.totalInternalEdgeWeight;
+		totalBoundaryEdgeWeight = nodeSet.totalBoundaryEdgeWeight;
+
+		inWeights = nodeSet.inWeights.clone();
+		outWeights = nodeSet.outWeights.clone();
+	}
+
 	/**
 	 * Constructs a new mutable nodeset from the given non-mutable nodeset
 	 * 
@@ -96,10 +116,7 @@ public class MutableNodeSet extends NodeSet {
 			inWeights = new double[graph.getNodeCount()];
 		if (outWeights == null)
 			outWeights = new double[graph.getNodeCount()];
-		
-		Arrays.fill(inWeights, 0);
-		Arrays.fill(outWeights, 0);
-		
+
 		for (Edge e: graph) {
 			outWeights[e.source] += e.weight;
 			outWeights[e.target] += e.weight;
@@ -169,7 +186,14 @@ public class MutableNodeSet extends NodeSet {
 		this.memberHashSet.clear();
 		initializeInOutWeights();
 	}
-	
+
+	/**
+	 * Creates a semantically equivalent copy of this MutableNodeSet.
+	 */
+	public MutableNodeSet clone() {
+		return new MutableNodeSet(this);
+	}
+
 	/**
 	 * Freezes the nodeset (i.e. converts it to a non-mutable NodeSet)
 	 */

@@ -63,8 +63,13 @@ public class MaximalCliqueSeedGenerator extends SeedGenerator {
 		 * The thread in which the clique finder runs
 		 */
 		Thread cliqueFinderThread = null;
-		
+
+		/** A mutable node set that contains no nodes */
+		MutableNodeSet emptyNodeSet;
+
 		public IteratorImpl() {
+			emptyNodeSet = new MutableNodeSet(graph);
+
 			cliqueFinder = new BronKerboschMaximalCliqueFinder();
 			cliqueFinder.setGraph(graph);
 			
@@ -90,11 +95,13 @@ public class MaximalCliqueSeedGenerator extends SeedGenerator {
 		}
 
 		public MutableNodeSet next() {
+			MutableNodeSet result = emptyNodeSet.clone();
 			try {
-				return new MutableNodeSet(graph, cliques.take());
+				result.setMembers(cliques.take());
 			} catch (InterruptedException ex) {
 				return null;
 			}
+			return result;
 		}
 	}
 }

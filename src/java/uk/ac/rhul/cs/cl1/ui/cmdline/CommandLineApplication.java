@@ -170,7 +170,13 @@ public class CommandLineApplication {
 		if (profilingMode) {
 			System.err.println("Loading took " + (System.currentTimeMillis() - startTime) + " ms");
 		}
-		
+
+		// Wait for an Enter key if we are in profiling mode; this gives us
+		// time to launch an external profiler such as JVisualVM
+		if (profilingMode) {
+			waitWithMessage("Press Enter to start the algorithm...");
+		}
+
 		// Start the algorithm
 		ClusterONE algorithm = new ClusterONE(params);
 		algorithm.setDebugMode(debugMode);
@@ -354,7 +360,7 @@ public class CommandLineApplication {
 	 * @param message  the message to print
 	 */
 	public void waitWithMessage(String message) {
-		System.out.println("Press Enter to start reading the input file...");
+		System.out.println(message);
 		try {
 			System.in.read();
 		} catch (IOException ex) {

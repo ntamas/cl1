@@ -30,7 +30,7 @@ public class StreamBasedSeedGenerator extends SeedGenerator {
 	 * Delimiters to be used when tokenizing the lines from the stream
 	 */
 	String delimiters = " \t\r\n";
-	
+
 	/**
 	 * Constructs a new seed generator backed by the given stream.
 	 * 
@@ -62,6 +62,9 @@ public class StreamBasedSeedGenerator extends SeedGenerator {
 	 * Internal iterator class that will be used when calling iterator()
 	 */
 	private class IteratorImpl extends SeedIterator {
+		/** A mutable node set that contains no nodes */
+		MutableNodeSet emptyNodeSet;
+
 		/** The current nodeset that will be returned with the next call to next() */
 		MutableNodeSet currentNodeSet = null;
 		
@@ -74,7 +77,10 @@ public class StreamBasedSeedGenerator extends SeedGenerator {
 			for (int i = 0; i < n; i++) {
 				namesToIndices.add(graph.getNodeName(i), i);
 			}
-			
+
+			/* Construct the empty node set */
+			emptyNodeSet = new MutableNodeSet(graph);
+
 			/* Process the first line */
 			processLine();
 		}
@@ -83,8 +89,8 @@ public class StreamBasedSeedGenerator extends SeedGenerator {
 		private void processLine() {
 			do {
 				String line = null;
-				currentNodeSet = new MutableNodeSet(graph);
-				
+				currentNodeSet = emptyNodeSet.clone();
+
 				try {
 					line = reader.readLine();
 				} catch (IOException ex) {

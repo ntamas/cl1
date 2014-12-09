@@ -75,7 +75,10 @@ public class FileBasedSeedGenerator extends SeedGenerator {
 		
 		/** The current nodeset that will be returned with the next call to next() */
 		MutableNodeSet currentNodeSet = null;
-		
+
+		/** A mutable node set that contains no nodes */
+		MutableNodeSet emptyNodeSet;
+
 		/** A map mapping node names to indices */
 		StringIntHashMap namesToIndices = new StringIntHashMap();
 		
@@ -84,6 +87,7 @@ public class FileBasedSeedGenerator extends SeedGenerator {
 		
 		/** Constructs the iterator */
 		public IteratorImpl(String filename) {
+			emptyNodeSet = new MutableNodeSet(graph);
 			unusedNodes = new TreeSet<Integer>();
 			
 			File f = new File(filename);
@@ -116,8 +120,8 @@ public class FileBasedSeedGenerator extends SeedGenerator {
 		}
 		
 		private void processLine() {
-			currentNodeSet = new MutableNodeSet(graph);
-			
+			currentNodeSet = emptyNodeSet.clone();
+
 			if (line == null) { 
 				if (generateUnusedNodesAsSeeds) {
 					/* No more lines in file, return the unused nodes */

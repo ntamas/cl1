@@ -25,12 +25,16 @@ public class EveryEdgeSeedGenerator extends SeedGenerator {
 		
 		/** Number of edges generated so far */
 		private int steps;
-		
+
+		/** A mutable node set that contains no nodes */
+		MutableNodeSet emptyNodeSet;
+
 		/** Constructs the iterator */
 		IteratorImpl() {
 			edgeIt = graph.iterator();
 			steps = 0;
 			totalSteps = graph.getEdgeCount();
+			emptyNodeSet = new MutableNodeSet(graph);
 		}
 
 		/**
@@ -46,7 +50,7 @@ public class EveryEdgeSeedGenerator extends SeedGenerator {
 		}
 
 		public MutableNodeSet next() {
-			MutableNodeSet result = new MutableNodeSet(graph);
+			MutableNodeSet result = emptyNodeSet.clone();
 			Edge edge = edgeIt.next();
 			result.add(edge.source);
 			result.add(edge.target);

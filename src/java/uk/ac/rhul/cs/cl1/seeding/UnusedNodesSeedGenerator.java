@@ -25,6 +25,9 @@ public class UnusedNodesSeedGenerator extends EveryNodeSeedGenerator {
 	 * Internal iterator class that will be used when calling iterator()
 	 */
 	private class IteratorImpl extends SeedIterator {
+		/** A mutable node set that contains no nodes */
+		MutableNodeSet emptyNodeSet;
+
 		/** Queue containing nodes that have not been returned yet */
 		ArrayList<Integer> nodes;
 		/** Nodes that have been used so far */
@@ -38,6 +41,7 @@ public class UnusedNodesSeedGenerator extends EveryNodeSeedGenerator {
 		/** Constructs the iterator */
 		IteratorImpl() {
 			n = graph.getNodeCount();
+			emptyNodeSet = new MutableNodeSet(graph);
 			
 			nodes = new ArrayList<Integer>();
 			for (int i = 0; i < n; i++)
@@ -77,7 +81,7 @@ public class UnusedNodesSeedGenerator extends EveryNodeSeedGenerator {
 		}
 
 		public MutableNodeSet next() {
-			MutableNodeSet result = new MutableNodeSet(graph);
+			MutableNodeSet result = emptyNodeSet.clone();
 			int seedNode = it.next();
 			result.add(seedNode);
 			// this node is used even if it is not part of the final cluster

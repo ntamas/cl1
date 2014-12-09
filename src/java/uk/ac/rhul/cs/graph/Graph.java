@@ -35,12 +35,12 @@ public class Graph implements Iterable<Edge> {
 	 * The list of source nodes for each edge in this graph
 	 */
 	protected IntArray edgesOut = new IntArray();
-	
+
 	/**
 	 * The list of target nodes for each edge in this graph
 	 */
 	protected IntArray edgesIn = new IntArray();
-	
+
 	/**
 	 * The list of weights for each edge in this graph
 	 */

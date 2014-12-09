@@ -209,7 +209,7 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 				
 				// The following condition is necessary to avoid cases when a
 				// node is repeatedly added and removed from the same set.
-				// The addition of 1e-8 counteracts rounding errors.
+				// The addition of 1e-12 counteracts rounding errors.
 				if (affinity < quality + 1e-12)
 					continue;
 				
