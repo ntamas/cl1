@@ -66,6 +66,12 @@
 	<condition property="lib.osgi-core.path" value="${osgi.core.jar}">
 		<available file="${osgi.core.jar}" />
 	</condition>
+	<condition property="tool.rst2html" value="rst2html">
+		<available file="rst2html" filepath="${os.PATH}" />
+	</condition>
+	<condition property="tool.rst2html" value="rst2html.py">
+		<available file="rst2html.py" filepath="${os.PATH}" />
+	</condition>
 
     <!-- Set up the default classpath -->
     <path id="classpath.base">
@@ -87,7 +93,7 @@
     </tstamp>
 
     <!-- Initializes the build tree, creates the necessary directories -->
-    <target name="-init" depends="-cytoscape_warning,-cytoscape3_warning,-procope_warning,-web_warning"
+    <target name="-init" depends="-cytoscape_warning,-cytoscape3_warning,-procope_warning,-rst2html_warning,-web_warning"
             description="Initializes the build process">
         <mkdir dir="${build}" />
         <mkdir dir="${build.java}" />
@@ -105,6 +111,9 @@
     </target>
     <target name="-procope_warning" unless="lib.procope.path">
         <echo message="Procope plugin will not be built: procope_core-${procope.version}.jar not found" level="warning" />
+	</target>
+	<target name="-rst2html_warning" unless="tool.rst2html">
+		<echo message="Documentation will not be built: rst2html or rst2html.py not found." level="warning" />
     </target>
     <target name="-web_warning" unless="lib.jsr311.path">
         <echo message="Web interface will not be built: jsr311-api-${jersey.jsr311.version}.jar not found" level="warning" />
@@ -350,10 +359,10 @@
     </target>
 
     <!-- Command line interface documentation -->
-    <target name="doc_cmdline" description="Builds the command line interface documentation">
+	<target name="doc_cmdline" description="Builds the command line interface documentation" if="tool.rst2html">
         <mkdir dir="${build.doc.cmdline}" />
         <mkdir dir="${build.doc.cmdline}/images" />
-        <exec executable="rst2html">
+		<exec executable="${tool.rst2html}">
             <arg value="${doc}/cmdline/index.rst" />
             <arg value="${build.doc.cmdline}/index.html" />
         </exec>
@@ -364,11 +373,20 @@
         </copy>
     </target>
 
-    <!-- Cytoscape documentation -->
-    <target name="doc_cytoscape" description="Builds the Cytoscape 2.x plugin documentation" if="cytoscape.path">
+	<!-- Cytoscape documentation -->
+	<target name="-doc_cytoscape_check">
+		<condition property="doc_cytoscape_run">
+			<and>
+				<isset property="tool.rst2html" />
+				<isset property="lib.cytoscape.path" />
+			</and>
+		</condition>
+	</target>
+	<target name="doc_cytoscape" description="Builds the Cytoscape 2.x plugin documentation"
+		depends="-doc_cytoscape_check" if="doc_cytoscape_run">
         <mkdir dir="${build.doc.cytoscape}" />
         <mkdir dir="${build.doc.cytoscape}/images" />
-        <exec executable="rst2html">
+		<exec executable="${tool.rst2html}">
             <arg value="${doc}/cytoscape/index.rst" />
             <arg value="${build.doc.cytoscape}/index.html" />
         </exec>
@@ -389,10 +407,19 @@
     </target>
 
     <!-- Cytoscape3 documentation -->
-    <target name="doc_cytoscape3" description="Builds the Cytoscape 3.x plugin documentation" if="cytoscape.path">
+	<target name="-doc_cytoscape3_check">
+		<condition property="doc_cytoscape3_run">
+			<and>
+				<isset property="tool.rst2html" />
+				<isset property="lib.cytoscape3.path" />
+			</and>
+		</condition>
+	</target>
+	<target name="doc_cytoscape3" description="Builds the Cytoscape 3.x plugin documentation"
+		depends="-doc_cytoscape3_check" if="doc_cytoscape3_run">
         <mkdir dir="${build.doc.cytoscape3}" />
         <mkdir dir="${build.doc.cytoscape3}/images" />
-        <exec executable="rst2html">
+		<exec executable="${tool.rst2html}">
             <arg value="${doc}/cytoscape/index.rst" />
             <arg value="${build.doc.cytoscape3}/index.html" />
         </exec>
@@ -413,12 +440,21 @@
     </target>
 
     <!-- ProCope documentation -->
-    <target name="doc_procope" description="Builds the ProCope plugin documentation">
+	<target name="-doc_procope_check">
+		<condition property="doc_procope_run">
+			<and>
+				<isset property="tool.rst2html" />
+				<isset property="procope.path" />
+			</and>
+		</condition>
+	</target>
+	<target name="doc_procope" description="Builds the ProCope plugin documentation"
+		depends="-doc_procope_check" if="doc_procope_run">
 		<mkdir dir="${build.doc.procope}" />
 		<mkdir dir="${build.doc.procope}/images" />
 		<copy file="${doc}/cmdline/description.rst" todir="${build.doc.procope}" />
 		<copy file="${doc}/procope/index.rst" todir="${build.doc.procope}" />
-		<exec executable="rst2html" dir="${build.doc.procope}">
+		<exec executable="${tool.rst2html}" dir="${build.doc.procope}">
             <arg value="index.rst" />
             <arg value="index.html" />
 		</exec>
