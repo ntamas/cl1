@@ -34,9 +34,9 @@
     <property name="build.doc.cmdline" location="${build.doc}/cmdline" />
     <property name="build.doc.cytoscape" location="${build}/java/${package.name.slashed}/ui/cytoscape/help" />
     <property name="build.doc.cytoscape3" location="${build}/java/${package.name.slashed}/ui/cytoscape3/help" />
-	<property name="build.doc.procope" location="${build.doc}/procope" />
+    <property name="build.doc.procope" location="${build.doc}/procope" />
 
-	<property name="tool.bnd.path" location="${lib}/bnd-2.0.0.jar" />
+    <property name="tool.bnd.path" location="${lib}/bnd-2.0.0.jar" />
     
     <!-- Access to environment -->
     <property environment="os" />
@@ -46,7 +46,7 @@
         <available file="${cytoscape.path}/cytoscape.jar" />
     </condition>
     <condition property="lib.cytoscape3.path" value="${cytoscape3.api.jar}">
-		<available file="${cytoscape3.api.jar}" />
+        <available file="${cytoscape3.api.jar}" />
     </condition>
     <condition property="lib.procope.path" value="${procope.path}/lib/procope_core-${procope.version}.jar">
         <available file="${procope.path}/lib/procope_core-${procope.version}.jar" />
@@ -62,16 +62,16 @@
     </condition>
     <condition property="lib.jersey-multipart.path" value="${jersey.path}/contribs/jersey-multipart-${jersey.version}.jar">
         <available file="${jersey.path}/contribs/jersey-multipart-${jersey.version}.jar" />
-	</condition>
-	<condition property="lib.osgi-core.path" value="${osgi.core.jar}">
-		<available file="${osgi.core.jar}" />
-	</condition>
-	<condition property="tool.rst2html" value="rst2html">
-		<available file="rst2html" filepath="${os.PATH}" />
-	</condition>
-	<condition property="tool.rst2html" value="rst2html.py">
-		<available file="rst2html.py" filepath="${os.PATH}" />
-	</condition>
+    </condition>
+    <condition property="lib.osgi-core.path" value="${osgi.core.jar}">
+        <available file="${osgi.core.jar}" />
+    </condition>
+    <condition property="tool.rst2html" value="rst2html">
+        <available file="rst2html" filepath="${os.PATH}" />
+    </condition>
+    <condition property="tool.rst2html" value="rst2html.py">
+        <available file="rst2html.py" filepath="${os.PATH}" />
+    </condition>
 
     <!-- Set up the default classpath -->
     <path id="classpath.base">
@@ -84,8 +84,8 @@
         <pathelement location="${lib.jsr311.path}" />
         <pathelement location="${lib.jersey-core.path}" />
         <pathelement location="${lib.jersey-json.path}" />
-		<pathelement location="${lib.jersey-multipart.path}" />
-		<pathelement location="${lib.osgi-core.path}" />
+        <pathelement location="${lib.jersey-multipart.path}" />
+        <pathelement location="${lib.osgi-core.path}" />
     </path>
 
     <tstamp>
@@ -111,9 +111,9 @@
     </target>
     <target name="-procope_warning" unless="lib.procope.path">
         <echo message="Procope plugin will not be built: procope_core-${procope.version}.jar not found" level="warning" />
-	</target>
-	<target name="-rst2html_warning" unless="tool.rst2html">
-		<echo message="Documentation will not be built: rst2html or rst2html.py not found." level="warning" />
+    </target>
+    <target name="-rst2html_warning" unless="tool.rst2html">
+        <echo message="Documentation will not be built: rst2html or rst2html.py not found." level="warning" />
     </target>
     <target name="-web_warning" unless="lib.jsr311.path">
         <echo message="Web interface will not be built: jsr311-api-${jersey.jsr311.version}.jar not found" level="warning" />
@@ -209,7 +209,7 @@
         </javac>
         <copy file="${etc}/web/web.xml.in" tofile="${build.webinf}/web.xml" />
         <replace file="${build.webinf}/web.xml">
-			<replacefilter token="@ant.project.name@" value="${ant.project.name}" />
+            <replacefilter token="@ant.project.name@" value="${ant.project.name}" />
             <replacefilter token="@package.name@" value="${package.name}" />
             <replacefilter token="@package.version@" value="${package.version}" />
         </replace>
@@ -240,24 +240,24 @@
     </target>
  
     <!-- Creates the JAR file -->
-	<target name="jar" depends="compile,doc,-copy_resources" description="Creates the JAR file">
-		<taskdef resource="aQute/bnd/ant/taskdef.properties" classpath="${tool.bnd.path}" />
+    <target name="jar" depends="compile,doc,-copy_resources" description="Creates the JAR file">
+        <taskdef resource="aQute/bnd/ant/taskdef.properties" classpath="${tool.bnd.path}" />
         <copy file="${etc}/cl1.bnd.in"
-			tofile="${build}/cluster_one-${package.version}.bnd" />
-		<replace file="${build}/cluster_one-${package.version}.bnd">
+            tofile="${build}/cluster_one-${package.version}.bnd" />
+        <replace file="${build}/cluster_one-${package.version}.bnd">
             <replacefilter token="@ant.project.name@" value="${ant.project.name}" />
             <replacefilter token="@package.name@" value="${package.name}" />
             <replacefilter token="@package.version@" value="${package.version}" />
         </replace>
-		<bnd
-			classpath="${build.java}:${lib}/tclib.jar:${lib}/commons-cli-1.2.jar:${lib}/tablelayout.jar"
-			sourcepath="${src.java}" eclipse="false"
-			files="${build}/cluster_one-${package.version}.bnd"
-			output="cluster_one-${package.version}.jar" />
+        <bnd
+            classpath="${build.java}:${lib}/tclib.jar:${lib}/commons-cli-1.2.jar:${lib}/tablelayout.jar"
+            sourcepath="${src.java}" eclipse="false"
+            files="${build}/cluster_one-${package.version}.bnd"
+            output="cluster_one-${package.version}.jar" />
 
-		<!-- Old version that builds the JAR using Ant's built-in JAR task.
-			 This is not suitable for OSGi bundles -->
-		<!--
+        <!-- Old version that builds the JAR using Ant's built-in JAR task.
+             This is not suitable for OSGi bundles -->
+        <!--
         <jar destfile="cluster_one-${package.version}.jar" basedir="${build.java}"
              excludes="**/api/**/*.class">
             <zipfileset src="lib/tclib.jar" includes="**/*.class" />
@@ -269,20 +269,20 @@
                 <attribute name="Implementation-Version" value="${package.version}" />
                 <attribute name="Main-Class" value="${package.name}.ui.cmdline.CommandLineApplication" />
                 <attribute name="Cytoscape-Plugin" value="${package.name}.ui.cytoscape.CytoscapePlugin" />
-				<attribute name="Cytoscape-App-Version" value="${package.version}" />
-				<attribute name="Cytoscape-App-Name" value="${ant.project.name}" />
-				<attribute name="Cytoscape-App-Works-With" value="3.0" />
+                <attribute name="Cytoscape-App-Version" value="${package.version}" />
+                <attribute name="Cytoscape-App-Name" value="${ant.project.name}" />
+                <attribute name="Cytoscape-App-Works-With" value="3.0" />
 
-				<attribute name="Bundle-ManifestVersion" value="2" />
-				<attribute name="Bundle-Name" value="ClusterONE plugin for Cytoscape 3" />
-				<attribute name="Bundle-SymbolicName" value="${package.name}.ui.cytoscape3" />
-				<attribute name="Bundle-Version" value="${package.version}" />
-				<attribute name="Bundle-Activator" value="${package.name}.ui.cytoscape3.CytoscapeAppActivator" />
-				<attribute name="Import-Package"
-					value="javax.help,javax.swing,javax.swing.event,org.cytoscape.application;version=&quot;[3.0,4)&quot;,org.cytoscape.application.swing;version=&quot;[3.0,4)&quot;,org.cytoscape.service.util;version=&quot;[3.0,4)&quot;,org.cytoscape.model;version=&quot;[3.0,4)&quot;,org.cytoscape.task;version=&quot;[3.0,4)&quot;,org.cytoscape.view.model;version=&quot;[3.0,4)&quot;,org.cytoscape.work;version=&quot;[3.0,4)&quot;" />
+                <attribute name="Bundle-ManifestVersion" value="2" />
+                <attribute name="Bundle-Name" value="ClusterONE plugin for Cytoscape 3" />
+                <attribute name="Bundle-SymbolicName" value="${package.name}.ui.cytoscape3" />
+                <attribute name="Bundle-Version" value="${package.version}" />
+                <attribute name="Bundle-Activator" value="${package.name}.ui.cytoscape3.CytoscapeAppActivator" />
+                <attribute name="Import-Package"
+                    value="javax.help,javax.swing,javax.swing.event,org.cytoscape.application;version=&quot;[3.0,4)&quot;,org.cytoscape.application.swing;version=&quot;[3.0,4)&quot;,org.cytoscape.service.util;version=&quot;[3.0,4)&quot;,org.cytoscape.model;version=&quot;[3.0,4)&quot;,org.cytoscape.task;version=&quot;[3.0,4)&quot;,org.cytoscape.view.model;version=&quot;[3.0,4)&quot;,org.cytoscape.work;version=&quot;[3.0,4)&quot;" />
             </manifest>
-		</jar>
-		-->
+        </jar>
+        -->
     </target>
     
     <!-- Creates the WAR file -->
@@ -339,7 +339,7 @@
 
     <!-- Tests the whole thing -->
     <target name="test" depends="compile, compile_tests" description="Runs JUnit tests in the distribution">
-        <junit printsummary="yes" fork="yes" haltonfailure="yes">
+        <junit printsummary="yes" fork="yes" failureproperty="tests.failed">
             <classpath>
                 <path refid="classpath.base" />
                 <pathelement location="${build.java.tests}" />
@@ -351,18 +351,19 @@
 
             <batchtest todir="${reports}">
                 <fileset dir="${build.java.tests}">
-                    <include name="**/*Test*.class" />
+                    <include name="**/*Test.class" />
                     <exclude name="**/AllTests.class" />
                 </fileset>
             </batchtest>
         </junit>
+        <fail message="Test failure detected, check test results" if="tests.failed" />
     </target>
 
     <!-- Command line interface documentation -->
-	<target name="doc_cmdline" description="Builds the command line interface documentation" if="tool.rst2html">
+    <target name="doc_cmdline" description="Builds the command line interface documentation" if="tool.rst2html">
         <mkdir dir="${build.doc.cmdline}" />
         <mkdir dir="${build.doc.cmdline}/images" />
-		<exec executable="${tool.rst2html}">
+        <exec executable="${tool.rst2html}">
             <arg value="${doc}/cmdline/index.rst" />
             <arg value="${build.doc.cmdline}/index.html" />
         </exec>
@@ -373,20 +374,20 @@
         </copy>
     </target>
 
-	<!-- Cytoscape documentation -->
-	<target name="-doc_cytoscape_check">
-		<condition property="doc_cytoscape_run">
-			<and>
-				<isset property="tool.rst2html" />
-				<isset property="lib.cytoscape.path" />
-			</and>
-		</condition>
-	</target>
-	<target name="doc_cytoscape" description="Builds the Cytoscape 2.x plugin documentation"
-		depends="-doc_cytoscape_check" if="doc_cytoscape_run">
+    <!-- Cytoscape documentation -->
+    <target name="-doc_cytoscape_check">
+        <condition property="doc_cytoscape_run">
+            <and>
+                <isset property="tool.rst2html" />
+                <isset property="lib.cytoscape.path" />
+            </and>
+        </condition>
+    </target>
+    <target name="doc_cytoscape" description="Builds the Cytoscape 2.x plugin documentation"
+        depends="-doc_cytoscape_check" if="doc_cytoscape_run">
         <mkdir dir="${build.doc.cytoscape}" />
         <mkdir dir="${build.doc.cytoscape}/images" />
-		<exec executable="${tool.rst2html}">
+        <exec executable="${tool.rst2html}">
             <arg value="${doc}/cytoscape/index.rst" />
             <arg value="${build.doc.cytoscape}/index.html" />
         </exec>
@@ -407,19 +408,19 @@
     </target>
 
     <!-- Cytoscape3 documentation -->
-	<target name="-doc_cytoscape3_check">
-		<condition property="doc_cytoscape3_run">
-			<and>
-				<isset property="tool.rst2html" />
-				<isset property="lib.cytoscape3.path" />
-			</and>
-		</condition>
-	</target>
-	<target name="doc_cytoscape3" description="Builds the Cytoscape 3.x plugin documentation"
-		depends="-doc_cytoscape3_check" if="doc_cytoscape3_run">
+    <target name="-doc_cytoscape3_check">
+        <condition property="doc_cytoscape3_run">
+            <and>
+                <isset property="tool.rst2html" />
+                <isset property="lib.cytoscape3.path" />
+            </and>
+        </condition>
+    </target>
+    <target name="doc_cytoscape3" description="Builds the Cytoscape 3.x plugin documentation"
+        depends="-doc_cytoscape3_check" if="doc_cytoscape3_run">
         <mkdir dir="${build.doc.cytoscape3}" />
         <mkdir dir="${build.doc.cytoscape3}/images" />
-		<exec executable="${tool.rst2html}">
+        <exec executable="${tool.rst2html}">
             <arg value="${doc}/cytoscape/index.rst" />
             <arg value="${build.doc.cytoscape3}/index.html" />
         </exec>
@@ -440,27 +441,27 @@
     </target>
 
     <!-- ProCope documentation -->
-	<target name="-doc_procope_check">
-		<condition property="doc_procope_run">
-			<and>
-				<isset property="tool.rst2html" />
-				<isset property="procope.path" />
-			</and>
-		</condition>
-	</target>
-	<target name="doc_procope" description="Builds the ProCope plugin documentation"
-		depends="-doc_procope_check" if="doc_procope_run">
-		<mkdir dir="${build.doc.procope}" />
-		<mkdir dir="${build.doc.procope}/images" />
-		<copy file="${doc}/cmdline/description.rst" todir="${build.doc.procope}" />
-		<copy file="${doc}/procope/index.rst" todir="${build.doc.procope}" />
-		<exec executable="${tool.rst2html}" dir="${build.doc.procope}">
+    <target name="-doc_procope_check">
+        <condition property="doc_procope_run">
+            <and>
+                <isset property="tool.rst2html" />
+                <isset property="procope.path" />
+            </and>
+        </condition>
+    </target>
+    <target name="doc_procope" description="Builds the ProCope plugin documentation"
+        depends="-doc_procope_check" if="doc_procope_run">
+        <mkdir dir="${build.doc.procope}" />
+        <mkdir dir="${build.doc.procope}/images" />
+        <copy file="${doc}/cmdline/description.rst" todir="${build.doc.procope}" />
+        <copy file="${doc}/procope/index.rst" todir="${build.doc.procope}" />
+        <exec executable="${tool.rst2html}" dir="${build.doc.procope}">
             <arg value="index.rst" />
             <arg value="index.html" />
-		</exec>
-		<delete>
-			<fileset dir="${build.doc.procope}" includes="*.rst" />
-		</delete>
+        </exec>
+        <delete>
+            <fileset dir="${build.doc.procope}" includes="*.rst" />
+        </delete>
         <copy todir="${build.doc.cmdline}/images">
             <fileset dir="${doc}/images">
                 <include name="*.*" />
