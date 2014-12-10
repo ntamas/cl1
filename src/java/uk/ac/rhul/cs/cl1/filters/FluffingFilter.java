@@ -46,18 +46,18 @@ public class FluffingFilter implements NodeSetFilter {
 			int minCount = (int)Math.floor(2.0 * nodeSet.size() / 3.0);
 			SortedSet<Integer> members = nodeSet.getMembers();
 			toAdd.clear();
-			
-			for (int i: nodeSet.getExternalBoundaryNodeIterator()) {
+
+			for (int node: nodeSet.getExternalBoundaryNodes().toArray()) {
 				int[] neis =
-					graph.getAdjacentNodeIndicesArray(i, Directedness.ALL);
+					graph.getAdjacentNodeIndicesArray(node, Directedness.ALL);
 				
 				int intersectionSize = 0;
-				for (int j: neis)
-					if (members.contains(j))
+				for (int neighbor: neis)
+					if (members.contains(neighbor))
 						intersectionSize++;
 				
 				if (intersectionSize >= minCount)
-					toAdd.add(i);
+					toAdd.add(node);
 			}
 			
 			nodeSet.add(toAdd.toArray());

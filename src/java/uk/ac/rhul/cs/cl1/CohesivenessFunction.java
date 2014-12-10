@@ -74,7 +74,8 @@ public class CohesivenessFunction implements QualityFunction {
 		
 		num = nodeSet.totalInternalEdgeWeight + nodeSet.inWeights[index];
 		den = nodeSet.totalInternalEdgeWeight + nodeSet.totalBoundaryEdgeWeight +
-		      nodeSet.outWeights[index] + (nodeSet.size() + 1) * penalty;
+				(nodeSet.totalWeights[index] - nodeSet.inWeights[index]) +
+				(nodeSet.size() + 1) * penalty;
 		
 		return num/den;
 	}
@@ -94,8 +95,9 @@ public class CohesivenessFunction implements QualityFunction {
 		
 		num = nodeSet.totalInternalEdgeWeight - nodeSet.inWeights[index];
 		den = nodeSet.totalInternalEdgeWeight + nodeSet.totalBoundaryEdgeWeight -
-		      nodeSet.outWeights[index] + (nodeSet.size() - 1) * penalty;
-		
+				(nodeSet.totalWeights[index] - nodeSet.inWeights[index]) +
+				(nodeSet.size() - 1) * penalty;
+
 		return num/den;
 	}
 }

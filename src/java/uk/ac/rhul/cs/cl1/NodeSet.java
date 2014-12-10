@@ -530,16 +530,17 @@ public class NodeSet implements Iterable<Integer>, Intersectable<NodeSet>, Sized
 	/**
 	 * Returns a set of all the external boundary nodes of this set
 	 */
-	public Set<Integer> getExternalBoundaryNodeIterator() {
-		IntHashSet memberSet = this.getMemberHashSet();
-		Set<Integer> result = new TreeSet<Integer>();
-		
+	public IntArray getExternalBoundaryNodes() {
+		IntHashSet seen = new IntHashSet(this.getMemberHashSet());
+		IntArray result = new IntArray();
+
 		for (int i: members) {
 			int[] edgeIdxs = this.graph.getAdjacentEdgeIndicesArray(i, Directedness.ALL);
 			for (int edgeIdx: edgeIdxs) {
 				int endpoint = this.graph.getEdgeEndpoint(edgeIdx, i);
-				if (!memberSet.contains(endpoint)) {
-					/* This is an external boundary node */
+				if (!seen.contains(endpoint)) {
+					/* This is an external boundary node that we haven't seen yet */
+					seen.add(endpoint);
 					result.add(endpoint);
 				}
 			}

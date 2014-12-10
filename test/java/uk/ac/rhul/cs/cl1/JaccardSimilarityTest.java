@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class JaccardSimilarityTest extends SimilarityTest {
+public class JaccardSimilarityTest extends SimilarityTestBase {
 	@Test
 	public void testGetSimilarity() {
 		JaccardSimilarity<Set> sim = new JaccardSimilarity<Set>();

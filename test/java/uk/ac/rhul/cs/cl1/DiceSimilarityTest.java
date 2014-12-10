@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class DiceSimilarityTest extends SimilarityTest {
+public class DiceSimilarityTest extends SimilarityTestBase {
 	@Test
 	public void testGetSimilarity() {
 		DiceSimilarity<Set> sim = new DiceSimilarity<Set>();

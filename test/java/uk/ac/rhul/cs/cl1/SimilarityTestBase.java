@@ -8,7 +8,7 @@ import java.util.HashSet;
  * 
  * @author tamas
  */
-public class SimilarityTest {
+public class SimilarityTestBase {
 	class Set extends HashSet<Integer> implements Sized, Intersectable<Set> {
 		public Set() {
 			super();

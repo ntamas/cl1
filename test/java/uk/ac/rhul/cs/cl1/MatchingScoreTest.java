@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class MatchingScoreTest extends SimilarityTest {
+public class MatchingScoreTest extends SimilarityTestBase {
 	@Test
 	public void testGetSimilarity() {
 		MatchingScore<Set> sim = new MatchingScore<Set>();

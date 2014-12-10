@@ -32,19 +32,23 @@ public class MutableNodeSet extends NodeSet {
 	 * Auxiliary array used when adding/removing nodes
 	 * 
 	 * For nodes within the set, this array stores the total weight of internal
-	 * edges adjacent to the node. For nodes outside the set, this array stores
-	 * the total weight of boundary edges adjacent to the node.
+	 * edges incident on the node. For nodes outside the set, this array stores
+	 * the total weight of boundary edges incident on the node.
 	 */
 	protected double[] inWeights = null;
 	
 	/**
-	 * Auxiliary array used when adding/removing nodes
-	 * 
-	 * For nodes within the set, this array stores the total weight of boundary
-	 * edges adjacent to the node. For nodes outside the set, this array stores
-	 * the total weight of external edges adjacent to the node.
+	 * Stores the total weight of each node, i.e. the sum of all the weights
+	 * incident on the given node. This array is useful because it holds that:
+	 *
+	 * <ul>
+	 *     <li>For nodes within the set, this array stores the total weight
+	 *     of <em>boundary</em> edges incident on the node.</li>
+	 *     <li>For nodes outside the set, this array stores the total weight
+	 *     of <em>external</em> edges incident on the node.</li>
+	 * </ul>
 	 */
-	protected double[] outWeights = null;
+	protected double[] totalWeights = null;
 	
 	/**
 	 * Constructs a new, empty mutable nodeset on the given graph.
@@ -54,7 +58,7 @@ public class MutableNodeSet extends NodeSet {
 	public MutableNodeSet(Graph graph) {
 		super(graph);
 		this.members = new TreeSet<Integer>();
-		initializeInOutWeights();
+		initializeInAndTotalWeights();
 	}
 	
 	/**
@@ -96,7 +100,7 @@ public class MutableNodeSet extends NodeSet {
 		totalBoundaryEdgeWeight = nodeSet.totalBoundaryEdgeWeight;
 
 		inWeights = nodeSet.inWeights.clone();
-		outWeights = nodeSet.outWeights.clone();
+		totalWeights = nodeSet.totalWeights; // .clone();
 	}
 
 	/**
@@ -108,18 +112,22 @@ public class MutableNodeSet extends NodeSet {
 		this(nodeSet.getGraph(), nodeSet.getMembers());
 	}
 	
-	protected void initializeInOutWeights() {
+	protected void initializeInAndTotalWeights() {
 		totalInternalEdgeWeight = 0.0;
 		totalBoundaryEdgeWeight = 0.0;
 		
-		if (inWeights == null)
+		if (inWeights == null) {
 			inWeights = new double[graph.getNodeCount()];
-		if (outWeights == null)
-			outWeights = new double[graph.getNodeCount()];
+		} else {
+			Arrays.fill(inWeights, 0.0);
+		}
 
-		for (Edge e: graph) {
-			outWeights[e.source] += e.weight;
-			outWeights[e.target] += e.weight;
+		if (totalWeights == null) {
+			totalWeights = new double[graph.getNodeCount()];
+			for (Edge e: graph) {
+				totalWeights[e.source] += e.weight;
+				totalWeights[e.target] += e.weight;
+			}
 		}
 	}
 	
@@ -137,19 +145,19 @@ public class MutableNodeSet extends NodeSet {
 		invalidateCache();
 		
 		/* First, increase the internal and the boundary weights with the
-		 * appropriate amounts */
+		 * appropriate amounts. Here we are actually increasing totalBoundaryEdgeWeight
+		 * by outWeights[node] - inWeights[node] but make use of the fact that
+		 * outWeights[node] = totalWeights[node] - inWeights[node] */
 		totalInternalEdgeWeight += inWeights[node];
-		totalBoundaryEdgeWeight += outWeights[node] - inWeights[node];
+		totalBoundaryEdgeWeight += totalWeights[node] - 2 * inWeights[node];
 		
-		/* For each edge adjacent to the given node, make some adjustments to inWeights and outWeights */
+		/* For each edge adjacent to the given node, make some adjustments to inWeights */
 		for (int adjEdge: graph.getAdjacentEdgeIndicesArray(node, Directedness.ALL)) {
 			int adjNode = graph.getEdgeEndpoint(adjEdge, node);
 			if (adjNode == node)
 				continue;
 			
-			double weight = graph.getEdgeWeight(adjEdge);
-			inWeights[adjNode]  += weight;
-			outWeights[adjNode] -= weight;
+			inWeights[adjNode] += graph.getEdgeWeight(adjEdge);
 		}
 		
 		/* Add the node to the nodeset */
@@ -184,7 +192,7 @@ public class MutableNodeSet extends NodeSet {
 		
 		this.members.clear();
 		this.memberHashSet.clear();
-		initializeInOutWeights();
+		initializeInAndTotalWeights();
 	}
 
 	/**
@@ -213,10 +221,8 @@ public class MutableNodeSet extends NodeSet {
 	 */
 	@Override
 	public double getCommitment(int nodeIndex) {
-		double den = this.inWeights[nodeIndex] + this.outWeights[nodeIndex];
-		if (den == 0)
-			return 0;
-		return this.inWeights[nodeIndex] / den;
+		double den = this.totalWeights[nodeIndex];
+		return den == 0 ? 0 : (this.inWeights[nodeIndex] / den);
 	}
 	
 	/**
@@ -253,7 +259,18 @@ public class MutableNodeSet extends NodeSet {
 	}
 	
 	protected double getSignificanceReal() {
-		MannWhitneyTest test = new MannWhitneyTest(this.inWeights, this.outWeights, H1.GREATER_THAN);
+		int i, n = members.size();
+		double[] memberInWeights = new double[n];
+		double[] memberOutWeights = new double[n];
+
+		i = 0;
+		for (int member: members) {
+			memberInWeights[i] = inWeights[member];
+			memberOutWeights[i] = totalWeights[member] - memberInWeights[i];
+			i++;
+		}
+
+		MannWhitneyTest test = new MannWhitneyTest(memberInWeights, memberOutWeights, H1.GREATER_THAN);
 		return test.getSP();
 	}
 	
@@ -277,11 +294,13 @@ public class MutableNodeSet extends NodeSet {
 		invalidateCache();
 		
 		/* First, decrease the internal and the boundary weights with the
-		 * appropriate amounts */
+		 * appropriate amounts. Here we are actually decreasing totalBoundaryEdgeWeight
+		 * by outWeights[node] - inWeights[node] but make use of the fact that
+		 * outWeights[node] = totalWeights[node] - inWeights[node] */
 		totalInternalEdgeWeight -= inWeights[node];
-		totalBoundaryEdgeWeight -= outWeights[node] - inWeights[node];
+		totalBoundaryEdgeWeight -= totalWeights[node] - 2 * inWeights[node];
 		
-		/* For each edge adjacent to the given node, make some adjustments to inWeights and outWeights */
+		/* For each edge adjacent to the given node, make some adjustments to inWeights */
 		for (int adjEdge: graph.getAdjacentEdgeIndicesArray(node, Directedness.ALL)) {
 			int adjNode = graph.getEdgeEndpoint(adjEdge, node);
 			if (adjNode == node)
@@ -289,7 +308,6 @@ public class MutableNodeSet extends NodeSet {
 			
 			double weight = graph.getEdgeWeight(adjEdge);
 			inWeights[adjNode]  -= weight;
-			outWeights[adjNode] += weight;
 		}
 		
 		/* Remove the node from the nodeset */

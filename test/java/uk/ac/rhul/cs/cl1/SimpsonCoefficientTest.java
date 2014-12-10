@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class SimpsonCoefficientTest extends SimilarityTest {
+public class SimpsonCoefficientTest extends SimilarityTestBase {
 	@Test
 	public void testGetSimilarity() {
 		SimpsonCoefficient<Set> sim = new SimpsonCoefficient<Set>();

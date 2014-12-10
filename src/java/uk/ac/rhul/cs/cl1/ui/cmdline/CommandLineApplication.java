@@ -357,6 +357,7 @@ public class CommandLineApplication {
 		if (!profilingMode)
 			return;
 
+		System.gc();
 		printHeapStatistics();
 		System.err.println(message);
 		try {
