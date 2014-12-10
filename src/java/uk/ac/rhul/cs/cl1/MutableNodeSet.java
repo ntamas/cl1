@@ -100,7 +100,10 @@ public class MutableNodeSet extends NodeSet {
 		totalBoundaryEdgeWeight = nodeSet.totalBoundaryEdgeWeight;
 
 		inWeights = nodeSet.inWeights.clone();
-		totalWeights = nodeSet.totalWeights; // .clone();
+
+		// totalWeights does not have to be cloned because the graph is the same,
+		// therefore totalWeights is also the same
+		totalWeights = nodeSet.totalWeights;
 	}
 
 	/**
@@ -151,7 +154,7 @@ public class MutableNodeSet extends NodeSet {
 		totalInternalEdgeWeight += inWeights[node];
 		totalBoundaryEdgeWeight += totalWeights[node] - 2 * inWeights[node];
 		
-		/* For each edge adjacent to the given node, make some adjustments to inWeights */
+		/* For each edge incident on the given node, make some adjustments to inWeights */
 		for (int adjEdge: graph.getAdjacentEdgeIndicesArray(node, Directedness.ALL)) {
 			int adjNode = graph.getEdgeEndpoint(adjEdge, node);
 			if (adjNode == node)
@@ -300,14 +303,13 @@ public class MutableNodeSet extends NodeSet {
 		totalInternalEdgeWeight -= inWeights[node];
 		totalBoundaryEdgeWeight -= totalWeights[node] - 2 * inWeights[node];
 		
-		/* For each edge adjacent to the given node, make some adjustments to inWeights */
+		/* For each edge incident on the given node, make some adjustments to inWeights */
 		for (int adjEdge: graph.getAdjacentEdgeIndicesArray(node, Directedness.ALL)) {
 			int adjNode = graph.getEdgeEndpoint(adjEdge, node);
 			if (adjNode == node)
 				continue;
 			
-			double weight = graph.getEdgeWeight(adjEdge);
-			inWeights[adjNode]  -= weight;
+			inWeights[adjNode] -= graph.getEdgeWeight(adjEdge);;
 		}
 		
 		/* Remove the node from the nodeset */

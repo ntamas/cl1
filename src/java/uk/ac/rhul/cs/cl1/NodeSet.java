@@ -132,7 +132,7 @@ public class NodeSet implements Iterable<Integer>, Intersectable<NodeSet>, Sized
 	
 	/**
 	 * Checks whether any of the given nodes is a member of the nodeset or not
-	 * @param    nodeIndex   index of the node being tested
+	 * @param    idxs   indexes of the node being tested
 	 * @return   true if any node is a member of the set, false otherwise
 	 */
 	public boolean containsAny(Collection<Integer> idxs) {
@@ -144,7 +144,7 @@ public class NodeSet implements Iterable<Integer>, Intersectable<NodeSet>, Sized
 	
 	/**
 	 * Checks whether all of the given nodes are a member of the nodeset or not
-	 * @param    nodeIndex   index of the node being tested
+	 * @param    idxs   indexes of the node being tested
 	 * @return   true if all the nodes are a member of the set, false otherwise
 	 */
 	public boolean containsAll(Collection<Integer> idxs) {
@@ -329,8 +329,6 @@ public class NodeSet implements Iterable<Integer>, Intersectable<NodeSet>, Sized
 			this.members.add(member);
 		
 		recalculate();
-		
-		return;
 	}
 	
 	/**
@@ -394,8 +392,8 @@ public class NodeSet implements Iterable<Integer>, Intersectable<NodeSet>, Sized
 	 * Returns the intersection of this nodeset with another
 	 */
 	public NodeSet getIntersectionWith(NodeSet other) {
-		Set<Integer> smaller = null;
-		IntHashSet larger = null;
+		Set<Integer> smaller;
+		IntHashSet larger;
 		IntArray intersection = new IntArray();
 		
 		if (this.size() < other.size()) {
@@ -418,8 +416,8 @@ public class NodeSet implements Iterable<Integer>, Intersectable<NodeSet>, Sized
 	 */
 	public int getIntersectionSizeWith(NodeSet other) {
 		int isectSize = 0;
-		Set<Integer> smaller = null;
-		IntHashSet larger = null;
+		Set<Integer> smaller;
+		IntHashSet larger;
 		
 		if (this.size() < other.size()) {
 			smaller = this.members;
@@ -456,7 +454,7 @@ public class NodeSet implements Iterable<Integer>, Intersectable<NodeSet>, Sized
 		double[] inWeights = new double[this.size()];
 		double[] outWeights = new double[this.size()];
 		IntHashSet memberHashSet = this.getMemberHashSet();
-		int j = 0;
+		int j;
 		
 		Arrays.fill(inWeights, 0.0);
 		Arrays.fill(outWeights, 0.0);
