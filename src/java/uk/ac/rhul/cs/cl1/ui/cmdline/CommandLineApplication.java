@@ -151,11 +151,8 @@ public class CommandLineApplication {
 			);
 		}
 
-		// Wait for an Enter key if we are in profiling mode; this gives us
-		// time to launch an external profiler such as JVisualVM
-		if (profilingMode) {
-			waitWithMessage("Press Enter to start reading the input file...");
-		}
+		// Pause if profiling
+		pauseDuringProfiling("Press Enter to start reading the input file...");
 
 		// Read the input file
 		Graph graph = null;
@@ -171,11 +168,8 @@ public class CommandLineApplication {
 			System.err.println("Loading took " + (System.currentTimeMillis() - startTime) + " ms");
 		}
 
-		// Wait for an Enter key if we are in profiling mode; this gives us
-		// time to launch an external profiler such as JVisualVM
-		if (profilingMode) {
-			waitWithMessage("Press Enter to start the algorithm...");
-		}
+		// Pause if profiling
+		pauseDuringProfiling("Press Enter to start the algorithm...");
 
 		// Start the algorithm
 		ClusterONE algorithm = new ClusterONE(params);
@@ -359,13 +353,31 @@ public class CommandLineApplication {
 	 *
 	 * @param message  the message to print
 	 */
-	public void waitWithMessage(String message) {
-		System.out.println(message);
+	public void pauseDuringProfiling(String message) {
+		if (!profilingMode)
+			return;
+
+		printHeapStatistics();
+		System.err.println(message);
 		try {
 			System.in.read();
 		} catch (IOException ex) {
 			System.err.println("IOException while waiting for the Enter key.");
 		}
+	}
+
+	/**
+	 * Prints some basic statistics of the heap usage.
+	 */
+	public void printHeapStatistics() {
+		long usedHeapSpace = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+		long maxHeapSpace = Runtime.getRuntime().maxMemory();
+
+		System.err.println("Heap usage: " +
+				usedHeapSpace + " bytes used out of " +
+				maxHeapSpace + " bytes; " +
+				Math.round(usedHeapSpace * 10000 / maxHeapSpace) / 100 + "% full"
+		);
 	}
 
 	/**

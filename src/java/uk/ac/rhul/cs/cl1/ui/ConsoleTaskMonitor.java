@@ -32,8 +32,11 @@ public class ConsoleTaskMonitor implements TaskMonitor {
 	
 	/** Whether the display is "dirty" (i.e., something has changed and it needs to be repainted */
 	protected boolean dirty = false;
-	
-	/** The width of the console as determined by {@link getConsoleWidth()}, cached locally */
+
+	/** Whether the display is drawn in the current line of the console */
+	protected boolean progressBarDrawn = false;
+
+	/** The width of the console as determined by {@link #getConsoleWidth()}, cached locally */
 	private Integer consoleWidth = null;
 	
 	/** PrintWriter object that will be used to write to the standard error stream */
@@ -104,7 +107,12 @@ public class ConsoleTaskMonitor implements TaskMonitor {
 		if (!message.isEmpty() && !message.equals(this.message)) {
 			this.message = message;
 			this.dirty = true;
-			updateDisplay();
+
+			// Don't draw the progress bar if it is not drawn already in the current line;
+			// wait for the first setPercentCompleted() call instead
+			if (progressBarDrawn) {
+				updateDisplay();
+			}
 		}
 	}
 
@@ -139,10 +147,13 @@ public class ConsoleTaskMonitor implements TaskMonitor {
 
 		writer.append(StringUtils.substring(message, 0, getConsoleWidth() - progressBarWidth - 8));
 		
-		if (percent == 100)
+		if (percent == 100) {
 			writer.write("\r\n");
-		else
+			progressBarDrawn = false;
+		} else {
 			writer.append('\r');
+			progressBarDrawn = true;
+		}
 		
 		writer.flush();
 		
