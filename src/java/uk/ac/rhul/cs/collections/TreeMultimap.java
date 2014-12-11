@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.utils;
+package uk.ac.rhul.cs.collections;
 
 import java.util.Collection;
 import java.util.TreeMap;

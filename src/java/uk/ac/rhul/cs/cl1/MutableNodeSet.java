@@ -309,7 +309,7 @@ public class MutableNodeSet extends NodeSet {
 			if (adjNode == node)
 				continue;
 			
-			inWeights[adjNode] -= graph.getEdgeWeight(adjEdge);;
+			inWeights[adjNode] -= graph.getEdgeWeight(adjEdge);
 		}
 		
 		/* Remove the node from the nodeset */

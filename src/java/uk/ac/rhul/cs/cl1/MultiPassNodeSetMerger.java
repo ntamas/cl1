@@ -8,10 +8,10 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import uk.ac.rhul.cs.graph.Graph;
-import uk.ac.rhul.cs.utils.HashMultimap;
-import uk.ac.rhul.cs.utils.Multiset;
+import uk.ac.rhul.cs.collections.HashMultimap;
+import uk.ac.rhul.cs.collections.Multiset;
 import uk.ac.rhul.cs.utils.StringUtils;
-import uk.ac.rhul.cs.utils.TreeMultiset;
+import uk.ac.rhul.cs.collections.TreeMultiset;
 import uk.ac.rhul.cs.utils.UnorderedPair;
 
 /**

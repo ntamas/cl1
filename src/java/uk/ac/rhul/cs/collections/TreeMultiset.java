@@ -1,4 +1,6 @@
-package uk.ac.rhul.cs.utils;
+package uk.ac.rhul.cs.collections;
+
+import uk.ac.rhul.cs.utils.StringUtils;
 
 import java.util.Collection;
 import java.util.HashSet;

@@ -5,8 +5,8 @@ import java.util.SortedSet;
 
 import uk.ac.rhul.cs.graph.BreadthFirstSearch;
 import uk.ac.rhul.cs.graph.Graph;
-import uk.ac.rhul.cs.utils.Multiset;
-import uk.ac.rhul.cs.utils.TreeMultiset;
+import uk.ac.rhul.cs.collections.Multiset;
+import uk.ac.rhul.cs.collections.TreeMultiset;
 
 /**
  * Merges highly overlapping node sets in a node set list in a single
