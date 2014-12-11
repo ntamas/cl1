@@ -51,8 +51,8 @@ public interface Multiset<E> extends Collection<E> {
 	 * Adds of removes the necessary occurrences of an element such that the
 	 * element attains the desired count.
 	 * 
-	 * @param  element      the element to add/remove occurrences of
-	 * @param  occurrences  the desired count of the element
+	 * @param  element  the element to add/remove occurrences of
+	 * @param  count    the desired count of the element
 	 * @return the count of the element before the operation
 	 * 
 	 * @throws IllegalArgumentException  if {@code count} is negative

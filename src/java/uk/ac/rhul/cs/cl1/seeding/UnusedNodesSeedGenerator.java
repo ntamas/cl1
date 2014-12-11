@@ -81,7 +81,8 @@ public class UnusedNodesSeedGenerator extends EveryNodeSeedGenerator {
 		}
 
 		public MutableNodeSet next() {
-			MutableNodeSet result = emptyNodeSet.clone();
+			MutableNodeSet result = emptyNodeSet;
+			result.clear();
 			int seedNode = it.next();
 			result.add(seedNode);
 			// this node is used even if it is not part of the final cluster

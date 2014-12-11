@@ -2,8 +2,12 @@ package uk.ac.rhul.cs.cl1;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Set;
 import java.util.TreeSet;
 
+import com.sosnoski.util.array.IntArray;
+import uk.ac.rhul.cs.collections.Multiset;
+import uk.ac.rhul.cs.collections.TreeMultiset;
 import uk.ac.rhul.cs.graph.Directedness;
 import uk.ac.rhul.cs.graph.Edge;
 import uk.ac.rhul.cs.graph.Graph;
@@ -23,6 +27,11 @@ import com.sosnoski.util.hashset.IntHashSet;
  * @author Tamas Nepusz <tamas@cs.rhul.ac.uk>
  */
 public class MutableNodeSet extends NodeSet {
+	/**
+	 * Multiset that keeps track of the external boundary nodes of the subset.
+	 */
+	protected Multiset<Integer> externalBoundaryNodes = new TreeMultiset<Integer>();
+
 	/**
 	 * A hash of node indices in the set for quick membership checks
 	 */
@@ -116,17 +125,31 @@ public class MutableNodeSet extends NodeSet {
 	}
 	
 	protected void initializeInAndTotalWeights() {
+		int n = graph.getNodeCount();
+
 		totalInternalEdgeWeight = 0.0;
 		totalBoundaryEdgeWeight = 0.0;
 		
 		if (inWeights == null) {
-			inWeights = new double[graph.getNodeCount()];
+			inWeights = new double[n];
 		} else {
-			Arrays.fill(inWeights, 0.0);
+			// Optimization here: we can be sure that the only nonzero elements in inWeights are
+			// for internal or boundary nodes, so it is enough to iterate over them if the graph
+			// is large. Otherwise it is probably faster to simply fill the entire array with zeros.
+			if (n >= 5000 && members.size() < n / 4) {
+				for (int member: members) {
+					inWeights[member] = 0.0;
+				}
+				for (int boundaryNode: externalBoundaryNodes.elementSet()) {
+					inWeights[boundaryNode] = 0.0;
+				}
+			} else {
+				Arrays.fill(inWeights, 0.0);
+			}
 		}
 
 		if (totalWeights == null) {
-			totalWeights = new double[graph.getNodeCount()];
+			totalWeights = new double[n];
 			for (Edge e: graph) {
 				totalWeights[e.source] += e.weight;
 				totalWeights[e.target] += e.weight;
@@ -161,11 +184,16 @@ public class MutableNodeSet extends NodeSet {
 				continue;
 			
 			inWeights[adjNode] += graph.getEdgeWeight(adjEdge);
+
+			if (!memberHashSet.contains(adjNode)) {
+				externalBoundaryNodes.add(adjNode);
+			}
 		}
 		
 		/* Add the node to the nodeset */
 		memberHashSet.add(node);
 		members.add(node);
+		externalBoundaryNodes.setCount(node, 0);
 		
 		return true;
 	}
@@ -192,10 +220,13 @@ public class MutableNodeSet extends NodeSet {
 	public void clear() {
 		/* Things will change, invalidate the cached values */
 		invalidateCache();
-		
-		this.members.clear();
-		this.memberHashSet.clear();
+
+		/* This must be called _before_ we clear the members because it uses the old members */
 		initializeInAndTotalWeights();
+
+		externalBoundaryNodes.clear();
+		members.clear();
+		memberHashSet.clear();
 	}
 
 	/**
@@ -227,7 +258,12 @@ public class MutableNodeSet extends NodeSet {
 		double den = this.totalWeights[nodeIndex];
 		return den == 0 ? 0 : (this.inWeights[nodeIndex] / den);
 	}
-	
+
+	@Override
+	public Set<Integer> getExternalBoundaryNodes() {
+		return externalBoundaryNodes.elementSet();
+	}
+
 	/**
 	 * Returns the internal weight of a given node
 	 */
@@ -292,7 +328,7 @@ public class MutableNodeSet extends NodeSet {
 	public boolean remove(int node) {
 		if (!memberHashSet.contains(node))
 			return false;
-		
+
 		/* Things will change, invalidate the cached values */
 		invalidateCache();
 		
@@ -310,12 +346,18 @@ public class MutableNodeSet extends NodeSet {
 				continue;
 			
 			inWeights[adjNode] -= graph.getEdgeWeight(adjEdge);
+
+			if (memberHashSet.contains(adjNode)) {
+				externalBoundaryNodes.add(node);
+			} else {
+				externalBoundaryNodes.remove(adjNode);
+			}
 		}
 		
 		/* Remove the node from the nodeset */
 		memberHashSet.remove(node);
 		members.remove(node);
-		
+
 		return true;
 	}
 	

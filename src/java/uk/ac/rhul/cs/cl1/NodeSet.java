@@ -528,9 +528,9 @@ public class NodeSet implements Iterable<Integer>, Intersectable<NodeSet>, Sized
 	/**
 	 * Returns a set of all the external boundary nodes of this set
 	 */
-	public IntArray getExternalBoundaryNodes() {
+	public Set<Integer> getExternalBoundaryNodes() {
 		IntHashSet seen = new IntHashSet(this.getMemberHashSet());
-		IntArray result = new IntArray();
+		Set<Integer> result = new TreeSet<Integer>();
 
 		for (int i: members) {
 			int[] edgeIdxs = this.graph.getAdjacentEdgeIndicesArray(i, Directedness.ALL);

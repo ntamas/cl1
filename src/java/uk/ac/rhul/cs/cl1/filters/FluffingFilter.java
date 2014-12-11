@@ -47,7 +47,7 @@ public class FluffingFilter implements NodeSetFilter {
 			SortedSet<Integer> members = nodeSet.getMembers();
 			toAdd.clear();
 
-			for (int node: nodeSet.getExternalBoundaryNodes().toArray()) {
+			for (int node: nodeSet.getExternalBoundaryNodes()) {
 				int[] neis =
 					graph.getAdjacentNodeIndicesArray(node, Directedness.ALL);
 				

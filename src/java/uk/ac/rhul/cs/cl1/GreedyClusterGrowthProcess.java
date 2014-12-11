@@ -176,7 +176,7 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 		
 		/* Try the addition of some nodes */
 		bestAffinity = quality;
-		for (int node: nodeSet.getExternalBoundaryNodes().toArray()) {
+		for (int node: nodeSet.getExternalBoundaryNodes()) {
 			double internalWeight = nodeSet.getTotalAdjacentInternalWeight(node);
 			if (n >= 4 && internalWeight < internalWeightLimit)
 				continue;
