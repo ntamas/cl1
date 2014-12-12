@@ -32,19 +32,24 @@ public class Graph implements Iterable<Edge> {
 	protected StringArray nodeNames = new StringArray();
 	
 	/**
-	 * The list of source nodes for each edge in this graph
+	 * The list of source nodes for each edge in this graph. The maximum growth limit of the array is overridden
+	 * to allow us to scale above 2<sup>30</sup> edges; otherwise the array would try to double its size when
+	 * it reaches 2<sup>30</sup> edges and it would fail because the maximum allowed array size in Java is
+	 * less than 2<sup>31</sup>.
 	 */
-	protected IntArray edgesOut = new IntArray();
+	protected IntArray edgesOut = new IntArray(32, 536870912 /* = 2^29 */);
 
 	/**
-	 * The list of target nodes for each edge in this graph
+	 * The list of target nodes for each edge in this graph. See the comment for <code>edgesOut</code> for an
+	 * explanation of the growth arguments.
 	 */
-	protected IntArray edgesIn = new IntArray();
+	protected IntArray edgesIn = new IntArray(32, 536870912 /* = 2^29 */);
 
 	/**
-	 * The list of weights for each edge in this graph
+	 * The list of weights for each edge in this graph. See the comment for <code>edgesOut</code> for an
+	 * explanation of the growth arguments.
 	 */
-	protected DoubleArray weights = new DoubleArray();
+	protected DoubleArray weights = new DoubleArray(32, 536870912 /* = 2^29 */);
 	
 	/**
 	 * The list of outgoing edge IDs for each node
