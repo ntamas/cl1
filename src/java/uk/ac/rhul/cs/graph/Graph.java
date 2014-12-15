@@ -220,8 +220,8 @@ public class Graph implements Iterable<Edge> {
 	 */
 	public int[] getAdjacentNodeIndicesArray(int nodeIndex, Directedness mode) {
 		int[] edges = this.getAdjacentEdgeIndicesArray(nodeIndex, mode);
-		int i = 0, n = edges.length;
-		
+		int i, n = edges.length;
+
 		for (i = 0; i < n; i++) {
 			int edge = edges[i];
 			if (this.edgesIn.get(edge) == nodeIndex)

@@ -18,13 +18,7 @@ public class BreadthFirstSearchTest {
 	public static void setUpBefore() {
 		int[] edges = { 0, 1, 1, 3, 3, 4, 4, 6, 6, 5, 5, 3, 3, 2, 2, 0, 0, 3 };
 		double[] weights = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-		
-		graph = new Graph();
-		graph.createNodes(7);
-		
-		for (int i = 0; i < weights.length; i++) {
-			graph.createEdge(edges[2*i], edges[2*i+1], weights[i]);
-		}
+		graph = GraphFactory.createFromEdgeList(edges, weights);
 	}
 	
 	@Test

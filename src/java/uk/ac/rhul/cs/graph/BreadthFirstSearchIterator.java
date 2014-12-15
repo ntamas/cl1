@@ -27,7 +27,7 @@ public class BreadthFirstSearchIterator implements Iterator<Integer> {
 	protected IntHashSet visited = new IntHashSet();
 	
 	/** Distance of the last returned node from the seed */
-	protected Integer distance = null;
+	protected int distance = -1;
 
 	/**
 	 * Constructs a new BFS iterator.
@@ -47,7 +47,7 @@ public class BreadthFirstSearchIterator implements Iterator<Integer> {
 	 * @param  subset    an array of node indices which must be traversed.
 	 *                   Nodes not in this nodeset are assumed to have been
 	 *                   already visited by the iterator. Can also be null,
-	 *                   which is equivalent to an empty array.
+	 *                   which means that every node can be traversed.
 	 */
 	public BreadthFirstSearchIterator(Graph graph, int seedNode, int[] subset) {
 		this.graph = graph;
@@ -55,18 +55,15 @@ public class BreadthFirstSearchIterator implements Iterator<Integer> {
 			restrictToSubgraph(subset);
 		}
 		pushNode(seedNode, 0);
-		if (!q.isEmpty()) {
-			visited.add(seedNode);
-		}
 	}
 	
 	/**
 	 * Returns the distance of the last returned node from the seed.
 	 * 
-	 * @return  the distance of the last node from the seed or null if the
+	 * @return  the distance of the last node from the seed or -1 if the
 	 *          traversal has not yet started.
 	 */
-	public Integer getDistance() {
+	public int getDistance() {
 		return distance;
 	}
 	
@@ -90,7 +87,6 @@ public class BreadthFirstSearchIterator implements Iterator<Integer> {
 		for (int neighbor: neighbors) {
 			if (!visited.contains(neighbor)) {
 				pushNode(neighbor, distance + 1);
-				visited.add(neighbor);
 			}
 		}
 		
@@ -124,11 +120,12 @@ public class BreadthFirstSearchIterator implements Iterator<Integer> {
 	 * @param  node      the node to push to the queue
 	 * @param  distance  the distance of the node from the start point
 	 */
-	public void pushNode(int node, int distance) {
+	private void pushNode(int node, int distance) {
 		if (allowedNodes != null && !allowedNodes.contains(node))
 			return;
 
 		q.add(node);
 		q.add(distance);
+		visited.add(node);
 	}
 }

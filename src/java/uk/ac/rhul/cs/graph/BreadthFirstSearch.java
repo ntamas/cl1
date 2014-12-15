@@ -9,7 +9,8 @@ public class BreadthFirstSearch extends GraphTraversalAlgorithm {
 	/**
 	 * Constructs a BFS algorithm instance that will run on the given graph
 	 * 
-	 * @param graph  the graph on which we are running the BFS algorithm
+	 * @param graph     the graph on which we are running the BFS algorithm
+	 * @param seedNode  the starting point of the traversal
 	 */
 	public BreadthFirstSearch(Graph graph, int seedNode) {
 		super(graph, seedNode);

@@ -1,8 +1,10 @@
 package uk.ac.rhul.cs.cl1;
 
 import java.util.Arrays;
+import java.util.Set;
 
 import com.sosnoski.util.array.IntArray;
+import uk.ac.rhul.cs.graph.TarjanCutVertexFinder;
 
 /**
  * Greedy growth process that chooses a locally optimal step to improve some goal function
@@ -28,12 +30,7 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 	 * Whether it is allowed to contract the nodeset during the growth process
 	 */
 	protected boolean contractionAllowed = true;
-	
-	/**
-	 * Whether it is allowed to remove any of the nodes that are part of the original seed
-	 */
-	protected boolean seedRemovalAllowed = true;
-	
+
 	/**
 	 * Whether the initial seed nodes should always be kept as part of the cluster
 	 */
@@ -60,23 +57,6 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 		initialSeeds = nodeSet.freeze();
 	}
 	
-	/**
-	 * @return whether it is allowed to remove the original seeds from the cluster during
-	 *         the growth process
-	 */
-	public boolean isSeedRemovalAllowed() {
-		return seedRemovalAllowed;
-	}
-
-	/**
-	 * Sets whether it is allowed to remove the original seeds from the cluster during
-	 * the growth process.
-	 * 
-	 * @param  seedRemovalAllowed  whether it is allowed to remove the original seeds
-	 */
-	public void setSeedRemovalAllowed(boolean seedRemovalAllowed) {
-		this.seedRemovalAllowed = seedRemovalAllowed;
-	}
 
 	/**
 	 * @return whether it is allowed to contract the cluster during the growth process
@@ -196,7 +176,8 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 		
 		if (this.isContractionAllowed() && this.nodeSet.size() > 1) {
 			/* Try removing nodes. Can we do better than adding nodes? */
-			
+			Set<Integer> cutVertices = null;
+
 			for (Integer node: nodeSet) {
 				// Don't process nodes that were in the initial seed
 				if (keepInitialSeeds && initialSeeds.contains(node))
@@ -221,7 +202,19 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 				// of a non-leaf node
 				if (nodeSet.isCutVertex(node))
 					continue;
-				
+
+				// Note to self: the above code uses BFS to decide whether the given node is a cut
+				// vertex or not. Theoretically, it would be better to use a DFS because a single
+				// DFS could provide us all the cut vertices at once. However, in practice it
+				// seems to be slower. If you want to try, uncomment the fragment below:
+				/*
+				if (cutVertices == null) {
+					cutVertices = findCutVerticesForNodeSet(nodeSet);
+				}
+				if (cutVertices.contains(node))
+					continue;
+				*/
+
 				if (affinity > bestAffinity) {
 					bestAffinity = affinity;
 					bestNodes.clear();
@@ -256,5 +249,15 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 				System.err.println("Proposing removal of " + Arrays.toString(bestNodes.toArray()));
 			return ClusterGrowthAction.removal(bestNodes.toArray());
 		}
+	}
+
+	/**
+	 * Finds all the cut vertices in the given nodeset.
+	 */
+	private Set<Integer> findCutVerticesForNodeSet(NodeSet nodeSet) {
+		TarjanCutVertexFinder finder = new TarjanCutVertexFinder();
+		finder.setGraph(nodeSet.getGraph());
+		finder.restrictToSubgraph(nodeSet.toArray());
+		return finder.findCutVertices();
 	}
 }

@@ -25,13 +25,8 @@ public class BronKerboschMaximalCliqueFinderTest {
 				5, 6, -1,
 				5, 7, -1
 		};
-		Graph graph = new Graph();
-		
-		// Create the graph
-		graph.createNodes(10);
-		for (int i = 0; i < edges.length; i += 2)
-			graph.createEdge(edges[i], edges[i+1]);
-		
+		Graph graph = GraphFactory.createFromEdgeList(edges);
+
 		// Find the maximal cliques
 		BronKerboschMaximalCliqueFinder cfinder = new BronKerboschMaximalCliqueFinder();
 		cfinder.setGraph(graph);

@@ -77,7 +77,7 @@ public class MaximalCliqueSeedGenerator extends SeedGenerator {
 				public void run() {
 					BlockingQueueAdapter<List<Integer>> cliqueCollection =
 						new BlockingQueueAdapter<List<Integer>>(cliques);
-					cliqueFinder.getMaximalCliques(cliqueCollection);
+					cliqueFinder.collectMaximalCliques(cliqueCollection);
 				}
 			});
 			cliqueFinderThread.start();

@@ -34,7 +34,7 @@ public abstract class GraphAlgorithm {
 	 * 
 	 * @return whether the algorithm is running in debug mode or not.
 	 */
-	public boolean getDebugMode() {
+	public boolean isDebugMode() {
 		return debugMode;
 	}
 

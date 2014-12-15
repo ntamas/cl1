@@ -260,8 +260,14 @@ public class MutableNodeSet extends NodeSet {
 	}
 
 	@Override
-	public Set<Integer> getExternalBoundaryNodes() {
-		return externalBoundaryNodes.elementSet();
+	public int[] getExternalBoundaryNodes() {
+		Set<Integer> nodes = externalBoundaryNodes.elementSet();
+		int[] result = new int[nodes.size()];
+		int i = 0;
+		for (int member: nodes) {
+			result[i++] = member;
+		}
+		return result;
 	}
 
 	/**

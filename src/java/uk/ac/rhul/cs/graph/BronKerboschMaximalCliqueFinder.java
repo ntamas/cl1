@@ -71,30 +71,30 @@ public class BronKerboschMaximalCliqueFinder extends GraphAlgorithm {
 			potentialClique.remove(candidate);
 		}
 	}
-	
+
+	/**
+	 * Finds all maximal cliques and stores them in the given list.
+	 *
+	 * @param  result  the collection in which the result will be stored
+	 */
+	public void collectMaximalCliques(Collection<List<Integer>> result) {
+		HashSet<Integer> potentialClique = new HashSet<Integer>();
+		HashSet<Integer> candidates = new HashSet<Integer>();
+		HashSet<Integer> alreadyFound = new HashSet<Integer>();
+
+		candidates.addAll(new IntegerRange(graph.getNodeCount()));
+		findCliques(result, potentialClique, candidates, alreadyFound);
+	}
+
 	/**
 	 * Returns the list of all maximal cliques
 	 */
 	public List<List<Integer>> getMaximalCliques() {
 		List<List<Integer>> result = new ArrayList<List<Integer>>();
-		getMaximalCliques(result);
+		collectMaximalCliques(result);
 		return result;
 	}
-	
-	/**
-	 * Finds all maximal cliques and stores them in the given list.
-	 * 
-	 * @param  result  the collection in which the result will be stored
-	 */
-	public void getMaximalCliques(Collection<List<Integer>> result) {
-		HashSet<Integer> potentialClique = new HashSet<Integer>();
-		HashSet<Integer> candidates = new HashSet<Integer>();
-		HashSet<Integer> alreadyFound = new HashSet<Integer>();
-		
-		candidates.addAll(new IntegerRange(graph.getNodeCount()));
-		findCliques(result, potentialClique, candidates, alreadyFound);
-	}
-	
+
 	/**
 	 * Checks whether at least one node of the given node array is connected
 	 * to all the candidates.

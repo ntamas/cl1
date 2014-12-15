@@ -267,28 +267,28 @@ public class NodeSet implements Iterable<Integer>, Intersectable<NodeSet>, Sized
 	
 	/**
 	 * Checks whether the given node is a cut vertex of the nodeset.
-	 * 
+	 *
 	 * A vertex is a cut vertex of the nodeset if its removal would make the
-	 * nodeset disconnected. 
+	 * nodeset disconnected.
 	 */
 	public boolean isCutVertex(int index) {
 		if (this.members.isEmpty())
 			return false;
-		
+
 		IntArray newMembers = new IntArray();
 		for (int member: this.members)
 			if (member != index)
 				newMembers.add(member);
-		
+
 		if (newMembers.size() == 0)
 			return false;
-		
+
 		BreadthFirstSearch bfs = new BreadthFirstSearch(this.graph, newMembers.get(0));
 		bfs.restrictToSubgraph(newMembers.toArray());
-		
+
 		return bfs.toArray().length != newMembers.size();
 	}
-	
+
 	/**
 	 * Returns whether the nodeset is empty or not
 	 */
@@ -528,9 +528,9 @@ public class NodeSet implements Iterable<Integer>, Intersectable<NodeSet>, Sized
 	/**
 	 * Returns a set of all the external boundary nodes of this set
 	 */
-	public Set<Integer> getExternalBoundaryNodes() {
+	public int[] getExternalBoundaryNodes() {
 		IntHashSet seen = new IntHashSet(this.getMemberHashSet());
-		Set<Integer> result = new TreeSet<Integer>();
+		IntArray result = new IntArray();
 
 		for (int i: members) {
 			int[] edgeIdxs = this.graph.getAdjacentEdgeIndicesArray(i, Directedness.ALL);
@@ -544,7 +544,7 @@ public class NodeSet implements Iterable<Integer>, Intersectable<NodeSet>, Sized
 			}
 		}
 		
-		return result;
+		return result.toArray();
 	}
 
 	/**
@@ -553,7 +553,19 @@ public class NodeSet implements Iterable<Integer>, Intersectable<NodeSet>, Sized
 	public Iterator<Integer> iterator() {
 		return this.members.iterator();
 	}
-	
+
+	/**
+	 * Returns the members of this nodeset as an array.
+	 */
+	public int[] toArray() {
+		int i = 0;
+		int[] result = new int[members.size()];
+		for (int member: members) {
+			result[i++] = member;
+		}
+		return result;
+	}
+
 	/**
 	 * Prints the nodes in this set to a string
 	 */

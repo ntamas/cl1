@@ -73,7 +73,44 @@ public class GraphFactory {
 		
 		return result;
 	}
-	
+
+	/**
+	 * Creates a graph from an edge list.
+	 *
+	 * @param  edges    the edge list of the graph
+	 */
+	public static Graph createFromEdgeList(int[] edges) {
+		int twiceNumEdges = edges.length;
+		int i;
+		Graph graph;
+
+		graph = new Graph();
+		for (i = 0; i < twiceNumEdges; i+=2) {
+			graph.createEdge(edges[i], edges[i+1]);
+		}
+
+		return graph;
+	}
+
+	/**
+	 * Creates a graph from an edge list with weights.
+	 *
+	 * @param  edges    the edge list of the graph
+	 * @param  weights  the weight of each edge in the graph
+	 */
+	public static Graph createFromEdgeList(int[] edges, double[] weights) {
+		int numEdges = weights.length;
+		int i, j;
+		Graph graph;
+
+		graph = new Graph();
+		for (i = 0, j = 0; j < numEdges; i+=2, j++) {
+			graph.createEdge(edges[i], edges[i+1], weights[j]);
+		}
+
+		return graph;
+	}
+
 	/**
 	 * Creates a full graph with the given number of vertices
 	 * 
