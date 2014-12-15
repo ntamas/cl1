@@ -72,7 +72,7 @@ public class FileBasedSeedGenerator extends SeedGenerator {
 		
 		/** Line that was read the last time */
 		String line = null;
-		
+
 		/** The current nodeset that will be returned with the next call to next() */
 		MutableNodeSet currentNodeSet = null;
 
@@ -81,7 +81,7 @@ public class FileBasedSeedGenerator extends SeedGenerator {
 
 		/** A map mapping node names to indices */
 		StringIntHashMap namesToIndices = new StringIntHashMap();
-		
+
 		/** Nodes that have not been used so far */
 		TreeSet<Integer> unusedNodes;
 		
@@ -122,7 +122,7 @@ public class FileBasedSeedGenerator extends SeedGenerator {
 		private void processLine() {
 			currentNodeSet = emptyNodeSet.clone();
 
-			if (line == null) { 
+			if (line == null) {
 				if (generateUnusedNodesAsSeeds) {
 					/* No more lines in file, return the unused nodes */
 					Integer id = unusedNodes.pollFirst();
@@ -135,7 +135,7 @@ public class FileBasedSeedGenerator extends SeedGenerator {
 				}
 				return;
 			}
-			
+
 			boolean isConnected = false;
 			while (!isConnected) {
 				StringTokenizer st = new StringTokenizer(line);
@@ -172,7 +172,7 @@ public class FileBasedSeedGenerator extends SeedGenerator {
 			
 			if (isConnected)
 				return;
-			
+
 			currentNodeSet = null;
 		}
 		
@@ -180,8 +180,8 @@ public class FileBasedSeedGenerator extends SeedGenerator {
 			return (currentNodeSet != null);
 		}
 		
-		public MutableNodeSet next() {
-			MutableNodeSet result = currentNodeSet;
+		public Seed next() {
+			Seed result = new Seed(currentNodeSet);
 			processLine();
 			return result;
 		}

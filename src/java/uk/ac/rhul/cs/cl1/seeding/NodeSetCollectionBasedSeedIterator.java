@@ -35,8 +35,8 @@ public class NodeSetCollectionBasedSeedIterator extends SeedIterator {
 		return nodeSetIterator.hasNext();
 	}
 
-	public MutableNodeSet next() {
+	public Seed next() {
 		processed++;
-		return new MutableNodeSet(nodeSetIterator.next());
+		return new Seed(nodeSetIterator.next());
 	}
 }

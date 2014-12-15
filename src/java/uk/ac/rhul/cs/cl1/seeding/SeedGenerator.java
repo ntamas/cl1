@@ -26,7 +26,7 @@ import uk.ac.rhul.cs.utils.StringUtils;
  * @author tamas
  */
 public abstract class SeedGenerator extends GraphAlgorithm
-implements Iterable<MutableNodeSet>, Serializable {
+implements Iterable<Seed>, Serializable {
 	/**
 	 * Constructs a seed generator that is not associated to any graph yet.
 	 */

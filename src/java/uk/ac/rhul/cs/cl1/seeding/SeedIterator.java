@@ -6,7 +6,7 @@ import uk.ac.rhul.cs.cl1.MutableNodeSet;
 import uk.ac.rhul.cs.cl1.NodeSet;
 
 /**
- * Iterator that iterates over {@link MutableNodeSet}s.
+ * Iterator that iterates over {@link Seed}s.
  * 
  * This class provides an extra feature compared to "plain" iterators:
  * the clustering algorithm will report back to the iterator whenever a
@@ -17,7 +17,7 @@ import uk.ac.rhul.cs.cl1.NodeSet;
  * 
  * @author tamas
  */
-public abstract class SeedIterator implements Iterator<MutableNodeSet> {	
+public abstract class SeedIterator implements Iterator<Seed> {
 	/**
 	 * Returns the percentage of seeds that have already been generated.
 	 * 

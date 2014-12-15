@@ -1,0 +1,71 @@
+package uk.ac.rhul.cs.cl1.seeding;
+
+import uk.ac.rhul.cs.cl1.MutableNodeSet;
+import uk.ac.rhul.cs.cl1.NodeSet;
+import uk.ac.rhul.cs.graph.Graph;
+
+import java.util.Arrays;
+import java.util.Collection;
+
+/**
+ * Represents a seed nodeset of the ClusterONE algorithm.
+ *
+ * This object is a lightweight wrapper around a {@link uk.ac.rhul.cs.graph.Graph} object
+ * and an array of node indices. It can be used to initialize a {@link uk.ac.rhul.cs.cl1.NodeSet}
+ * or {@link uk.ac.rhul.cs.cl1.MutableNodeSet}. Having a separate {@link Seed} class that
+ * the seed generators return allows us to re-use the same {@link uk.ac.rhul.cs.cl1.MutableNodeSet}
+ * in the algorithm to grow multiple seeds, which saves some time because the auxiliary data
+ * structures in the {@link uk.ac.rhul.cs.cl1.MutableNodeSet} do not have to be built again
+ * for every seed.
+ */
+public class Seed {
+    /**
+     * Constructs a new seed on the given graph with the given members.
+     *
+     * @param  graph    the graph
+     * @param  members  the members of the seed
+     */
+    public Seed(Graph graph, int... members) {
+        this.graph = graph;
+        this.members = members;
+    }
+
+    /**
+     * Constructs a new seed from the given nodeset.
+     */
+    public Seed(NodeSet nodeSet) {
+        this(nodeSet.getGraph(), nodeSet.toArray());
+    }
+
+    /**
+     * The graph to which the seed belongs.
+     */
+    public Graph graph;
+
+    /**
+     * The list of nodes in the seed.
+     */
+    public int[] members;
+
+    /**
+     * Creates a {@link uk.ac.rhul.cs.cl1.MutableNodeSet} from this seed.
+     */
+    public MutableNodeSet createMutableNodeSet() {
+        return new MutableNodeSet(graph, members);
+    }
+
+    /**
+     * Initializes the given {@link uk.ac.rhul.cs.cl1.MutableNodeSet} with this seed.
+     */
+    public void initializeMutableNodeSet(MutableNodeSet mutableNodeSet) {
+        if (mutableNodeSet.getGraph() != graph) {
+            throw new UnsupportedOperationException("cannot initialize a mutable node set with a seed " +
+                    "that belongs to a different graph");
+        }
+
+        mutableNodeSet.clear();
+        for (int member: members) {
+            mutableNodeSet.add(member);
+        }
+    }
+}

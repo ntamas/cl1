@@ -12,6 +12,7 @@ import uk.ac.rhul.cs.cl1.filters.FluffingFilter;
 import uk.ac.rhul.cs.cl1.filters.HaircutFilter;
 import uk.ac.rhul.cs.cl1.filters.KCoreFilter;
 import uk.ac.rhul.cs.cl1.filters.SizeFilter;
+import uk.ac.rhul.cs.cl1.seeding.Seed;
 import uk.ac.rhul.cs.cl1.seeding.SeedGenerator;
 import uk.ac.rhul.cs.cl1.seeding.SeedIterator;
 import uk.ac.rhul.cs.graph.Graph;
@@ -123,7 +124,8 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void>, TaskMo
 	public void run() throws ClusterONEException {
 		Double minDensity = parameters.getMinDensity();
 		AbstractNodeSetMerger merger;
-		
+		MutableNodeSet cluster;
+
 		ValuedNodeSetList result = new ValuedNodeSetList();
 		HashSet<NodeSet> addedNodeSets = new HashSet<NodeSet>();
 		
@@ -167,7 +169,10 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void>, TaskMo
 		postFilters.add(new DensityFilter(minDensity));
 		if (parameters.getKCoreThreshold() > 0)
 			postFilters.add(new KCoreFilter(parameters.getKCoreThreshold()));
-		
+
+		/* Construct a mutable node set that we will re-use in the growth process for each seed */
+		cluster = new MutableNodeSet(graph);
+
 		/* For each seed, start growing a cluster */
 		monitor.setStatus("Growing clusters from seeds...");
 		monitor.setPercentCompleted(0);
@@ -175,9 +180,8 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void>, TaskMo
 		SeedIterator it = seedGenerator.iterator();
 		while (it.hasNext()) {
 			/* Get the next seed */
-			MutableNodeSet cluster = it.next();
-			
-			if (cluster == null) {
+			Seed seed = it.next();
+			if (seed == null) {
 				/* This happens when we are using a seed generator running in a
 				 * separate thread (such as MaximalCliqueSeedGenerator) and that
 				 * thread is interrupted for whatever reason.
@@ -185,7 +189,10 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void>, TaskMo
 				halt();
 				return;
 			}
-			
+
+			/* Initialize the node set from the seed */
+			seed.initializeMutableNodeSet(cluster);
+
 			/* Construct a growth process from the seed */
 			GreedyClusterGrowthProcess growthProcess =
 				new GreedyClusterGrowthProcess(cluster, minDensity, qualityFunc);
@@ -205,8 +212,7 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void>, TaskMo
 			
 			/* Convert the cluster to a valued nodeset */
 			ValuedNodeSet frozenCluster = new ValuedNodeSet(cluster, 1);
-			cluster = null;
-			
+
 			/* Add the cluster if we haven't found it before */
 			if (!addedNodeSets.contains(frozenCluster)) {
 				result.add(frozenCluster);
@@ -221,8 +227,7 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void>, TaskMo
 		
 		/* Throw away the addedNodeSets hash, we don't need it anymore */
 		addedNodeSets.clear();
-		addedNodeSets = null;
-		
+
 		/* Merge highly overlapping clusters */
 		merger.setTaskMonitor(monitor);
 		this.result = merger.mergeOverlapping(result,

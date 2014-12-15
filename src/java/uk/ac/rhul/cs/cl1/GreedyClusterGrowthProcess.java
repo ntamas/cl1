@@ -176,7 +176,7 @@ public class GreedyClusterGrowthProcess extends ClusterGrowthProcess {
 		
 		if (this.isContractionAllowed() && this.nodeSet.size() > 1) {
 			/* Try removing nodes. Can we do better than adding nodes? */
-			Set<Integer> cutVertices = null;
+			// Set<Integer> cutVertices = null;
 
 			for (Integer node: nodeSet) {
 				// Don't process nodes that were in the initial seed

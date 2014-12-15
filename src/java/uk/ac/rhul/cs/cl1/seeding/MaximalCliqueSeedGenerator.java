@@ -3,7 +3,6 @@ package uk.ac.rhul.cs.cl1.seeding;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import uk.ac.rhul.cs.cl1.MutableNodeSet;
 import uk.ac.rhul.cs.graph.BronKerboschMaximalCliqueFinder;
 import uk.ac.rhul.cs.graph.Graph;
 import uk.ac.rhul.cs.utils.BlockingQueueAdapter;
@@ -64,12 +63,7 @@ public class MaximalCliqueSeedGenerator extends SeedGenerator {
 		 */
 		Thread cliqueFinderThread = null;
 
-		/** A mutable node set that contains no nodes */
-		MutableNodeSet emptyNodeSet;
-
 		public IteratorImpl() {
-			emptyNodeSet = new MutableNodeSet(graph);
-
 			cliqueFinder = new BronKerboschMaximalCliqueFinder();
 			cliqueFinder.setGraph(graph);
 			
@@ -86,22 +80,28 @@ public class MaximalCliqueSeedGenerator extends SeedGenerator {
 		public boolean hasNext() {
 			if (cliques.isEmpty()) {
 				/* Queue is empty. Is the thread still running? */
-				if (cliqueFinderThread.isAlive() &&
-					!cliqueFinderThread.isInterrupted())
-					return true;
-				return false;
+				return (cliqueFinderThread.isAlive() &&
+					!cliqueFinderThread.isInterrupted());
 			}
 			return true;
 		}
 
-		public MutableNodeSet next() {
-			MutableNodeSet result = emptyNodeSet.clone();
+		public Seed next() {
+			List<Integer> clique;
+
 			try {
-				result.setMembers(cliques.take());
+				clique = cliques.take();
 			} catch (InterruptedException ex) {
 				return null;
 			}
-			return result;
+
+			int[] members = new int[clique.size()];
+			int i = 0;
+			for (int node: clique) {
+				members[i++] = node;
+			}
+
+			return new Seed(graph, members);
 		}
 	}
 }

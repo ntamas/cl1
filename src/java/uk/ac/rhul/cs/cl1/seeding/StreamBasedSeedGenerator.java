@@ -121,8 +121,8 @@ public class StreamBasedSeedGenerator extends SeedGenerator {
 			return (currentNodeSet != null);
 		}
 		
-		public MutableNodeSet next() {
-			MutableNodeSet result = currentNodeSet;
+		public Seed next() {
+			Seed result = new Seed(currentNodeSet);
 			processLine();
 			return result;
 		}
