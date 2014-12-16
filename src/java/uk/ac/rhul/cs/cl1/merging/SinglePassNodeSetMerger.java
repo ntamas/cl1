@@ -1,8 +1,12 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.cl1.merging;
 
 import java.util.Arrays;
 import java.util.SortedSet;
 
+import uk.ac.rhul.cs.cl1.NodeSet;
+import uk.ac.rhul.cs.cl1.similarity.SimilarityFunction;
+import uk.ac.rhul.cs.cl1.ValuedNodeSet;
+import uk.ac.rhul.cs.cl1.ValuedNodeSetList;
 import uk.ac.rhul.cs.graph.BreadthFirstSearch;
 import uk.ac.rhul.cs.graph.Graph;
 import uk.ac.rhul.cs.collections.Multiset;
@@ -36,7 +40,7 @@ public class SinglePassNodeSetMerger extends AbstractNodeSetMerger {
 	 * @param  threshold  the overlap threshold. Nodesets will be merged
 	 *                    if their overlap is at least as large as the
 	 *                    given threshold.
-	 * @param  monitor    a {@link TaskMonitor} to report our progress to
+	 * @param  monitor    a {@link uk.ac.rhul.cs.cl1.TaskMonitor} to report our progress to
 	 * 
 	 * @return  a new nodeset list where no two nodesets have an overlap
 	 *          larger than or equal to the given threshold, and no nodeset

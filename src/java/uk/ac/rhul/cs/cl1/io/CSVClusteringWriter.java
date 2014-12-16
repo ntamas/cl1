@@ -5,9 +5,9 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.List;
 
-import uk.ac.rhul.cs.cl1.DummyQualityFunction;
+import uk.ac.rhul.cs.cl1.quality.DummyQualityFunction;
 import uk.ac.rhul.cs.cl1.NodeSet;
-import uk.ac.rhul.cs.cl1.QualityFunction;
+import uk.ac.rhul.cs.cl1.quality.QualityFunction;
 import uk.ac.rhul.cs.utils.StringUtils;
 
 /**

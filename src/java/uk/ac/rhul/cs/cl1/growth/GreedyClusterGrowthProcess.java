@@ -1,9 +1,12 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.cl1.growth;
 
 import java.util.Arrays;
 import java.util.Set;
 
 import com.sosnoski.util.array.IntArray;
+import uk.ac.rhul.cs.cl1.MutableNodeSet;
+import uk.ac.rhul.cs.cl1.NodeSet;
+import uk.ac.rhul.cs.cl1.quality.QualityFunction;
 import uk.ac.rhul.cs.graph.TarjanCutVertexFinder;
 
 /**

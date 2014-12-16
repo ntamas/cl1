@@ -51,18 +51,25 @@ public class NodeSet implements Iterable<Integer>, Intersectable<NodeSet>, Sized
 	/**
 	 * Total weight of the internal edges
 	 */
-	protected double totalInternalEdgeWeight = 0.0;
+	public double totalInternalEdgeWeight = 0.0;
 	
 	/**
 	 * Total weight of the boundary edges
 	 */
-	protected double totalBoundaryEdgeWeight = 0.0;
+	public double totalBoundaryEdgeWeight = 0.0;
 	
 	/**
 	 * Significance of the nodeset
 	 */
 	protected Double significance = null;
-	
+
+	/**
+	 * Constructs a new, empty nodeset that does not belong to any graph.
+	 */
+	public NodeSet() {
+		this.graph = null;
+	}
+
 	/**
 	 * Constructs a new, empty nodeset on the given graph.
 	 * 

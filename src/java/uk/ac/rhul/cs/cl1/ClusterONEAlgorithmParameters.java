@@ -2,8 +2,11 @@ package uk.ac.rhul.cs.cl1;
 
 import java.io.Serializable;
 
+import uk.ac.rhul.cs.cl1.quality.CohesivenessFunction;
+import uk.ac.rhul.cs.cl1.quality.QualityFunction;
 import uk.ac.rhul.cs.cl1.seeding.SeedGenerator;
 import uk.ac.rhul.cs.cl1.seeding.UnusedNodesSeedGenerator;
+import uk.ac.rhul.cs.cl1.similarity.*;
 
 /**
  * Stores the parameters of a ClusterONE algorithm instance.
@@ -57,7 +60,7 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	 * 
 	 * When nonzero, each node is assumed to have an extra boundary weight equal
 	 * to this amount, no matter what the other internal nodes are. This can
-	 * be used to account for noise in the initial data; see {@link CohesivenessFunction}
+	 * be used to account for noise in the initial data; see {@link uk.ac.rhul.cs.cl1.quality.CohesivenessFunction}
 	 * for more details.
 	 */
 	protected double nodePenalty = 2.0;
@@ -144,7 +147,7 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	/**
 	 * Returns the penalty value associated with each node.
 	 * 
-	 * See {@link CohesivenessFunction} for more details about what it is.
+	 * See {@link uk.ac.rhul.cs.cl1.quality.CohesivenessFunction} for more details about what it is.
 	 * 
 	 * @return  the penalty value
 	 */
@@ -157,7 +160,7 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	 * 
 	 * The overlap threshold controls whether two given clusters will be merged in the final
 	 * result set. The complexes will be merged if their matching ratio or meet/min
-	 * coefficient (depending on the current {@link mergingMethod}) is larger than
+	 * coefficient (depending on the current {@link #mergingMethod}) is larger than
 	 * this ratio.
 	 * 
 	 * @return the overlap threshold
@@ -186,7 +189,7 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	/**
 	 * Returns the similarity function used to compare clusters.
 	 * 
-	 * This is indirectly specified by the value of {@link mergingMethod}.
+	 * This is indirectly specified by the value of {@link #mergingMethod}.
 	 * 
 	 * @throws ClusterONEException if the merging method is unknown
 	 */
@@ -299,7 +302,7 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	 * Sets the overlap threshold of the algorithm.
 	 * 
 	 * @param overlapThreshold the new overlap threshold
-	 * @see getOverlapThreshold()
+	 * @see #getOverlapThreshold()
 	 */
 	public void setOverlapThreshold(double overlapThreshold) {
 		this.overlapThreshold = Math.max(0, overlapThreshold);
@@ -308,8 +311,8 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	/**
 	 * Sets the seed generation method of the algorithm from a string specification
 	 * 
-	 * @param seedMethod the new seed generation method. Must be a specification
-	 *                   that is understood by {@link SeedGenerator.fromString}
+	 * @param seedMethodSpec the new seed generation method. Must be a specification
+	 *                       that is understood by {@link SeedGenerator#fromString(String)}
 	 */
 	public void setSeedGenerator(String seedMethodSpec) throws InstantiationException {
 		this.seedGenerator = SeedGenerator.fromString(seedMethodSpec); 
@@ -382,6 +385,7 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 		sb.append("Merging method: " + mergingMethod + "\n");
 		sb.append("Seed generator: " + seedGenerator + "\n");
 		sb.append("Similarity function: " + similarityFunction.getName() + "\n");
+		sb.append("Initial seeds kept: " + keepInitialSeeds + "\n");
 		
 		return sb.toString();
 	}

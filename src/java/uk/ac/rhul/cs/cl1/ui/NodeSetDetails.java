@@ -3,9 +3,9 @@ package uk.ac.rhul.cs.cl1.ui;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-import uk.ac.rhul.cs.cl1.CohesivenessFunction;
+import uk.ac.rhul.cs.cl1.quality.CohesivenessFunction;
 import uk.ac.rhul.cs.cl1.NodeSet;
-import uk.ac.rhul.cs.cl1.QualityFunction;
+import uk.ac.rhul.cs.cl1.quality.QualityFunction;
 
 /**
  * Detailed statistics about a nodeset.

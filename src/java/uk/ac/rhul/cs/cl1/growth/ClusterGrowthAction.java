@@ -1,7 +1,8 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.cl1.growth;
 
 import java.util.Arrays;
 
+import uk.ac.rhul.cs.cl1.MutableNodeSet;
 import uk.ac.rhul.cs.utils.StringUtils;
 
 /**

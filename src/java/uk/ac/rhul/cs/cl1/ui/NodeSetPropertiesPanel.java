@@ -12,7 +12,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import uk.ac.rhul.cs.cl1.NodeSet;
-import uk.ac.rhul.cs.cl1.QualityFunction;
+import uk.ac.rhul.cs.cl1.quality.QualityFunction;
 
 /**
  * A panel that shows some properties of a {@link NodeSet}

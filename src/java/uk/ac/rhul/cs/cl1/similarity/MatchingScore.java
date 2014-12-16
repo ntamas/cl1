@@ -1,4 +1,8 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.cl1.similarity;
+
+import uk.ac.rhul.cs.cl1.Intersectable;
+import uk.ac.rhul.cs.cl1.Sized;
+import uk.ac.rhul.cs.cl1.similarity.SimilarityFunction;
 
 /**
  * Calculates the matching score between two sets.
@@ -10,7 +14,7 @@ package uk.ac.rhul.cs.cl1;
  * 
  * @author ntamas
  */
-public class MatchingScore<T extends Object & Sized & Intersectable<? super T> > implements SimilarityFunction<T> {
+public class MatchingScore<T extends Object & Sized & Intersectable<? super T>> implements SimilarityFunction<T> {
 	public String getName() {
 		return "Matching score";
 	}

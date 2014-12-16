@@ -1,11 +1,14 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.cl1.similarity;
+
+import uk.ac.rhul.cs.cl1.Intersectable;
+import uk.ac.rhul.cs.cl1.Sized;
 
 /**
  * Calculates the Simpson coefficient between two node sets.
  * 
  * @author ntamas
  */
-public class SimpsonCoefficient<T extends Object & Sized & Intersectable<? super T> >
+public class SimpsonCoefficient<T extends Object & Sized & Intersectable<? super T>>
 implements SimilarityFunction<T> {
 	public String getName() {
 		return "Simpson coefficient";

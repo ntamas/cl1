@@ -1,9 +1,12 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.cl1.quality;
+
+import uk.ac.rhul.cs.cl1.MutableNodeSet;
+import uk.ac.rhul.cs.cl1.NodeSet;
 
 /**
  * Calculates the cohesiveness measure of a nodeset.
  * 
- * The cohesiveness of a {@link NodeSet} is defined as the total internal weight
+ * The cohesiveness of a {@link uk.ac.rhul.cs.cl1.NodeSet} is defined as the total internal weight
  * of the nodeset divided by the sum of the total internal and boundary weight
  * of the nodeset.
  * 

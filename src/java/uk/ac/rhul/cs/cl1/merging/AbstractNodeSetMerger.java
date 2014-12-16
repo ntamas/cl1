@@ -1,4 +1,7 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.cl1.merging;
+
+import uk.ac.rhul.cs.cl1.TaskMonitor;
+import uk.ac.rhul.cs.cl1.TaskMonitorSupport;
 
 /**
  * Abstract node set merger from which concrete node set mergers will derive.

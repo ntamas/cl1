@@ -14,9 +14,9 @@ import javax.swing.ImageIcon;
 import javax.swing.table.AbstractTableModel;
 
 import uk.ac.rhul.cs.cl1.ClusterONE;
-import uk.ac.rhul.cs.cl1.CohesivenessFunction;
+import uk.ac.rhul.cs.cl1.quality.CohesivenessFunction;
 import uk.ac.rhul.cs.cl1.NodeSet;
-import uk.ac.rhul.cs.cl1.QualityFunction;
+import uk.ac.rhul.cs.cl1.quality.QualityFunction;
 import uk.ac.rhul.cs.cl1.ValuedNodeSet;
 import uk.ac.rhul.cs.graph.FruchtermanReingoldLayoutAlgorithm;
 import uk.ac.rhul.cs.graph.Graph;

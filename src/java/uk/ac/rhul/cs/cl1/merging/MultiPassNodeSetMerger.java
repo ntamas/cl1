@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.cl1.merging;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -7,6 +7,10 @@ import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.TreeMap;
 
+import uk.ac.rhul.cs.cl1.NodeSet;
+import uk.ac.rhul.cs.cl1.similarity.SimilarityFunction;
+import uk.ac.rhul.cs.cl1.ValuedNodeSet;
+import uk.ac.rhul.cs.cl1.ValuedNodeSetList;
 import uk.ac.rhul.cs.graph.Graph;
 import uk.ac.rhul.cs.collections.HashMultimap;
 import uk.ac.rhul.cs.collections.Multiset;
@@ -53,14 +57,14 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 	 * end of the merging process, the following should hold:
 	 * 
 	 *   - The sum of values of a given node in the resulting list of
-	 *     {@link ValuedNodeSet}s must be equal to the sum of values of
-	 *     the same node in the incoming {@link ValuedNodeSet}.
+	 *     {@link uk.ac.rhul.cs.cl1.ValuedNodeSet}s must be equal to the sum of values of
+	 *     the same node in the incoming {@link uk.ac.rhul.cs.cl1.ValuedNodeSet}.
 	 *     
 	 *   - The similarity score between any pair of nodesets must be
 	 *     smaller than the threshold in the result.
 	 *     
 	 * Verification mode turns on these checks. When the resulting list of
-	 * {@link ValuedNodeSet} instances fail these checks, this means that
+	 * {@link uk.ac.rhul.cs.cl1.ValuedNodeSet} instances fail these checks, this means that
 	 * there is a bug in the merging algorithm.
 	 */
 	protected VerificationMode verificationMode = VerificationMode.VERIFY_AND_MINIMIZE;

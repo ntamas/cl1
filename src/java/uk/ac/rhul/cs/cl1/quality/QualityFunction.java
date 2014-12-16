@@ -1,8 +1,11 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.cl1.quality;
+
+import uk.ac.rhul.cs.cl1.MutableNodeSet;
+import uk.ac.rhul.cs.cl1.NodeSet;
 
 /**
  * Common interface for classes that calculate some quality measure
- * of a {@link NodeSet}.
+ * of a {@link uk.ac.rhul.cs.cl1.NodeSet}.
  * 
  * @author tamas
  */

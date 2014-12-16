@@ -4,6 +4,9 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import uk.ac.rhul.cs.cl1.merging.MultiPassNodeSetMerger;
+import uk.ac.rhul.cs.cl1.similarity.JaccardSimilarity;
+import uk.ac.rhul.cs.cl1.similarity.SimilarityFunction;
 import uk.ac.rhul.cs.graph.Graph;
 
 public class MultiPassNodeSetMergerTest {

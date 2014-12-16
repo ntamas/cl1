@@ -3,6 +3,7 @@ package uk.ac.rhul.cs.cl1;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import uk.ac.rhul.cs.cl1.similarity.SimpsonCoefficient;
 
 public class SimpsonCoefficientTest extends SimilarityTestBase {
 	@Test

@@ -6,8 +6,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringReader;
 
-import uk.ac.rhul.cs.cl1.ClusterGrowthProcess;
-import uk.ac.rhul.cs.cl1.MutableNodeSet;
+import uk.ac.rhul.cs.cl1.growth.ClusterGrowthProcess;
 import uk.ac.rhul.cs.graph.Graph;
 import uk.ac.rhul.cs.graph.GraphAlgorithm;
 import uk.ac.rhul.cs.utils.StringUtils;

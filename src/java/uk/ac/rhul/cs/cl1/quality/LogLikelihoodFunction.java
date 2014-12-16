@@ -1,4 +1,7 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.cl1.quality;
+
+import uk.ac.rhul.cs.cl1.MutableNodeSet;
+import uk.ac.rhul.cs.cl1.NodeSet;
 
 /**
  * Calculates the log-likelihood of a nodeset according to a simple blockmodel.

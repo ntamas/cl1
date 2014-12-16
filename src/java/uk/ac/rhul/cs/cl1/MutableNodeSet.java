@@ -44,7 +44,7 @@ public class MutableNodeSet extends NodeSet {
 	 * edges incident on the node. For nodes outside the set, this array stores
 	 * the total weight of boundary edges incident on the node.
 	 */
-	protected double[] inWeights = null;
+	public double[] inWeights = null;
 	
 	/**
 	 * Stores the total weight of each node, i.e. the sum of all the weights
@@ -57,7 +57,7 @@ public class MutableNodeSet extends NodeSet {
 	 *     of <em>external</em> edges incident on the node.</li>
 	 * </ul>
 	 */
-	protected double[] totalWeights = null;
+	public double[] totalWeights = null;
 	
 	/**
 	 * Constructs a new, empty mutable nodeset on the given graph.

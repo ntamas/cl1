@@ -20,6 +20,13 @@ import java.util.Collection;
  */
 public class Seed {
     /**
+     * Constructs a seed that is not associated to any graph and has no members.
+     */
+    public Seed() {
+        this(null, null);
+    }
+
+    /**
      * Constructs a new seed on the given graph with the given members.
      *
      * @param  graph    the graph

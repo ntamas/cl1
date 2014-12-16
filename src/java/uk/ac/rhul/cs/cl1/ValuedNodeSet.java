@@ -21,7 +21,15 @@ public class ValuedNodeSet extends NodeSet {
 	 * Storage area for the node values
 	 */
 	protected ObjectIntHashMap values;
-	
+
+	/**
+	 * Constructs a new, empty valued nodeset that does not belong to a graph.
+	 */
+	public ValuedNodeSet() {
+		super();
+		init();
+	}
+
 	/**
 	 * Constructs a new, empty valued nodeset on the given graph.
 	 * 

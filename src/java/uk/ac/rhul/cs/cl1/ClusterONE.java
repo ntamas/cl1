@@ -2,16 +2,10 @@ package uk.ac.rhul.cs.cl1;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
-import uk.ac.rhul.cs.cl1.filters.DensityFilter;
-import uk.ac.rhul.cs.cl1.filters.FilterChain;
-import uk.ac.rhul.cs.cl1.filters.FluffingFilter;
-import uk.ac.rhul.cs.cl1.filters.HaircutFilter;
-import uk.ac.rhul.cs.cl1.filters.KCoreFilter;
-import uk.ac.rhul.cs.cl1.filters.SizeFilter;
+import uk.ac.rhul.cs.cl1.growth.ClusterGrowthWorker;
+import uk.ac.rhul.cs.cl1.merging.AbstractNodeSetMerger;
 import uk.ac.rhul.cs.cl1.seeding.Seed;
 import uk.ac.rhul.cs.cl1.seeding.SeedGenerator;
 import uk.ac.rhul.cs.cl1.seeding.SeedIterator;
@@ -124,7 +118,7 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void>, TaskMo
 	public void run() throws ClusterONEException {
 		Double minDensity = parameters.getMinDensity();
 		AbstractNodeSetMerger merger;
-		MutableNodeSet cluster;
+		ValuedNodeSet cluster;
 
 		ValuedNodeSetList result = new ValuedNodeSetList();
 		HashSet<NodeSet> addedNodeSets = new HashSet<NodeSet>();
@@ -151,34 +145,30 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void>, TaskMo
 					minDensity = 0.5;
 			}
 		}
-		
+
+		/* Create the input and output queue for the workers */
+		LinkedBlockingQueue<Seed> seedQueue = new LinkedBlockingQueue<Seed>();
+		LinkedBlockingQueue<ValuedNodeSet> clusterQueue = new LinkedBlockingQueue<ValuedNodeSet>();
+
+		/* Create a single worker that we will run on a separate thread */
+		ClusterGrowthWorker worker = new ClusterGrowthWorker(graph, parameters, minDensity,
+				seedQueue, clusterQueue);
+		worker.setDebugMode(debugMode);
+
+		/* Create an executor service that will run the worker */
+		ExecutorService executor = Executors.newSingleThreadExecutor();
+		executor.execute(worker);
+
 		/* Get the seed generator from the parameters */
 		SeedGenerator seedGenerator = parameters.getSeedGenerator();	
 		seedGenerator.setGraph(graph);
 		
-		/* Get the quality function from the parameters */
-		QualityFunction qualityFunc = parameters.getQualityFunction();
-		
-		/* Construct a filter chain to postprocess the filters */
-		FilterChain postFilters = new FilterChain();
-		if (parameters.getHaircutThreshold() > 0)
-			postFilters.add(new HaircutFilter(parameters.getHaircutThreshold(), true));
-		if (parameters.isFluffClusters())
-			postFilters.add(new FluffingFilter());
-		postFilters.add(new SizeFilter(parameters.getMinSize()));
-		postFilters.add(new DensityFilter(minDensity));
-		if (parameters.getKCoreThreshold() > 0)
-			postFilters.add(new KCoreFilter(parameters.getKCoreThreshold()));
-
-		/* Construct a mutable node set that we will re-use in the growth process for each seed */
-		cluster = new MutableNodeSet(graph);
-
 		/* For each seed, start growing a cluster */
 		monitor.setStatus("Growing clusters from seeds...");
 		monitor.setPercentCompleted(0);
-		
+
 		SeedIterator it = seedGenerator.iterator();
-		while (it.hasNext()) {
+		while (!shouldStop && it.hasNext()) {
 			/* Get the next seed */
 			Seed seed = it.next();
 			if (seed == null) {
@@ -187,52 +177,73 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void>, TaskMo
 				 * thread is interrupted for whatever reason.
 				 */
 				halt();
-				return;
+				continue;
 			}
 
-			/* Initialize the node set from the seed */
-			seed.initializeMutableNodeSet(cluster);
+			/* Post the seed to the worker */
+			try {
+				seedQueue.put(seed);
+			} catch (InterruptedException ex) {
+				halt();
+				break;
+			}
 
-			/* Construct a growth process from the seed */
-			GreedyClusterGrowthProcess growthProcess =
-				new GreedyClusterGrowthProcess(cluster, minDensity, qualityFunc);
-			growthProcess.setDebugMode(debugMode);
-			growthProcess.setKeepInitialSeeds(parameters.isKeepInitialSeeds());
-			
-			/* Run the growth process */
-			while (!shouldStop && growthProcess.step());
-			
 			/* Were we interrupted by the user? */
 			if (shouldStop)
-				return;
-			
-			/* Do a haircut operation, then check the size and density of the cluster */
-			if (!postFilters.filter(cluster))
-				continue;
-			
-			/* Convert the cluster to a valued nodeset */
-			ValuedNodeSet frozenCluster = new ValuedNodeSet(cluster, 1);
+				break;
+
+			/* Get the result from the worker */
+			try {
+				cluster = clusterQueue.take();
+			} catch (InterruptedException ex) {
+				halt();
+				break;
+			}
+
+			/* Were we interrupted by the user? */
+			if (shouldStop)
+				break;
 
 			/* Add the cluster if we haven't found it before */
-			if (!addedNodeSets.contains(frozenCluster)) {
-				result.add(frozenCluster);
-				addedNodeSets.add(frozenCluster);
-				it.processFoundCluster(frozenCluster);
+			if (cluster != ClusterGrowthWorker.EMPTY_CLUSTER && !addedNodeSets.contains(cluster)) {
+				result.add(cluster);
+				addedNodeSets.add(cluster);
+				it.processFoundCluster(cluster);
 			}
 			
 			/* Increase counter, report progress */
 			monitor.setPercentCompleted((int)it.getPercentCompleted());
 		}
+
+		/* Okay, we are done */
 		monitor.setPercentCompleted(100);
 		
 		/* Throw away the addedNodeSets hash, we don't need it anymore */
 		addedNodeSets.clear();
 
+		/* Post a signal to the workers to let them know that we are ready */
+		while (true) {
+			try {
+				seedQueue.put(ClusterGrowthWorker.NO_MORE_SEEDS);
+				break;
+			} catch (InterruptedException ignored) {
+			}
+		}
+
 		/* Merge highly overlapping clusters */
 		merger.setTaskMonitor(monitor);
-		this.result = merger.mergeOverlapping(result,
-				parameters.getSimilarityFunction(),
+		this.result = merger.mergeOverlapping(result, parameters.getSimilarityFunction(),
 				parameters.getOverlapThreshold());
+
+		/* Wait for the workers to terminate. 1 day is a reasonable upper bound on the timeout ;) */
+		executor.shutdown();
+		while (true) {
+			try {
+				executor.awaitTermination(1, TimeUnit.DAYS);
+				break;
+			} catch (InterruptedException ignored) {
+			}
+		}
 	}
 	
 	/**

@@ -8,7 +8,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 
 import uk.ac.rhul.cs.cl1.NodeSet;
-import uk.ac.rhul.cs.cl1.QualityFunction;
+import uk.ac.rhul.cs.cl1.quality.QualityFunction;
 
 /**
  * A single cluster in the single run of the ClusterONE algorithm.

@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
-import uk.ac.rhul.cs.cl1.QualityFunction;
+import uk.ac.rhul.cs.cl1.quality.QualityFunction;
 import uk.ac.rhul.cs.cl1.ValuedNodeSet;
 
 /**
