@@ -19,28 +19,20 @@ public class EveryEdgeSeedGenerator extends SeedGenerator {
 	protected class IteratorImpl extends SeedIterator {
 		/** Iterator over the edges of the graph */
 		Iterator<Edge> edgeIt;
-		
+
 		/** Number of edges that will be generated */
-		private double totalSteps;
-		
-		/** Number of edges generated so far */
-		private int steps;
+		private int totalSteps;
 
 		/** Constructs the iterator */
 		IteratorImpl() {
 			edgeIt = graph.iterator();
-			steps = 0;
 			totalSteps = graph.getEdgeCount();
 		}
 
-		/**
-		 * Returns the percentage of edges processed so far.
-		 */
-		@Override
-		public double getPercentCompleted() {
-			return 100.0 * steps / totalSteps;
+		public int getEstimatedLength() {
+			return totalSteps;
 		}
-		
+
 		public boolean hasNext() {
 			return edgeIt.hasNext();
 		}
@@ -48,7 +40,6 @@ public class EveryEdgeSeedGenerator extends SeedGenerator {
 		public Seed next() {
 			Edge edge = edgeIt.next();
 			Seed result = new Seed(graph, edge.source, edge.target);
-			steps++;
 			return result;
 		}
 	}

@@ -63,8 +63,8 @@ public class SinglePassNodeSetMerger extends AbstractNodeSetMerger {
 		overlapGraph.createNodes(n);
 		
 		if (taskMonitor != null) {
-			taskMonitor.setPercentCompleted(0);
 			taskMonitor.setStatus("Finding highly overlapping clusters...");
+			taskMonitor.setPercentCompleted(0);
 		}
 		
 		for (i = 0; i < n; i++) {
@@ -83,8 +83,8 @@ public class SinglePassNodeSetMerger extends AbstractNodeSetMerger {
 		}
 		
 		if (taskMonitor != null) {
-			taskMonitor.setPercentCompleted(0);
 			taskMonitor.setStatus("Merging highly overlapping clusters...");
+			taskMonitor.setPercentCompleted(0);
 		}
 		
 		boolean[] visited = new boolean[n];

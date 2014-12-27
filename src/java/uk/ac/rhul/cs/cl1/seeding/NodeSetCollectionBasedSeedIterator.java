@@ -15,20 +15,16 @@ public class NodeSetCollectionBasedSeedIterator extends SeedIterator {
 	/** Iterator that will be used to iterate over the originally supplied NodeSet instances */
 	private Iterator<NodeSet> nodeSetIterator = null;
 	
-	/** Number of seeds generated so far */
-	private int processed = 0;
-	
 	/** Total number of seeds that will be generated */
 	private int size = 0;
 	
 	public NodeSetCollectionBasedSeedIterator(Collection<NodeSet> nodeSets) {
-		processed = 0;
 		size = nodeSets.size();
 		nodeSetIterator = nodeSets.iterator();
 	}
 	
-	public double getPercentCompleted() {
-		return 100.0 * processed / size;
+	public int getEstimatedLength() {
+		return size;
 	}
 	
 	public boolean hasNext() {
@@ -36,7 +32,6 @@ public class NodeSetCollectionBasedSeedIterator extends SeedIterator {
 	}
 
 	public Seed next() {
-		processed++;
 		return new Seed(nodeSetIterator.next());
 	}
 }

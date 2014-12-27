@@ -254,9 +254,10 @@ public class ClusterONEAlgorithmParametersPanel extends JPanel {
 		result.setKeepInitialSeeds(keepInitialSeedsCheckBox.isSelected());
 		
 		try {
-			if (seedMethodCombo.getSelectedIndex() == 0)
-				result.setSeedGenerator("unused_nodes");
-			else if (seedMethodCombo.getSelectedIndex() == 1)
+			if (seedMethodCombo.getSelectedIndex() == 0) {
+				result.setSeedGenerator("nodes");
+				result.setRejectSeedsWithOnlyUsedNodes(true);
+			} else if (seedMethodCombo.getSelectedIndex() == 1)
 				result.setSeedGenerator("nodes");
 			else if (seedMethodCombo.getSelectedIndex() == 2)
 				result.setSeedGenerator("edges");

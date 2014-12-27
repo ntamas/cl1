@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 import uk.ac.rhul.cs.cl1.quality.CohesivenessFunction;
 import uk.ac.rhul.cs.cl1.quality.QualityFunction;
+import uk.ac.rhul.cs.cl1.seeding.EveryNodeSeedGenerator;
 import uk.ac.rhul.cs.cl1.seeding.SeedGenerator;
-import uk.ac.rhul.cs.cl1.seeding.UnusedNodesSeedGenerator;
 import uk.ac.rhul.cs.cl1.similarity.*;
 
 /**
@@ -90,17 +90,29 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	 * </ul>
 	 */
 	protected String mergingMethod = "single";
-	
+
+	/**
+	 * Whether to reject seeds from the seed generator if all the nodes in the seed have
+	 * already been made part of a cluster before.
+	 */
+	protected boolean rejectSeedsWithOnlyUsedNodes = false;
+
 	/**
 	 * The seed generation method.
 	 */
-	protected SeedGenerator seedGenerator = new UnusedNodesSeedGenerator();
+	protected SeedGenerator seedGenerator = new EveryNodeSeedGenerator();
 	
 	/**
 	 * Similarity function used by the complex merging methods.
 	 */
 	protected SimilarityFunction<NodeSet> similarityFunction = new MatchingScore<NodeSet>();
-	
+
+	/**
+	 * The number of threads to use during the cluster growth phase. Zero or negative
+	 * numbers mean to select it automatically based on the number of CPU cores.
+	 */
+	protected int numThreads = 0;
+
 	/**
 	 * Returns the k-core threshold used by the algorithm
 	 * 
@@ -145,6 +157,16 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	}
 
 	/**
+	 * Returns the number of threads to use during the algorithm. May return zero,
+	 * in which case the algorithm should use the number of CPU cores as a guideline.
+	 *
+	 * @return the number of threads to use
+	 */
+	public int getNumThreads() {
+		return numThreads;
+	}
+
+	/**
 	 * Returns the penalty value associated with each node.
 	 * 
 	 * See {@link uk.ac.rhul.cs.cl1.quality.CohesivenessFunction} for more details about what it is.
@@ -168,7 +190,15 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	public double getOverlapThreshold() {
 		return overlapThreshold;
 	}
-	
+
+	/**
+	 * Returns whether the algorithm should reject seeds from the seed generator if the seed
+	 * contains only nodes that have been seen before in other clusters or seeds.
+	 */
+	public boolean shouldRejectSeedsWithOnlyUsedNodes() {
+		return rejectSeedsWithOnlyUsedNodes;
+	}
+
 	/**
 	 * Returns the quality function that will be used by the algorithm.
 	 * 
@@ -297,7 +327,15 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	public void setNodePenalty(double penalty) {
 		this.nodePenalty = penalty;
 	}
-	
+
+	/**
+	 * Sets the number of threads to use during the algorithm. Zero means to use the number of
+	 * CPU cores as a guideline. Negative numbers are treated as zero.
+	 */
+	public void setNumThreads(int numThreads) {
+		this.numThreads = Math.max(0, numThreads);
+	}
+
 	/**
 	 * Sets the overlap threshold of the algorithm.
 	 * 
@@ -309,13 +347,21 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 	}
 
 	/**
+	 * Sets whether the algorithm will reject seeds that contain only nodes that have already
+	 * been made part of a cluster grown from a different (earlier) seed.
+	 */
+	public void setRejectSeedsWithOnlyUsedNodes(boolean rejectSeedsWithOnlyUsedNodes) {
+		this.rejectSeedsWithOnlyUsedNodes = rejectSeedsWithOnlyUsedNodes;
+	}
+
+	/**
 	 * Sets the seed generation method of the algorithm from a string specification
 	 * 
 	 * @param seedMethodSpec the new seed generation method. Must be a specification
 	 *                       that is understood by {@link SeedGenerator#fromString(String)}
 	 */
 	public void setSeedGenerator(String seedMethodSpec) throws InstantiationException {
-		this.seedGenerator = SeedGenerator.fromString(seedMethodSpec); 
+		setSeedGenerator(SeedGenerator.fromString(seedMethodSpec));
 	}
 
 	/**
@@ -386,6 +432,7 @@ public class ClusterONEAlgorithmParameters implements Serializable {
 		sb.append("Seed generator: " + seedGenerator + "\n");
 		sb.append("Similarity function: " + similarityFunction.getName() + "\n");
 		sb.append("Initial seeds kept: " + keepInitialSeeds + "\n");
+		sb.append("Reject seeds with only used nodes: " + rejectSeedsWithOnlyUsedNodes + "\n");
 		
 		return sb.toString();
 	}

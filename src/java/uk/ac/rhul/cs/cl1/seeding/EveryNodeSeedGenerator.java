@@ -1,11 +1,14 @@
 package uk.ac.rhul.cs.cl1.seeding;
 
-import uk.ac.rhul.cs.cl1.MutableNodeSet;
 import uk.ac.rhul.cs.graph.Graph;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Seed generator class where every single node of a graph will be generated as
- * a seed nodeset.
+ * a seed nodeset, in decreasing order of their degrees.
  * 
  * @author tamas
  */
@@ -14,32 +17,44 @@ public class EveryNodeSeedGenerator extends SeedGenerator {
 	 * Internal iterator class that will be used when calling iterator()
 	 */
 	private class IteratorImpl extends SeedIterator {
+		/** Queue containing the nodes to return in sorted order */
+		private ArrayList<Integer> nodes;
 		/** Node counter */
-		private int i;
+		private int nextNodeIndex;
 		/** Maximum node count */
-		private int n;
+		private int totalSteps;
 
 		/** Constructs the iterator */
 		IteratorImpl() {
-			n = graph.getNodeCount();
-			i = 0;
+			totalSteps = graph.getNodeCount();
+
+			nodes = new ArrayList<Integer>();
+			for (int i = 0; i < totalSteps; i++) {
+				nodes.add(i);
+			}
+
+			Collections.sort(nodes, new Comparator<Integer>() {
+				public int compare(Integer foo, Integer bar) {
+					// Compare by degrees and then by ID.
+					int diff = graph.getDegree(bar) - graph.getDegree(foo);
+					return (diff != 0) ? diff : foo-bar;
+				}
+			});
+
+			nextNodeIndex = 0;
 		}
-		
-		/**
-		 * Returns the percentage of nodes processed so far.
-		 */
-		@Override
-		public double getPercentCompleted() {
-			return 100.0 * i / n;
+
+		public int getEstimatedLength() {
+			return totalSteps;
 		}
-		
+
 		public boolean hasNext() {
-			return i < n;
+			return nextNodeIndex < totalSteps;
 		}
 
 		public Seed next() {
-			Seed result = new Seed(graph, i);
-			i++;
+			Seed result = new Seed(graph, nodes.get(nextNodeIndex));
+			nextNodeIndex++;
 			return result;
 		}
 	}

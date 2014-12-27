@@ -60,8 +60,6 @@ implements Iterable<Seed>, Serializable {
 	 * 
 	 * <ul>
 	 * <li><tt>nodes</tt> - generates a singleton seed for each node of the graph</li>
-	 * <li><tt>unused_nodes</tt> - generates a singleton seed for each node of the graph
-	 *     if it wasn't found so far as part of a cluster</li>
 	 * <li><tt>edges</tt> - generates a seed containing the two endpoints for each edge of the graph</li>
 	 * <li><tt>cliques</tt> - generates a seed for every maximal clique in the graph</li>
 	 * <li><tt>stdin</tt> - reads seeds from the standard input. Each line in the standard
@@ -82,9 +80,6 @@ implements Iterable<Seed>, Serializable {
 	public static SeedGenerator fromString(String specification, Graph graph) throws InstantiationException {
 		if (specification.equals("nodes"))
 			return new EveryNodeSeedGenerator(graph);
-		
-		if (specification.equals("unused_nodes"))
-			return new UnusedNodesSeedGenerator(graph);
 		
 		if (specification.equals("edges"))
 			return new EveryEdgeSeedGenerator(graph);

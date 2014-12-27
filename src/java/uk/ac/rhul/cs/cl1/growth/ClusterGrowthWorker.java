@@ -8,12 +8,18 @@ import uk.ac.rhul.cs.cl1.quality.QualityFunction;
 import uk.ac.rhul.cs.cl1.seeding.Seed;
 import uk.ac.rhul.cs.graph.Graph;
 import uk.ac.rhul.cs.graph.GraphAlgorithm;
+import uk.ac.rhul.cs.utils.Ordered;
 
 import java.util.concurrent.BlockingQueue;
 
 /**
  * Worker object that receives seeds from a synchronized queue, grows a cluster from
  * each of them and posts the clusters to another queue.
+ *
+ * The input queue of the worker contains {@link Ordered&lt;Seed&gt;> objects; in other words,
+ * each seed is accompanied with a sequence number. The same sequence number must be passed
+ * back in the output queue together with the cluster generated from the seed. Accordingly,
+ * the output queue of the worker accepts {@link Ordered&lt;ValuedNodeSet&gt;} objects.
  */
 public class ClusterGrowthWorker extends GraphAlgorithm implements Runnable {
     /**
@@ -32,12 +38,12 @@ public class ClusterGrowthWorker extends GraphAlgorithm implements Runnable {
     /**
      * The input queue where the seeds to process are posted to the worker.
      */
-    private BlockingQueue<Seed> inputQueue;
+    private BlockingQueue<Ordered<Seed>> inputQueue;
 
     /**
      * The output queue where the worker has to post the clusters it has grown.
      */
-    private BlockingQueue<ValuedNodeSet> outputQueue;
+    private BlockingQueue<Ordered<ValuedNodeSet>> outputQueue;
 
     /**
      * A mutable node set that the worker uses (and reuses) during the growth process.
@@ -77,8 +83,8 @@ public class ClusterGrowthWorker extends GraphAlgorithm implements Runnable {
      * @param  outputQueue  the output queue that the worker has to write to
      */
     public ClusterGrowthWorker(Graph graph, ClusterONEAlgorithmParameters parameters,
-                               double minDensity, BlockingQueue<Seed> inputQueue,
-                               BlockingQueue<ValuedNodeSet> outputQueue) {
+                               double minDensity, BlockingQueue<Ordered<Seed>> inputQueue,
+                               BlockingQueue<Ordered<ValuedNodeSet>> outputQueue) {
         super(graph);
         this.parameters = parameters;
         this.minDensity = minDensity;
@@ -92,7 +98,7 @@ public class ClusterGrowthWorker extends GraphAlgorithm implements Runnable {
 
 		// Construct a filter chain to postprocess the filters
         postFilters = new FilterChain();
-        if (parameters.getHaircutThreshold() > 0) {
+        if (parameters.isHaircutNeeded()) {
             postFilters.add(new HaircutFilter(parameters.getHaircutThreshold(), true));
         }
         if (parameters.isFluffClusters()) {
@@ -110,8 +116,10 @@ public class ClusterGrowthWorker extends GraphAlgorithm implements Runnable {
 
     @Override
     public void run() {
+        Ordered<Seed> orderedSeed;
         Seed seed;
         ValuedNodeSet result;
+        boolean growthProcessRunning;
 
         if (cluster == null) {
             prepare();
@@ -120,14 +128,15 @@ public class ClusterGrowthWorker extends GraphAlgorithm implements Runnable {
         // Enter the main loop
         while (!shouldStop) {
             try {
-                seed = inputQueue.take();
+                orderedSeed = inputQueue.take();
+                seed = orderedSeed.object;
                 if (seed == ClusterGrowthWorker.NO_MORE_SEEDS) {
                     // This is how the main thread lets us know that there are no more seeds
                     // to process. We put it back to the queue so the next worker is notified
                     // and then exit.
                     while (true) {
                         try {
-                            inputQueue.put(seed);
+                            inputQueue.put(orderedSeed);
                             break;
                         } catch (InterruptedException ignored) {
                         }
@@ -150,7 +159,10 @@ public class ClusterGrowthWorker extends GraphAlgorithm implements Runnable {
             growthProcess.setKeepInitialSeeds(parameters.isKeepInitialSeeds());
 
 			/* Run the growth process */
-            while (!shouldStop && growthProcess.step());
+            growthProcessRunning = true;
+            while (!shouldStop && growthProcessRunning) {
+                growthProcessRunning = growthProcess.step();
+            }
 
 			/* Were we interrupted by the user? */
             if (shouldStop)
@@ -167,7 +179,7 @@ public class ClusterGrowthWorker extends GraphAlgorithm implements Runnable {
 			/* Post the cluster back to the main thread */
             while (true) {
                 try {
-                    outputQueue.put(result);
+                    outputQueue.put(new Ordered<ValuedNodeSet>(orderedSeed.sequenceNumber, result));
                     break;
                 } catch (InterruptedException ignored) {
                 }

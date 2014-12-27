@@ -51,9 +51,11 @@ public class CommandLineApplication {
 		String inputFormatSpec = null;
 		String outputFormatSpec = null;
 		GraphReaderFactory.Format inputFormat = null;
-		ClusteringWriterFactory.Format outputFormat = null;
-		ClusteringWriter outputWriter = null;
-		
+		ClusteringWriterFactory.Format outputFormat;
+		ClusteringWriter outputWriter;
+
+		params.setRejectSeedsWithOnlyUsedNodes(true);
+
 		try {
 			cmd = parser.parse(this.options, args);
 			
@@ -79,7 +81,7 @@ public class CommandLineApplication {
 			if (cmd.hasOption("max-overlap"))
 				params.setOverlapThreshold(Double.parseDouble(cmd.getOptionValue("max-overlap")));
 			if (cmd.hasOption("merge-method"))
-				params.setMergingMethodName(cmd.getOptionValue("merge-method").toString());
+				params.setMergingMethodName(cmd.getOptionValue("merge-method"));
 			if (cmd.hasOption("min-density")) {
 				String value = cmd.getOptionValue("min-density");
 				if (value == null || value.equalsIgnoreCase("auto"))
@@ -99,15 +101,33 @@ public class CommandLineApplication {
 				outputFormatSpec = cmd.getOptionValue("output-format");
 			if (cmd.hasOption("penalty"))
 				params.setNodePenalty(Double.parseDouble(cmd.getOptionValue("penalty")));
-			if (cmd.hasOption("seed-method"))
-				params.setSeedGenerator(cmd.getOptionValue("seed-method").toString());
+			if (cmd.hasOption("seed-method")) {
+				// Handle legacy unused_nodes specification here because setSeedGenerator()
+				// does not understand it any more.
+				// TODO: show deprecation warning
+				if ("unused_nodes".equals(cmd.getOptionValue("seed-method"))) {
+					params.setSeedGenerator("nodes");
+					params.setRejectSeedsWithOnlyUsedNodes(true);
+				} else {
+					params.setSeedGenerator(cmd.getOptionValue("seed-method"));
+					params.setRejectSeedsWithOnlyUsedNodes(false);
+				}
+			}
 			if (cmd.hasOption("similarity"))
-				params.setSimilarityFunction(cmd.getOptionValue("similarity").toString());
+				params.setSimilarityFunction(cmd.getOptionValue("similarity"));
+			if (cmd.hasOption("num-threads")) {
+				String numThreadsValue = cmd.getOptionValue("num-threads");
+				if ("auto".equals(numThreadsValue)) {
+					params.setNumThreads(0);
+				} else {
+					params.setNumThreads(Integer.parseInt(numThreadsValue));
+				}
+			}
 		} catch (ParseException ex) {
 			System.err.println("Failed to parse command line options. Reason: " + ex.getMessage());
 			return 1;
 		} catch (InstantiationException ex) {
-			System.err.println("Failed to interpret string: "+cmd.getOptionValue("seed-method").toString());
+			System.err.println("Failed to interpret string: "+cmd.getOptionValue("seed-method"));
 			ex.printStackTrace();
 			return 1;
 		}
@@ -155,7 +175,7 @@ public class CommandLineApplication {
 		pauseDuringProfiling("Press Enter to start reading the input file...");
 
 		// Read the input file
-		Graph graph = null;
+		Graph graph;
 		long startTime = System.currentTimeMillis();
 		try {
 			graph = loadGraph(cmd.getArgs()[0], inputFormat);
@@ -274,8 +294,8 @@ public class CommandLineApplication {
 		
 		/* seeding method option (advanced) */
 		options.addOption(OptionBuilder.withLongOpt("seed-method")
-				 .withDescription("specifies the seed generation method to use")
-				 .withType(String.class).hasArg().create());
+				.withDescription("specifies the seed generation method to use")
+				.withType(String.class).hasArg().create());
 		
 		/* similarity function option (advanced) */
 		options.addOption(OptionBuilder.withLongOpt("similarity")
@@ -294,7 +314,12 @@ public class CommandLineApplication {
 		/* profiling mode option (advanced) */
 		options.addOption(OptionBuilder.withLongOpt("profile")
 				.withDescription("turns on the profiling mode").withType(Boolean.class).create());
-		
+
+		/* number of threads (advanced) */
+		options.addOption(OptionBuilder.withLongOpt("num-threads")
+				.withDescription("specifies the number of threads to use during the growth process (default=auto)")
+				.withType(String.class).hasArg().create());
+
 		/* skip the merging phase (useful for debugging only) */
 		options.addOption(OptionBuilder.withLongOpt("no-merge")
 				.withDescription("don't merge highly overlapping clusters")
@@ -384,7 +409,7 @@ public class CommandLineApplication {
 	/**
 	 * Starts the command line version of ClusterONE
 	 * 
-	 * @param args
+	 * @param args  the command line arguments
 	 */
 	public static void main(String[] args) {
 		CommandLineApplication app = new CommandLineApplication();

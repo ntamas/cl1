@@ -43,7 +43,7 @@ public class FileBasedSeedGenerator extends SeedGenerator {
 	/**
 	 * Constructs a seed generator backed by the given file
 	 */
-	public FileBasedSeedGenerator(Graph graph, String filename) throws FileNotFoundException, IOException {
+	public FileBasedSeedGenerator(Graph graph, String filename) throws IOException {
 		super(graph);
 		
 		this.filename = filename;
@@ -51,7 +51,7 @@ public class FileBasedSeedGenerator extends SeedGenerator {
 		/* Count the number of seeds */
 		File f = new File(this.filename);
 		LineNumberReader reader = new LineNumberReader(new FileReader(f));
-		String nextLine = null;
+		String nextLine;
 		
 		while ((nextLine = reader.readLine()) != null) {
 			if ("*".equals(nextLine))
@@ -155,8 +155,12 @@ public class FileBasedSeedGenerator extends SeedGenerator {
 				readNextLine();
 				
 				/* Check whether the nodeset is non-empty and connected */
-				isConnected = currentNodeSet.size() > 0 && currentNodeSet.isConnected();
-				
+				if (areDisconnectedSeedsIgnored()) {
+					isConnected = currentNodeSet.size() > 0 && currentNodeSet.isConnected();
+				} else {
+					isConnected = true;
+				}
+
 				if (!isConnected) {
 					currentNodeSet.clear();
 					if (line == null) {

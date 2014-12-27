@@ -138,8 +138,8 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 		HashMultimap<ValuedNodeSet, NodeSetPair> nodesetsToPairs = new HashMultimap<ValuedNodeSet, NodeSetPair>();
 		
 		if (taskMonitor != null) {
-			taskMonitor.setPercentCompleted(0);
 			taskMonitor.setStatus("Finding highly overlapping clusters...");
+			taskMonitor.setPercentCompleted(0);
 		}
 		
 		for (i = 0; i < n; i++) {
@@ -191,8 +191,8 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 		
 		// Stage 2: merge overlapping pairs one by one
 		if (taskMonitor != null) {
-			taskMonitor.setPercentCompleted(-1);
 			taskMonitor.setStatus("Merging highly overlapping clusters...");
+			taskMonitor.setPercentCompleted(-1);
 		}
 		
 		stepsTotal = pairs.size();
@@ -441,7 +441,7 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 	/**
 	 * Verifies the result.
 	 * 
-	 * @see verificationMode for more details.
+	 * @see #verificationMode for more details.
 	 * @throws RuntimeException if the verification failed
 	 */
 	private void verifyResult(ValuedNodeSetList result,

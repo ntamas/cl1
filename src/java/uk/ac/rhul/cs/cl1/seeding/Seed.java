@@ -6,6 +6,7 @@ import uk.ac.rhul.cs.graph.Graph;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * Represents a seed nodeset of the ClusterONE algorithm.

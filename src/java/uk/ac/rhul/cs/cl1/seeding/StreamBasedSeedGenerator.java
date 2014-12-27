@@ -85,10 +85,9 @@ public class StreamBasedSeedGenerator extends SeedGenerator {
 			processLine();
 		}
 
-		
 		private void processLine() {
 			do {
-				String line = null;
+				String line;
 				currentNodeSet = emptyNodeSet.clone();
 
 				try {
