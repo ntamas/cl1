@@ -33,7 +33,7 @@ for DATASET_FILE in $(ls "${ROOT_DIR}"/data/*.txt | sort); do
 		if diff -q ${OUT_DIR}/reference_results.txt ${OUT_DIR}/test_results.txt >/dev/null; then
 			true
 		else
-			diff ${OUT_DIR}/reference_results.txt ${OUT_DIR}/test_results.txt >${OUT_DIR}/${DAASET_NAME}.diff
+			diff ${OUT_DIR}/reference_results.txt ${OUT_DIR}/test_results.txt >${OUT_DIR}/${DATASET_NAME}_threads=${NUM_THREADS}.diff
 			MESSAGE="ERROR"
 		fi
 	done

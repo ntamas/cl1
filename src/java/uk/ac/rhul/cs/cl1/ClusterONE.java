@@ -142,6 +142,7 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void>, TaskMo
 		Double minDensity = parameters.getMinDensity();
 		AbstractNodeSetMerger merger;
 		Seed seed;
+		Seed pendingSeed = null;
 		ValuedNodeSet cluster;
 		Ordered<ValuedNodeSet> orderedCluster;
 		State state;
@@ -235,32 +236,46 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void>, TaskMo
 					break;
 
 				case GENERATING_SEEDS:
-					// Get the next seed that is acceptable
-					boolean seedAccepted = false;
+					// Try to fill the seed queue with seeds
+					boolean shouldEnqueue = true;
+					while (shouldEnqueue) {
+						// Get the next seed that is acceptable
+						boolean seedAccepted = false;
 
-					seed = null;
-					while (!seedAccepted) {
-						if (it.hasNext()) {
-							seed = it.next();
-							numGeneratedSeeds++;
-						} else {
-							seed = null;
+						seed = null;
+						while (!seedAccepted) {
+							if (pendingSeed != null) {
+								seed = pendingSeed;
+								numGeneratedSeeds++;
+								pendingSeed = null;
+							} else if (it.hasNext()) {
+								seed = it.next();
+								numGeneratedSeeds++;
+							} else {
+								seed = null;
+							}
+							seedAccepted = (seed == null || !parameters.shouldRejectSeedsWithOnlyUsedNodes() ||
+									!usedNodes.areAllNodesUsedFromSeed(seed));
 						}
-						seedAccepted = (seed == null || !parameters.shouldRejectSeedsWithOnlyUsedNodes() ||
-								!usedNodes.areAllNodesUsedFromSeed(seed));
-					}
 
-					if (seed == null) {
-						state = State.NOTIFYING_WORKERS_NO_MORE_SEEDS;
-					} else {
-						// Offer the seed to the workers; if the queue is full, do nothing
-						if (seedQueue.offer(new Ordered<Seed>(numPostedSeeds, seed))) {
-							// If the queue accepted the seed, consider all the nodes in the seed used from now on
-							usedNodes.markSeedAsUsed(seed);
-							// Increase the number of posted seeds
-							numPostedSeeds++;
-							// Also, store the seed
-							submittedSeeds.add(seed);
+						if (seed == null) {
+							state = State.NOTIFYING_WORKERS_NO_MORE_SEEDS;
+							shouldEnqueue = false;
+						} else {
+							// Offer the seed to the workers; if the queue is full, do nothing
+							if (seedQueue.offer(new Ordered<Seed>(numPostedSeeds, seed))) {
+								// If the queue accepted the seed, consider all the nodes in the seed used from now on
+								usedNodes.markSeedAsUsed(seed);
+								// Increase the number of posted seeds
+								numPostedSeeds++;
+								// Also, store the seed
+								submittedSeeds.add(seed);
+							} else {
+								// Queue is full now. Store the seed so we can try it again in the next iteration.
+								pendingSeed = seed;
+								numGeneratedSeeds--;
+								shouldEnqueue = false;
+							}
 						}
 					}
 					break;
