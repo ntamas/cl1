@@ -8,6 +8,7 @@ popd >/dev/null
 
 REFERENCE_IMPL=cluster_one-1.0.jar
 TESTED_IMPL=cluster_one-1.1.jar
+THREAD_COUNTS="1 2 3 4 5 6 7 8"
 
 ###########################################################################
 
@@ -21,17 +22,22 @@ for DATASET_FILE in $(ls "${ROOT_DIR}"/data/*.txt | sort); do
 	COMMAND="java -jar \"${ROOT_DIR}/${REFERENCE_IMPL}\" \"${DATASET_FILE}\" >\"${OUT_DIR}/reference_results.txt\" 2>/dev/null"
 	REFERENCE_TIME=`command time -p sh -c "$COMMAND" 2>&1 | head -1 | awk '{ print $2 }'`
 
-	COMMAND="java -jar \"${ROOT_DIR}/${TESTED_IMPL}\" \"${DATASET_FILE}\" >\"${OUT_DIR}/test_results.txt\" 2>/dev/null"
-	TESTED_TIME=`command time -p sh -c "$COMMAND" 2>&1 | head -1 | awk '{ print $2 }'`
-	RATIO="`echo \"scale=3; ${REFERENCE_TIME}/${TESTED_TIME}\" | bc -l`"
+	TESTED_TIMES=""
+	MESSAGE="OK"
 
-	if diff -q ${OUT_DIR}/reference_results.txt ${OUT_DIR}/test_results.txt >/dev/null; then
-		true
-	else
-		diff ${OUT_DIR}/reference_results.txt ${OUT_DIR}/test_results.txt >${OUT_DIR}/${DAASET_NAME}.diff
-		RATIO="ERROR"
-	fi
+	for NUM_THREADS in $THREAD_COUNTS; do
+		COMMAND="java -jar \"${ROOT_DIR}/${TESTED_IMPL}\" \"${DATASET_FILE}\" --num-threads ${NUM_THREADS} >\"${OUT_DIR}/test_results.txt\" 2>/dev/null"
+		TESTED_TIME=`command time -p sh -c "$COMMAND" 2>&1 | head -1 | awk '{ print $2 }'`
+		TESTED_TIMES="$TESTED_TIMES\t$TESTED_TIME"
 
-	echo -e "$DATASET_NAME\t$REFERENCE_TIME\t$TESTED_TIME\t$RATIO"
+		if diff -q ${OUT_DIR}/reference_results.txt ${OUT_DIR}/test_results.txt >/dev/null; then
+			true
+		else
+			diff ${OUT_DIR}/reference_results.txt ${OUT_DIR}/test_results.txt >${OUT_DIR}/${DAASET_NAME}.diff
+			MESSAGE="ERROR"
+		fi
+	done
+
+	echo -e "$DATASET_NAME\t$MESSAGE\t$REFERENCE_TIME\t$TESTED_TIMES"
 	rm -f ${OUT_DIR}/reference_results.txt ${OUT_DIR}/test_results.txt
 done
