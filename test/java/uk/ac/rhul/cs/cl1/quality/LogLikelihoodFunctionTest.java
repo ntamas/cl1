@@ -1,10 +1,11 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.cl1.quality;
 
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import uk.ac.rhul.cs.cl1.MutableNodeSet;
 import uk.ac.rhul.cs.cl1.quality.LogLikelihoodFunction;
 import uk.ac.rhul.cs.graph.Graph;
 

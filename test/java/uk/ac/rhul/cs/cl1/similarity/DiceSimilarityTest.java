@@ -1,9 +1,8 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.cl1.similarity;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import uk.ac.rhul.cs.cl1.similarity.DiceSimilarity;
 
 public class DiceSimilarityTest extends SimilarityTestBase {
 	@Test

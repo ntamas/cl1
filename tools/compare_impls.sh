@@ -38,6 +38,6 @@ for DATASET_FILE in $(ls "${ROOT_DIR}"/data/*.txt | sort); do
 		fi
 	done
 
-	echo -e "$DATASET_NAME\t$MESSAGE\t$REFERENCE_TIME\t$TESTED_TIMES"
+	echo -e "$DATASET_NAME\t$MESSAGE\t$REFERENCE_TIME$TESTED_TIMES"
 	rm -f ${OUT_DIR}/reference_results.txt ${OUT_DIR}/test_results.txt
 done

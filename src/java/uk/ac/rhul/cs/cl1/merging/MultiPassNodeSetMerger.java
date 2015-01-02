@@ -535,9 +535,9 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 		// Check if the entire nodeset list fails the verifications or not. If
 		// not, return null.
 		try {
-			result = merger.mergeOverlapping(nodeSets, similarityFunc, threshold);
+			merger.mergeOverlapping(nodeSets, similarityFunc, threshold);
 			return null;
-		} catch (RuntimeException ex) {
+		} catch (RuntimeException ignored) {
 		}
 		
 		result = (ValuedNodeSetList)nodeSets.clone();

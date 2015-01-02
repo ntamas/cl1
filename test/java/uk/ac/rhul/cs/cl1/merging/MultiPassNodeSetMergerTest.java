@@ -1,9 +1,12 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.cl1.merging;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import uk.ac.rhul.cs.cl1.NodeSet;
+import uk.ac.rhul.cs.cl1.ValuedNodeSet;
+import uk.ac.rhul.cs.cl1.ValuedNodeSetList;
 import uk.ac.rhul.cs.cl1.merging.MultiPassNodeSetMerger;
 import uk.ac.rhul.cs.cl1.similarity.JaccardSimilarity;
 import uk.ac.rhul.cs.cl1.similarity.SimilarityFunction;

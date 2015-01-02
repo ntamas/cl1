@@ -1,4 +1,7 @@
-package uk.ac.rhul.cs.cl1;
+package uk.ac.rhul.cs.cl1.similarity;
+
+import uk.ac.rhul.cs.cl1.Intersectable;
+import uk.ac.rhul.cs.cl1.Sized;
 
 import java.util.Arrays;
 import java.util.HashSet;

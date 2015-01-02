@@ -3,6 +3,7 @@ package uk.ac.rhul.cs.cl1.seeding;
 import uk.ac.rhul.cs.cl1.MutableNodeSet;
 import uk.ac.rhul.cs.cl1.NodeSet;
 import uk.ac.rhul.cs.graph.Graph;
+import uk.ac.rhul.cs.utils.StringUtils;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -63,6 +64,22 @@ public class Seed {
     }
 
     /**
+     * Returns the names of the members of this seed
+     * @return the names of the members
+     */
+    public String[] getMemberNames() {
+        String[] result = new String[this.members.length];
+        int i = 0;
+
+        for (int member: this.members) {
+            result[i] = this.graph.getNodeName(member);
+            i++;
+        }
+
+        return result;
+    }
+
+    /**
      * Initializes the given {@link uk.ac.rhul.cs.cl1.MutableNodeSet} with this seed.
      */
     public void initializeMutableNodeSet(MutableNodeSet mutableNodeSet) {
@@ -75,5 +92,19 @@ public class Seed {
         for (int member: members) {
             mutableNodeSet.add(member);
         }
+    }
+
+    /**
+     * Prints the nodes in this set to a string
+     */
+    public String toString() {
+        return toString(" ");
+    }
+
+    /**
+     * Prints the nodes in this set to a string using a given separator
+     */
+    public String toString(String separator) {
+        return StringUtils.join(getMemberNames(), separator);
     }
 }

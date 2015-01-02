@@ -30,8 +30,8 @@ public final class Ordered<T> implements Comparable<Ordered<T>> {
     }
 
     @Override
-    public int compareTo(Ordered ordered) {
-        return this.sequenceNumber - ordered.sequenceNumber;
+    public int compareTo(Ordered other) {
+        return this.sequenceNumber - other.sequenceNumber;
     }
 
     @Override
@@ -52,5 +52,13 @@ public final class Ordered<T> implements Comparable<Ordered<T>> {
         int result = sequenceNumber;
         result = 31 * result + (object != null ? object.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Ordered{" +
+                "sequenceNumber=" + sequenceNumber +
+                ", object=" + object +
+                '}';
     }
 }

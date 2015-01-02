@@ -1,12 +1,16 @@
 package uk.ac.rhul.cs.graph;
 
+import uk.ac.rhul.cs.cl1.NullTaskMonitor;
+import uk.ac.rhul.cs.cl1.TaskMonitor;
+import uk.ac.rhul.cs.cl1.TaskMonitorSupport;
+
 /**
  * Calculates the transitivity (i.e. clustering coefficient) of a given graph
  * or a given set of nodes in a graph.
  * 
  * @author tamas
  */
-public class TransitivityCalculator extends GraphAlgorithm {
+public class TransitivityCalculator extends GraphAlgorithm implements TaskMonitorSupport {
 	public TransitivityCalculator() {
 		super();
 	}
@@ -14,6 +18,9 @@ public class TransitivityCalculator extends GraphAlgorithm {
 	public TransitivityCalculator(Graph graph) {
 		super(graph);
 	}
+
+	/** A task monitor where the algorithm will report its progress */
+	protected TaskMonitor monitor = new NullTaskMonitor();
 
 	/**
 	 * Returns the average local transitivity of the graph.
@@ -41,7 +48,9 @@ public class TransitivityCalculator extends GraphAlgorithm {
 		int i;
 		
 		shouldStop = false;
-		
+
+		monitor.setPercentCompleted(0);
+
 		for (i = 0; i < nodeCount; i++) {
 			if (shouldStop)
 				return null;
@@ -57,8 +66,14 @@ public class TransitivityCalculator extends GraphAlgorithm {
 				}
 			}
 			triplets += (neis.length * (neis.length - 1)) / 2;
+
+			// TODO: this is not entirely exact here because each node should be
+			// weighted by the square of its degree
+			monitor.setPercentCompleted((int)(i * 100.0 / nodeCount));
 		}
-		
+
+		monitor.setPercentCompleted(100);
+
 		return (triplets == 0) ? 0 : (3.0 * triangles / triplets);
 	}
 	
@@ -76,5 +91,14 @@ public class TransitivityCalculator extends GraphAlgorithm {
 			);
 		
 		super.setGraph(graph);
+	}
+
+	/**
+	 * Sets the task monitor where the algorithm will report its progress
+	 *
+	 * @param monitor    the task monitor to use
+	 */
+	public void setTaskMonitor(TaskMonitor monitor) {
+		this.monitor = monitor;
 	}
 }

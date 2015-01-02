@@ -35,7 +35,8 @@ public class SeedGeneratorTest {
 		}
 		
 		int i = 0;
-		for (MutableNodeSet set: gen) {
+		for (Seed seed: gen) {
+			MutableNodeSet set = seed.createMutableNodeSet();
 			assert(set.contains(i));
 			assert(set.size() == 1);
 			i++;
@@ -51,11 +52,13 @@ public class SeedGeneratorTest {
 			fail(ex.getMessage());
 		}
 		
-		Iterator<MutableNodeSet> it = gen.iterator();
+		Iterator<Seed> it = gen.iterator();
 		for (Edge edge: graph) {
 			assert(it.hasNext());
-			
-			MutableNodeSet set = it.next();
+
+			Seed seed = it.next();
+			MutableNodeSet set = seed.createMutableNodeSet();
+
 			assert(set.contains(edge.source));
 			assert(set.contains(edge.target));
 			assert(set.size() == 2);
