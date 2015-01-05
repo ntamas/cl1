@@ -424,14 +424,14 @@ public class NodeSet implements Iterable<Integer>, Intersectable<NodeSet>, Sized
 	public int getIntersectionSizeWith(NodeSet other) {
 		int isectSize = 0;
 		Set<Integer> smaller;
-		IntHashSet larger;
-		
+		Set<Integer> larger;
+
 		if (this.size() < other.size()) {
 			smaller = this.members;
-			larger = other.getMemberHashSet();
+			larger = other.members;
 		} else {
 			smaller = other.members;
-			larger = this.getMemberHashSet();
+			larger = this.members;
 		}
 		
 		for (int member: smaller)
