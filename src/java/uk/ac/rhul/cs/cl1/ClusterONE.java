@@ -10,6 +10,7 @@ import uk.ac.rhul.cs.cl1.seeding.SeedGenerator;
 import uk.ac.rhul.cs.cl1.seeding.SeedIterator;
 import uk.ac.rhul.cs.cl1.support.OrderMaintainingQueue;
 import uk.ac.rhul.cs.cl1.support.UsedNodeSet;
+import uk.ac.rhul.cs.collections.IntObjectHashMap;
 import uk.ac.rhul.cs.graph.Graph;
 import uk.ac.rhul.cs.graph.GraphAlgorithm;
 import uk.ac.rhul.cs.graph.TransitivityCalculator;
@@ -154,7 +155,7 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void>, TaskMo
 		int numProcessedClusters;
 
 		ValuedNodeSetList result = new ValuedNodeSetList();
-		List<Seed> submittedSeeds = new ArrayList<Seed>();
+		IntObjectHashMap submittedSeeds = new IntObjectHashMap();
 		OrderMaintainingQueue<ValuedNodeSet> receivedClusters = new OrderMaintainingQueue<ValuedNodeSet>();
 
 		/* Simple sanity checks */
@@ -265,10 +266,9 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void>, TaskMo
 						} else {
 							// Offer the seed to the workers; if the queue is full, do nothing
 							if (seedQueue.offer(new Ordered<Seed>(numPostedSeeds, seed))) {
-								// Increase the number of posted seeds
+								// Store the seed and increase the number of posted seeds
+								submittedSeeds.add(numPostedSeeds, seed);
 								numPostedSeeds++;
-								// Also, store the seed
-								submittedSeeds.add(seed);
 							} else {
 								// Queue is full now. Store the seed so we can try it again in the next iteration.
 								pendingSeed = seed;
@@ -334,7 +334,7 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void>, TaskMo
 
 						cluster = orderedCluster.object;
 						if (cluster != ClusterGrowthWorker.EMPTY_CLUSTER) {
-							Seed originalSeed = submittedSeeds.get(orderedCluster.sequenceNumber);
+							Seed originalSeed = (Seed) submittedSeeds.remove(orderedCluster.sequenceNumber);
 							// Check whether the cluster would have been generated at all if we were working
 							// sequentially.
 							if (!usedNodes.areAllNodesUsedFromSeed(originalSeed)) {
@@ -355,7 +355,9 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void>, TaskMo
 				}
 			}
 
-			// Report progress
+			// Report progress.
+			// Progress has to be calculated from numGeneratedSeeds and not numPostedSeeds
+			// because some seeds may be skipped before posting them to workers
 			monitor.setPercentCompleted((int) (numGeneratedSeeds * 100.0 / it.getEstimatedLength()));
 
 			// Check for termination
