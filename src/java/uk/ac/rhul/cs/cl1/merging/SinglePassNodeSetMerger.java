@@ -40,8 +40,7 @@ public class SinglePassNodeSetMerger extends AbstractNodeSetMerger {
 	 * @param  threshold  the overlap threshold. Nodesets will be merged
 	 *                    if their overlap is at least as large as the
 	 *                    given threshold.
-	 * @param  monitor    a {@link uk.ac.rhul.cs.cl1.TaskMonitor} to report our progress to
-	 * 
+	 *
 	 * @return  a new nodeset list where no two nodesets have an overlap
 	 *          larger than or equal to the given threshold, and no nodeset
 	 *          has a density smaller than minDensity
@@ -51,9 +50,13 @@ public class SinglePassNodeSetMerger extends AbstractNodeSetMerger {
 			SimilarityFunction<NodeSet> similarityFunc,
 			double threshold) {
 		int i, n = nodeSets.size();
-		long stepsTotal = n * (n-1) / 2, stepsTaken = 0;
 		ValuedNodeSetList result = new ValuedNodeSetList();
-		
+
+		// The step counting is a bit tricky; instead of storing the actual number of
+		// node set pairs that we have to check in stepsTotal, we divide it by n and
+		// store that to avoid overflows in an integer when n is large.
+		double stepsTotal = (n-1) / 2.0, stepsTaken = 0.0;
+
 		if (n == 0)
 			return result;
 		
@@ -73,15 +76,21 @@ public class SinglePassNodeSetMerger extends AbstractNodeSetMerger {
 				if (similarityFunc.getSimilarity(v1, nodeSets.get(j)) >= threshold)
 					overlapGraph.createEdge(i, j);
 			}
-			
-			stepsTaken += (n - i - 1);
-			if (stepsTaken > stepsTotal)
+
+			stepsTaken += (n - i - 1) / (double)(n);
+			if (stepsTaken > stepsTotal) {
 				stepsTaken = stepsTotal;
+			}
+
 			if (taskMonitor != null) {
-				taskMonitor.setPercentCompleted((int)(100 * (((float)stepsTaken) / stepsTotal)));
+				taskMonitor.setPercentCompleted((int)(100 * stepsTaken / stepsTotal));
 			}
 		}
-		
+
+		if (taskMonitor != null) {
+			taskMonitor.setPercentCompleted(100);
+		}
+
 		if (taskMonitor != null) {
 			taskMonitor.setStatus("Merging highly overlapping clusters...");
 			taskMonitor.setPercentCompleted(0);

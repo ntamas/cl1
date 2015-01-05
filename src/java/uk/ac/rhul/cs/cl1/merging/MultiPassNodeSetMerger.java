@@ -36,7 +36,7 @@ import uk.ac.rhul.cs.utils.UnorderedPair;
 public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 	enum VerificationMode {
 		OFF, VERIFY, VERIFY_AND_MINIMIZE
-	};
+	}
 	
 	/**
 	 * Auxiliary data structure for verification mode; stores how many times
@@ -119,11 +119,15 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 	public ValuedNodeSetList mergeOverlapping(ValuedNodeSetList nodeSets,
 			SimilarityFunction<NodeSet> similarityFunc, double threshold) {
 		int i, j, n = nodeSets.size();
-		long stepsTotal = n * (n-1) / 2, stepsTaken = 0;
 		double similarity;
 		ValuedNodeSetList result = new ValuedNodeSetList();
 		HashSet<ValuedNodeSet> activeNodesets = new HashSet<ValuedNodeSet>();
-		
+
+		// The step counting is a bit tricky; instead of storing the actual number of
+		// node set pairs that we have to check in stepsTotal, we divide it by n and
+		// store that to avoid overflows in an integer when n is large.
+		double stepsTotal = (n-1) / 2.0, stepsTaken = 0.0;
+
 		if (n == 0)
 			return result;
 		
@@ -162,15 +166,21 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 				// No other node set is similar to v1, so add it to the result
 				result.add(v1);
 			}
-			
-			stepsTaken += (n - i - 1);
-			if (stepsTaken > stepsTotal)
+
+			stepsTaken += (n - i - 1) / (double)(n);
+			if (stepsTaken > stepsTotal) {
 				stepsTaken = stepsTotal;
+			}
+
 			if (taskMonitor != null) {
 				taskMonitor.setPercentCompleted((int)(100 * (((float)stepsTaken) / stepsTotal)));
 			}
 		}
-		
+
+		if (taskMonitor != null) {
+			taskMonitor.setPercentCompleted(100);
+		}
+
 		// Store which nodesets are still active (i.e. unmerged)
 		activeNodesets.addAll(nodesetsToPairs.keySet());
 		
@@ -195,7 +205,6 @@ public class MultiPassNodeSetMerger extends AbstractNodeSetMerger {
 			taskMonitor.setPercentCompleted(-1);
 		}
 		
-		stepsTotal = pairs.size();
 		stepsTaken = 0;
 		
 		while (!pairs.isEmpty()) {
