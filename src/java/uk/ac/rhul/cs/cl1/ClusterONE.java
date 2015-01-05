@@ -156,9 +156,7 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void>, TaskMo
 		ValuedNodeSetList result = new ValuedNodeSetList();
 		List<Seed> submittedSeeds = new ArrayList<Seed>();
 		OrderMaintainingQueue<ValuedNodeSet> receivedClusters = new OrderMaintainingQueue<ValuedNodeSet>();
-		List<Ordered<ValuedNodeSet>> tmpList = new ArrayList<Ordered<ValuedNodeSet>>();
-		HashSet<NodeSet> addedNodeSets = new HashSet<NodeSet>();
-		
+
 		/* Simple sanity checks */
 		if (ArrayUtils.min(graph.getEdgeWeights()) < 0.0)
 			throw new ClusterONEException("Edge weights must all be non-negative");
@@ -310,20 +308,22 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void>, TaskMo
 			// try to read a cluster from the cluster queue if we still expect one.
 			if (state == State.GENERATING_SEEDS || state == State.NOTIFYING_WORKERS_NO_MORE_SEEDS ||
 					state == State.WAITING_FOR_CLUSTERS) {
-				orderedCluster = null;
+				// Try to get clusters from the incoming queue if we expect them
+				while (numProcessedClusters < numPostedSeeds) {
+					orderedCluster = null;
 
-				// Try to get a cluster from the incoming queue if we expect one
-				if (numProcessedClusters < numPostedSeeds) {
 					try {
 						orderedCluster = clusterQueue.take();
 					} catch (InterruptedException ignored) {
 					}
-				}
 
-				if (orderedCluster != null) {
+					if (orderedCluster == null)
+						break;
+
 					// Add the cluster to the queue that will restore the ordering
 					// according to the sequence numbers
 					receivedClusters.add(orderedCluster);
+					numProcessedClusters++;
 
 					// Try to retrieve a few clusters from receivedClusters; note that
 					// even though we have added a cluster above, the queue might still
@@ -345,9 +345,13 @@ public class ClusterONE extends GraphAlgorithm implements Callable<Void>, TaskMo
 								usedNodes.markNodeSetAsUsed(cluster);
 							}
 						}
-
-						numProcessedClusters++;
 					}
+
+					// We try to keep all our workers busy so we break out of the while
+					// loop here if the queue through which we feed the workers has some
+					// empty slots and we are still generating seeds.
+					if (state == State.GENERATING_SEEDS && seedQueue.remainingCapacity() > 0)
+						break;
 				}
 			}
 
