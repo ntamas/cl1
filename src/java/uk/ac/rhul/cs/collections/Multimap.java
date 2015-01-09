@@ -69,4 +69,9 @@ public interface Multimap<K, V> {
 	 *          values were associated with the provided key.
 	 */
 	public Collection<V> removeAll(Object key);
+
+	/**
+	 * Returns the collection of all value collections.
+	 */
+	public Collection<Collection<V>> valueCollections();
 }

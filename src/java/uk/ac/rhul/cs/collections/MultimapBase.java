@@ -1,10 +1,6 @@
 package uk.ac.rhul.cs.collections;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Base implementation of a multimap.
@@ -57,7 +53,7 @@ public abstract class MultimapBase<K, V> implements Multimap<K, V> {
 	public boolean put(K key, V value) {
 		Collection<V> values = data.get(key);
 		if (values == null) {
-			values = new TreeSet<V>();
+			values = new HashSet<V>();
 			data.put(key, values);
 		}
 		values.add(value);
@@ -82,4 +78,9 @@ public abstract class MultimapBase<K, V> implements Multimap<K, V> {
 			return Collections.emptyList();
 		return values;
 	}
+
+	public Collection<Collection<V>> valueCollections() {
+		return data.values();
+	}
+
 }
