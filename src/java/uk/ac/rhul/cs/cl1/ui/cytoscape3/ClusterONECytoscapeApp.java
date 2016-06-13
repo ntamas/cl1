@@ -90,7 +90,10 @@ public class ClusterONECytoscapeApp {
 	 * The name of the menu in which the app lives.
 	 */
 	public static final String PREFERRED_MENU = "Apps." + ClusterONE.applicationName;
-	
+	/**
+         * ShowControlPanelAction reference
+         */
+        private ShowControlPanelAction scpaction;
 	// --------------------------------------------------------------------
 	// Constructors
 	// --------------------------------------------------------------------
@@ -117,7 +120,8 @@ public class ClusterONECytoscapeApp {
 		growClusterAction = new GrowClusterAction(this);
 		
 		// Add the actions of the plugin
-		app.addAction(new ShowControlPanelAction(controlPanel));
+                scpaction = new ShowControlPanelAction(controlPanel);
+		app.addAction(scpaction);
 		app.addAction(growClusterAction);
 		app.addAction(new AffinityColouringAction(this));
 		app.addAction(new HelpAction(this, "introduction"));
@@ -142,6 +146,13 @@ public class ClusterONECytoscapeApp {
 	// Query methods
 	// --------------------------------------------------------------------
 	
+        /**
+	 * Returns the ShowControlPanelAction instance
+	 */
+        public ShowControlPanelAction getScpAction(){
+            return scpaction;
+        }
+        
 	/**
 	 * Returns the application manager from Cytoscape.
 	 */
