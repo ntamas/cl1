@@ -274,7 +274,8 @@ public class ControlPanel extends JPanel implements CytoPanelComponent, Property
 	 * Deactivates and hides the control panel.
 	 */
 	public void deactivate() {
-		app.unregisterService(this, CytoPanelComponent.class);
+		app.getCySwingApplication().removeAction(app.getscpAction());
+                app.unregisterService(this, CytoPanelComponent.class);
 		app.unregisterService(this, NetworkAddedListener.class);
 		app.unregisterService(this, NetworkDestroyedListener.class);
 		app.unregisterService(this, SetCurrentNetworkListener.class);
