@@ -112,7 +112,11 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 	 * The "Show detailed results" action
 	 */
 	protected ShowDetailedResultsAction showDetailedResultsAction;
-	
+        
+        /**
+	 * Tracks the no. of subnetworks extracted
+	 */
+	protected int subNetsExtracted = 0;
 	// --------------------------------------------------------------------
 	// Constructor
 	// --------------------------------------------------------------------
@@ -222,6 +226,20 @@ public class CytoscapeResultViewerPanel extends ResultViewerPanel implements
 		return this.nodeMapping;
 	}
 	
+        /**
+	 * Increments subnetcount before extracting one
+	 */
+        public void incrementSubNetCount() {
+            subNetsExtracted++;
+        }
+        
+        /**
+	 * Returns subnetcount to append to subnet name
+	 */
+        public int getSubNetsExtracted() {
+            return subNetsExtracted;
+        }
+        
 	/**
 	 * Retrieves the set of Cytoscape nodes associated to the selected {@link NodeSet}.
 	 * 
