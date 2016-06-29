@@ -9,7 +9,7 @@ import javax.swing.AbstractAction;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.task.create.NewNetworkSelectedNodesAndEdgesTaskFatory;
+import org.cytoscape.task.create.NewNetworkSelectedNodesAndEdgesTaskFactory;
 import org.cytoscape.app.swing.CySwingAppAdapter;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.work.swing.DialogTaskManager;
@@ -46,8 +46,7 @@ public class ExtractClusterAction extends AbstractAction {
 		}
 		
 		resultViewer.selectNodes(selectedNodes);
-		NewNetworkSelectedNodesAndEdgesTaskFactory taskFactory = 
-                                app.getService(CySwingAppAdapter.class).get_NewNetworkSelectedNodesAndEdgesTaskFactory();
+		NewNetworkSelectedNodesAndEdgesTaskFactory taskFactory = app.getService(NewNetworkSelectedNodesAndEdgesTaskFactory.class);
 		
 		if (taskFactory == null) {
 			app.showBugMessage("Cannot create network representation for the cluster:\n" +
