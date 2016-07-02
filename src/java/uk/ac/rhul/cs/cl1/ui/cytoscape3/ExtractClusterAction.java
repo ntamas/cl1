@@ -63,19 +63,19 @@ public class ExtractClusterAction extends AbstractAction {
 		}
 		
 		taskManager.execute(taskFactory.createTaskIterator(network));
-                this.resultViewer.incrementSubNetCount();
+               this.resultViewer.incrementSubNetCount();
                 
                 
-                String currentNetworkName = network.getRow(network).get(CyNetwork.NAME, String.class);
-                Set<CyNetwork> allnetworks = app.getService(CyNetworkManager.class).getNetworkSet();
+               String currentNetworkName = network.getRow(network).get(CyNetwork.NAME, String.class);
+               Set<CyNetwork> allnetworks = app.getService(CyNetworkManager.class).getNetworkSet();
                         
-                long maxSUID = Integer.MIN_VALUE;
-                for(CyNetwork net : allnetworks){
-                    if(net.getSUID() > maxSUID)
-                        maxSUID = net.getSUID();
-                }
-                CyNetwork newnet = app.getService(CyNetworkManager.class).getNetwork(maxSUID);
-                newnet.getRow(newnet).set(CyNetwork.NAME, currentNetworkName + " ClusterONE - SubNet " + this.resultViewer.getSubNetsExtracted());
+               long maxSUID = Integer.MIN_VALUE;
+               for(CyNetwork net : allnetworks){
+                   if(net.getSUID() > maxSUID)
+                       maxSUID = net.getSUID();
+               }
+               CyNetwork newnet = app.getService(CyNetworkManager.class).getNetwork(maxSUID);
+               newnet.getRow(newnet).set(CyNetwork.NAME, currentNetworkName + " ClusterONE - SubNet " + this.resultViewer.getSubNetsExtracted());
                 
 	}
 }
