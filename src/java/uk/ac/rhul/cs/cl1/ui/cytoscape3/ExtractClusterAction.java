@@ -3,12 +3,15 @@ package uk.ac.rhul.cs.cl1.ui.cytoscape3;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.task.create.NewNetworkSelectedNodesAndEdgesTaskFatory;
+import org.cytoscape.task.create.NewNetworkSelectedNodesAndEdgesTaskFactory;
+import org.cytoscape.app.swing.CySwingAppAdapter;
+import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.work.swing.DialogTaskManager;
 
 /**
@@ -43,9 +46,8 @@ public class ExtractClusterAction extends AbstractAction {
 		}
 		
 		resultViewer.selectNodes(selectedNodes);
+		NewNetworkSelectedNodesAndEdgesTaskFactory taskFactory = app.getService(NewNetworkSelectedNodesAndEdgesTaskFactory.class);
 		
-		NewNetworkSelectedNodesAndEdgesTaskFatory taskFactory =
-				this.resultViewer.getCytoscapeApp().getService(NewNetworkSelectedNodesAndEdgesTaskFatory.class);
 		if (taskFactory == null) {
 			app.showBugMessage("Cannot create network representation for the cluster:\n" +
 					"New network creation factory is not registered.");
@@ -53,7 +55,7 @@ public class ExtractClusterAction extends AbstractAction {
 		}
 		
 		DialogTaskManager taskManager =
-				this.resultViewer.getCytoscapeApp().getService(DialogTaskManager.class);
+				app.getService(DialogTaskManager.class);
 		if (taskManager == null) {
 			app.showBugMessage("Cannot create network representation for the cluster:\n" +
 					"Dialog task manager is not registered.");
@@ -61,5 +63,19 @@ public class ExtractClusterAction extends AbstractAction {
 		}
 		
 		taskManager.execute(taskFactory.createTaskIterator(network));
+               this.resultViewer.incrementSubNetCount();
+                
+                
+               String currentNetworkName = network.getRow(network).get(CyNetwork.NAME, String.class);
+               Set<CyNetwork> allnetworks = app.getService(CyNetworkManager.class).getNetworkSet();
+                        
+               long maxSUID = Integer.MIN_VALUE;
+               for(CyNetwork net : allnetworks){
+                   if(net.getSUID() > maxSUID)
+                       maxSUID = net.getSUID();
+               }
+               CyNetwork newnet = app.getService(CyNetworkManager.class).getNetwork(maxSUID);
+               newnet.getRow(newnet).set(CyNetwork.NAME, currentNetworkName + " ClusterONE - SubNet " + this.resultViewer.getSubNetsExtracted());
+                
 	}
 }
