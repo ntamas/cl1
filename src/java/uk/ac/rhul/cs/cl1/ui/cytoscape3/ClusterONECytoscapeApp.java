@@ -22,9 +22,9 @@ import org.cytoscape.work.swing.DialogTaskManager;
 
 import uk.ac.rhul.cs.cl1.ClusterONE;
 import uk.ac.rhul.cs.cl1.ClusterONEAlgorithmParameters;
-import uk.ac.rhul.cs.cl1.CohesivenessFunction;
 import uk.ac.rhul.cs.cl1.MutableNodeSet;
-import uk.ac.rhul.cs.cl1.QualityFunction;
+import uk.ac.rhul.cs.cl1.quality.CohesivenessFunction;
+import uk.ac.rhul.cs.cl1.quality.QualityFunction;
 
 public class ClusterONECytoscapeApp {
 	
