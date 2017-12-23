@@ -38,6 +38,9 @@
 
     <property name="tool.bnd.path" location="${lib}/bnd-2.0.0.jar" />
     
+    <property name="ant.build.javac.source" value="1.5" />
+    <property name="ant.build.javac.target" value="1.5" />
+
     <!-- Access to environment -->
     <property environment="os" />
 
@@ -135,7 +138,7 @@
 
     <!-- Compiles the base classes -->
     <target name="compile_java_base" depends="-init">
-        <javac srcdir="${src.java}" destdir="${build.java}" target="1.5"
+        <javac srcdir="${src.java}" destdir="${build.java}"
                debug="${debug}" deprecation="${deprecation}"
                optimize="${optimize}" includeAntRuntime="false">
             <exclude name="**/cytoscape/*" />
@@ -152,7 +155,7 @@
     <!-- Compiles the Cytoscape 2.x plugin -->
     <target name="compile_java_cytoscape_plugin" if="lib.cytoscape.path"
             depends="compile_java_base">
-        <javac srcdir="${src.java}" destdir="${build.java}" target="1.5"
+        <javac srcdir="${src.java}" destdir="${build.java}"
                debug="${debug}" deprecation="${deprecation}"
                optimize="${optimize}" includeAntRuntime="false">
             <include name="${package.name.slashed}/ui/cytoscape/*.java" />
@@ -172,7 +175,7 @@
     <!-- Compiles the Cytoscape 3.x plugin -->
     <target name="compile_java_cytoscape3_plugin" if="lib.cytoscape3.path"
             depends="compile_java_base">
-        <javac srcdir="${src.java}" destdir="${build.java}" target="1.5"
+        <javac srcdir="${src.java}" destdir="${build.java}"
                debug="${debug}" deprecation="${deprecation}"
                optimize="${optimize}" includeAntRuntime="false">
             <include name="${package.name.slashed}/ui/cytoscape3/*.java" />
@@ -185,7 +188,7 @@
     <!-- Compiles the Procope plugin -->
     <target name="compile_java_procope_plugin" if="lib.procope.path"
             depends="compile_java_base">
-        <javac srcdir="${src.java}" destdir="${build.java}" target="1.5"
+        <javac srcdir="${src.java}" destdir="${build.java}"
                debug="${debug}" deprecation="${deprecation}"
                optimize="${optimize}" includeAntRuntime="false">
             <include name="${package.name.slashed}/ui/procope/*.java" />
@@ -198,7 +201,7 @@
     <!-- Compiles the web interface -->
     <target name="compile_java_rest_api" if="lib.jsr311.path"
             depends="compile_java_base">
-        <javac srcdir="${src.java}" destdir="${build.java}" target="1.5"
+        <javac srcdir="${src.java}" destdir="${build.java}"
                debug="${debug}" deprecation="${deprecation}"
                optimize="${optimize}" includeAntRuntime="false">
             <include name="${package.name.slashed}/api/rest/*.java" />
